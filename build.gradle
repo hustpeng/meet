@@ -17,6 +17,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url "http://maven.agmbat.com:9080/repository/maven-releases/" }
         google()
         jcenter()
     }
