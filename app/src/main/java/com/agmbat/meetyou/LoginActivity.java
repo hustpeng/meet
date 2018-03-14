@@ -19,6 +19,7 @@ public class LoginActivity extends FragmentActivity {
         findViewById(R.id.next_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
             }
         });
