@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">meetyou</string>
+
+    <!--  登录模块 -->
+    <string name="signup">注册</string>
+    <string name="login">登录</string>
+    <string name="regbymoile_reg_addr_hint">用户名</string>
+    <string name="loginby_input_pass_hint">密码</string>
+    <string name="loginby_encounter_problems">忘记密码?</string>
 </resources>

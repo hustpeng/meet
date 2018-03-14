@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffffff"
+        android:orientation="vertical"
+        android:paddingLeft="16.0dip"
+        android:paddingRight="16.0dip"
+        android:paddingTop="16.0dip">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48.0dip"
+            android:layout_marginBottom="24.0dip"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+            <com.agmbat.widget.ClearEditText
+                android:id="@+id/regbymobilereg_mobile_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/input_special_bar_bg_active"
+                android:hint="@string/regbymoile_reg_addr_hint"
+                android:textColorHint="#ffc5c5c5"
+                android:textSize="16.0dip" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/password_container"
+            android:layout_width="match_parent"
+            android:layout_height="48.0dip"
+            android:layout_marginBottom="24.0dip"
+            android:duplicateParentState="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.agmbat.widget.ClearEditText
+                android:id="@+id/indep_password"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_bg_selector"
+                android:gravity="center_vertical"
+                android:hint="@string/loginby_input_pass_hint"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:password="true"
+                android:singleLine="true"
+                android:textColorHint="#ffd7d7d7"
+                android:textSize="16.0dip" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/next_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8.0dip"
+            android:background="@drawable/btn_style_green"
+            android:gravity="center"
+            android:minHeight="48.0dip"
+            android:text="@string/login"
+            android:textColor="@color/white_color_selector"
+            android:textSize="16.0dip" />
+
+        <Button
+            android:id="@+id/login_problem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginBottom="24.0dip"
+            android:background="@null"
+            android:text="@string/loginby_encounter_problems"
+            android:textColor="@color/link_color_selector"
+            android:textSize="14.0dip" />
+
+    </LinearLayout>
+
+</LinearLayout>

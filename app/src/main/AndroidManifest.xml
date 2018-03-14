@@ -16,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoadingActivity">
+        <activity android:name="com.agmbat.meetyou.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +24,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name="com.agmbat.meetyou.LoginActivity"></activity>
+        <activity android:name="com.agmbat.meetyou.MainActivity"></activity>
     </application>
 
 </manifest>
