@@ -20,7 +20,7 @@ public class LoginActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 finish();
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                startActivity(new Intent(LoginActivity.this, MainTabActivity.class));
             }
         });
     }
