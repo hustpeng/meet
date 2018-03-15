@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.tab;
+package com.agmbat.meetyou.tab.msg;
 
 import android.content.Context;
 import android.view.View;
@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.agmbat.android.image.ImageManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.ChatMessage;
 import com.agmbat.meetyou.data.RecentChat;

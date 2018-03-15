@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.agmbat.meetyou.tab.MsgFragment;
+import com.agmbat.meetyou.tab.msg.MsgFragment;
 import com.agmbat.meetyou.tab.TabFragment;
 import com.agmbat.tab.TabManager;
 

@@ -1,8 +1,9 @@
-package com.agmbat.meetyou.tab;
+package com.agmbat.meetyou.tab.msg;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.ChatMessage;
 import com.agmbat.meetyou.data.ContactInfo;
 import com.agmbat.meetyou.data.RecentChat;
+import com.agmbat.meetyou.tab.MeetDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +46,13 @@ public class MsgFragment extends Fragment implements AdapterView.OnItemClickList
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated");
-        setupViews();
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        mRecentChatList = (ListView) view.findViewById(R.id.recent_chat_list);
+        mRecentChatList.setOnItemClickListener(this);
+        mResultView = (TextView) view.findViewById(R.id.result);
+        new InitRecentChatTask().execute();
     }
 
     @Override
@@ -62,14 +67,6 @@ public class MsgFragment extends Fragment implements AdapterView.OnItemClickList
         super.onDestroy();
     }
 
-    private RecentChat queryRecentChatFor(ContactInfo contactInfo) {
-        RecentChat recentChat = new RecentChat();
-        recentChat.setContact(contactInfo);
-        ChatMessage lastChatMessage = new ChatMessage();
-        recentChat.setUnreadCount(5);
-        recentChat.setLastChatMessage(lastChatMessage);
-        return recentChat;
-    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -77,6 +74,15 @@ public class MsgFragment extends Fragment implements AdapterView.OnItemClickList
 //        Intent intent = new Intent(getActivity(), ChatActivity.class);
 //        intent.putExtra(Constants.EXTRA_PARTICIPANT, recentChat.getContact());
 //        startActivityForResult(intent, REQUEST_CODE_CHAT);
+    }
+
+    private RecentChat queryRecentChatFor(ContactInfo contactInfo) {
+        RecentChat recentChat = new RecentChat();
+        recentChat.setContact(contactInfo);
+        ChatMessage lastChatMessage = new ChatMessage();
+        recentChat.setUnreadCount(5);
+        recentChat.setLastChatMessage(lastChatMessage);
+        return recentChat;
     }
 
     private void setState(int state) {
@@ -96,16 +102,6 @@ public class MsgFragment extends Fragment implements AdapterView.OnItemClickList
         }
     }
 
-    private void setupViews() {
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        mRecentChatList = (ListView) findViewById(R.id.recent_chat_list);
-        mRecentChatList.setOnItemClickListener(this);
-        mResultView = (TextView) findViewById(R.id.result);
-    }
-
-    private View findViewById(int id) {
-        return getView().findViewById(id);
-    }
 
     private void fillListView(List<RecentChat> recentChatList) {
         mRecentChatAdapter = new RecentChatAdapter(getActivity(), recentChatList);
@@ -124,8 +120,7 @@ public class MsgFragment extends Fragment implements AdapterView.OnItemClickList
 
         @Override
         protected List<RecentChat> doInBackground(Void... params) {
-            List<RecentChat> recentChatList = new ArrayList<RecentChat>();
-            return recentChatList;
+            return MeetDatabase.getInstance().getRecentChatList();
         }
 
         @Override
@@ -140,61 +135,4 @@ public class MsgFragment extends Fragment implements AdapterView.OnItemClickList
 
     }
 
-    public static class RecentChatAdapter extends ArrayAdapter<RecentChat> {
-
-        public RecentChatAdapter(Context context, List<RecentChat> contactList) {
-            super(context, 0, contactList);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (null == convertView) {
-                convertView = new RecentMsgView(getContext());
-            }
-            RecentChat recentChat = getItem(position);
-            RecentMsgView view = (RecentMsgView) convertView;
-            view.update(recentChat);
-            return convertView;
-        }
-
-        public void updateRecentChat(RecentChat recentChat) {
-            int count = getCount();
-            for (int i = 0; i < count; i++) {
-                RecentChat current = getItem(i);
-                if (current.getContact().equals(recentChat.getContact())) {
-                    current.setContact(recentChat.getContact());
-                    current.setLastChatMessage(recentChat.getLastChatMessage());
-                    current.setUnreadCount(recentChat.getUnreadCount());
-                    break;
-                }
-            }
-            notifyDataSetChanged();
-            notifyDataSetInvalidated();
-        }
-
-        public boolean isRecentChatExist(RecentChat recentChat) {
-            boolean exist = false;
-            int count = getCount();
-            for (int i = 0; i < count; i++) {
-                RecentChat current = getItem(i);
-                if (current.getContact().equals(recentChat.getContact())) {
-                    exist = true;
-                    break;
-                }
-            }
-            return exist;
-        }
-
-        public void addRecentChat(RecentChat recentChat) {
-            add(recentChat);
-            notifyDataSetChanged();
-        }
-
-        public void sort() {
-            super.sort(new RecentChat.RecentChatComparator());
-            notifyDataSetChanged();
-        }
-
-
-    }
 }
