@@ -5,6 +5,8 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.agmbat.meetyou.tab.MsgFragment;
+import com.agmbat.meetyou.tab.TabFragment;
 import com.agmbat.tab.TabManager;
 
 /**
@@ -31,7 +33,7 @@ public class MainTabActivity extends FragmentActivity {
     private void setupViews() {
         TabManager tabManager = new TabManager(getSupportFragmentManager(), findViewById(android.R.id.content));
         View tabMsg = createTabItemView(R.string.tab_msg, 0);
-        tabManager.addTab(tabMsg, "tabMsg", new TabFragment());
+        tabManager.addTab(tabMsg, "tabMsg", new MsgFragment());
         View tabFriend = createTabItemView(R.string.tab_friend, 0);
         tabManager.addTab(tabFriend, "tabFriend", new TabFragment());
         View tabFound = createTabItemView(R.string.tab_found, 0);

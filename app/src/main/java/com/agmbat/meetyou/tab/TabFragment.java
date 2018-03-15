@@ -1,4 +1,4 @@
-package com.agmbat.meetyou;
+package com.agmbat.meetyou.tab;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

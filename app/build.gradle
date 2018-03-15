@@ -21,11 +21,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile "com.disbts:commonkit:3.5.1@aar"
+    compile "com.disbts:universal-image-loader:1.9.7"
     compile "com.disbts:widget:3.5.1@aar"
     compile "com.disbts:jutils:3.4.10"
-    compile 'com.disbts:tab:3.5.1@aar'
+    compile 'com.disbts:tab:3.5.2@aar'
 }

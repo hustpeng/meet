@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dip"
+    android:minHeight="60dip">
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="46.67dip"
+        android:layout_height="46.67dip"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="6dip"
+        android:background="@drawable/bg_chat_avatar"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_default_avatar" />
+
+    <LinearLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="10dip"
+        android:layout_toRightOf="@+id/avatar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="Name"
+                    android:textColor="#ff1c1c1c"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/unread_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginRight="5dip"
+                    android:background="@drawable/bg_new_chat"
+                    android:gravity="center"
+                    android:text="2"
+                    android:textColor="#ffffffff" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/last_msg_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:text="2012-2-3"
+            android:textColor="#ff595959" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/last_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/title_layout"
+        android:layout_below="@id/title_layout"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="#ff595959" />
+
+</RelativeLayout>
