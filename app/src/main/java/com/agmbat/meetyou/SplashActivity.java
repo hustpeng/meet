@@ -10,8 +10,10 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
+import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.permissions.PermissionArrayAction;
 import com.agmbat.android.permissions.Permissions;
+import com.nostra13.universalimageloader.core.download.Scheme;
 
 /**
  * 闪屏页面
@@ -32,7 +34,10 @@ public class SplashActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ImageView imageView = new ImageView(this);
-        imageView.setImageResource(R.drawable.ic_launcher_background);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        String uri = Scheme.wrapUri("drawable", String.valueOf(R.drawable.splash));
+        ImageManager.displayImage(uri, imageView);
+        imageView.setImageResource(R.drawable.splash);
         setContentView(imageView);
         Permissions.request(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
