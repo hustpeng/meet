@@ -30,4 +30,31 @@ public class MeetDatabase {
         }
         return list;
     }
+
+    public List<ContactInfo> queryFriends(String mLoginUserName) {
+        List<ContactInfo> list = new ArrayList<ContactInfo>();
+        for (int i = 0; i < 10; i++) {
+            ContactInfo contactInfo = new ContactInfo();
+            list.add(contactInfo);
+        }
+        return list;
+    }
+
+    public List<ContactInfo> queryRecentContacts(String mLoginUserName) {
+        List<ContactInfo> list = new ArrayList<ContactInfo>();
+        for (int i = 0; i < 10; i++) {
+            ContactInfo contactInfo = new ContactInfo();
+            list.add(contactInfo);
+        }
+        return list;
+    }
+
+    public List<ContactInfo> queryAllBlockUsers(String mLoginUserName) {
+        List<ContactInfo> list = new ArrayList<ContactInfo>();
+        for (int i = 0; i < 10; i++) {
+            ContactInfo contactInfo = new ContactInfo();
+            list.add(contactInfo);
+        }
+        return list;
+    }
 }

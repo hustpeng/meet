@@ -8,4 +8,8 @@ public class ContactInfo {
     public String getDisplayName() {
         return "联系人";
     }
+
+    public String getPersonalMsg() {
+        return "getPersonalMsg";
+    }
 }

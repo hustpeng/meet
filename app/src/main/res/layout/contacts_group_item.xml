@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="48dip"
+    android:background="#ffff0000"
+    android:minHeight="48dip">
+
+    <ImageView
+        android:id="@+id/group_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="6dip"
+        android:layout_marginRight="6dip"
+        android:src="@drawable/group_collapsed" />
+
+    <TextView
+        android:id="@+id/group_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="Group Name"
+        android:textColor="#ff1c1c1c"
+        android:textSize="14sp" />
+
+</LinearLayout>

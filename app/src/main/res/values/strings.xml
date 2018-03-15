@@ -13,4 +13,7 @@
     <string name="tab_found">发现</string>
     <string name="tab_me">我的</string>
 
+    <string name="contacts_recently">最近</string>
+    <string name="contacts_hotlist">好友</string>
+    <string name="contacts_block">黑名单</string>
 </resources>
