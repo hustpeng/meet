@@ -34,13 +34,13 @@ public class MainTabActivity extends FragmentActivity {
 
     private void setupViews() {
         TabManager tabManager = new TabManager(getSupportFragmentManager(), findViewById(android.R.id.content));
-        View tabMsg = createTabItemView(R.string.tab_msg, 0);
+        View tabMsg = createTabItemView(R.string.tab_msg, R.drawable.tab_msg);
         tabManager.addTab(tabMsg, "tabMsg", new MsgFragment());
-        View tabFriend = createTabItemView(R.string.tab_friend, 0);
-        tabManager.addTab(tabFriend, "tabFriend", new ContactsFragment());
-        View tabFound = createTabItemView(R.string.tab_found, 0);
+        View tabContacts = createTabItemView(R.string.tab_friend, R.drawable.tab_contacts);
+        tabManager.addTab(tabContacts, "tabContacts", new ContactsFragment());
+        View tabFound = createTabItemView(R.string.tab_found, R.drawable.tab_found);
         tabManager.addTab(tabFound, "tabFound", new FoundFragment());
-        View tabMe = createTabItemView(R.string.tab_me, 0);
+        View tabMe = createTabItemView(R.string.tab_me, R.drawable.tab_me);
         tabManager.addTab(tabMe, "tabMe", new MeFragment());
         tabManager.setCurrentTab(TAB_INDEX_MSG);
     }

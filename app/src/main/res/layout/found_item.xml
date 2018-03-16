@@ -21,7 +21,7 @@
             android:textSize="13sp" />
 
         <TextView
-            android:id="@+id/sub_title"
+            android:id="@+id/view_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
@@ -36,45 +36,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/title22"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="附近的人"
-            android:textColor="#ff595959"
-            android:textSize="13sp" />
+        <include layout="@layout/found_item_user" />
 
-        <TextView
-            android:id="@+id/sub_title33"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dip"
-            android:ellipsize="end"
-            android:text="查看更多"
-            android:textColor="#ff595959"
-            android:textSize="13sp" />
+        <include layout="@layout/found_item_user" />
 
-        <TextView
-            android:id="@+id/sub_title1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dip"
-            android:ellipsize="end"
-            android:text="查看更多"
-            android:textColor="#ff595959"
-            android:textSize="13sp" />
+        <include layout="@layout/found_item_user" />
 
-        <TextView
-            android:id="@+id/sub_title2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dip"
-            android:ellipsize="end"
-            android:text="查看更多"
-            android:textColor="#ff595959"
-            android:textSize="13sp" />
+        <include layout="@layout/found_item_user" />
+
     </LinearLayout>
 
 
