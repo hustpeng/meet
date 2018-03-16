@@ -33,6 +33,14 @@ public class FoundFragment extends Fragment {
         dataList.add("2");
         dataList.add("3");
         dataList.add("4");
+        dataList.add("4");
+        dataList.add("4");
+        dataList.add("4");
+        dataList.add("4");
+        dataList.add("4");
+        dataList.add("4");
+        dataList.add("4");
+        dataList.add("4");
         dataList.add("5");
         FoundAdapter adapter = new FoundAdapter(getActivity(), dataList);
         mListView.setAdapter(adapter);

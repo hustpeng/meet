@@ -19,9 +19,9 @@ public class FoundAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (null == convertView) {
-            convertView = new RecentMsgView(getContext());
+            convertView = new FoundView(getContext());
         }
-        RecentMsgView view = (RecentMsgView) convertView;
+        FoundView view = (FoundView) convertView;
         return convertView;
     }
 
