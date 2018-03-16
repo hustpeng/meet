@@ -6,6 +6,9 @@ import com.agmbat.meetyou.data.RecentChat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 数据库管理
+ */
 public class MeetDatabase {
 
     private static final MeetDatabase INSTANCE = new MeetDatabase();
