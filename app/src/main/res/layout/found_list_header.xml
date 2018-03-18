@@ -1,64 +1,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp">
+
+    <include layout="@layout/found_list_header_item" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dip"
-        android:minHeight="80dip"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="在线会员"
-            android:textColor="#ff1c1c1c"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/name2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="附近的人"
-            android:textColor="#ff1c1c1c"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/name3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="找恋人"
-            android:textColor="#ff1c1c1c"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/name4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="找玩伴"
-            android:textColor="#ff1c1c1c"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dip"
-        android:minHeight="80dip"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <TextView
@@ -66,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
+            android:drawableTop="@drawable/ic_found_header_item"
             android:gravity="center_horizontal"
             android:singleLine="true"
             android:text="找同行"
@@ -77,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
+            android:drawableTop="@drawable/ic_found_header_item"
             android:gravity="center_horizontal"
             android:singleLine="true"
             android:text="找老乡"
@@ -88,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
+            android:drawableTop="@drawable/ic_found_header_item"
             android:gravity="center_horizontal"
             android:singleLine="true"
             android:text="找群组"
@@ -99,6 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
+            android:drawableTop="@drawable/ic_found_header_item"
             android:gravity="center_horizontal"
             android:singleLine="true"
             android:text="创建群组"
