@@ -140,14 +140,7 @@ public class MsgFragment extends Fragment implements AdapterView.OnItemClickList
 //        startActivityForResult(intent, REQUEST_CODE_CHAT);
     }
 
-    private RecentChat queryRecentChatFor(ContactInfo contactInfo) {
-        RecentChat recentChat = new RecentChat();
-        recentChat.setContact(contactInfo);
-        ChatMessage lastChatMessage = new ChatMessage();
-        recentChat.setUnreadCount(5);
-        recentChat.setLastChatMessage(lastChatMessage);
-        return recentChat;
-    }
+
 
     private void setState(int state) {
         if (state == STATE_LOADING) {

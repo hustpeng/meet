@@ -1,5 +1,6 @@
 package com.agmbat.meetyou.tab;
 
+import com.agmbat.meetyou.data.ChatMessage;
 import com.agmbat.meetyou.data.ContactInfo;
 import com.agmbat.meetyou.data.RecentChat;
 
@@ -25,13 +26,27 @@ public class MeetDatabase {
      */
     public List<RecentChat> getRecentChatList() {
         List<RecentChat> list = new ArrayList<RecentChat>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 50; i++) {
             RecentChat chat = new RecentChat();
             ContactInfo contactInfo = new ContactInfo();
+            contactInfo.setNickname("联系" + i);
             chat.setContact(contactInfo);
+            ChatMessage message = new ChatMessage();
+            message.setContent("Content:" + i);
+            message.setTimestamp(System.currentTimeMillis());
+            chat.setLastChatMessage(message);
             list.add(chat);
         }
         return list;
+    }
+
+    private RecentChat queryRecentChatFor(ContactInfo contactInfo) {
+        RecentChat recentChat = new RecentChat();
+        recentChat.setContact(contactInfo);
+        ChatMessage lastChatMessage = new ChatMessage();
+        recentChat.setUnreadCount(5);
+        recentChat.setLastChatMessage(lastChatMessage);
+        return recentChat;
     }
 
     public List<ContactInfo> queryFriends(String mLoginUserName) {

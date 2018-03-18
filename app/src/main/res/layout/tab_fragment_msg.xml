@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:cacheColorHint="@android:color/transparent"
-        android:divider="#ff000000"
+        android:divider="#ffe9e9e9"
         android:dividerHeight="1dip" />
 
     <ProgressBar

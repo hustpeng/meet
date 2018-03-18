@@ -4,11 +4,24 @@ package com.agmbat.meetyou.data;
  * 聊天消息
  */
 public class ChatMessage {
-    public long getTimestamp() {
-        return 0;
+
+    private String mContent;
+    private long mTimestamp;
+
+    public void setTimestamp(long timestamp) {
+        mTimestamp = timestamp;
     }
 
-    public String getShowLastText() {
-        return "2018";
+    public long getTimestamp() {
+        return mTimestamp;
+    }
+
+    public void setContent(String content) {
+        mContent = content;
+    }
+
+
+    public String getContent() {
+        return mContent;
     }
 }
