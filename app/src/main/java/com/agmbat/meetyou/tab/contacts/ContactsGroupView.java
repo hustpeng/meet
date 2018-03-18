@@ -26,7 +26,7 @@ public class ContactsGroupView extends LinearLayout {
         } else {
             mGroupIndicatorView.setImageResource(R.drawable.group_collapsed);
         }
-        mGroupNameView.setText(groupHolder.getDisplayGroup());
+        mGroupNameView.setText(groupHolder.getDisplayGroupName());
     }
 
 }

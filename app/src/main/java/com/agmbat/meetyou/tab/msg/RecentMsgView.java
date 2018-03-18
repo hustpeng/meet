@@ -13,8 +13,6 @@ import com.agmbat.meetyou.data.RecentChat;
 import com.agmbat.time.TimeUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.CircleBitmapDisplayer;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
-import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 
 public class RecentMsgView extends LinearLayout {
 
@@ -35,7 +33,7 @@ public class RecentMsgView extends LinearLayout {
     }
 
     public void update(RecentChat recentChat) {
-        mNameView.setText(recentChat.getContact().getDisplayName());
+        mNameView.setText(recentChat.getContact().getNickName());
         ChatMessage msg = recentChat.getLastChatMessage();
         if (msg != null) {
             mMessageView.setVisibility(View.VISIBLE);

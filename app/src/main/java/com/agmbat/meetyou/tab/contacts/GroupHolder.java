@@ -15,10 +15,6 @@ import java.util.List;
  */
 public class GroupHolder {
 
-    public static final String GROUP_RECENTLY = "Recently";
-    public static final String GROUP_FRIENDS = "Hotlist";
-    public static final String GROUP_BLOCK = "Block";
-
     private final String mGroupName;
     private boolean mIsExpanded;
     private List<ContactInfo> mContacts = new ArrayList<ContactInfo>();
@@ -87,21 +83,8 @@ public class GroupHolder {
         mContacts.clear();
     }
 
-    public String getDisplayGroup() {
-        return String.format("%s(%d/%d)", getDisplayGroupName(), 1, getContactCount());
+    public String getDisplayGroupName() {
+        return String.format("%s(%d)", mGroupName, getContactCount());
     }
-
-    private String getDisplayGroupName() {
-        Context context = AppResources.getAppContext();
-        if (GROUP_RECENTLY.equals(mGroupName)) {
-            return context.getString(R.string.contacts_recently);
-        } else if (GROUP_FRIENDS.equals(mGroupName)) {
-            return context.getString(R.string.contacts_hotlist);
-        } else if (GROUP_BLOCK.equals(mGroupName)) {
-            return context.getString(R.string.contacts_block);
-        }
-        return "";
-    }
-
 
 }

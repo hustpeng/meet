@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
@@ -22,7 +21,6 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.ContactInfo;
 import com.agmbat.meetyou.tab.MeetDatabase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ContactsFragment extends Fragment implements OnGroupClickListener,
@@ -95,31 +93,6 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     private void updateFriendList() {
     }
 
-    private List<GroupHolder> initGroupList() {
-        MeetDatabase dataManager = MeetDatabase.getInstance();
-        List<GroupHolder> groups = new ArrayList<GroupHolder>();
-
-        GroupHolder friendGroup = new GroupHolder(GroupHolder.GROUP_FRIENDS);
-        List<ContactInfo> friends = dataManager.queryFriends(mLoginUserName);
-        friendGroup.setContactList(friends);
-
-        GroupHolder recentlyGroup = new GroupHolder(GroupHolder.GROUP_RECENTLY);
-        List<ContactInfo> recentContacts = dataManager.queryRecentContacts(mLoginUserName);
-        recentlyGroup.setContactList(recentContacts);
-
-        GroupHolder blockGroup = new GroupHolder(GroupHolder.GROUP_BLOCK);
-        List<ContactInfo> blockContacts = dataManager.queryAllBlockUsers(mLoginUserName);
-        blockGroup.setContactList(blockContacts);
-
-//        friendGroup.sort();
-        // recentlyGroup.sort();
-//        blockGroup.sort();
-
-        groups.add(friendGroup);
-        groups.add(recentlyGroup);
-        groups.add(blockGroup);
-        return groups;
-    }
 
     private void fillData(List<GroupHolder> groups) {
         mFriendsAdapter = new ContactsAdapter(getActivity(), groups);
@@ -238,7 +211,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
 
         @Override
         protected List<GroupHolder> doInBackground(Void... params) {
-            return initGroupList();
+            return MeetDatabase.getInstance().getGroupList(mLoginUserName);
         }
 
         @Override

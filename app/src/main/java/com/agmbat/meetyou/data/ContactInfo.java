@@ -11,7 +11,7 @@ public class ContactInfo {
         mNickname = nickname;
     }
 
-    public String getDisplayName() {
+    public String getNickName() {
         return mNickname;
     }
 
