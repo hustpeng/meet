@@ -13,7 +13,6 @@
         android:drawableTop="@drawable/ic_found_header_item"
         android:gravity="center_horizontal"
         android:singleLine="true"
-        android:text="在线会员"
         android:textColor="#ff1c1c1c"
         android:textSize="16sp" />
 
@@ -25,7 +24,6 @@
         android:drawableTop="@drawable/ic_found_header_item"
         android:gravity="center_horizontal"
         android:singleLine="true"
-        android:text="附近的人"
         android:textColor="#ff1c1c1c"
         android:textSize="16sp" />
 
@@ -37,7 +35,6 @@
         android:drawableTop="@drawable/ic_found_header_item"
         android:gravity="center_horizontal"
         android:singleLine="true"
-        android:text="找恋人"
         android:textColor="#ff1c1c1c"
         android:textSize="16sp" />
 
@@ -49,7 +46,6 @@
         android:drawableTop="@drawable/ic_found_header_item"
         android:gravity="center_horizontal"
         android:singleLine="true"
-        android:text="找玩伴"
         android:textColor="#ff1c1c1c"
         android:textSize="16sp" />
 

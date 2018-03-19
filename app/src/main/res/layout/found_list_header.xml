@@ -5,63 +5,12 @@
     android:paddingBottom="5dp"
     android:paddingTop="5dp">
 
-    <include layout="@layout/found_list_header_item" />
+    <include
+        android:id="@+id/header1"
+        layout="@layout/found_list_header_item" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dip"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/name1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:drawableTop="@drawable/ic_found_header_item"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="找同行"
-            android:textColor="#ff1c1c1c"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/name12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:drawableTop="@drawable/ic_found_header_item"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="找老乡"
-            android:textColor="#ff1c1c1c"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/name13"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:drawableTop="@drawable/ic_found_header_item"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="找群组"
-            android:textColor="#ff1c1c1c"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/name14"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:drawableTop="@drawable/ic_found_header_item"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="创建群组"
-            android:textColor="#ff1c1c1c"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
+    <include
+        android:id="@+id/header2"
+        layout="@layout/found_list_header_item" />
 
 </LinearLayout>

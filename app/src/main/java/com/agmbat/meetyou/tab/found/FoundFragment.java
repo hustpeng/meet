@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.agmbat.meetyou.R;
 
@@ -27,7 +28,20 @@ public class FoundFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mListView = (ListView) view.findViewById(R.id.list);
-        mListView.addHeaderView(View.inflate(getActivity(), R.layout.found_list_header, null));
+        HeaderCard headerCard = new HeaderCard(getActivity());
+        List<HeaderCard.HeaderItemInfo> list = new ArrayList<>();
+        list.add(new HeaderCard.HeaderItemInfo("在线会员"));
+        list.add(new HeaderCard.HeaderItemInfo("附近的人"));
+        list.add(new HeaderCard.HeaderItemInfo("找恋人"));
+        list.add(new HeaderCard.HeaderItemInfo("找玩伴"));
+
+        list.add(new HeaderCard.HeaderItemInfo("找同行"));
+        list.add(new HeaderCard.HeaderItemInfo("找老乡"));
+        list.add(new HeaderCard.HeaderItemInfo("找群组"));
+        list.add(new HeaderCard.HeaderItemInfo("创建群组"));
+        headerCard.setHeaderItemList(list);
+        mListView.addHeaderView(headerCard);
+
         List<String> dataList = new ArrayList<>();
         dataList.add("1");
         dataList.add("2");
