@@ -10,9 +10,9 @@ import com.agmbat.meetyou.tab.msg.RecentMsgView;
 
 import java.util.List;
 
-public class FoundAdapter extends ArrayAdapter<String> {
+public class FoundAdapter extends ArrayAdapter<FoundGroup> {
 
-    public FoundAdapter(Context context, List<String> contactList) {
+    public FoundAdapter(Context context, List<FoundGroup> contactList) {
         super(context, 0, contactList);
     }
 
@@ -22,8 +22,9 @@ public class FoundAdapter extends ArrayAdapter<String> {
             convertView = new FoundView(getContext());
         }
         FoundView view = (FoundView) convertView;
+        FoundGroup group = getItem(position);
+        view.update(group);
         return convertView;
     }
-
 
 }

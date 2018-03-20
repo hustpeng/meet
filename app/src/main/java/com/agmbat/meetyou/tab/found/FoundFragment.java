@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.data.ContactInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,20 +43,45 @@ public class FoundFragment extends Fragment {
         headerCard.setHeaderItemList(list);
         mListView.addHeaderView(headerCard);
 
-        List<String> dataList = new ArrayList<>();
-        dataList.add("1");
-        dataList.add("2");
-        dataList.add("3");
-        dataList.add("4");
-        dataList.add("4");
-        dataList.add("4");
-        dataList.add("4");
-        dataList.add("4");
-        dataList.add("4");
-        dataList.add("4");
-        dataList.add("4");
-        dataList.add("4");
-        dataList.add("5");
+        List<ContactInfo> userList = new ArrayList<>();
+        ContactInfo contactInfo = new ContactInfo();
+        contactInfo.setNickname("布丁");
+        userList.add(contactInfo);
+        userList.add(contactInfo);
+        userList.add(contactInfo);
+        userList.add(contactInfo);
+
+        List<FoundGroup> dataList = new ArrayList<>();
+        FoundGroup group = new FoundGroup();
+        group.setTitle("附近的人");
+        group.setUserList(userList);
+        dataList.add(group);
+
+        group = new FoundGroup();
+        group.setTitle("找恋人");
+        group.setUserList(userList);
+        dataList.add(group);
+
+        group = new FoundGroup();
+        group.setTitle("找玩伴");
+        group.setUserList(userList);
+        dataList.add(group);
+
+        group = new FoundGroup();
+        group.setTitle("找同行");
+        group.setUserList(userList);
+        dataList.add(group);
+
+        group = new FoundGroup();
+        group.setTitle("找老乡");
+        group.setUserList(userList);
+        dataList.add(group);
+
+        group = new FoundGroup();
+        group.setTitle("找群组");
+        group.setUserList(userList);
+        dataList.add(group);
+
         FoundAdapter adapter = new FoundAdapter(getActivity(), dataList);
         mListView.setAdapter(adapter);
     }

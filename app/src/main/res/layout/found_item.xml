@@ -2,7 +2,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="100dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,13 +38,40 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <include layout="@layout/found_item_user" />
+        <com.agmbat.meetyou.tab.found.FoundUserItemView
+            android:id="@+id/user1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        <include layout="@layout/found_item_user" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
 
-        <include layout="@layout/found_item_user" />
+        <com.agmbat.meetyou.tab.found.FoundUserItemView
+            android:id="@+id/user2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        <include layout="@layout/found_item_user" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.agmbat.meetyou.tab.found.FoundUserItemView
+            android:id="@+id/user3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.agmbat.meetyou.tab.found.FoundUserItemView
+            android:id="@+id/user4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
