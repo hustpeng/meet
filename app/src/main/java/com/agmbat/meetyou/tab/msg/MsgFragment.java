@@ -1,5 +1,6 @@
 package com.agmbat.meetyou.tab.msg;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.agmbat.android.AppResources;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.data.ChatMessage;
 import com.agmbat.meetyou.data.ContactInfo;
 import com.agmbat.meetyou.data.RecentChat;
@@ -131,16 +133,12 @@ public class MsgFragment extends Fragment implements AdapterView.OnItemClickList
         super.onDestroy();
     }
 
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         RecentChat recentChat = mRecentChatAdapter.getItem(position);
-//        Intent intent = new Intent(getActivity(), ChatActivity.class);
-//        intent.putExtra(Constants.EXTRA_PARTICIPANT, recentChat.getContact());
-//        startActivityForResult(intent, REQUEST_CODE_CHAT);
+        ContactInfo contactInfo = recentChat.getContact();
+        ChatActivity.openChat(getActivity(), contactInfo);
     }
-
-
 
     private void setState(int state) {
         if (state == STATE_LOADING) {

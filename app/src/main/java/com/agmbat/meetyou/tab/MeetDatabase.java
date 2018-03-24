@@ -29,7 +29,7 @@ public class MeetDatabase {
         List<RecentChat> list = new ArrayList<RecentChat>();
         for (int i = 0; i < 50; i++) {
             RecentChat chat = new RecentChat();
-            ContactInfo contactInfo = new ContactInfo();
+            ContactInfo contactInfo = new ContactInfo("");
             contactInfo.setNickname("联系" + i);
             chat.setContact(contactInfo);
             ChatMessage message = new ChatMessage();
@@ -83,7 +83,7 @@ public class MeetDatabase {
     public List<ContactInfo> queryFriends(String mLoginUserName) {
         List<ContactInfo> list = new ArrayList<ContactInfo>();
         for (int i = 0; i < 10; i++) {
-            ContactInfo contactInfo = new ContactInfo();
+            ContactInfo contactInfo = new ContactInfo("");
             contactInfo.setNickname("Friends" + i);
             list.add(contactInfo);
         }
@@ -93,7 +93,7 @@ public class MeetDatabase {
     public List<ContactInfo> queryRecentContacts(String mLoginUserName) {
         List<ContactInfo> list = new ArrayList<ContactInfo>();
         for (int i = 0; i < 10; i++) {
-            ContactInfo contactInfo = new ContactInfo();
+            ContactInfo contactInfo = new ContactInfo("");
             contactInfo.setNickname("Friends" + i);
             list.add(contactInfo);
         }
@@ -103,7 +103,7 @@ public class MeetDatabase {
     public List<ContactInfo> queryAllBlockUsers(String mLoginUserName) {
         List<ContactInfo> list = new ArrayList<ContactInfo>();
         for (int i = 0; i < 10; i++) {
-            ContactInfo contactInfo = new ContactInfo();
+            ContactInfo contactInfo = new ContactInfo("");
             contactInfo.setNickname("Friends" + i);
             list.add(contactInfo);
         }

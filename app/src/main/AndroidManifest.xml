@@ -27,6 +27,7 @@
 
         <activity android:name="com.agmbat.meetyou.LoginActivity"></activity>
         <activity android:name="com.agmbat.meetyou.MainTabActivity"></activity>
+        <activity android:name="com.agmbat.meetyou.chat.ChatActivity"></activity>
     </application>
 
 </manifest>
