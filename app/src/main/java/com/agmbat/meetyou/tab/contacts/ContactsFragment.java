@@ -19,7 +19,7 @@ import android.widget.ProgressBar;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.tab.MeetDatabase;
+import com.agmbat.meetyou.db.MeetDatabase;
 
 import java.util.List;
 

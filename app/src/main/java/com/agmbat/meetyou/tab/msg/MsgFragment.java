@@ -1,6 +1,5 @@
 package com.agmbat.meetyou.tab.msg;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -20,7 +19,7 @@ import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.data.RecentChat;
-import com.agmbat.meetyou.tab.MeetDatabase;
+import com.agmbat.meetyou.db.MeetDatabase;
 import com.agmbat.swipemenulist.SwipeMenu;
 import com.agmbat.swipemenulist.SwipeMenuCreator;
 import com.agmbat.swipemenulist.SwipeMenuItem;

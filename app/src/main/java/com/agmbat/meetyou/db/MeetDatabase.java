@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.tab;
+package com.agmbat.meetyou.db;
 
 import com.agmbat.imsdk.data.ChatMessage;
 import com.agmbat.imsdk.data.ContactInfo;
@@ -107,6 +107,39 @@ public class MeetDatabase {
             contactInfo.setNickname("Friends" + i);
             list.add(contactInfo);
         }
+        return list;
+    }
+
+    /**
+     * 通过jid查找联系人
+     *
+     * @param jid
+     * @return
+     */
+    public ContactInfo findParticipant(String jid) {
+        ContactInfo contactInfo = new ContactInfo(jid);
+        contactInfo.setNickname("小小");
+        return contactInfo;
+    }
+
+    /**
+     * 获取聊天信息
+     *
+     * @param contactInfo
+     * @return
+     */
+    public List<ChatMessage> getMessage(ContactInfo contactInfo) {
+        List<ChatMessage> list = new ArrayList<>();
+        ChatMessage message = new ChatMessage();
+        list.add(message);
+        list.add(message);
+        list.add(message);
+        list.add(message);
+        list.add(message);
+        list.add(message);
+        list.add(message);
+        list.add(message);
+        list.add(message);
         return list;
     }
 }
