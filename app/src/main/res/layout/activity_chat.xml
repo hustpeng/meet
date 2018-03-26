@@ -1,0 +1,70 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff2f0eb"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#ff232325"
+        android:gravity="center_vertical"
+        android:paddingLeft="6dip">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="40dp"
+            android:layout_height="22dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_title_back" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1.0"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="#ffffffff"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/btn_profile"
+            android:layout_width="40dip"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:scaleType="center"
+            android:src="@drawable/ic_chat_user" />
+
+    </LinearLayout>
+
+    <com.agmbat.pulltorefresh.view.PullToRefreshListView
+        android:id="@+id/message_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="true"
+        android:focusable="true"
+        android:listSelector="@android:color/transparent"
+        android:padding="4px"
+        android:smoothScrollbar="false"
+        android:stackFromBottom="true"
+        android:transcriptMode="disabled" />
+
+    <!-- android:transcriptMode="alwaysScroll" -->
+
+    <com.agmbat.imsdk.view.InputView
+        android:id="@+id/chating_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:id="@+id/panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

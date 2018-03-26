@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
-import com.agmbat.meetyou.data.ContactInfo;
+import com.agmbat.imsdk.data.ContactInfo;
 
 import java.util.List;
 

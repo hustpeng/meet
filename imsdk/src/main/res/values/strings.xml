@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">imsdk</string>
+    <string name="chatfooter_cancel_rcd">Move up to cancel</string>
+    <string name="chatfooter_cancel_rcd_release">Release to cancel</string>
+    <string name="chatfooter_too_short">Message too short</string>
+
+
+    <!-- message for contact status -->
+    <string name="contact_status_msg_online">在线</string>
+    <string name="contact_status_msg_free_to_chat">待聊</string>
+    <string name="contact_status_msg_away">离开</string>
+    <string name="contact_status_msg_dnd">请勿打扰</string>
+    <string name="contact_status_msg_offline">离线</string>
+    <string name="contact_status_msg_xa">不可用</string>
+
+    <string name="chat_footer_switch_mode_btn">Switch between Hold to Talk and keyboard</string>
+    <string name="chatfooter_presstorcd">Hold to Talk</string>
+
+
+    <string name="chat_footer_smiley_btn">Sticker</string>
+    <string name="chat_footer_app_btn">More</string>
+    <string name="chatting_send">Send</string>
+</resources>

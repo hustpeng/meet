@@ -1,7 +1,7 @@
 package com.agmbat.meetyou.tab;
 
-import com.agmbat.meetyou.data.ChatMessage;
-import com.agmbat.meetyou.data.ContactInfo;
+import com.agmbat.imsdk.data.ChatMessage;
+import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.data.RecentChat;
 import com.agmbat.meetyou.tab.contacts.GroupHolder;
 

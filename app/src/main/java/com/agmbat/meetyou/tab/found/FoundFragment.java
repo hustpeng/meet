@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.data.ContactInfo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,8 @@
 package com.agmbat.meetyou.data;
 
+import com.agmbat.imsdk.data.ChatMessage;
+import com.agmbat.imsdk.data.ContactInfo;
+
 import java.util.Comparator;
 
 /**

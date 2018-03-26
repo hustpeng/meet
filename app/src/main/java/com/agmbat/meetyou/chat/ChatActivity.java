@@ -3,8 +3,11 @@ package com.agmbat.meetyou.chat;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 
-import com.agmbat.meetyou.data.ContactInfo;
+import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.meetyou.R;
 
 
 /***
@@ -21,5 +24,11 @@ public class ChatActivity extends Activity {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(KEY_CONTACT, contactInfo.getBareJid());
         context.startActivity(intent);
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat);
     }
 }

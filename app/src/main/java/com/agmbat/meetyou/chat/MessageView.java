@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.agmbat.meetyou.data.ChatMessage;
+import com.agmbat.imsdk.data.ChatMessage;
 
 
 public class MessageView extends FrameLayout {

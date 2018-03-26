@@ -1,7 +1,7 @@
 package com.agmbat.meetyou.tab.found;
 
 
-import com.agmbat.meetyou.data.ContactInfo;
+import com.agmbat.imsdk.data.ContactInfo;
 
 import java.util.List;
 

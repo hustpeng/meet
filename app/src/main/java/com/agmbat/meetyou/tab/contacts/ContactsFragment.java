@@ -16,9 +16,9 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
 
+import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.data.ContactInfo;
 import com.agmbat.meetyou.tab.MeetDatabase;
 
 import java.util.List;

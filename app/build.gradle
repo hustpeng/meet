@@ -27,4 +27,6 @@ dependencies {
     compile "com.disbts:jhttp:3.4.10"
     compile 'com.disbts:tab:3.5.2@aar'
     compile 'com.disbts:swipemenulist:3.5.2@aar'
+    compile "com.disbts:pulltorefresh:3.5.2@aar"
+    compile project(':imsdk')
 }

@@ -5,8 +5,8 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 
+import com.agmbat.imsdk.data.body.AudioBody;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.data.body.AudioBody;
 
 
 public class FromView extends ItemView {

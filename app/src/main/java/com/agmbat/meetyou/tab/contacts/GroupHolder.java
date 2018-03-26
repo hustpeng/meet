@@ -3,8 +3,8 @@ package com.agmbat.meetyou.tab.contacts;
 import android.content.Context;
 
 import com.agmbat.android.AppResources;
+import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.data.ContactInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;

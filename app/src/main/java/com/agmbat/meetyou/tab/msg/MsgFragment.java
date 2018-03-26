@@ -15,11 +15,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.agmbat.android.AppResources;
+import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
-import com.agmbat.meetyou.data.ChatMessage;
-import com.agmbat.meetyou.data.ContactInfo;
 import com.agmbat.meetyou.data.RecentChat;
 import com.agmbat.meetyou.tab.MeetDatabase;
 import com.agmbat.swipemenulist.SwipeMenu;

@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 
-import com.agmbat.meetyou.data.ChatMessage;
+import com.agmbat.imsdk.data.ChatMessage;
 
 import java.util.List;
 
