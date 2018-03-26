@@ -8,8 +8,9 @@
     <string name="loginby_input_pass_hint">密码</string>
     <string name="loginby_encounter_problems">忘记密码?</string>
 
+    <!-- tab name -->
     <string name="tab_msg">聊天</string>
-    <string name="tab_friend">好友</string>
+    <string name="tab_contacts">好友</string>
     <string name="tab_found">发现</string>
     <string name="tab_me">我的</string>
 

@@ -36,7 +36,7 @@ public class MainTabActivity extends FragmentActivity {
         TabManager tabManager = new TabManager(getSupportFragmentManager(), findViewById(android.R.id.content));
         View tabMsg = createTabItemView(R.string.tab_msg, R.drawable.tab_msg);
         tabManager.addTab(tabMsg, "tabMsg", new MsgFragment());
-        View tabContacts = createTabItemView(R.string.tab_friend, R.drawable.tab_contacts);
+        View tabContacts = createTabItemView(R.string.tab_contacts, R.drawable.tab_contacts);
         tabManager.addTab(tabContacts, "tabContacts", new ContactsFragment());
         View tabFound = createTabItemView(R.string.tab_found, R.drawable.tab_found);
         tabManager.addTab(tabFound, "tabFound", new FoundFragment());
