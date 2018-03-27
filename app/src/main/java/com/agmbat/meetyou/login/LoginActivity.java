@@ -1,4 +1,4 @@
-package com.agmbat.meetyou;
+package com.agmbat.meetyou.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,9 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.agmbat.meetyou.MainTabActivity;
+import com.agmbat.meetyou.R;
 
 /**
  * 登陆界面
@@ -47,7 +50,7 @@ public class LoginActivity extends FragmentActivity {
         findViewById(R.id.btn_signup).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
         });
 

@@ -17,7 +17,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.agmbat.meetyou.SplashActivity">
+        <activity
+            android:name="com.agmbat.meetyou.SplashActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,9 +28,22 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.agmbat.meetyou.LoginActivity"></activity>
-        <activity android:name="com.agmbat.meetyou.MainTabActivity"></activity>
-        <activity android:name="com.agmbat.meetyou.chat.ChatActivity"></activity>
+        <activity
+            android:name="com.agmbat.meetyou.login.LoginActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.login.RegisterActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.MainTabActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.chat.ChatActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
