@@ -4,6 +4,8 @@
     <!--  登录模块 -->
     <string name="signup">注册</string>
     <string name="login">登录</string>
+    <string name="countries_and_areas">国家和地区</string>
+    <string name="china">中国</string>
     <string name="regbymoile_reg_addr_hint">用户名</string>
     <string name="loginby_input_pass_hint">密码</string>
     <string name="loginby_encounter_problems">忘记密码?</string>

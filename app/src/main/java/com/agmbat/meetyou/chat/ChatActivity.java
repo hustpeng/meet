@@ -61,7 +61,6 @@ public class ChatActivity extends Activity {
         String jid = getIntent().getStringExtra(KEY_CONTACT);
         mParticipant = MeetDatabase.getInstance().findParticipant(jid);
         setupViews();
-
     }
 
     private void setupViews() {
