@@ -22,7 +22,7 @@ public class LoginActivity extends FragmentActivity {
                 finish();
             }
         });
-        findViewById(R.id.next_btn).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
