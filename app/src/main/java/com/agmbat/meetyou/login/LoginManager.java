@@ -5,12 +5,11 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.agmbat.android.task.AsyncTask;
+import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.android.utils.ToastUtil;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.agmbat.meetyou.api.Api;
 
 
 public class LoginManager {
@@ -55,15 +54,21 @@ public class LoginManager {
     /**
      * 获取验证码
      */
-    public void getCode(String phone, final OnGetVerificationCodeListener l) {
-        mHandler.postDelayed(new Runnable() {
+    public void getCode(final String phone, final OnGetVerificationCodeListener l) {
+        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, String>() {
             @Override
-            public void run() {
+            protected String doInBackground(Void... voids) {
+                return Api.getVerificationCode(phone);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
                 if (l != null) {
                     l.onGetVerificationCode();
                 }
             }
-        }, 3000);
+        });
     }
 
     /**
