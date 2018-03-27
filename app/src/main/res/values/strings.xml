@@ -6,8 +6,11 @@
     <string name="login">登录</string>
     <string name="countries_and_areas">国家和地区</string>
     <string name="china">中国</string>
-    <string name="regbymoile_reg_addr_hint">用户名</string>
-    <string name="loginby_input_pass_hint">密码</string>
+    <string name="input_phone_number">填写手机号码</string>
+    <string name="phone_area">+86</string>
+    <string name="password">密码</string>
+    <string name="input_password">填写密码</string>
+
     <string name="loginby_encounter_problems">忘记密码?</string>
 
     <!-- tab name -->

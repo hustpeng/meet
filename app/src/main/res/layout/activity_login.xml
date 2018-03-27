@@ -60,6 +60,73 @@
             android:background="#dbdbdb" />
     </FrameLayout>
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="10dp">
+
+        <com.agmbat.widget.ClearEditText
+            android:id="@+id/input_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/edittext_bg_selector"
+            android:hint="@string/input_phone_number"
+            android:inputType="phone"
+            android:maxLength="11"
+            android:paddingLeft="90dp"
+            android:singleLine="true"
+            android:textColorHint="#DDDDDD"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/input_username"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="24dp"
+            android:text="@string/phone_area"
+            android:textColor="#353535"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="10dp">
+
+        <com.agmbat.widget.ClearEditText
+            android:id="@+id/input_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/edittext_bg_selector"
+            android:hint="@string/input_password"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
+            android:paddingLeft="90dp"
+            android:password="true"
+            android:singleLine="true"
+            android:textColorHint="#DDDDDD"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_password"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/input_password"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="@string/password"
+            android:textColor="#353535"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -68,48 +135,6 @@
         android:paddingLeft="16.0dip"
         android:paddingRight="16.0dip"
         android:paddingTop="16.0dip">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="48.0dip"
-            android:layout_marginBottom="24.0dip"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:orientation="horizontal">
-
-            <com.agmbat.widget.ClearEditText
-                android:id="@+id/regbymobilereg_mobile_et"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/input_special_bar_bg_active"
-                android:hint="@string/regbymoile_reg_addr_hint"
-                android:textColorHint="#ffc5c5c5"
-                android:textSize="16.0dip" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/password_container"
-            android:layout_width="match_parent"
-            android:layout_height="48.0dip"
-            android:layout_marginBottom="24.0dip"
-            android:duplicateParentState="false"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <com.agmbat.widget.ClearEditText
-                android:id="@+id/indep_password"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edittext_bg_selector"
-                android:gravity="center_vertical"
-                android:hint="@string/loginby_input_pass_hint"
-                android:imeOptions="actionDone"
-                android:inputType="textPassword"
-                android:password="true"
-                android:singleLine="true"
-                android:textColorHint="#ffd7d7d7"
-                android:textSize="16.0dip" />
-        </LinearLayout>
 
         <Button
             android:id="@+id/next_btn"
