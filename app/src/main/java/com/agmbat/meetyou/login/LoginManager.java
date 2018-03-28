@@ -25,7 +25,7 @@ public class LoginManager {
     }
 
     public interface OnRegisterListener {
-        public void onRegister(boolean result);
+        public void onRegister(ApiResult result);
     }
 
     private Context mContext;
@@ -50,6 +50,73 @@ public class LoginManager {
         } else {
             ToastUtil.showToastLong("请填写账号或密码！");
         }
+    }
+
+
+    /**
+     * 获取验证码
+     */
+    public void getVerificationCode(final String phone, final OnGetVerificationCodeListener l) {
+        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
+            @Override
+            protected ApiResult doInBackground(Void... voids) {
+                return requestVerificationCode(phone);
+            }
+
+            @Override
+            protected void onPostExecute(ApiResult result) {
+                super.onPostExecute(result);
+                if (l != null) {
+                    l.onGetVerificationCode(result);
+                }
+            }
+        });
+    }
+
+    /**
+     * 注册
+     */
+    public void register(final String name, final String pwd, final String code, final OnRegisterListener l) {
+        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
+            @Override
+            protected ApiResult doInBackground(Void... voids) {
+                return requestRegister(name, pwd, code);
+            }
+
+            @Override
+            protected void onPostExecute(ApiResult result) {
+                super.onPostExecute(result);
+                if (l != null) {
+                    l.onRegister(result);
+                }
+            }
+        });
+    }
+
+    /**
+     * 请求注册逻辑
+     *
+     * @param userName
+     * @param password
+     * @param code
+     * @return
+     */
+    private ApiResult requestRegister(String userName, String password, String code) {
+        ApiResult registerResult = new ApiResult();
+        ApiResult<Boolean> result = Api.checkSms(userName, code);
+        if (result == null || !result.mResult) {
+            registerResult.mResult = false;
+            registerResult.mErrorMsg = "网络请求失败!";
+            return registerResult;
+        }
+        if (!result.mData) {
+            registerResult.mResult = false;
+            registerResult.mErrorMsg = "验证码错误!";
+            return registerResult;
+        }
+        registerResult.mResult = true;
+        registerResult.mErrorMsg = "注册成功!";
+        return registerResult;
     }
 
     /**
@@ -85,40 +152,6 @@ public class LoginManager {
         getCodeResult.mResult = true;
         getCodeResult.mErrorMsg = "请求成功!";
         return getCodeResult;
-    }
-
-    /**
-     * 获取验证码
-     */
-    public void getVerificationCode(final String phone, final OnGetVerificationCodeListener l) {
-        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
-            @Override
-            protected ApiResult doInBackground(Void... voids) {
-                return requestVerificationCode(phone);
-            }
-
-            @Override
-            protected void onPostExecute(ApiResult result) {
-                super.onPostExecute(result);
-                if (l != null) {
-                    l.onGetVerificationCode(result);
-                }
-            }
-        });
-    }
-
-    /**
-     * 注册
-     */
-    public void register(final String name, final String pwd, final OnRegisterListener l) {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (l != null) {
-                    l.onRegister(true);
-                }
-            }
-        }, 3000);
     }
 
 }

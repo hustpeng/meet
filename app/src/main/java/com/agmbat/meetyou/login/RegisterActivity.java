@@ -108,22 +108,21 @@ public class RegisterActivity extends Activity {
         mRegisterButton.setEnabled(false);
         mGetVerificationCodeButton.setEnabled(false);
 
-        mLoginManager.register(name, pwd, new LoginManager.OnRegisterListener() {
+        mLoginManager.register(name, pwd, code, new LoginManager.OnRegisterListener() {
             @Override
-            public void onRegister(boolean result) {
-                if (result) {
-                    dismissDialog();
-                    ToastUtil.showToastLong("注册成功！");
+            public void onRegister(ApiResult result) {
+                dismissDialog();
+                if (result.mResult) {
 //                    Intent intent = new Intent(RegisterActivity.this, EditUserInfoActivity.class);
 //                    startActivity(intent);
 //                    overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
                     finish();
                 } else {
-                    dismissDialog();
                     mRegisterButton.setEnabled(true);
                     mGetVerificationCodeButton.setEnabled(true);
-                    ToastUtil.showToastLong("注册失败！");
+
                 }
+                ToastUtil.showToastLong(result.mErrorMsg);
             }
         });
     }

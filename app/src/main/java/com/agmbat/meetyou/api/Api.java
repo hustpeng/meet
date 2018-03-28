@@ -25,16 +25,6 @@ public class Api {
     private static final String APP_CODE = "egret";
 
     /**
-     * 获取验证码api名称
-     */
-    private static final String SMS_API_NAME = "sms";
-
-    /**
-     * 检测用户是否存在的api名称
-     */
-    private static final String EXISTED_USER_API_NAME = "existed";
-
-    /**
      * 获取短信验证码
      * <p>
      * https://www.xmpp.org.cn/egret/v1/user/sms.api?uid=13400000000&sign=abc
@@ -47,10 +37,11 @@ public class Api {
      * @return
      */
     public static ApiResult getVerificationCode(String phone) {
+        String apiName = "sms";
         HttpRequester.Builder builder = new HttpRequester.Builder();
-        builder.baseUrl(getBaseUrl(SMS_API_NAME));
+        builder.baseUrl(getBaseUrl(apiName));
         builder.urlParam("uid", phone);
-        builder.urlParam("sign", getSign(SMS_API_NAME, phone));
+        builder.urlParam("sign", getSign(apiName, phone));
         HttpRequester requester = builder.build();
         String text = HttpUtils.request(requester);
         if (StringUtils.isEmpty(text)) {
@@ -76,10 +67,37 @@ public class Api {
      * @return
      */
     public static ApiResult<Boolean> existedUser(String phone) {
+        String apiName = "existed";
         HttpRequester.Builder builder = new HttpRequester.Builder();
-        builder.baseUrl(getBaseUrl(EXISTED_USER_API_NAME));
+        builder.baseUrl(getBaseUrl(apiName));
         builder.urlParam("uid", phone);
-        builder.urlParam("sign", getSign(EXISTED_USER_API_NAME, phone));
+        builder.urlParam("sign", getSign(apiName, phone));
+        HttpRequester requester = builder.build();
+        String text = HttpUtils.request(requester);
+        if (StringUtils.isEmpty(text)) {
+            return null;
+        }
+        ApiResult<Boolean> apiResult = new ApiResult<Boolean>();
+        JSONObject jsonObject = JsonUtils.asJsonObject(text);
+        apiResult.mResult = jsonObject.optBoolean("result");
+        apiResult.mData = jsonObject.optBoolean("existed");
+        return apiResult;
+    }
+
+    /**
+     * 验证短信验证码合法性
+     *
+     * @param phone
+     * @param code
+     * @return
+     */
+    public static ApiResult<Boolean> checkSms(String phone, String code) {
+        String apiName = "checksms";
+        HttpRequester.Builder builder = new HttpRequester.Builder();
+        builder.baseUrl(getBaseUrl(apiName));
+        builder.urlParam("uid", phone);
+        builder.urlParam("sms", code);
+        builder.urlParam("sign", getSign(apiName, phone));
         HttpRequester requester = builder.build();
         String text = HttpUtils.request(requester);
         if (StringUtils.isEmpty(text)) {
