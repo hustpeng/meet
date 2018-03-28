@@ -15,9 +15,15 @@ public class Api {
      */
     private static final String APP_CODE = "egret";
 
+    /**
+     * 获取验证码api名称
+     */
     private static final String SMS_API_NAME = "sms";
 
-    private static final String url = DOMAIN + "/egret/v1/user/sms.api?uid=13437122759&sign=abc";
+    /**
+     * 检测用户是否存在的api名称
+     */
+    private static final String EXISTED_USER_API_NAME = "existed";
 
     /**
      * 获取短信验证码
@@ -27,10 +33,26 @@ public class Api {
      */
     public static String getVerificationCode(String phone) {
         HttpRequester.Builder builder = new HttpRequester.Builder();
-        // https://www.xmpp.org.cn/egret/v1/user/sms.api
+        // https://www.xmpp.org.cn/egret/v1/user/sms.api?uid=13400000000&sign=abc
         builder.baseUrl(getBaseUrl(SMS_API_NAME));
         builder.urlParam("uid", phone);
         builder.urlParam("sign", getSign(SMS_API_NAME, phone));
+        HttpRequester requester = builder.build();
+        return HttpUtils.request(requester);
+    }
+
+    /**
+     * 检测用户是否存在
+     *
+     * @param phone
+     * @return
+     */
+    public static String existedUser(String phone) {
+        HttpRequester.Builder builder = new HttpRequester.Builder();
+        // https://www.xmpp.org.cn/egret/v1/user/existed.api?uid=13400000000&sign=abc
+        builder.baseUrl(getBaseUrl(EXISTED_USER_API_NAME));
+        builder.urlParam("uid", phone);
+        builder.urlParam("sign", getSign(EXISTED_USER_API_NAME, phone));
         HttpRequester requester = builder.build();
         return HttpUtils.request(requester);
     }
