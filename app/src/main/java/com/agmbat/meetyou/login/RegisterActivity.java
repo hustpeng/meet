@@ -13,6 +13,7 @@ import android.widget.EditText;
 
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.api.ApiResult;
 import com.agmbat.text.PhoneNumberUtil;
 
 /**
@@ -64,12 +65,13 @@ public class RegisterActivity extends Activity {
                 }
                 mCountDownTimer.start();
                 String phone = mUserNameView.getText().toString();
-                mLoginManager.getCode(phone, new LoginManager.OnGetVerificationCodeListener() {
+                mLoginManager.getVerificationCode(phone, new LoginManager.OnGetVerificationCodeListener() {
                     @Override
-                    public void onGetVerificationCode() {
+                    public void onGetVerificationCode(ApiResult result) {
                         mCountDownTimer.cancel();
                         mGetVerificationCodeButton.setEnabled(true);
                         mGetVerificationCodeButton.setText("发送验证码");
+                        ToastUtil.showToastLong(result.mErrorMsg);
                     }
                 });
             }

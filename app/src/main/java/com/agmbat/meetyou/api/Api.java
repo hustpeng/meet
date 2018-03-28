@@ -3,13 +3,22 @@ package com.agmbat.meetyou.api;
 import com.agmbat.net.HttpRequester;
 import com.agmbat.net.HttpUtils;
 import com.agmbat.security.SecurityUtil;
+import com.agmbat.text.JsonUtils;
 import com.agmbat.text.StringUtils;
 import com.agmbat.utils.Base64;
 
+import org.json.JSONObject;
+
+/**
+ * 与服务端的接口
+ */
 public class Api {
 
-
+    /**
+     * api服务器地址
+     */
     private static final String DOMAIN = "https://www.xmpp.org.cn";
+
     /**
      * App code, 开发代号内部常量”egret”
      */
@@ -27,34 +36,60 @@ public class Api {
 
     /**
      * 获取短信验证码
+     * <p>
+     * https://www.xmpp.org.cn/egret/v1/user/sms.api?uid=13400000000&sign=abc
+     * {
+     * "result":true, //true  API调用成功，否则调用失败
+     * "msg":""       //若result为false,则msg返回出错信息，否则为""字符串
+     * }
      *
      * @param phone
      * @return
      */
-    public static String getVerificationCode(String phone) {
+    public static ApiResult getVerificationCode(String phone) {
         HttpRequester.Builder builder = new HttpRequester.Builder();
-        // https://www.xmpp.org.cn/egret/v1/user/sms.api?uid=13400000000&sign=abc
         builder.baseUrl(getBaseUrl(SMS_API_NAME));
         builder.urlParam("uid", phone);
         builder.urlParam("sign", getSign(SMS_API_NAME, phone));
         HttpRequester requester = builder.build();
-        return HttpUtils.request(requester);
+        String text = HttpUtils.request(requester);
+        if (StringUtils.isEmpty(text)) {
+            return null;
+        }
+        ApiResult apiResult = new ApiResult();
+        JSONObject jsonObject = JsonUtils.asJsonObject(text);
+        apiResult.mResult = jsonObject.optBoolean("result");
+        apiResult.mErrorMsg = jsonObject.optString("msg");
+        return apiResult;
     }
 
     /**
      * 检测用户是否存在
+     * <p>
+     * https://www.xmpp.org.cn/egret/v1/user/existed.api?uid=13400000000&sign=abc
+     * {
+     * "result":true, //true  API调用成功，否则调用失败
+     * "existed":true  //true：已注册，false：未注册
+     * }
      *
      * @param phone
      * @return
      */
-    public static String existedUser(String phone) {
+    public static ApiResult<Boolean> existedUser(String phone) {
         HttpRequester.Builder builder = new HttpRequester.Builder();
-        // https://www.xmpp.org.cn/egret/v1/user/existed.api?uid=13400000000&sign=abc
         builder.baseUrl(getBaseUrl(EXISTED_USER_API_NAME));
         builder.urlParam("uid", phone);
         builder.urlParam("sign", getSign(EXISTED_USER_API_NAME, phone));
         HttpRequester requester = builder.build();
-        return HttpUtils.request(requester);
+        String text = HttpUtils.request(requester);
+        if (StringUtils.isEmpty(text)) {
+            return null;
+        }
+        ApiResult<Boolean> apiResult = new ApiResult<Boolean>();
+        JSONObject jsonObject = JsonUtils.asJsonObject(text);
+        apiResult.mResult = jsonObject.optBoolean("result");
+        apiResult.mData = jsonObject.optBoolean("existed");
+        return apiResult;
     }
 
     /**

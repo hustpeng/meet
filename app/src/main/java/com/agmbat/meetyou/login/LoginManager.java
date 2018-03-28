@@ -10,6 +10,7 @@ import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.meetyou.api.Api;
+import com.agmbat.meetyou.api.ApiResult;
 
 
 public class LoginManager {
@@ -20,7 +21,7 @@ public class LoginManager {
     }
 
     public interface OnGetVerificationCodeListener {
-        public void onGetVerificationCode();
+        public void onGetVerificationCode(ApiResult result);
     }
 
     public interface OnRegisterListener {
@@ -52,20 +53,55 @@ public class LoginManager {
     }
 
     /**
+     * 获取验证码逻辑
+     *
+     * @param phone
+     * @return
+     */
+    private static ApiResult requestVerificationCode(String phone) {
+        ApiResult getCodeResult = new ApiResult();
+
+        // 检测帐号是否已被注册
+        ApiResult<Boolean> result = Api.existedUser(phone);
+        if (result == null || !result.mResult) {
+            getCodeResult.mResult = false;
+            getCodeResult.mErrorMsg = "网络请求失败!";
+            return getCodeResult;
+        }
+
+        // result.mResult 为 true
+        if (result.mData) {
+            getCodeResult.mResult = false;
+            getCodeResult.mErrorMsg = "此账号已被注册!";
+            return getCodeResult;
+        }
+
+        ApiResult verificationCodeResult = Api.getVerificationCode(phone);
+        if (verificationCodeResult == null || !verificationCodeResult.mResult) {
+            getCodeResult.mResult = false;
+            getCodeResult.mErrorMsg = "网络请求失败!";
+            return getCodeResult;
+        }
+        getCodeResult.mResult = true;
+        getCodeResult.mErrorMsg = "请求成功!";
+        return getCodeResult;
+    }
+
+    /**
      * 获取验证码
      */
-    public void getCode(final String phone, final OnGetVerificationCodeListener l) {
-        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, String>() {
+    public void getVerificationCode(final String phone, final OnGetVerificationCodeListener l) {
+        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
             @Override
-            protected String doInBackground(Void... voids) {
-                return Api.getVerificationCode(phone);
+            protected ApiResult doInBackground(Void... voids) {
+                return requestVerificationCode(phone);
             }
 
             @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
+            protected void onPostExecute(ApiResult result) {
+                super.onPostExecute(result);
                 if (l != null) {
-                    l.onGetVerificationCode();
+                    l.onGetVerificationCode(result);
                 }
             }
         });
