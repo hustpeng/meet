@@ -10,10 +10,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.imsdk.login.LoginManager;
+import com.agmbat.imsdk.login.RegisterInfo;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.api.ApiResult;
+import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.text.PhoneNumberUtil;
 
 /**
@@ -21,18 +24,56 @@ import com.agmbat.text.PhoneNumberUtil;
  */
 public class RegisterActivity extends Activity {
 
+    /**
+     * 注册button
+     */
     private Button mRegisterButton;
 
     /**
      * 获取验证码控件
      */
     private Button mGetVerificationCodeButton;
+
+    /**
+     * 用户名
+     */
     private EditText mUserNameView;
+
+    /**
+     * 密码
+     */
     private EditText mPasswordView;
+
+    /**
+     * 验证码
+     */
     private EditText mVerificationCodeView;
+
+    /**
+     * 昵称
+     */
+    private EditText mNickNameView;
+
+    /**
+     * 性别
+     */
+    private TextView mGaderView;
+
+    /**
+     * 出生年份
+     */
+    private TextView mBirthYearView;
+
+    /**
+     * 邀请码
+     */
+    private EditText mInviteCodeView;
 
     private Counter mCountDownTimer;
 
+    /**
+     * 注册登陆管理
+     */
     private LoginManager mLoginManager;
 
     @Override
@@ -55,7 +96,6 @@ public class RegisterActivity extends Activity {
         mVerificationCodeView = (EditText) findViewById(R.id.et_code);
         mUserNameView.addTextChangedListener(new TelTextChange());
         mPasswordView.addTextChangedListener(new TextChange());
-
         mGetVerificationCodeButton = (Button) findViewById(R.id.btn_get_verification_code);
         mGetVerificationCodeButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -76,7 +116,10 @@ public class RegisterActivity extends Activity {
                 });
             }
         });
-
+        mNickNameView = (EditText) findViewById(R.id.input_nickname);
+        mGaderView = (TextView) findViewById(R.id.input_gender);
+        mBirthYearView = (TextView) findViewById(R.id.input_birthday);
+        mInviteCodeView = (EditText) findViewById(R.id.input_invite_code);
         mRegisterButton = (Button) findViewById(R.id.btn_register);
         mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -84,31 +127,41 @@ public class RegisterActivity extends Activity {
                 register();
             }
         });
-
     }
 
     private void register() {
-        final String name = mUserNameView.getText().toString();
-        final String pwd = mPasswordView.getText().toString();
-        String code = mVerificationCodeView.getText().toString();
-        if (!PhoneNumberUtil.isValidPhoneNumber(name)) {
+        String name = mUserNameView.getText().toString();
+        String password = mPasswordView.getText().toString();
+        String verificationCode = mVerificationCodeView.getText().toString();
+        String nickName = mNickNameView.getText().toString();
+        String birthYear = mBirthYearView.getText().toString();
+        String inviteCode = mInviteCodeView.getText().toString();
+        if (LoginManager.DEBUG_CHECK_SMS && !PhoneNumberUtil.isValidPhoneNumber(name)) {
             ToastUtil.showToastLong("请使用手机号码注册账户！");
             return;
         }
-        if (TextUtils.isEmpty(code)) {
+        if (LoginManager.DEBUG_CHECK_SMS && TextUtils.isEmpty(verificationCode)) {
             ToastUtil.showToastLong("请填写手机号码，并获取验证码！");
             return;
         }
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(pwd)
-                || TextUtils.isEmpty(code)) {
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(password)
+                || TextUtils.isEmpty(verificationCode)) {
             ToastUtil.showToastLong("请填写核心信息！");
             return;
         }
         showDialog();
         mRegisterButton.setEnabled(false);
         mGetVerificationCodeButton.setEnabled(false);
+        RegisterInfo registerInfo = new RegisterInfo();
+        registerInfo.setUserName(name);
+        registerInfo.setPassword(password);
+        registerInfo.setVerificationCode(verificationCode);
+        registerInfo.setNickName(nickName);
+        registerInfo.setGender(1);
+        registerInfo.setBirthYear(birthYear);
+        registerInfo.setInviteCode(inviteCode);
 
-        mLoginManager.register(name, pwd, code, new LoginManager.OnRegisterListener() {
+        mLoginManager.register(registerInfo, new LoginManager.OnRegisterListener() {
             @Override
             public void onRegister(ApiResult result) {
                 dismissDialog();
@@ -161,7 +214,22 @@ public class RegisterActivity extends Activity {
         }
     }
 
-    // EditText监听器
+    private void updateRegisterButtonState() {
+        boolean VerificationCodeValid = mVerificationCodeView.getText().length() > 0;
+        boolean userNameValid = mUserNameView.getText().length() > 0;
+        boolean passwordValid = mPasswordView.getText().length() > 0;
+        if (VerificationCodeValid & userNameValid & passwordValid) {
+            mRegisterButton.setTextColor(0xFFFFFFFF);
+            mRegisterButton.setEnabled(true);
+        } else {
+            mRegisterButton.setTextColor(0xFFD0EFC6);
+            mRegisterButton.setEnabled(false);
+        }
+    }
+
+    /**
+     * EditText监听器
+     */
     private class TextChange implements TextWatcher {
 
         @Override
@@ -178,20 +246,9 @@ public class RegisterActivity extends Activity {
         }
     }
 
-    private void updateRegisterButtonState() {
-        boolean VerificationCodeValid = mVerificationCodeView.getText().length() > 0;
-        boolean userNameValid = mUserNameView.getText().length() > 0;
-        boolean passwordValid = mPasswordView.getText().length() > 0;
-        if (VerificationCodeValid & userNameValid & passwordValid) {
-            mRegisterButton.setTextColor(0xFFFFFFFF);
-            mRegisterButton.setEnabled(true);
-        } else {
-            mRegisterButton.setTextColor(0xFFD0EFC6);
-            mRegisterButton.setEnabled(false);
-        }
-    }
-
-    /* 定义一个倒计时的内部类 */
+    /**
+     * 定义一个倒计时的内部类
+     */
     private class Counter extends CountDownTimer {
 
         public Counter(long millisInFuture, long countDownInterval) {

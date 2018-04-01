@@ -16,6 +16,12 @@
     <string name="input_verification_code">输入验证码</string>
     <string name="verification_code">验证码</string>
     <string name="get_verification_code">发送验证码</string>
+    <string name="nickname">昵称</string>
+    <string name="input_nickname">输入昵称</string>
+    <string name="gender">性别</string>
+    <string name="birthday_year">出生年份</string>
+    <string name="invite_code">邀请码</string>
+    <string name="input_invite_code">输入邀请码</string>
 
     <!-- tab name -->
     <string name="tab_msg">聊天</string>
@@ -26,4 +32,5 @@
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
+
 </resources>
