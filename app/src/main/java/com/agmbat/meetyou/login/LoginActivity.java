@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.imsdk.login.LoginManager;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
 
@@ -23,10 +26,13 @@ public class LoginActivity extends FragmentActivity {
     private EditText mUserNameView;
     private EditText mPasswordView;
 
+    private LoginManager mLoginManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mLoginManager = new LoginManager(this);
         setupViews();
     }
 
@@ -42,8 +48,7 @@ public class LoginActivity extends FragmentActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
-                startActivity(new Intent(LoginActivity.this, MainTabActivity.class));
+                login();
             }
         });
 
@@ -65,6 +70,21 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
+    }
+
+    private void login() {
+        String userName = mUserNameView.getText().toString();
+        String password = mPasswordView.getText().toString();
+        mLoginManager.login(userName, password, new LoginManager.OnLoginListener() {
+            @Override
+            public void onLogin(ApiResult result) {
+                ToastUtil.showToastLong(result.mErrorMsg);
+                if (result.mResult) {
+                    finish();
+                    startActivity(new Intent(LoginActivity.this, MainTabActivity.class));
+                }
+            }
+        });
     }
 
 

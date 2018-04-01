@@ -1,6 +1,7 @@
 package com.agmbat.meetyou.login;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.login.LoginManager;
 import com.agmbat.imsdk.login.RegisterInfo;
+import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.text.PhoneNumberUtil;
@@ -169,6 +171,8 @@ public class RegisterActivity extends Activity {
 //                    Intent intent = new Intent(RegisterActivity.this, EditUserInfoActivity.class);
 //                    startActivity(intent);
 //                    overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
+                    Intent intent = new Intent(RegisterActivity.this, MainTabActivity.class);
+                    startActivity(intent);
                     finish();
                 } else {
                     mRegisterButton.setEnabled(true);

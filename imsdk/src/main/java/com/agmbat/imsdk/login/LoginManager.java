@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
-import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.api.Api;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
@@ -23,7 +22,7 @@ public class LoginManager {
     public static final boolean DEBUG_CHECK_SMS = false;
 
     public interface OnLoginListener {
-        public void onLogin(boolean result);
+        public void onLogin(ApiResult result);
     }
 
     public interface OnGetVerificationCodeListener {
@@ -49,13 +48,20 @@ public class LoginManager {
      * @param l
      */
     public void login(final String userName, final String password, final OnLoginListener l) {
-        if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(password)) {
-            if (l != null) {
-                l.onLogin(true);
+        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
+            @Override
+            protected ApiResult doInBackground(Void... voids) {
+                return requestLogin(userName, password);
             }
-        } else {
-            ToastUtil.showToastLong("请填写账号或密码！");
-        }
+
+            @Override
+            protected void onPostExecute(ApiResult result) {
+                super.onPostExecute(result);
+                if (l != null) {
+                    l.onLogin(result);
+                }
+            }
+        });
     }
 
 
@@ -98,6 +104,34 @@ public class LoginManager {
             }
         });
     }
+
+    /**
+     * 请求注册逻辑
+     *
+     * @param userName
+     * @param password
+     * @return
+     */
+    private ApiResult requestLogin(final String userName, final String password) {
+        ApiResult loginResult = new ApiResult();
+        if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
+            loginResult.mResult = false;
+            loginResult.mErrorMsg = "请填写账号或密码！";
+            return loginResult;
+        }
+        try {
+            XMPPManager.getInstance().signIn(userName, password);
+            loginResult.mResult = true;
+            loginResult.mErrorMsg = "登陆成功！";
+            return loginResult;
+        } catch (XMPPException e) {
+            e.printStackTrace();
+        }
+        loginResult.mResult = false;
+        loginResult.mErrorMsg = "登陆失败！";
+        return loginResult;
+    }
+
 
     /**
      * 请求注册逻辑
