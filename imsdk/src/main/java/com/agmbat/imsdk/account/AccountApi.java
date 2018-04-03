@@ -137,6 +137,48 @@ public class AccountApi {
     }
 
     /**
+
+     *
+     * @return
+     */
+
+    /**
+     * 修改密码
+     * POST
+     * https://https://www.xmpp.org.cn/egret/v1/user/changepwd.api
+     * Body:
+     * uid=<phone>&ticket=<ticket>&pwd=<password>&newpwd=< newpassword>&sign=<sign>
+     *
+     * @param phone  用户11位手机号码，不含区号
+     * @param ticket The auth ticket
+     * @param pwd    原密码
+     * @param newpwd 新密码
+     * @return
+     */
+    public static ApiResult changePassword(String phone, String ticket, String pwd, String newpwd) {
+        String apiName = "changepwd";
+        HttpRequester.Builder builder = new HttpRequester.Builder();
+        builder.method("GET");
+        builder.url(getBaseUrl(apiName));
+        builder.postParam("uid", phone);
+//        builder.postParam("ticket", ticket);
+        builder.postParam("ticket", "abcd");
+        builder.postParam("pwd", pwd);
+        builder.postParam("newpwd", newpwd);
+        builder.postParam("sign", getSign(apiName, phone));
+        HttpRequester requester = builder.build();
+        String text = requester.requestAsString();
+        if (StringUtils.isEmpty(text)) {
+            return null;
+        }
+        ApiResult apiResult = new ApiResult();
+        JSONObject jsonObject = JsonUtils.asJsonObject(text);
+        apiResult.mResult = jsonObject.optBoolean("result");
+        apiResult.mErrorMsg = jsonObject.optString("msg");
+        return apiResult;
+    }
+
+    /**
      * 重围密码
      *
      * @param email

@@ -21,7 +21,7 @@
 package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 /**
  * Filter for packets where the "from" field exactly matches a specified JID. If the specified
@@ -52,7 +52,7 @@ public class FromMatchesFilter implements PacketFilter {
             throw new IllegalArgumentException("Parameter cannot be null.");
         }
         this.address = address.toLowerCase();
-        matchBareJID = "".equals(StringUtils.parseResource(address));
+        matchBareJID = "".equals(XmppStringUtils.parseResource(address));
     }
 
     public boolean accept(Packet packet) {

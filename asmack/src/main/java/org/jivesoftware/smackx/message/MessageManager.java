@@ -12,7 +12,7 @@ import org.jivesoftware.smack.packet.Message.SubType;
 import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.message.MessageObject.Msg_Status;
 import org.jivesoftware.smackx.xepmodule.xepmodule;
 
@@ -198,8 +198,8 @@ public class MessageManager extends xepmodule {
     private MessageObject phareMessageFromPacket(Message message) {
         MessageObject messageObject = new MessageObject();
         messageObject.setMsg_id(message.getPacketID());
-        messageObject.setSenderJid(StringUtils.parseBareAddress(message.getFrom()));
-        messageObject.setReceiverJid(StringUtils.parseBareAddress(message.getTo()));
+        messageObject.setSenderJid(XmppStringUtils.parseBareAddress(message.getFrom()));
+        messageObject.setReceiverJid(XmppStringUtils.parseBareAddress(message.getTo()));
         messageObject.setMsg_type(message.getSubType());
         messageObject.setBody(message.getBody());
         Date date = message.getDate();

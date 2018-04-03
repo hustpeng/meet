@@ -1,7 +1,7 @@
 
 package org.jivesoftware.smackx.vcard;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.ICacheStoreObject;
 
 import android.text.TextUtils;
@@ -93,19 +93,19 @@ public class VCardObject implements ICacheStoreObject{
 
         buf.append("<NICKNAME>");
         if (!TextUtils.isEmpty(object.getNickname())) {
-            buf.append(StringUtils.escapeForXML(object.getNickname()));
+            buf.append(XmppStringUtils.escapeForXML(object.getNickname()));
         }
         buf.append("</NICKNAME>");
 
         buf.append("<AVATAR>");
         if (!TextUtils.isEmpty(object.getAvatar())) {
-            buf.append(StringUtils.escapeForXML(object.getAvatar()));
+            buf.append(XmppStringUtils.escapeForXML(object.getAvatar()));
         }
         buf.append("</AVATAR>");
 
         buf.append("<STATUS>");
         if (!TextUtils.isEmpty(object.getStatus())) {
-            buf.append(StringUtils.escapeForXML(object.getStatus()));
+            buf.append(XmppStringUtils.escapeForXML(object.getStatus()));
         }
         buf.append("</STATUS>");
 

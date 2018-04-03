@@ -20,7 +20,7 @@
 
 package org.jivesoftware.smackx.favoritedme;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.ICacheStoreObject;
 
 public class FavoritedMeObject implements ICacheStoreObject, Comparable<FavoritedMeObject>{
@@ -62,7 +62,7 @@ public class FavoritedMeObject implements ICacheStoreObject, Comparable<Favorite
     public String getBareJid()
     {
         if (jid != null) {
-            return StringUtils.parseBareAddress(jid);
+            return XmppStringUtils.parseBareAddress(jid);
         }
 
         return "";

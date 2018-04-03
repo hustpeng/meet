@@ -28,7 +28,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import javax.net.SocketFactory;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -93,7 +93,7 @@ class HTTPProxySocketFactory
         {
             String password = proxy.getProxyPassword();
             proxyLine = "\r\nProxy-Authorization: Basic "
-                    + new String(StringUtils.encodeBase64(username + ":" + password));
+                    + new String(XmppStringUtils.encodeBase64(username + ":" + password));
         }
         socket.getOutputStream().write((hostport + " HTTP/1.1\r\nHost: "
             + hostport + proxyLine + "\r\n\r\n").getBytes("UTF-8"));

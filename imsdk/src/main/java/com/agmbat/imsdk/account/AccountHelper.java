@@ -8,6 +8,7 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.util.AppConfigUtils;
 
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 /**
  * 内部处理login逻辑
@@ -161,15 +162,30 @@ public class AccountHelper {
             result.mErrorMsg = AppResources.getString(R.string.password_same);
             return result;
         }
-        try {
-            XMPPManager.getInstance().changePassword(oldPassword, newPassword);
-            AppConfigUtils.setPassword(AppResources.getAppContext(), newPassword);
-            result.mResult = true;
-            result.mErrorMsg = AppResources.getString(R.string.change_password_success);
-            return result;
-        } catch (XMPPException e) {
-            e.printStackTrace();
+
+
+//        try {
+
+        // TODO 使用http api实现
+//            XMPPManager.getInstance().changePassword(oldPassword, newPassword);
+
+        String user = XMPPManager.getInstance().getXmppConnection().getUser();
+        String phone = XmppStringUtils.parseName(user);
+        String token = XMPPManager.getInstance().getTokenManager().getTokenRetry();
+        if (!TextUtils.isEmpty(token)) {
+            ApiResult apiResult = AccountApi.changePassword(phone, token, oldPassword, newPassword);
+            if (apiResult != null) {
+                if (apiResult.mResult) {
+                    result.mResult = true;
+                    result.mErrorMsg = AppResources.getString(R.string.change_password_success);
+                    AppConfigUtils.setPassword(AppResources.getAppContext(), newPassword);
+                    return result;
+                }
+            }
         }
+//        } catch (XMPPException e) {
+//            e.printStackTrace();
+//        }
         result.mResult = false;
         result.mErrorMsg = AppResources.getString(R.string.change_password_failed);
         return result;

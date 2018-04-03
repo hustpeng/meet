@@ -1,7 +1,7 @@
 
 package org.jivesoftware.smackx.location;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.ICacheStoreObject;
 
 import android.text.TextUtils;
@@ -89,7 +89,7 @@ public class LocateObject implements ICacheStoreObject{
 
         buf.append("<str>");
         if (!TextUtils.isEmpty(object.getLocationStr())) {
-            buf.append(StringUtils.escapeForXML(object.getLocationStr()));
+            buf.append(XmppStringUtils.escapeForXML(object.getLocationStr()));
         }
         buf.append("</str>");
 

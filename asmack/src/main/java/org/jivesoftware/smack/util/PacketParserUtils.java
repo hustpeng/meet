@@ -550,7 +550,7 @@ public class PacketParserUtils {
                             }
                             else if ("java-object".equals(type)) {
                                 try {
-                                    byte [] bytes = StringUtils.decodeBase64(valueText);
+                                    byte [] bytes = XmppStringUtils.decodeBase64(valueText);
                                     ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
                                     value = in.readObject();
                                 }

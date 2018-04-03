@@ -1,7 +1,7 @@
 
 package org.jivesoftware.smackx.vcardextend;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.ICacheStoreObject;
 
 import android.text.TextUtils;
@@ -235,43 +235,43 @@ public class VCardExtendObject implements ICacheStoreObject{
         buf.append("<PUBLIC>");
         buf.append("<BIRTHDAY>");
         if (!TextUtils.isEmpty(object.getBirthday())) {
-            buf.append(StringUtils.escapeForXML(object.getBirthday()));
+            buf.append(XmppStringUtils.escapeForXML(object.getBirthday()));
         }
         buf.append("</BIRTHDAY>");
 
         buf.append("<ASTROLOGICAL>");
         if (!TextUtils.isEmpty(object.getAstrological())) {
-            buf.append(StringUtils.escapeForXML(object.getAstrological()));
+            buf.append(XmppStringUtils.escapeForXML(object.getAstrological()));
         }
         buf.append("</ASTROLOGICAL>");
 
         buf.append("<ETHNICITY>");
         if (!TextUtils.isEmpty(object.getEthnicity())) {
-            buf.append(StringUtils.escapeForXML(object.getEthnicity()));
+            buf.append(XmppStringUtils.escapeForXML(object.getEthnicity()));
         }
         buf.append("</ETHNICITY>");
 
         buf.append("<HEIGHT>");
         if (!TextUtils.isEmpty(object.getHeight())) {
-            buf.append(StringUtils.escapeForXML(object.getHeight()));
+            buf.append(XmppStringUtils.escapeForXML(object.getHeight()));
         }
         buf.append("</HEIGHT>");
 
         buf.append("<WEIGHT>");
         if (!TextUtils.isEmpty(object.getWeight())) {
-            buf.append(StringUtils.escapeForXML(object.getWeight()));
+            buf.append(XmppStringUtils.escapeForXML(object.getWeight()));
         }
         buf.append("</WEIGHT>");
 
         buf.append("<BODYTYPE>");
         if (!TextUtils.isEmpty(object.getBodyType())) {
-            buf.append(StringUtils.escapeForXML(object.getBodyType()));
+            buf.append(XmppStringUtils.escapeForXML(object.getBodyType()));
         }
         buf.append("</BODYTYPE>");
 
         buf.append("<RELATIONSHIP>");
         if (!TextUtils.isEmpty(object.getRelationship())) {
-            buf.append(StringUtils.escapeForXML(object.getRelationship()));
+            buf.append(XmppStringUtils.escapeForXML(object.getRelationship()));
         }
         buf.append("</RELATIONSHIP>");
 
@@ -279,7 +279,7 @@ public class VCardExtendObject implements ICacheStoreObject{
         if (object.getPersonality() != null) {
             for (String item:object.getPersonality()) {
                 buf.append("<V>");
-                buf.append(StringUtils.escapeForXML(item));
+                buf.append(XmppStringUtils.escapeForXML(item));
                 buf.append("</V>");
              }
         }
@@ -289,7 +289,7 @@ public class VCardExtendObject implements ICacheStoreObject{
         if (object.getLookingFor() != null) {
             for (String item:object.getLookingFor()) {
                 buf.append("<V>");
-                buf.append(StringUtils.escapeForXML(item));
+                buf.append(XmppStringUtils.escapeForXML(item));
                 buf.append("</V>");
              }
         }
@@ -299,7 +299,7 @@ public class VCardExtendObject implements ICacheStoreObject{
         if (object.getLanguage() != null) {
             for (String item:object.getLanguage()) {
                 buf.append("<V>");
-                buf.append(StringUtils.escapeForXML(item));
+                buf.append(XmppStringUtils.escapeForXML(item));
                 buf.append("</V>");
              }
         }
@@ -309,7 +309,7 @@ public class VCardExtendObject implements ICacheStoreObject{
         if (object.getPublicPhotos() != null) {
             for (String item:object.getPublicPhotos()) {
                 buf.append("<V>");
-                buf.append(StringUtils.escapeForXML(item));
+                buf.append(XmppStringUtils.escapeForXML(item));
                 buf.append("</V>");
              }
         }
@@ -319,38 +319,38 @@ public class VCardExtendObject implements ICacheStoreObject{
         buf.append("<PRIVATE>");
         buf.append("<SEXUALPOSITION>");
         if (!TextUtils.isEmpty(object.getSexualPosition())) {
-            buf.append(StringUtils.escapeForXML(object.getSexualPosition()));
+            buf.append(XmppStringUtils.escapeForXML(object.getSexualPosition()));
         }
         buf.append("</SEXUALPOSITION>");
 
         buf.append("<ORIENTATION>");
         if (!TextUtils.isEmpty(object.getOrientation())) {
-            buf.append(StringUtils.escapeForXML(object.getOrientation()));
+            buf.append(XmppStringUtils.escapeForXML(object.getOrientation()));
         }
         buf.append("</ORIENTATION>");
 
         buf.append("<HIV>");
         if (!TextUtils.isEmpty(object.getHIVStatus())) {
-            buf.append(StringUtils.escapeForXML(object.getHIVStatus()));
+            buf.append(XmppStringUtils.escapeForXML(object.getHIVStatus()));
         }
         buf.append("</HIV>");
 
 //        buf.append("<DRUGS>");
 //        if (!TextUtils.isEmpty(getDrugs())) {
-//            buf.append(StringUtils.escapeForXML(getDrugs()));
+//            buf.append(XmppStringUtils.escapeForXML(getDrugs()));
 //        }
 //        buf.append("</DRUGS>");
 //
 //        buf.append("<LIVEIN>");
 //        if (!TextUtils.isEmpty(getLivin())) {
-//            buf.append(StringUtils.escapeForXML(getLivin()));
+//            buf.append(XmppStringUtils.escapeForXML(getLivin()));
 //        }
 //        buf.append("</LIVEIN>");
 //
 //        buf.append("<SEXUALINTERESTS>");
 //        for (String item:getSexualInterests()) {
 //           buf.append("<V>");
-//           buf.append(StringUtils.escapeForXML(item));
+//           buf.append(XmppStringUtils.escapeForXML(item));
 //           buf.append("</V>");
 //        }
 //        buf.append("</SEXUALINTERESTS>");
@@ -358,7 +358,7 @@ public class VCardExtendObject implements ICacheStoreObject{
 //        buf.append("<PRIVATEPHOTOS>");
 //        for (String item:getPrivatePhotos()) {
 //           buf.append("<V>");
-//           buf.append(StringUtils.escapeForXML(item));
+//           buf.append(XmppStringUtils.escapeForXML(item));
 //           buf.append("</V>");
 //        }
 //        buf.append("</PRIVATEPHOTOS>");

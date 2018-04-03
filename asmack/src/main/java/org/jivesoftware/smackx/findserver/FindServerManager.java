@@ -9,9 +9,8 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.xepmodule.xepmodule;
-import org.jivesoftware.smackx.xepmodule.xepmodule.xepQueryInfo;
 
 
 import java.util.List;
@@ -202,7 +201,7 @@ public class FindServerManager extends xepmodule{
             buf.append("jabber:iq:report");
             buf.append("\">");
             buf.append("<item jid=\"");
-            buf.append(StringUtils.escapeForXML(jid));
+            buf.append(XmppStringUtils.escapeForXML(jid));
             buf.append("\" reportcategory=\"");
             buf.append(category);
             buf.append("\" reportcontent=\"");
@@ -221,7 +220,7 @@ public class FindServerManager extends xepmodule{
         if (isQueryExist(1, jid, null)) {
             return;
         }
-        sendReportPacket packet = new sendReportPacket(StringUtils.parseBareAddress(jid),
+        sendReportPacket packet = new sendReportPacket(XmppStringUtils.parseBareAddress(jid),
                 reportCategory, reportContent);
         String packetId = packet.getPacketID();
         PacketFilter idFilter = new PacketIDFilter(packetId);

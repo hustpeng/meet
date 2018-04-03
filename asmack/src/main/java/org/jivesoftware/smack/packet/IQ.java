@@ -20,7 +20,7 @@
 
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 /**
  * The base IQ (Info/Query) packet. IQ packets are used to get and set information
@@ -81,10 +81,10 @@ public abstract class IQ extends Packet {
             buf.append("id=\"" + getPacketID() + "\" ");
         }
         if (getTo() != null) {
-            buf.append("to=\"").append(StringUtils.escapeForXML(getTo())).append("\" ");
+            buf.append("to=\"").append(XmppStringUtils.escapeForXML(getTo())).append("\" ");
         }
         if (getFrom() != null) {
-            buf.append("from=\"").append(StringUtils.escapeForXML(getFrom())).append("\" ");
+            buf.append("from=\"").append(XmppStringUtils.escapeForXML(getFrom())).append("\" ");
         }
         if (type == null) {
             buf.append("type=\"get\">");

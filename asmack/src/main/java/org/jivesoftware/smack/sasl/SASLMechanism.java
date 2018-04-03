@@ -23,7 +23,7 @@ package org.jivesoftware.smack.sasl;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 import java.io.IOException;
 import java.util.Map;
@@ -143,7 +143,7 @@ public abstract class SASLMechanism implements CallbackHandler {
         try {
             if(sc.hasInitialResponse()) {
                 byte[] response = sc.evaluateChallenge(new byte[0]);
-                authenticationText = StringUtils.encodeBase64(response, false);
+                authenticationText = XmppStringUtils.encodeBase64(response, false);
             }
         } catch (SaslException e) {
             throw new XMPPException("SASL authentication failed", e);
@@ -163,7 +163,7 @@ public abstract class SASLMechanism implements CallbackHandler {
     public void challengeReceived(String challenge) throws IOException {
         byte response[];
         if(challenge != null) {
-            response = sc.evaluateChallenge(StringUtils.decodeBase64(challenge));
+            response = sc.evaluateChallenge(XmppStringUtils.decodeBase64(challenge));
         } else {
             response = sc.evaluateChallenge(new byte[0]);
         }
@@ -173,7 +173,7 @@ public abstract class SASLMechanism implements CallbackHandler {
             responseStanza = new Response();
         }
         else {
-            responseStanza = new Response(StringUtils.encodeBase64(response, false));
+            responseStanza = new Response(XmppStringUtils.encodeBase64(response, false));
         }
 
         // Send the authentication to the server

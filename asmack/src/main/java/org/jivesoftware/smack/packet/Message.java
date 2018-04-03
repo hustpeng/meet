@@ -20,7 +20,7 @@
 
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 import java.util.Date;
 
@@ -94,10 +94,10 @@ public class Message extends Packet {
             buf.append(" id=\"").append(getPacketID()).append("\"");
         }
         if (getTo() != null) {
-            buf.append(" to=\"").append(StringUtils.escapeForXML(getTo())).append("\"");
+            buf.append(" to=\"").append(XmppStringUtils.escapeForXML(getTo())).append("\"");
         }
         if (getFrom() != null) {
-            buf.append(" from=\"").append(StringUtils.escapeForXML(getFrom())).append("\"");
+            buf.append(" from=\"").append(XmppStringUtils.escapeForXML(getFrom())).append("\"");
         }
         if (type != Type.normal) {
             buf.append(" type=\"").append(type).append("\"");

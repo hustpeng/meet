@@ -20,7 +20,7 @@
 
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 /**
  * Authentication packet, which can be used to login to a XMPP server as well
@@ -109,7 +109,7 @@ public class Authentication extends IQ {
      * @see org.jivesoftware.smack.Connection#getConnectionID()
      */
     public void setDigest(String connectionID, String password) {
-        this.digest = StringUtils.hash(connectionID + password);
+        this.digest = XmppStringUtils.hash(connectionID + password);
     }
 
     /**
@@ -166,7 +166,7 @@ public class Authentication extends IQ {
             if (password.equals("")) {
                 buf.append("<password/>");
             } else {
-                buf.append("<password>").append(StringUtils.escapeForXML(password)).append("</password>");
+                buf.append("<password>").append(XmppStringUtils.escapeForXML(password)).append("</password>");
             }
         }
         if (resource != null) {

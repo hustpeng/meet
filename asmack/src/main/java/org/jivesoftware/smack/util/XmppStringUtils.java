@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 /**
  * A collection of utility methods for String objects.
  */
-public class StringUtils {
+public class XmppStringUtils {
 
     /**
      * Date format as defined in XEP-0082 - XMPP Date and Time Profiles. The time zone is set to
@@ -770,7 +770,7 @@ public class StringUtils {
         return new String(randBuffer);
     }
 
-    private StringUtils() {
+    private XmppStringUtils() {
         // Not instantiable.
     }
 

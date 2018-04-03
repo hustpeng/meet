@@ -10,7 +10,7 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.CacheStoreBase;
 import org.jivesoftware.smackx.xepmodule.xepmodule;
 
@@ -217,7 +217,7 @@ public class FavoritesManager extends xepmodule {
             buf.append(FavoritesProvider.namespace());
             buf.append("\">");
             buf.append("<item jid=\"");
-            buf.append(StringUtils.escapeForXML(jid));
+            buf.append(XmppStringUtils.escapeForXML(jid));
             buf.append("\" subscription=\"to\"/></");
             buf.append(FavoritesProvider.elementName());
             buf.append(">");
@@ -236,7 +236,7 @@ public class FavoritesManager extends xepmodule {
             return;
         }
 
-        AddFavoritesPacket packet = new AddFavoritesPacket(StringUtils.parseBareAddress(jid));
+        AddFavoritesPacket packet = new AddFavoritesPacket(XmppStringUtils.parseBareAddress(jid));
         String packetId = packet.getPacketID();
         PacketFilter idFilter = new PacketIDFilter(packetId);
         FavoritesResultListener packetListener = new FavoritesResultListener();
@@ -267,7 +267,7 @@ public class FavoritesManager extends xepmodule {
             buf.append(FavoritesProvider.namespace());
             buf.append("\">");
             buf.append("<item jid=\"");
-            buf.append(StringUtils.escapeForXML(jid));
+            buf.append(XmppStringUtils.escapeForXML(jid));
             buf.append("\" subscription=\"remove\"/></");
             buf.append(FavoritesProvider.elementName());
             buf.append(">");
@@ -285,7 +285,7 @@ public class FavoritesManager extends xepmodule {
             return;
         }
 
-        RemoveFavoritesPacket packet = new RemoveFavoritesPacket(StringUtils.parseBareAddress(jid));
+        RemoveFavoritesPacket packet = new RemoveFavoritesPacket(XmppStringUtils.parseBareAddress(jid));
         String packetId = packet.getPacketID();
         PacketFilter idFilter = new PacketIDFilter(packetId);
         FavoritesResultListener packetListener = new FavoritesResultListener();
@@ -331,7 +331,7 @@ public class FavoritesManager extends xepmodule {
     private void handlePresence(Presence aPresence) {
         if (aPresence.getType() == Presence.Type.available) {
             String fromString = aPresence.getFrom();
-            String userKey = StringUtils.parseBareAddress(fromString);
+            String userKey = XmppStringUtils.parseBareAddress(fromString);
             FavoritesObject item = (FavoritesObject)cacheStorage.getEntryWithKey(userKey
                     .toLowerCase());
             if (item != null) {
@@ -342,7 +342,7 @@ public class FavoritesManager extends xepmodule {
             }
         } else if (aPresence.getType() == Presence.Type.unavailable) {
             String fromString = aPresence.getFrom();
-            String userKey = StringUtils.parseBareAddress(fromString);
+            String userKey = XmppStringUtils.parseBareAddress(fromString);
             FavoritesObject item = (FavoritesObject)cacheStorage.getEntryWithKey(userKey
                     .toLowerCase());
             if (item != null) {

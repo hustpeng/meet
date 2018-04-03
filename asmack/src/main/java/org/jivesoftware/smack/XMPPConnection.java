@@ -26,7 +26,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -193,7 +193,7 @@ public class XMPPConnection extends Connection {
         if (!isAuthenticated()) {
             return null;
         }
-        return StringUtils.parseBareAddress(user);
+        return XmppStringUtils.parseBareAddress(user);
     }
 
     /**
@@ -245,7 +245,7 @@ public class XMPPConnection extends Connection {
         if (response != null) {
             this.user = response;
             // Update the serviceName with the one returned by the server
-            config.setServiceName(StringUtils.parseServer(response));
+            config.setServiceName(XmppStringUtils.parseServer(response));
         } else {
             this.user = username + "@" + getServiceName();
             if (resource != null) {
@@ -311,7 +311,7 @@ public class XMPPConnection extends Connection {
         if (response != null) {
             this.user = response;
             // Update the serviceName with the one returned by the server
-            config.setServiceName(StringUtils.parseServer(response));
+            config.setServiceName(XmppStringUtils.parseServer(response));
         } else {
             this.user = username + "@" + getServiceName();
             if (resource != null) {
@@ -368,7 +368,7 @@ public class XMPPConnection extends Connection {
         // Set the user value.
         this.user = response;
         // Update the serviceName with the one returned by the server
-        config.setServiceName(StringUtils.parseServer(response));
+        config.setServiceName(XmppStringUtils.parseServer(response));
 
         // If compression is enabled then request the server to use stream compression
         if (config.isCompressionEnabled()) {

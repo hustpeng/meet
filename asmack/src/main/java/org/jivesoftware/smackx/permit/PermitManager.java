@@ -12,7 +12,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.CacheStoreBase;
 import org.jivesoftware.smackx.vcard.VCardObject;
 import org.jivesoftware.smackx.xepmodule.xepmodule;
@@ -186,7 +186,7 @@ public class PermitManager extends xepmodule {
             buffer.append(PermitProvider.namespace());
             buffer.append("\">");
             buffer.append("<item jid=\"");
-            buffer.append(StringUtils.escapeForXML(jid));
+            buffer.append(XmppStringUtils.escapeForXML(jid));
             buffer.append("\"/></query>");
             return buffer.toString();
         }
@@ -202,7 +202,7 @@ public class PermitManager extends xepmodule {
         if (isQueryExist(addPermit, vcard.getJid(), null)) {
             return;
         }
-        AddPermitPacket packet = new AddPermitPacket(StringUtils.parseBareAddress(vcard.getJid()));
+        AddPermitPacket packet = new AddPermitPacket(XmppStringUtils.parseBareAddress(vcard.getJid()));
         String packetId = packet.getPacketID();
         PacketFilter idFilter = new PacketIDFilter(packetId);
         PermitResultListener packetListener = new PermitResultListener();
@@ -233,7 +233,7 @@ public class PermitManager extends xepmodule {
             buffer.append(PermitProvider.namespace());
             buffer.append("\">");
             buffer.append("<item jid=\"");
-            buffer.append(StringUtils.escapeForXML(jid));
+            buffer.append(XmppStringUtils.escapeForXML(jid));
             buffer.append("\" action=\"");
             buffer.append("remove");
             buffer.append("\"/></query>");
@@ -250,7 +250,7 @@ public class PermitManager extends xepmodule {
         if (isQueryExist(removePermit, jid, null)) {
             return;
         }
-        RemovePermitPacket packet = new RemovePermitPacket(StringUtils.parseBareAddress(jid));
+        RemovePermitPacket packet = new RemovePermitPacket(XmppStringUtils.parseBareAddress(jid));
         String packetId = packet.getPacketID();
         PacketFilter idFilter = new PacketIDFilter(packetId);
         PermitResultListener packetListener = new PermitResultListener();

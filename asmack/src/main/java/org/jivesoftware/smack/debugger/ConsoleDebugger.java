@@ -175,15 +175,15 @@ public class ConsoleDebugger implements SmackDebugger {
     }
 
     public void userHasLogged(String user) {
-        boolean isAnonymous = "".equals(StringUtils.parseName(user));
+        boolean isAnonymous = "".equals(XmppStringUtils.parseName(user));
         String title =
                 "User logged (" + connection.hashCode() + "): "
-                + (isAnonymous ? "" : StringUtils.parseBareAddress(user))
+                + (isAnonymous ? "" : XmppStringUtils.parseBareAddress(user))
                 + "@"
                 + connection.getServiceName()
                 + ":"
                 + connection.getPort();
-        title += "/" + StringUtils.parseResource(user);
+        title += "/" + XmppStringUtils.parseResource(user);
         System.out.println(title);
         // Add the connection listener to the connection so that the debugger can be notified
         // whenever the connection is closed.

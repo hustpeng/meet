@@ -20,7 +20,7 @@
 
 package org.jivesoftware.smackx.visitor;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.ICacheStoreObject;
 
 public class VisitorMeObject implements ICacheStoreObject, Comparable<VisitorMeObject>{
@@ -92,7 +92,7 @@ public class VisitorMeObject implements ICacheStoreObject, Comparable<VisitorMeO
     public String getBareJid()
     {
         if (jid != null) {
-            return StringUtils.parseBareAddress(jid);
+            return XmppStringUtils.parseBareAddress(jid);
         }
 
         return "";

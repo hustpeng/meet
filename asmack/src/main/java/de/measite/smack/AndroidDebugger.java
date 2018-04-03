@@ -8,7 +8,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smack.util.WriterListener;
 
 import android.util.Log;
@@ -162,15 +162,15 @@ public class AndroidDebugger implements SmackDebugger {
     }
 
     public void userHasLogged(String user) {
-        boolean isAnonymous = "".equals(StringUtils.parseName(user));
+        boolean isAnonymous = "".equals(XmppStringUtils.parseName(user));
         String title =
                 "User logged (" + connection.hashCode() + "): "
-                + (isAnonymous ? "" : StringUtils.parseBareAddress(user))
+                + (isAnonymous ? "" : XmppStringUtils.parseBareAddress(user))
                 + "@"
                 + connection.getServiceName()
                 + ":"
                 + connection.getPort();
-        title += "/" + StringUtils.parseResource(user);
+        title += "/" + XmppStringUtils.parseResource(user);
         Log.d("SMACK", title);
         // Add the connection listener to the connection so that the debugger can be notified
         // whenever the connection is closed.

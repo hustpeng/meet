@@ -26,7 +26,7 @@ import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Registration;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -245,7 +245,7 @@ public class AccountManager {
         reg.setType(IQ.Type.SET);
         reg.setTo(connection.getServiceName());
         Map<String, String> map = new HashMap<String, String>();
-        map.put("username", StringUtils.parseName(connection.getUser()));
+        map.put("username", XmppStringUtils.parseName(connection.getUser()));
         map.put("password", newPassword);
         reg.setAttributes(map);
         PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),

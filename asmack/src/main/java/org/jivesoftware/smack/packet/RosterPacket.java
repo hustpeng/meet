@@ -22,7 +22,7 @@ package org.jivesoftware.smack.packet;
 
 import android.text.TextUtils;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -285,7 +285,7 @@ public class RosterPacket extends IQ {
             StringBuilder buf = new StringBuilder();
             buf.append("<item jid=\"").append(user).append("\"");
             if (name != null) {
-                buf.append(" name=\"").append(StringUtils.escapeForXML(name)).append("\"");
+                buf.append(" name=\"").append(XmppStringUtils.escapeForXML(name)).append("\"");
             }
 
             if (!TextUtils.isEmpty(nickName)) {
@@ -314,7 +314,7 @@ public class RosterPacket extends IQ {
 
             buf.append(">");
             for (String groupName : groupNames) {
-                buf.append("<group>").append(StringUtils.escapeForXML(groupName)).append("</group>");
+                buf.append("<group>").append(XmppStringUtils.escapeForXML(groupName)).append("</group>");
             }
             buf.append("</item>");
             return buf.toString();

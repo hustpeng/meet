@@ -20,7 +20,7 @@
 
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
@@ -81,7 +81,7 @@ public abstract class Packet {
     /**
      * A prefix helps to make sure that ID's are unique across mutliple instances.
      */
-    private static String prefix = StringUtils.randomString(5) + "-";
+    private static String prefix = XmppStringUtils.randomString(5) + "-";
 
     /**
      * Keeps track of the current increment, which is appended to the prefix to
@@ -162,12 +162,12 @@ public abstract class Packet {
      * the value is not set. The XMPP protocol often makes the "to"
      * attribute optional, so it does not always need to be set.<p>
      * <p>
-     * The StringUtils class provides several useful methods for dealing with
+     * The XmppStringUtils class provides several useful methods for dealing with
      * XMPP addresses such as parsing the
-     * {@link StringUtils#parseBareAddress(String) bare address},
-     * {@link StringUtils#parseName(String) user name},
-     * {@link StringUtils#parseServer(String) server}, and
-     * {@link StringUtils#parseResource(String) resource}.
+     * {@link XmppStringUtils#parseBareAddress(String) bare address},
+     * {@link XmppStringUtils#parseName(String) user name},
+     * {@link XmppStringUtils#parseServer(String) server}, and
+     * {@link XmppStringUtils#parseResource(String) resource}.
      *
      * @return who the packet is being sent to, or <tt>null</tt> if the
      * value has not been set.
@@ -191,12 +191,12 @@ public abstract class Packet {
      * the value is not set. The XMPP protocol often makes the "from"
      * attribute optional, so it does not always need to be set.<p>
      * <p>
-     * The StringUtils class provides several useful methods for dealing with
+     * The XmppStringUtils class provides several useful methods for dealing with
      * XMPP addresses such as parsing the
-     * {@link StringUtils#parseBareAddress(String) bare address},
-     * {@link StringUtils#parseName(String) user name},
-     * {@link StringUtils#parseServer(String) server}, and
-     * {@link StringUtils#parseResource(String) resource}.
+     * {@link XmppStringUtils#parseBareAddress(String) bare address},
+     * {@link XmppStringUtils#parseName(String) user name},
+     * {@link XmppStringUtils#parseServer(String) server}, and
+     * {@link XmppStringUtils#parseResource(String) resource}.
      *
      * @return who the packet is being sent from, or <tt>null</tt> if the
      * value has not been set.
@@ -397,7 +397,7 @@ public abstract class Packet {
             for (String name : getPropertyNames()) {
                 Object value = getProperty(name);
                 buf.append("<property>");
-                buf.append("<name>").append(StringUtils.escapeForXML(name)).append("</name>");
+                buf.append("<name>").append(XmppStringUtils.escapeForXML(name)).append("</name>");
                 buf.append("<value type=\"");
                 if (value instanceof Integer) {
                     buf.append("integer\">").append(value).append("</value>");
@@ -411,7 +411,7 @@ public abstract class Packet {
                     buf.append("boolean\">").append(value).append("</value>");
                 } else if (value instanceof String) {
                     buf.append("string\">");
-                    buf.append(StringUtils.escapeForXML((String) value));
+                    buf.append(XmppStringUtils.escapeForXML((String) value));
                     buf.append("</value>");
                 }
                 // Otherwise, it's a generic Serializable object. Serialized objects are in
@@ -425,7 +425,7 @@ public abstract class Packet {
                         out = new ObjectOutputStream(byteStream);
                         out.writeObject(value);
                         buf.append("java-object\">");
-                        String encodedVal = StringUtils.encodeBase64(byteStream.toByteArray());
+                        String encodedVal = XmppStringUtils.encodeBase64(byteStream.toByteArray());
                         buf.append(encodedVal).append("</value>");
                     } catch (Exception e) {
                         e.printStackTrace();

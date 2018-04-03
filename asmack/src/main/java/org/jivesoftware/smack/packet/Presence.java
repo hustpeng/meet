@@ -20,7 +20,7 @@
 
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 /**
  * Represents XMPP presence packets. Every presence packet has a type, which is one of
@@ -236,17 +236,17 @@ public class Presence extends Packet {
             buf.append(" id=\"").append(getPacketID()).append("\"");
         }
         if (getTo() != null) {
-            buf.append(" to=\"").append(StringUtils.escapeForXML(getTo())).append("\"");
+            buf.append(" to=\"").append(XmppStringUtils.escapeForXML(getTo())).append("\"");
         }
         if (getFrom() != null) {
-            buf.append(" from=\"").append(StringUtils.escapeForXML(getFrom())).append("\"");
+            buf.append(" from=\"").append(XmppStringUtils.escapeForXML(getFrom())).append("\"");
         }
         if (type != Type.available) {
             buf.append(" type=\"").append(type).append("\"");
         }
         buf.append(">");
         if (status != null) {
-            buf.append("<status>").append(StringUtils.escapeForXML(status)).append("</status>");
+            buf.append("<status>").append(XmppStringUtils.escapeForXML(status)).append("</status>");
         }
         if (priority != Integer.MIN_VALUE) {
             buf.append("<priority>").append(priority).append("</priority>");

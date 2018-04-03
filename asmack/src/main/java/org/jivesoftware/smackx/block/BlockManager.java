@@ -12,7 +12,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.CacheStoreBase;
 import org.jivesoftware.smackx.xepmodule.xepmodule;
 
@@ -280,7 +280,7 @@ public class BlockManager extends xepmodule {
                 // buffer.append(" xmlns=\"");
                 // buffer.append(BlockProvider.namespace());
                 buffer.append(" action=\"deny\" type=\"jid\" value=\"");
-                buffer.append(StringUtils.escapeForXML(object.getJid()));
+                buffer.append(XmppStringUtils.escapeForXML(object.getJid()));
                 buffer.append("\" order=\"0\">");
                 buffer.append("<message/></item>");
             }
@@ -299,7 +299,7 @@ public class BlockManager extends xepmodule {
             return;
         }
 
-        AddBlockPacket packet = new AddBlockPacket(StringUtils.parseBareAddress(jid));
+        AddBlockPacket packet = new AddBlockPacket(XmppStringUtils.parseBareAddress(jid));
         String packetId = packet.getPacketID();
         PacketFilter idFilter = new PacketIDFilter(packetId);
         BlockResultListener packetListener = new BlockResultListener();
@@ -370,7 +370,7 @@ public class BlockManager extends xepmodule {
             for (BlockObject object : list) {
                 buffer.append("<item");
                 buffer.append(" action=\"deny\" type=\"jid\" value=\"");
-                buffer.append(StringUtils.escapeForXML(object.getJid()));
+                buffer.append(XmppStringUtils.escapeForXML(object.getJid()));
                 buffer.append("\" order=\"0\">");
                 buffer.append("<message/></item>");
             }
@@ -396,7 +396,7 @@ public class BlockManager extends xepmodule {
             return;
         }
 
-        RemoveBlockPacket packet = new RemoveBlockPacket(StringUtils.parseBareAddress(jid));
+        RemoveBlockPacket packet = new RemoveBlockPacket(XmppStringUtils.parseBareAddress(jid));
         String packetId = packet.getPacketID();
         PacketFilter idFilter = new PacketIDFilter(packetId);
         BlockResultListener packetListener = new BlockResultListener();
