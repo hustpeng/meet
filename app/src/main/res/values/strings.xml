@@ -37,9 +37,17 @@
     <string name="im_my_posts">相册</string>
     <string name="im_collection">收藏</string>
 
+    <!-- 设置界面 -->
+    <string name="im_settings_account_security">账号与安全</string>
+    <string name="im_settings_new_msg">新消息通知</string>
+    <string name="im_settings_privacy">隐私</string>
+    <string name="im_settings_common">通用</string>
+    <string name="im_settings_about">关于微信</string>
+    <string name="im_settings_logout">退出登录</string>
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
+
 
 </resources>

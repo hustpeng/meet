@@ -50,7 +50,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="10dp"
-                android:text="账号安全"
+                android:text="@string/im_settings_account_security"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -72,7 +72,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="10dp"
-                android:text="新消息通知"
+                android:text="@string/im_settings_new_msg"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -93,7 +93,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="10dp"
-                android:text="隐私"
+                android:text="@string/im_settings_privacy"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -113,7 +113,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="10dp"
-                android:text="通用"
+                android:text="@string/im_settings_common"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -134,7 +134,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="10dp"
-                android:text="关于微信"
+                android:text="@string/im_settings_about"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -155,7 +155,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="10dp"
-                android:text="退出登录"
+                android:text="@string/im_settings_logout"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 

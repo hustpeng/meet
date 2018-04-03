@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:layout_toRightOf="@+id/head"
-                    android:text="菲儿"
+                    android:text="遇缘"
                     android:textSize="18.0dip" />
 
                 <TextView
@@ -63,7 +63,7 @@
                     android:layout_below="@+id/tvname"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/head"
-                    android:text="微信号：dada20150625"
+                    android:text="遇缘号：134xxx10086"
                     android:textSize="14.0dip" />
 
                 <ImageView

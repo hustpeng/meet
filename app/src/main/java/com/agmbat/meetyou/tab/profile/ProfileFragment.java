@@ -1,5 +1,6 @@
 package com.agmbat.meetyou.tab.profile;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -31,7 +32,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.txt_setting).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                Activity activity = getActivity();
+                activity.startActivity(new Intent(activity, SettingsActivity.class));
+                activity.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
     }
