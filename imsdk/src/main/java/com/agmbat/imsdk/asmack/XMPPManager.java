@@ -16,6 +16,7 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.block.BlockManager;
 import org.jivesoftware.smackx.block.BlockProvider;
 import org.jivesoftware.smackx.favoritedme.FavoritedMeManager;
@@ -316,5 +317,16 @@ public class XMPPManager {
 
     public PaidManager getPaidManager() {
         return paidManager;
+    }
+
+    /**
+     * 获取当前连接的用户名称
+     *
+     * @return
+     */
+    public String getConnectionUserName() {
+        String user = XMPPManager.getInstance().getXmppConnection().getUser();
+        String phone = XmppStringUtils.parseName(user);
+        return phone;
     }
 }

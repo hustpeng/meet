@@ -24,7 +24,16 @@
     <string name="input_invite_code">输入邀请码</string>
 
     <!-- 修改密码 -->
-    <string name="change_password_processing">processing&#8230;</string>
+    <string name="im_change_password">修改密码</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="input_confirm_password">请再次输入新密码</string>
+    <string name="new_password">新密码</string>
+    <string name="input_new_password">请输入新密码</string>
+    <string name="old_password">旧密码</string>
+    <string name="input_old_password">请填写旧密码</string>
+    <string name="change_password_processing">正在处理中&#8230;</string>
+    <string name="id_name">遇缘号</string>
+    <string name="id_name_format">遇缘号:</string>
 
     <!-- tab name -->
     <string name="tab_msg">聊天</string>
@@ -47,7 +56,6 @@
     <string name="im_settings_common">通用</string>
     <string name="im_settings_about">关于微信</string>
     <string name="im_settings_logout">退出登录</string>
-    <string name="im_change_password">修改密码</string>
 
 
     <string name="contacts_recently">最近</string>

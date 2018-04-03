@@ -7,8 +7,8 @@
     <string name="new_password_nil">Sorry, the new password you input is less than 1 characters.</string>
     <string name="password_not_match">Sorry, the two passwords you input don\'t match.</string>
     <string name="password_same">New password is the same as old password.</string>
-    <string name="change_password_failed">Change password failed!</string>
-    <string name="change_password_success">Your password has been changed!</string>
+    <string name="change_password_failed">密码修改失败!</string>
+    <string name="change_password_success">密码修改成功!</string>
 
     <!-- chat -->
     <string name="chatfooter_cancel_rcd">Move up to cancel</string>

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.ViewUtils;
@@ -47,9 +48,11 @@ public class ChangePasswordActivity extends Activity {
         });
 
         mLoginManager = new ImAccountManager(this);
-        mInputCurrentPwd = (EditText) findViewById(R.id.text_current_pwd);
-        mInputNewPwd = (EditText) findViewById(R.id.text_new_pwd);
-        mInputConfirmPwd = (EditText) findViewById(R.id.text_confirm_pwd);
+        TextView tv = (TextView) findViewById(R.id.username);
+        tv.setText(mLoginManager.getConnectionUserName());
+        mInputCurrentPwd = (EditText) findViewById(R.id.input_old_pwd);
+        mInputNewPwd = (EditText) findViewById(R.id.input_new_pwd);
+        mInputConfirmPwd = (EditText) findViewById(R.id.input_confirm_pwd);
         mInputCurrentPwd.requestFocus();
     }
 
@@ -70,6 +73,7 @@ public class ChangePasswordActivity extends Activity {
         mProgressDialog.setMessage(getString(R.string.change_password_processing));
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
+
         mLoginManager.changePassword(currentPwd, newPwd, confirmPwd, new ImAccountManager.OnChangePasswordListener() {
             @Override
             public void onChangePassword(ApiResult result) {

@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.login.ChangePasswordActivity;
 
@@ -33,6 +35,9 @@ public class AccountSecurityActivity extends Activity {
                 startActivity(new Intent(AccountSecurityActivity.this, ChangePasswordActivity.class));
             }
         });
+
+        TextView textView = (TextView) findViewById(R.id.user_name);
+        textView.setText(new ImAccountManager(this).getConnectionUserName());
     }
 
     @Override

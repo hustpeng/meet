@@ -48,7 +48,7 @@
                     android:src="@drawable/im_default_head" />
 
                 <TextView
-                    android:id="@+id/tvname"
+                    android:id="@+id/nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -57,13 +57,13 @@
                     android:textSize="18.0dip" />
 
                 <TextView
-                    android:id="@+id/tvmsg"
+                    android:id="@+id/user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvname"
+                    android:layout_below="@+id/nickname"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/head"
-                    android:text="遇缘号：134xxx10086"
+                    android:text="遇缘号："
                     android:textSize="14.0dip" />
 
                 <ImageView

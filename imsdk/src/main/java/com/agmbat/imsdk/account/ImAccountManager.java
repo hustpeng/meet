@@ -6,6 +6,7 @@ import android.os.Looper;
 
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
 
 /**
  * 对UI层提供账号管理
@@ -135,5 +136,9 @@ public class ImAccountManager {
                 }
             }
         });
+    }
+
+    public String getConnectionUserName() {
+        return XMPPManager.getInstance().getConnectionUserName();
     }
 }
