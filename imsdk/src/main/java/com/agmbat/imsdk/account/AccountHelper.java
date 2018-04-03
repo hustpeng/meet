@@ -43,13 +43,13 @@ public class AccountHelper {
     }
 
     /**
-     * 获取验证码逻辑
+     * 获取注册验证码逻辑
      *
      * @param phone
      * @return
      */
 
-    public static ApiResult requestVerificationCode(String phone) {
+    public static ApiResult requestRegisterVerificationCode(String phone) {
         ApiResult getCodeResult = new ApiResult();
         if (!ImAccountManager.DEBUG_CHECK_SMS) {
             getCodeResult.mResult = true;
@@ -69,6 +69,46 @@ public class AccountHelper {
         if (result.mData) {
             getCodeResult.mResult = false;
             getCodeResult.mErrorMsg = "此账号已被注册!";
+            return getCodeResult;
+        }
+
+        ApiResult verificationCodeResult = AccountApi.getVerificationCode(phone);
+        if (verificationCodeResult == null || !verificationCodeResult.mResult) {
+            getCodeResult.mResult = false;
+            getCodeResult.mErrorMsg = "网络请求失败!";
+            return getCodeResult;
+        }
+        getCodeResult.mResult = true;
+        getCodeResult.mErrorMsg = "请求成功!";
+        return getCodeResult;
+    }
+
+    /**
+     * 获取重置密码验证码逻辑
+     *
+     * @param phone
+     * @return
+     */
+    public static ApiResult requestResetVerificationCode(String phone) {
+        ApiResult getCodeResult = new ApiResult();
+        if (!ImAccountManager.DEBUG_CHECK_SMS) {
+            getCodeResult.mResult = true;
+            getCodeResult.mErrorMsg = "请求成功!";
+            return getCodeResult;
+        }
+
+        // 检测帐号是否已被注册
+        ApiResult<Boolean> result = AccountApi.existedUser(phone);
+        if (result == null || !result.mResult) {
+            getCodeResult.mResult = false;
+            getCodeResult.mErrorMsg = "网络请求失败!";
+            return getCodeResult;
+        }
+
+        // result.mResult 为 true
+        if (!result.mData) {
+            getCodeResult.mResult = false;
+            getCodeResult.mErrorMsg = "此账号未注册!";
             return getCodeResult;
         }
 
@@ -121,6 +161,7 @@ public class AccountHelper {
         }
         return registerResult;
     }
+
 
     /**
      * 修改密码
@@ -190,5 +231,32 @@ public class AccountHelper {
         result.mErrorMsg = AppResources.getString(R.string.change_password_failed);
         return result;
     }
+
+    /**
+     * 处理重置密码逻辑
+     *
+     * @param phone
+     * @param password
+     * @param verificationCode
+     * @return
+     */
+    public static ApiResult requestResetPassword(String phone, String password, String verificationCode) {
+        ApiResult resetResult = new ApiResult();
+        ApiResult result = AccountApi.resetPassword(phone, password, verificationCode);
+        if (result == null) {
+            resetResult.mResult = false;
+            resetResult.mErrorMsg = "网络请求失败!";
+            return resetResult;
+        }
+        if (!result.mResult) {
+            resetResult.mResult = false;
+            resetResult.mErrorMsg = "重置密码失败!";
+            return resetResult;
+        }
+        resetResult.mResult = true;
+        resetResult.mErrorMsg = "重置密码成功!";
+        return resetResult;
+    }
+
 
 }

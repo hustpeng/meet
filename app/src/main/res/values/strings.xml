@@ -35,6 +35,9 @@
     <string name="id_name">遇缘号</string>
     <string name="id_name_format">遇缘号:</string>
 
+    <!-- 重置密码-->
+    <string name="reset_password">重置密码</string>
+
     <!-- tab name -->
     <string name="tab_msg">聊天</string>
     <string name="tab_contacts">好友</string>

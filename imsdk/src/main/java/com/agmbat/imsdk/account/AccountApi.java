@@ -1,14 +1,11 @@
 package com.agmbat.imsdk.account;
 
-import android.text.TextUtils;
-
 import com.agmbat.net.HttpRequester;
 import com.agmbat.security.SecurityUtil;
 import com.agmbat.text.JsonUtils;
 import com.agmbat.text.StringUtils;
 import com.agmbat.utils.Base64;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -149,13 +146,13 @@ public class AccountApi {
      * Body:
      * uid=<phone>&ticket=<ticket>&pwd=<password>&newpwd=< newpassword>&sign=<sign>
      *
-     * @param phone  用户11位手机号码，不含区号
-     * @param ticket The auth ticket
-     * @param pwd    原密码
-     * @param newpwd 新密码
+     * @param phone       用户11位手机号码，不含区号
+     * @param ticket      The auth ticket
+     * @param pwd         原密码
+     * @param newPassword 新密码
      * @return
      */
-    public static ApiResult changePassword(String phone, String ticket, String pwd, String newpwd) {
+    public static ApiResult changePassword(String phone, String ticket, String pwd, String newPassword) {
         String apiName = "changepwd";
         HttpRequester.Builder builder = new HttpRequester.Builder();
         builder.method("POST");
@@ -163,7 +160,7 @@ public class AccountApi {
         builder.postParam("uid", phone);
         builder.postParam("ticket", ticket);
         builder.postParam("pwd", pwd);
-        builder.postParam("newpwd", newpwd);
+        builder.postParam("newpwd", newPassword);
         builder.postParam("sign", getSign(apiName, phone));
         HttpRequester requester = builder.build();
         String text = requester.requestAsString();
@@ -178,25 +175,36 @@ public class AccountApi {
     }
 
     /**
-     * 重围密码
+     * 重置密码
+     * <p>
+     * POST
+     * https://{DOMAIN}/egret/v1/user/resetpwd.api
+     * Body:
+     * uid=<phone>&sms=<sms code>&newpwd=<newpassword>&sign=<sign>
      *
-     * @param email
+     * @param phone            用户11位手机号码，不含区号
+     * @param newPassword      新密码
+     * @param verificationCode 短信验证码
      * @return
      */
-    public static boolean resetPassword(String email) {
+    public static ApiResult resetPassword(String phone, String newPassword, String verificationCode) {
+        String apiName = "resetpwd";
         HttpRequester.Builder builder = new HttpRequester.Builder();
-        builder.baseUrl("http://yuan520.com/password-service/forgetpassword.jsp");
-        builder.urlParam("email", email);
+        builder.method("POST");
+        builder.url(getBaseUrl(apiName));
+        builder.postParam("uid", phone);
+        builder.postParam("sms", verificationCode);
+        builder.postParam("newpwd", newPassword);
+        builder.postParam("sign", getSign(apiName, phone));
         HttpRequester requester = builder.build();
         String text = requester.requestAsString();
-        if (!TextUtils.isEmpty(text)) {
-            try {
-                JSONObject json = new JSONObject(text);
-                return json.optBoolean("result");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        if (StringUtils.isEmpty(text)) {
+            return null;
         }
-        return false;
+        ApiResult apiResult = new ApiResult();
+        JSONObject jsonObject = JsonUtils.asJsonObject(text);
+        apiResult.mResult = jsonObject.optBoolean("result");
+        apiResult.mErrorMsg = jsonObject.optString("msg");
+        return apiResult;
     }
 }

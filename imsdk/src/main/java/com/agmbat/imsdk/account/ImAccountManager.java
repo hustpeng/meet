@@ -16,7 +16,7 @@ public class ImAccountManager {
     /**
      * 调试开关,是否开启检测sms
      */
-    public static final boolean DEBUG_CHECK_SMS = false;
+    public static final boolean DEBUG_CHECK_SMS = true;
 
     /**
      * 登陆回调
@@ -38,6 +38,10 @@ public class ImAccountManager {
      */
     public interface OnChangePasswordListener {
         public void onChangePassword(ApiResult result);
+    }
+
+    public interface OnResetPasswordListener {
+        public void onResetPassword(ApiResult result);
     }
 
     private Context mContext;
@@ -73,13 +77,33 @@ public class ImAccountManager {
 
 
     /**
-     * 获取验证码
+     * 获取注册验证码
      */
-    public void getVerificationCode(final String phone, final OnGetVerificationCodeListener l) {
+    public void getRegisterVerificationCode(final String phone, final OnGetVerificationCodeListener l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
             @Override
             protected ApiResult doInBackground(Void... voids) {
-                return AccountHelper.requestVerificationCode(phone);
+                return AccountHelper.requestRegisterVerificationCode(phone);
+            }
+
+            @Override
+            protected void onPostExecute(ApiResult result) {
+                super.onPostExecute(result);
+                if (l != null) {
+                    l.onGetVerificationCode(result);
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取重置密码验证码
+     */
+    public void getResetVerificationCode(final String phone, final OnGetVerificationCodeListener l) {
+        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
+            @Override
+            protected ApiResult doInBackground(Void... voids) {
+                return AccountHelper.requestResetVerificationCode(phone);
             }
 
             @Override
@@ -136,6 +160,27 @@ public class ImAccountManager {
                 }
             }
         });
+    }
+
+    /**
+     * 重置密码
+     */
+    public void resetPassword(final String name, final String password, final String verificationCode, final OnResetPasswordListener l) {
+        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
+            @Override
+            protected ApiResult doInBackground(Void... voids) {
+                return AccountHelper.requestResetPassword(name, password, verificationCode);
+            }
+
+            @Override
+            protected void onPostExecute(ApiResult result) {
+                super.onPostExecute(result);
+                if (l != null) {
+                    l.onResetPassword(result);
+                }
+            }
+        });
+
     }
 
     public String getConnectionUserName() {

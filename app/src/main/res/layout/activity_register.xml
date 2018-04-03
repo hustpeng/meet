@@ -134,7 +134,7 @@
             android:enabled="false"
             android:gravity="center"
             android:text="@string/get_verification_code"
-            android:textColor="#ffffffff"
+            android:textColor="@color/im_account_button_txt_color"
             android:textSize="12sp" />
 
     </RelativeLayout>
@@ -322,7 +322,7 @@
         android:paddingBottom="7dp"
         android:paddingTop="7dp"
         android:text="@string/signup"
-        android:textColor="@android:color/white"
+        android:textColor="@color/im_account_button_txt_color"
         android:textSize="18sp" />
 
 </LinearLayout>
