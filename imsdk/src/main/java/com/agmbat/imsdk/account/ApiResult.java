@@ -1,4 +1,4 @@
-package com.agmbat.imsdk.api;
+package com.agmbat.imsdk.account;
 
 public class ApiResult<T> {
 

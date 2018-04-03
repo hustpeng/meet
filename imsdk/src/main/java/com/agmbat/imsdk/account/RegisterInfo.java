@@ -1,4 +1,4 @@
-package com.agmbat.imsdk.login;
+package com.agmbat.imsdk.account;
 
 /**
  * 注册信息

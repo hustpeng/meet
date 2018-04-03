@@ -1,4 +1,6 @@
-package com.agmbat.imsdk.api;
+package com.agmbat.imsdk.account;
+
+import android.text.TextUtils;
 
 import com.agmbat.net.HttpRequester;
 import com.agmbat.security.SecurityUtil;
@@ -6,12 +8,13 @@ import com.agmbat.text.JsonUtils;
 import com.agmbat.text.StringUtils;
 import com.agmbat.utils.Base64;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * 与服务端的接口
  */
-public class Api {
+public class AccountApi {
 
     /**
      * api服务器地址
@@ -131,5 +134,28 @@ public class Api {
         String base64Text = Base64.encodeToString(StringUtils.getUtf8Bytes(text), Base64.DEFAULT).trim();
         String md5Text = SecurityUtil.md5Hash(base64Text);
         return md5Text;
+    }
+
+    /**
+     * 重围密码
+     *
+     * @param email
+     * @return
+     */
+    public static boolean resetPassword(String email) {
+        HttpRequester.Builder builder = new HttpRequester.Builder();
+        builder.baseUrl("http://yuan520.com/password-service/forgetpassword.jsp");
+        builder.urlParam("email", email);
+        HttpRequester requester = builder.build();
+        String text = requester.requestAsString();
+        if (!TextUtils.isEmpty(text)) {
+            try {
+                JSONObject json = new JSONObject(text);
+                return json.optBoolean("result");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

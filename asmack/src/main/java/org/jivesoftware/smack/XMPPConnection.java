@@ -20,6 +20,8 @@
 
 package org.jivesoftware.smack;
 
+import com.agmbat.log.Debug;
+
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
@@ -594,6 +596,7 @@ public class XMPPConnection extends Connection {
      * @throws XMPPException if establishing a connection to the server fails.
      */
     private void initConnection() throws XMPPException {
+        Debug.printStackTrace();
         boolean isFirstInitialization = packetReader == null || packetWriter == null;
         usingCompression = false;
 

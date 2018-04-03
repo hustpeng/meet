@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.NetworkUtil;
 import com.agmbat.imsdk.util.AppConfigUtils;
+import com.agmbat.log.Debug;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -22,7 +23,6 @@ import org.jivesoftware.smackx.reconnection.ReconnectionListener;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-//import com.agmbat.imsdk.util.AppConfigUtils;
 
 public class ReconnectionManager {
 
@@ -211,7 +211,8 @@ public class ReconnectionManager {
         reconnectionThread.start();
     }
 
-    synchronized public void autoLogin() {
+    public synchronized void autoLogin() {
+        Debug.printStackTrace();
         if (isAutoLogin || isReconnecting) {
             return;
         }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.agmbat.android.AppResources;
-import com.agmbat.imsdk.login.RegisterInfo;
+import com.agmbat.imsdk.account.RegisterInfo;
 import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.imsdk.util.LocationAutoSync;
 import com.agmbat.imsdk.util.LocationHelper;
@@ -114,7 +114,8 @@ public class XMPPManager {
                 }
             }
         });
-        reconnectionManager.autoLogin();
+        // TODO 登录时导致线程开启两次
+//        reconnectionManager.autoLogin();
     }
 
     private void configureProviderManager() {

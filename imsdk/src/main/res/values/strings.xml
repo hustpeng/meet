@@ -1,5 +1,16 @@
 <resources>
     <string name="app_name">imsdk</string>
+
+    <!-- 修改密码 -->
+    <string name="old_password_invalid">Sorry, the old password you input is invalid.</string>
+    <string name="old_password_incorrect">Sorry, the old password you input is in`correct.</string>
+    <string name="new_password_nil">Sorry, the new password you input is less than 1 characters.</string>
+    <string name="password_not_match">Sorry, the two passwords you input don\'t match.</string>
+    <string name="password_same">New password is the same as old password.</string>
+    <string name="change_password_failed">Change password failed!</string>
+    <string name="change_password_success">Your password has been changed!</string>
+
+    <!-- chat -->
     <string name="chatfooter_cancel_rcd">Move up to cancel</string>
     <string name="chatfooter_cancel_rcd_release">Release to cancel</string>
     <string name="chatfooter_too_short">Message too short</string>

@@ -14,11 +14,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.ToastUtil;
-import com.agmbat.imsdk.login.LoginManager;
-import com.agmbat.imsdk.login.RegisterInfo;
+import com.agmbat.imsdk.account.ImAccountManager;
+import com.agmbat.imsdk.account.RegisterInfo;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
-import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.imsdk.account.ApiResult;
 import com.agmbat.text.PhoneNumberUtil;
 
 /**
@@ -76,13 +76,13 @@ public class RegisterActivity extends Activity {
     /**
      * 注册登陆管理
      */
-    private LoginManager mLoginManager;
+    private ImAccountManager mLoginManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        mLoginManager = new LoginManager(this);
+        mLoginManager = new ImAccountManager(this);
         setupViews();
     }
 
@@ -107,7 +107,7 @@ public class RegisterActivity extends Activity {
                 }
                 mCountDownTimer.start();
                 String phone = mUserNameView.getText().toString();
-                mLoginManager.getVerificationCode(phone, new LoginManager.OnGetVerificationCodeListener() {
+                mLoginManager.getVerificationCode(phone, new ImAccountManager.OnGetVerificationCodeListener() {
                     @Override
                     public void onGetVerificationCode(ApiResult result) {
                         mCountDownTimer.cancel();
@@ -138,11 +138,11 @@ public class RegisterActivity extends Activity {
         String nickName = mNickNameView.getText().toString();
         String birthYear = mBirthYearView.getText().toString();
         String inviteCode = mInviteCodeView.getText().toString();
-        if (LoginManager.DEBUG_CHECK_SMS && !PhoneNumberUtil.isValidPhoneNumber(name)) {
+        if (ImAccountManager.DEBUG_CHECK_SMS && !PhoneNumberUtil.isValidPhoneNumber(name)) {
             ToastUtil.showToastLong("请使用手机号码注册账户！");
             return;
         }
-        if (LoginManager.DEBUG_CHECK_SMS && TextUtils.isEmpty(verificationCode)) {
+        if (ImAccountManager.DEBUG_CHECK_SMS && TextUtils.isEmpty(verificationCode)) {
             ToastUtil.showToastLong("请填写手机号码，并获取验证码！");
             return;
         }
@@ -163,7 +163,7 @@ public class RegisterActivity extends Activity {
         registerInfo.setBirthYear(birthYear);
         registerInfo.setInviteCode(inviteCode);
 
-        mLoginManager.register(registerInfo, new LoginManager.OnRegisterListener() {
+        mLoginManager.register(registerInfo, new ImAccountManager.OnRegisterListener() {
             @Override
             public void onRegister(ApiResult result) {
                 dismissDialog();
