@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.login;
+package com.agmbat.meetyou.account;
 
 import android.content.Intent;
 import android.os.Bundle;

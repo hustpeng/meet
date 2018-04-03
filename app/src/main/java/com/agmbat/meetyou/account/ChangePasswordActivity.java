@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.login;
+package com.agmbat.meetyou.account;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

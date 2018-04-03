@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.login.ChangePasswordActivity;
+import com.agmbat.meetyou.account.ChangePasswordActivity;
 
 /**
  * 账号与安全界面

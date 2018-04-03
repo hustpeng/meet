@@ -14,7 +14,7 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.permissions.PermissionArrayAction;
 import com.agmbat.android.permissions.Permissions;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.meetyou.login.LoginActivity;
+import com.agmbat.meetyou.account.LoginActivity;
 import com.nostra13.universalimageloader.core.download.Scheme;
 
 /**
