@@ -14,11 +14,12 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.CacheStoreBase;
-import org.jivesoftware.smackx.xepmodule.xepmodule;
+import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
+import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import android.text.TextUtils;
 
-public class BlockManager extends xepmodule {
+public class BlockManager extends Xepmodule {
     private static final int fetchBlockListName = 111;
     private static final int fetchBlockList = 222;
     private static final int addBlock = 333;
@@ -88,7 +89,7 @@ public class BlockManager extends xepmodule {
     }
 
     @Override
-    public void processQueryWithFailureCode(xepQueryInfo aQuery, String error) {
+    public void processQueryWithFailureCode(XepQueryInfo aQuery, String error) {
         switch (aQuery.getQueryType()) {
             case fetchBlockListName:
                 notifyFetchBlockListNameResult(false);
@@ -110,19 +111,19 @@ public class BlockManager extends xepmodule {
         }
     }
 
-    private void processQueryResponse(Packet packet, xepQueryInfo queryInfo) {
+    private void processQueryResponse(Packet packet, XepQueryInfo queryInfo) {
         switch (queryInfo.getQueryType()) {
             case fetchBlockListName: {
-                BlockPacket blockPacket = (BlockPacket)packet;
+                BlockPacket blockPacket = (BlockPacket) packet;
                 setListName(blockPacket.getListName());
                 setDefaultListName(blockPacket.getDefaultName());
                 setActiveListName(blockPacket.getActiveName());
                 fetchBlockList();
                 notifyFetchBlockListNameResult(true);
             }
-                break;
+            break;
             case fetchBlockList:
-                BlockPacket blockPacket = (BlockPacket)packet;
+                BlockPacket blockPacket = (BlockPacket) packet;
                 for (BlockObject item : blockPacket.getBlockItems()) {
                     cacheStorage.insertOrUpdate(item);
                 }
@@ -188,7 +189,7 @@ public class BlockManager extends xepmodule {
         BlockResultListener packetListener = new BlockResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(fetchBlockListName);
+        XepQueryInfo queryInfo = new XepQueryInfo(fetchBlockListName);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -215,7 +216,7 @@ public class BlockManager extends xepmodule {
         BlockResultListener packetListener = new BlockResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(fetchBlockList);
+        XepQueryInfo queryInfo = new XepQueryInfo(fetchBlockList);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -305,7 +306,7 @@ public class BlockManager extends xepmodule {
         BlockResultListener packetListener = new BlockResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(addBlock, jid);
+        XepQueryInfo queryInfo = new XepQueryInfo(addBlock, jid);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -402,7 +403,7 @@ public class BlockManager extends xepmodule {
         BlockResultListener packetListener = new BlockResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(removeBlock, jid);
+        XepQueryInfo queryInfo = new XepQueryInfo(removeBlock, jid);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -462,7 +463,7 @@ public class BlockManager extends xepmodule {
         BlockResultListener packetListener = new BlockResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(setActiveName, activeName);
+        XepQueryInfo queryInfo = new XepQueryInfo(setActiveName, activeName);
         addQueryInfo(queryInfo, packetId, packetListener);
         xmppConnection.sendPacket(packet);
     }
@@ -519,7 +520,7 @@ public class BlockManager extends xepmodule {
         BlockResultListener packetListener = new BlockResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(setDefaultName, defaultName);
+        XepQueryInfo queryInfo = new XepQueryInfo(setDefaultName, defaultName);
         addQueryInfo(queryInfo, packetId, packetListener);
         xmppConnection.sendPacket(packet);
     }
@@ -542,7 +543,7 @@ public class BlockManager extends xepmodule {
         @Override
         public void processPacket(Packet packet) {
             String packetId = packet.getPacketID();
-            xepQueryInfo queryInfo = getQueryInfo(packetId);
+            XepQueryInfo queryInfo = getQueryInfo(packetId);
             if (queryInfo != null) {
                 removeQueryInfo(queryInfo, packetId);
                 processQueryResponse(packet, queryInfo);

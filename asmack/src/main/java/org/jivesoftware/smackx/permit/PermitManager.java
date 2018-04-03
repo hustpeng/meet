@@ -15,9 +15,10 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.CacheStoreBase;
 import org.jivesoftware.smackx.vcard.VCardObject;
-import org.jivesoftware.smackx.xepmodule.xepmodule;
+import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
+import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
-public class PermitManager extends xepmodule {
+public class PermitManager extends Xepmodule {
     private static final int fetchPermits = 11;
     private static final int addPermit = 22;
     private static final int removePermit = 33;
@@ -81,7 +82,7 @@ public class PermitManager extends xepmodule {
     }
 
     @Override
-    public void processQueryWithFailureCode(xepQueryInfo aQuery, String error) {
+    public void processQueryWithFailureCode(XepQueryInfo aQuery, String error) {
         switch (aQuery.getQueryType()) {
             case fetchPermits:
                 notifyFetchPermitResult(false);
@@ -97,19 +98,19 @@ public class PermitManager extends xepmodule {
         }
     }
 
-    private void processQueryResponse(Packet packet, xepQueryInfo queryInfo) {
+    private void processQueryResponse(Packet packet, XepQueryInfo queryInfo) {
         switch (queryInfo.getQueryType()) {
             case fetchPermits: {
-                PermitPacket permitPacket = (PermitPacket)packet;
+                PermitPacket permitPacket = (PermitPacket) packet;
                 for (PermitObject item : permitPacket.getPermitItems()) {
                     cacheStorage.insertOrUpdate(item);
                     // notifyPermitListChange(item.getJid(),true);
                 }
             }
-                break;
+            break;
 
             case addPermit: {
-                VCardObject vcard = (VCardObject)queryInfo.getParam3();
+                VCardObject vcard = (VCardObject) queryInfo.getParam3();
                 if (packet.getError() == null) {
                     PermitObject object = new PermitObject();
                     object.setJid(vcard.getJid());
@@ -122,7 +123,7 @@ public class PermitManager extends xepmodule {
                     notifyAddPermitResult(vcard.getJid(), false);
                 }
             }
-                break;
+            break;
 
             case removePermit: {
                 String jid = queryInfo.getParam1();
@@ -135,7 +136,7 @@ public class PermitManager extends xepmodule {
                     notifyRemovePermitResult(jid, false);
                 }
             }
-                break;
+            break;
 
             default:
                 break;
@@ -161,7 +162,7 @@ public class PermitManager extends xepmodule {
         PermitResultListener packetListener = new PermitResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(fetchPermits);
+        XepQueryInfo queryInfo = new XepQueryInfo(fetchPermits);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -208,7 +209,7 @@ public class PermitManager extends xepmodule {
         PermitResultListener packetListener = new PermitResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(addPermit, null, null, vcard);
+        XepQueryInfo queryInfo = new XepQueryInfo(addPermit, null, null, vcard);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -256,7 +257,7 @@ public class PermitManager extends xepmodule {
         PermitResultListener packetListener = new PermitResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(removePermit, jid);
+        XepQueryInfo queryInfo = new XepQueryInfo(removePermit, jid);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -266,7 +267,7 @@ public class PermitManager extends xepmodule {
         @Override
         public void processPacket(Packet packet) {
             String packetId = packet.getPacketID();
-            xepQueryInfo queryInfo = getQueryInfo(packetId);
+            XepQueryInfo queryInfo = getQueryInfo(packetId);
             if (queryInfo != null) {
                 removeQueryInfo(queryInfo, packetId);
                 processQueryResponse(packet, queryInfo);

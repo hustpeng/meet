@@ -12,13 +12,14 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.CacheStoreBase;
-import org.jivesoftware.smackx.xepmodule.xepmodule;
+import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
+import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class FavoritesManager extends xepmodule {
+public class FavoritesManager extends Xepmodule {
 
     private static final int fetchFavorites = 0;
     private static final int addFavorite = 1;
@@ -119,7 +120,7 @@ public class FavoritesManager extends xepmodule {
     }
 
     @Override
-    public void processQueryWithFailureCode(xepQueryInfo aQuery, String error) {
+    public void processQueryWithFailureCode(XepQueryInfo aQuery, String error) {
         switch (aQuery.getQueryType()) {
             case fetchFavorites:
                 notifyFetchFavoritesResult(false);
@@ -138,7 +139,7 @@ public class FavoritesManager extends xepmodule {
         }
     }
 
-    private void processQueryResponse(Packet packet, xepQueryInfo queryInfo) {
+    private void processQueryResponse(Packet packet, XepQueryInfo queryInfo) {
         switch (queryInfo.getQueryType()) {
             case fetchFavorites: {
                 if (packet.getError() == null) {
@@ -147,7 +148,7 @@ public class FavoritesManager extends xepmodule {
                     notifyFetchFavoritesResult(false);
                 }
             }
-                break;
+            break;
 
             case addFavorite: {
                 if (packet.getError() == null) {
@@ -156,7 +157,7 @@ public class FavoritesManager extends xepmodule {
                     notifyAddFavoritesResult(queryInfo.getParam1(), false);
                 }
             }
-                break;
+            break;
 
             case removeFavorite: {
                 if (packet.getError() == null) {
@@ -165,7 +166,7 @@ public class FavoritesManager extends xepmodule {
                     notifyRemoveFavoritesResult(queryInfo.getParam1(), false);
                 }
             }
-                break;
+            break;
 
             default:
                 break;
@@ -188,7 +189,7 @@ public class FavoritesManager extends xepmodule {
         FavoritesResultListener packetListener = new FavoritesResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(fetchFavorites);
+        XepQueryInfo queryInfo = new XepQueryInfo(fetchFavorites);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -242,7 +243,7 @@ public class FavoritesManager extends xepmodule {
         FavoritesResultListener packetListener = new FavoritesResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(addFavorite, jid);
+        XepQueryInfo queryInfo = new XepQueryInfo(addFavorite, jid);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -291,7 +292,7 @@ public class FavoritesManager extends xepmodule {
         FavoritesResultListener packetListener = new FavoritesResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(removeFavorite, jid);
+        XepQueryInfo queryInfo = new XepQueryInfo(removeFavorite, jid);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -317,7 +318,7 @@ public class FavoritesManager extends xepmodule {
     private class PresencePacketListener implements PacketListener {
 
         public void processPacket(Packet packet) {
-            Presence presence = (Presence)packet;
+            Presence presence = (Presence) packet;
 
             if (!hasFavorite) {
                 earlyPresenceList.add(presence);
@@ -332,7 +333,7 @@ public class FavoritesManager extends xepmodule {
         if (aPresence.getType() == Presence.Type.available) {
             String fromString = aPresence.getFrom();
             String userKey = XmppStringUtils.parseBareAddress(fromString);
-            FavoritesObject item = (FavoritesObject)cacheStorage.getEntryWithKey(userKey
+            FavoritesObject item = (FavoritesObject) cacheStorage.getEntryWithKey(userKey
                     .toLowerCase());
             if (item != null) {
                 item.setOnline(true);
@@ -343,7 +344,7 @@ public class FavoritesManager extends xepmodule {
         } else if (aPresence.getType() == Presence.Type.unavailable) {
             String fromString = aPresence.getFrom();
             String userKey = XmppStringUtils.parseBareAddress(fromString);
-            FavoritesObject item = (FavoritesObject)cacheStorage.getEntryWithKey(userKey
+            FavoritesObject item = (FavoritesObject) cacheStorage.getEntryWithKey(userKey
                     .toLowerCase());
             if (item != null) {
                 item.setOnline(false);
@@ -358,7 +359,7 @@ public class FavoritesManager extends xepmodule {
     private class FavoritesResultListener implements PacketListener {
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
-            xepQueryInfo queryInfo = getQueryInfo(packetIdString);
+            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
             if (queryInfo != null) {
                 removeQueryInfo(queryInfo, packetIdString);
                 processQueryResponse(packet, queryInfo);
@@ -372,7 +373,7 @@ public class FavoritesManager extends xepmodule {
 
             //添加和删除favorites时，favorites数据不在原IQ包的Result中
             boolean favoritesChanged = false;
-            FavoritesPacket favoritesPacket = (FavoritesPacket)packet;
+            FavoritesPacket favoritesPacket = (FavoritesPacket) packet;
             for (FavoritesObject item : favoritesPacket.getFavoritesItems()) {
                 if (item.getSubscription().equalsIgnoreCase("remove")) {
                     cacheStorage.delete(item);

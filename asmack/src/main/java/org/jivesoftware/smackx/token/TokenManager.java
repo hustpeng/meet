@@ -1,6 +1,10 @@
 
 package org.jivesoftware.smackx.token;
 
+import android.text.TextUtils;
+
+import com.agmbat.log.Log;
+
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
@@ -9,14 +13,14 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smackx.xepmodule.xepmodule;
-
-import android.text.TextUtils;
+import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
+import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class TokenManager extends xepmodule{
+public class TokenManager extends Xepmodule {
+
     private final static int getToken = 0;
 
     private String tokenServer = null;
@@ -70,16 +74,14 @@ public class TokenManager extends xepmodule{
         listeners.remove(listener);
     }
 
-    private void notifyGetTokenResult(String token)
-    {
+    private void notifyGetTokenResult(String token) {
         for (TokenListener listener : listeners) {
             listener.notifyGetTokenResult(token);
         }
     }
 
     @Override
-    public void processQueryWithFailureCode(xepQueryInfo queryInfo, String error)
-    {
+    public void processQueryWithFailureCode(XepQueryInfo queryInfo, String error) {
         switch (queryInfo.getQueryType()) {
             case getToken:
                 notifyGetTokenResult(null);
@@ -90,13 +92,11 @@ public class TokenManager extends xepmodule{
         }
     }
 
-    private void processQueryResponse(Packet packet, xepQueryInfo queryInfo)
-    {
+    private void processQueryResponse(Packet packet, XepQueryInfo queryInfo) {
         switch (queryInfo.getQueryType()) {
-            case getToken:
-            {
+            case getToken: {
                 if (packet.getError() == null) {
-                    TokenObject token = ((TokenPacket)packet).getObject();
+                    TokenObject token = ((TokenPacket) packet).getObject();
                     if (token != null) {
                         tokenObject = token;
                         notifyGetTokenResult(token.getToken());
@@ -106,7 +106,7 @@ public class TokenManager extends xepmodule{
 
                 notifyGetTokenResult(null);
             }
-                break;
+            break;
 
             default:
                 break;
@@ -121,12 +121,12 @@ public class TokenManager extends xepmodule{
 
         public String getChildElementXML() {
             return new StringBuffer()
-                        .append("<")
-                        .append(TokenProvider.elementName())
-                        .append(" xmlns=\"")
-                        .append(TokenProvider.namespace())
-                        .append("\"/>")
-                        .toString();
+                    .append("<")
+                    .append(TokenProvider.elementName())
+                    .append(" xmlns=\"")
+                    .append(TokenProvider.namespace())
+                    .append("\"/>")
+                    .toString();
         }
     }
 
@@ -161,7 +161,7 @@ public class TokenManager extends xepmodule{
         GetTokenResultListener packetListener = new GetTokenResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(getToken);
+        XepQueryInfo queryInfo = new XepQueryInfo(getToken);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -182,14 +182,45 @@ public class TokenManager extends xepmodule{
         }
     }
 
-    private class GetTokenResultListener implements PacketListener{
+    private class GetTokenResultListener implements PacketListener {
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
-            xepQueryInfo queryInfo = getQueryInfo(packetIdString);
+            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
             if (queryInfo != null) {
                 removeQueryInfo(queryInfo, packetIdString);
                 processQueryResponse(packet, queryInfo);
             }
         }
+    }
+
+    private static final String TAG = "";
+
+    private Object tokenLock = new Object();
+
+    /**
+     * 获取token
+     *
+     * @return
+     */
+    public String getTokenRetry() {
+        int retry = 4;
+        String tokenString = null;
+        while ((retry--) > 0) {
+            tokenString = getToken();
+            if (tokenString == null) {
+                synchronized (tokenLock) {
+                    try {
+                        Log.d(TAG, "tokenLock.wait start");
+                        tokenLock.wait(10 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d(TAG, "tokenLock.wait end");
+                }
+            } else {
+                return tokenString;
+            }
+        }
+        return tokenString;
     }
 }

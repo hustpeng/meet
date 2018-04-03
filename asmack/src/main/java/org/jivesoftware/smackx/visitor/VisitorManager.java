@@ -14,7 +14,8 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.db.CacheStoreBase;
 import org.jivesoftware.smackx.message.MessageRelationExtension;
 import org.jivesoftware.smackx.message.MessageRelationProvider;
-import org.jivesoftware.smackx.xepmodule.xepmodule;
+import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
+import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +24,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class VisitorManager extends xepmodule {
+public class VisitorManager extends Xepmodule {
 
     private static final int fetchVisitorMe = 0;
     private static final int sendVisitorRecord = 1;
@@ -154,7 +155,7 @@ public class VisitorManager extends xepmodule {
     }
 
     @Override
-    public void processQueryWithFailureCode(xepQueryInfo aQuery, String error) {
+    public void processQueryWithFailureCode(XepQueryInfo aQuery, String error) {
         switch (aQuery.getQueryType()) {
             case fetchVisitorMe:
                 notifyFetchVisitorMeResult(false, null);
@@ -168,7 +169,7 @@ public class VisitorManager extends xepmodule {
         }
     }
 
-    private void processQueryResponse(Packet packet, xepQueryInfo queryInfo) {
+    private void processQueryResponse(Packet packet, XepQueryInfo queryInfo) {
         switch (queryInfo.getQueryType()) {
             case fetchVisitorMe: {
                 if (packet.getError() == null) {
@@ -299,7 +300,7 @@ public class VisitorManager extends xepmodule {
         VisitorMeResultListener packetListener = new VisitorMeResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(fetchVisitorMe);
+        XepQueryInfo queryInfo = new XepQueryInfo(fetchVisitorMe);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -385,7 +386,7 @@ public class VisitorManager extends xepmodule {
         sendVisitorRecordPacket packet = new sendVisitorRecordPacket(array);
         String packetId = packet.getPacketID();
 
-        xepQueryInfo queryInfo = new xepQueryInfo(fetchVisitorMe);
+        XepQueryInfo queryInfo = new XepQueryInfo(fetchVisitorMe);
         addQueryInfo(queryInfo, packetId, null);
 
         xmppConnection.sendPacket(packet);
@@ -394,7 +395,7 @@ public class VisitorManager extends xepmodule {
     private class VisitorMeResultListener implements PacketListener {
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
-            xepQueryInfo queryInfo = getQueryInfo(packetIdString);
+            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
             if (queryInfo != null) {
                 removeQueryInfo(queryInfo, packetIdString);
                 processQueryResponse(packet, queryInfo);

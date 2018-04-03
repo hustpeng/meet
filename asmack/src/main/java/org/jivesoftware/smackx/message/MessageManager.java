@@ -14,13 +14,13 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.message.MessageObject.Msg_Status;
-import org.jivesoftware.smackx.xepmodule.xepmodule;
+import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class MessageManager extends xepmodule {
+public class MessageManager extends Xepmodule {
     private final List<MessageListener> listeners;
 
     private MessageStorage messageStorage;
@@ -86,7 +86,7 @@ public class MessageManager extends xepmodule {
                 return false;
             }
 
-            Type messageType = ((Message)packet).getType();
+            Type messageType = ((Message) packet).getType();
             // the Type.normal msg is filter in VisitorManager.java
             return messageType == Type.chat/*
                                                     * || messageType ==
@@ -97,7 +97,7 @@ public class MessageManager extends xepmodule {
 
     private PacketListener messagePacketListener = new PacketListener() {
         public void processPacket(Packet packet) {
-            Message message = (Message)packet;
+            Message message = (Message) packet;
             if (("http://jabber.org/protocol/muc#verify".equals(message.getXmlns()))
                     || ("http://jabber.org/protocol/muc#admin".equals(message.getXmlns()))
                     || ("http://jabber.org/protocol/muc#hotcircle".equals(message.getXmlns()))
@@ -432,8 +432,7 @@ public class MessageManager extends xepmodule {
         }
     }
 
-    public void correctMessagesStatus()
-    {
+    public void correctMessagesStatus() {
         messageStorage.correctMessagesStatus();
     }
 }

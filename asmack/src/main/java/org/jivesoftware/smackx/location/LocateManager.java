@@ -1,6 +1,8 @@
 
 package org.jivesoftware.smackx.location;
 
+import android.text.TextUtils;
+
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
@@ -10,17 +12,16 @@ import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.db.CacheStoreBase;
-import org.jivesoftware.smackx.xepmodule.xepmodule;
-
-import android.text.TextUtils;
+import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
+import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class LocateManager extends xepmodule{
+public class LocateManager extends Xepmodule {
     /**
-     *location刷新时间 in millisecond
+     * location刷新时间 in millisecond
      */
     private final static int LOCATION_REFRESH_TIME = 600000;
 
@@ -75,23 +76,20 @@ public class LocateManager extends xepmodule{
         listeners.remove(listener);
     }
 
-    private void notifyGetLocationResult(String jid, LocateObject location)
-    {
+    private void notifyGetLocationResult(String jid, LocateObject location) {
         for (LocateListener listener : listeners) {
             listener.notifyGetLocationResult(jid, location);
         }
     }
 
-    private void notifySetLocationResult(boolean result)
-    {
+    private void notifySetLocationResult(boolean result) {
         for (LocateListener listener : listeners) {
             listener.notifySetLocationResult(result);
         }
     }
 
     @Override
-    public void processQueryWithFailureCode(xepQueryInfo queryInfo, String error)
-    {
+    public void processQueryWithFailureCode(XepQueryInfo queryInfo, String error) {
         switch (queryInfo.getQueryType()) {
             case getLocation:
                 notifyGetLocationResult(queryInfo.getParam1(), null);
@@ -106,13 +104,11 @@ public class LocateManager extends xepmodule{
         }
     }
 
-    private void processQueryResponse(Packet packet, xepQueryInfo queryInfo)
-    {
+    private void processQueryResponse(Packet packet, XepQueryInfo queryInfo) {
         switch (queryInfo.getQueryType()) {
-            case getLocation:
-            {
+            case getLocation: {
                 if (packet.getError() == null) {
-                    LocateObject object = ((LocatePacket)packet).getObject();
+                    LocateObject object = ((LocatePacket) packet).getObject();
                     if (object != null) {
                         object.setJid(packet.getFrom());
                         object.setUpdate_date(new Date());
@@ -120,18 +116,16 @@ public class LocateManager extends xepmodule{
                     }
 
                     notifyGetLocationResult(queryInfo.getParam1(), object);
-                }
-                else {
+                } else {
                     notifyGetLocationResult(queryInfo.getParam1(), null);
                 }
             }
-                break;
+            break;
 
             case setLocation:
                 if (packet.getError() == null) {
                     notifySetLocationResult(true);
-                }
-                else {
+                } else {
                     notifySetLocationResult(false);
                 }
 
@@ -173,7 +167,7 @@ public class LocateManager extends xepmodule{
         LocationResultListener packetListener = new LocationResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(setLocation);
+        XepQueryInfo queryInfo = new XepQueryInfo(setLocation);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -187,64 +181,63 @@ public class LocateManager extends xepmodule{
 
         public String getChildElementXML() {
             return new StringBuffer()
-                        .append("<")
-                        .append(LocateProvider.elementName())
-                        .append(" xmlns=\"")
-                        .append(LocateProvider.namespace())
-                        .append("\"/>")
-                        .toString();
+                    .append("<")
+                    .append(LocateProvider.elementName())
+                    .append(" xmlns=\"")
+                    .append(LocateProvider.namespace())
+                    .append("\"/>")
+                    .toString();
         }
     }
 
     /**
-    *
-    * @param jid 必须传bare jid,不能带resource
-    * @return 返回LocationObject; 如果返回null, 则会异步去服务器获取,然后通过notifyGetLocationResult返回结果
-    * 如果当前没有登录，notifyGetLocationResult(jid, null)会在函数返回前被调用。
-    */
-   public LocateObject getLocation(String jid) {
-       if (TextUtils.isEmpty(jid)) {
-           return null;
-       }
+     * @param jid 必须传bare jid,不能带resource
+     * @return 返回LocationObject; 如果返回null, 则会异步去服务器获取,然后通过notifyGetLocationResult返回结果
+     * 如果当前没有登录，notifyGetLocationResult(jid, null)会在函数返回前被调用。
+     */
+    public LocateObject getLocation(String jid) {
+        if (TextUtils.isEmpty(jid)) {
+            return null;
+        }
 
-       if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
-           notifyGetLocationResult(jid, null);
-           return null;
-       }
+        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
+            notifyGetLocationResult(jid, null);
+            return null;
+        }
 
-       LocateObject location = (LocateObject)cacheStorage.getEntryWithKey(jid.toLowerCase());
-       if (location != null) {
-           //location还没有过期
-           Date lastUpdateDate = location.getUpdate_date();
-           if (lastUpdateDate != null) {
-               if (lastUpdateDate.after(new Date(System.currentTimeMillis() - LOCATION_REFRESH_TIME))) {
-                   return location;
-               }
-           }
-       }
+        LocateObject location = (LocateObject) cacheStorage.getEntryWithKey(jid.toLowerCase());
+        if (location != null) {
+            //location还没有过期
+            Date lastUpdateDate = location.getUpdate_date();
+            if (lastUpdateDate != null) {
+                if (lastUpdateDate.after(new Date(System.currentTimeMillis() - LOCATION_REFRESH_TIME))) {
+                    return location;
+                }
+            }
+        }
 
-       if (isQueryExist(getLocation, jid, null)) {
-           return null;
-       }
+        if (isQueryExist(getLocation, jid, null)) {
+            return null;
+        }
 
-       getLocationPacket packet = new getLocationPacket(jid);
+        getLocationPacket packet = new getLocationPacket(jid);
 
-       String packetId = packet.getPacketID();
-       PacketFilter idFilter = new PacketIDFilter(packetId);
-       LocationResultListener packetListener = new LocationResultListener();
-       xmppConnection.addPacketListener(packetListener, idFilter);
+        String packetId = packet.getPacketID();
+        PacketFilter idFilter = new PacketIDFilter(packetId);
+        LocationResultListener packetListener = new LocationResultListener();
+        xmppConnection.addPacketListener(packetListener, idFilter);
 
-       xepQueryInfo queryInfo = new xepQueryInfo(getLocation, jid);
-       addQueryInfo(queryInfo, packetId, packetListener);
+        XepQueryInfo queryInfo = new XepQueryInfo(getLocation, jid);
+        addQueryInfo(queryInfo, packetId, packetListener);
 
-       xmppConnection.sendPacket(packet);
-       return null;
-   }
+        xmppConnection.sendPacket(packet);
+        return null;
+    }
 
-    private class LocationResultListener implements PacketListener{
+    private class LocationResultListener implements PacketListener {
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
-            xepQueryInfo queryInfo = getQueryInfo(packetIdString);
+            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
             if (queryInfo != null) {
                 removeQueryInfo(queryInfo, packetIdString);
                 processQueryResponse(packet, queryInfo);

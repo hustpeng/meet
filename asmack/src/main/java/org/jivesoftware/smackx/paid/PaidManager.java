@@ -9,14 +9,15 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smackx.xepmodule.xepmodule;
+import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
+import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import android.text.TextUtils;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class PaidManager extends xepmodule{
+public class PaidManager extends Xepmodule {
     private String paidServer = null;
 
     private boolean requestAccountAfterSetServer = false;
@@ -87,20 +88,16 @@ public class PaidManager extends xepmodule{
         }
     }
 
-    public PaidAccountObject getAccountInfo()
-    {
+    public PaidAccountObject getAccountInfo() {
         return myAccountInfo;
     }
 
-    public PaidPageInfoObject getPaidPageInfo()
-    {
+    public PaidPageInfoObject getPaidPageInfo() {
         return myPaidPageInfo;
     }
 
-    public boolean isSubscriptionVaild()
-    {
-        if (myAccountInfo != null)
-        {
+    public boolean isSubscriptionVaild() {
+        if (myAccountInfo != null) {
             return myAccountInfo.isSubscriptionVaild();
         }
 
@@ -108,8 +105,7 @@ public class PaidManager extends xepmodule{
     }
 
     @Override
-    public void processQueryWithFailureCode(xepQueryInfo queryInfo, String error)
-    {
+    public void processQueryWithFailureCode(XepQueryInfo queryInfo, String error) {
         switch (queryInfo.getQueryType()) {
             case fetchAccountInfo:
                 notifyFetchAccountResult(myAccountInfo);
@@ -127,16 +123,15 @@ public class PaidManager extends xepmodule{
         }
     }
 
-    private void processQueryResponse(Packet packet, xepQueryInfo queryInfo)
-    {
+    private void processQueryResponse(Packet packet, XepQueryInfo queryInfo) {
         switch (queryInfo.getQueryType()) {
             case fetchAccountInfo:
-                myAccountInfo = ((PaidAccountPacket)packet).getObject();
+                myAccountInfo = ((PaidAccountPacket) packet).getObject();
                 notifyFetchAccountResult(myAccountInfo);
                 break;
 
             case fetchPaidPageInfo:
-                myPaidPageInfo = ((PaidPageInfoPacket)packet).getObject();
+                myPaidPageInfo = ((PaidPageInfoPacket) packet).getObject();
                 notifyFetchPageInfoResult(myPaidPageInfo);
                 break;
 
@@ -156,17 +151,16 @@ public class PaidManager extends xepmodule{
 
         public String getChildElementXML() {
             return new StringBuffer()
-                        .append("<")
-                        .append(PaidAccountProvider.elementName())
-                        .append(" xmlns=\"")
-                        .append(PaidAccountProvider.namespace())
-                        .append("\"/>")
-                        .toString();
+                    .append("<")
+                    .append(PaidAccountProvider.elementName())
+                    .append(" xmlns=\"")
+                    .append(PaidAccountProvider.namespace())
+                    .append("\"/>")
+                    .toString();
         }
     }
 
-    public void fetchAccountInfo()
-    {
+    public void fetchAccountInfo() {
         if (TextUtils.isEmpty(paidServer)) {
             requestAccountAfterSetServer = true;
             return;
@@ -183,7 +177,7 @@ public class PaidManager extends xepmodule{
         paidResultListener packetListener = new paidResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(fetchAccountInfo);
+        XepQueryInfo queryInfo = new XepQueryInfo(fetchAccountInfo);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -198,17 +192,16 @@ public class PaidManager extends xepmodule{
 
         public String getChildElementXML() {
             return new StringBuffer()
-                        .append("<")
-                        .append(PaidPageInfoProvider.elementName())
-                        .append(" xmlns=\"")
-                        .append(PaidPageInfoProvider.namespace())
-                        .append("\"/>")
-                        .toString();
+                    .append("<")
+                    .append(PaidPageInfoProvider.elementName())
+                    .append(" xmlns=\"")
+                    .append(PaidPageInfoProvider.namespace())
+                    .append("\"/>")
+                    .toString();
         }
     }
 
-    public void fetchPageInfo()
-    {
+    public void fetchPageInfo() {
         if (TextUtils.isEmpty(paidServer)) {
             return;
         }
@@ -224,7 +217,7 @@ public class PaidManager extends xepmodule{
         paidResultListener packetListener = new paidResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(fetchPaidPageInfo);
+        XepQueryInfo queryInfo = new XepQueryInfo(fetchPaidPageInfo);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -245,10 +238,10 @@ public class PaidManager extends xepmodule{
         }
     }
 
-    private class paidResultListener implements PacketListener{
+    private class paidResultListener implements PacketListener {
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
-            xepQueryInfo queryInfo = getQueryInfo(packetIdString);
+            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
             if (queryInfo != null) {
                 removeQueryInfo(queryInfo, packetIdString);
                 processQueryResponse(packet, queryInfo);

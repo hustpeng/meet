@@ -1,6 +1,8 @@
 
 package org.jivesoftware.smackx.vcard;
 
+import android.text.TextUtils;
+
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
@@ -10,15 +12,14 @@ import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.db.CacheStoreBase;
-import org.jivesoftware.smackx.xepmodule.xepmodule;
-
-import android.text.TextUtils;
+import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
+import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class VCardManager extends xepmodule {
+public class VCardManager extends Xepmodule {
     /**
      * vcard过期时间in millisecond,超过这个时间获取时会刷新vcard
      */
@@ -90,7 +91,7 @@ public class VCardManager extends xepmodule {
     }
 
     @Override
-    public void processQueryWithFailureCode(xepQueryInfo queryInfo, String error) {
+    public void processQueryWithFailureCode(XepQueryInfo queryInfo, String error) {
         switch (queryInfo.getQueryType()) {
             case fetchVCard:
                 notifyFetchVCardResult(queryInfo.getParam1(), null);
@@ -105,7 +106,7 @@ public class VCardManager extends xepmodule {
         }
     }
 
-    private void processQueryResponse(Packet packet, xepQueryInfo queryInfo) {
+    private void processQueryResponse(Packet packet, XepQueryInfo queryInfo) {
         switch (queryInfo.getQueryType()) {
             case fetchVCard: {
                 if (packet.getError() == null) {
@@ -209,7 +210,7 @@ public class VCardManager extends xepmodule {
         VcardResultListener packetListener = new VcardResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(fetchVCard, jid);
+        XepQueryInfo queryInfo = new XepQueryInfo(fetchVCard, jid);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -254,7 +255,7 @@ public class VCardManager extends xepmodule {
         VcardResultListener packetListener = new VcardResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(setMyVCard, null, null, newVCard);
+        XepQueryInfo queryInfo = new XepQueryInfo(setMyVCard, null, null, newVCard);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -263,7 +264,7 @@ public class VCardManager extends xepmodule {
     private class VcardResultListener implements PacketListener {
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
-            xepQueryInfo queryInfo = getQueryInfo(packetIdString);
+            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
             if (queryInfo != null) {
                 removeQueryInfo(queryInfo, packetIdString);
                 processQueryResponse(packet, queryInfo);

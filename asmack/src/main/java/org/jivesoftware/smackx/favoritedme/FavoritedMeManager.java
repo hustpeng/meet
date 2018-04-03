@@ -13,16 +13,15 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.db.CacheStoreBase;
 import org.jivesoftware.smackx.message.MessageRelationExtension;
 import org.jivesoftware.smackx.message.MessageRelationProvider;
-import org.jivesoftware.smackx.visitor.VisitorMeListener;
-import org.jivesoftware.smackx.visitor.VisitorMeReadFlagObject;
-import org.jivesoftware.smackx.xepmodule.xepmodule;
+import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
+import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class FavoritedMeManager extends xepmodule{
+public class FavoritedMeManager extends Xepmodule {
 
     private static final int fetchFavoritedMe = 0;
 
@@ -99,25 +98,26 @@ public class FavoritedMeManager extends xepmodule{
             listener.notifyFetchFavoritedMeResult(success, error);
         }
     }
+
     private void notifyNewFavoritedMe() {
         int count = getNewFaoritedMeCount();
         for (FavoritedMeListener listener : listeners) {
             listener.notifyNewFavoritedMe(count);
         }
     }
-    public int getNewFaoritedMeCount(){
+
+    public int getNewFaoritedMeCount() {
         return readFlagStorage.getNewFavoritedMeCount();
     }
-    public ArrayList<FavoritedMeObject> getAllFavoritedMeObjects()
-    {
+
+    public ArrayList<FavoritedMeObject> getAllFavoritedMeObjects() {
         ArrayList<FavoritedMeObject> arrayList = cacheStorage.getAllEntires();
         Collections.sort(arrayList);
         return arrayList;
     }
 
     @Override
-    public void processQueryWithFailureCode(xepQueryInfo aQuery, String error)
-    {
+    public void processQueryWithFailureCode(XepQueryInfo aQuery, String error) {
         switch (aQuery.getQueryType()) {
             case fetchFavoritedMe:
                 notifyFetchFavoritedMeResult(false, null);
@@ -128,20 +128,17 @@ public class FavoritedMeManager extends xepmodule{
         }
     }
 
-    private void processQueryResponse(Packet packet, xepQueryInfo queryInfo)
-    {
+    private void processQueryResponse(Packet packet, XepQueryInfo queryInfo) {
         switch (queryInfo.getQueryType()) {
-            case fetchFavoritedMe:
-            {
+            case fetchFavoritedMe: {
                 if (packet.getError() == null) {
                     boolean isChanged = false;
-                    FavoritedMePacket favoritedMePacket = (FavoritedMePacket)packet;
-                    for(FavoritedMeObject item : favoritedMePacket.getFavoritedMeItems()){
+                    FavoritedMePacket favoritedMePacket = (FavoritedMePacket) packet;
+                    for (FavoritedMeObject item : favoritedMePacket.getFavoritedMeItems()) {
                         if (readFlagStorage.isReadFlagExsit(item.getJid())) {
                             item.setNew(true);
                             item.setRemoveFromReadFlag(false);
-                        }
-                        else {
+                        } else {
                             item.setNew(false);
                             item.setRemoveFromReadFlag(true);
                         }
@@ -157,28 +154,26 @@ public class FavoritedMeManager extends xepmodule{
 
                     if (favoritedMePacket.getFavoritedMeItems().size() < FAVORITED_ME_PAGE_SIZE) {
                         notifyFetchFavoritedMeResult(true, FAVORITED_ME_NO_MORE);
-                    }
-                    else{
+                    } else {
                         notifyFetchFavoritedMeResult(true, null);
                     }
-                }
-                else {
+                } else {
                     notifyFetchFavoritedMeResult(false, null);
                 }
             }
-                break;
+            break;
 
             default:
                 break;
         }
     }
 
-    public void addFavoritedMeReadFlag(String jidString){
+    public void addFavoritedMeReadFlag(String jidString) {
         readFlagStorage.insertOrUpdateReadFlag(jidString);
         notifyNewFavoritedMe();
     }
 
-    public void removeFavoritedMeReadFlag(String jidString){
+    public void removeFavoritedMeReadFlag(String jidString) {
         readFlagStorage.deleteReadFlag(jidString);
         notifyNewFavoritedMe();
     }
@@ -216,7 +211,7 @@ public class FavoritedMeManager extends xepmodule{
             if (!(packet instanceof Message)) {
                 return false;
             }
-            Message.Type messageType = ((Message)packet).getType();
+            Message.Type messageType = ((Message) packet).getType();
             return messageType == Message.Type.normal;
         }
 
@@ -227,14 +222,14 @@ public class FavoritedMeManager extends xepmodule{
         @Override
         public void processPacket(Packet packet) {
 
-            Message message = (Message)packet;
+            Message message = (Message) packet;
             if (("http://jabber.org/protocol/muc#verify".equals(message.getXmlns()))
                     || ("http://jabber.org/protocol/muc#admin".equals(message.getXmlns()))
                     || ("http://jabber.org/protocol/muc#hotcircle".equals(message.getXmlns()))
                     || ("http://jabber.org/protocol/muc#owner".equals(message.getXmlns()))) {
                 return;
             }
-            MessageRelationExtension extension = (MessageRelationExtension)message.getExtension(
+            MessageRelationExtension extension = (MessageRelationExtension) message.getExtension(
                     MessageRelationProvider.elementName(), MessageRelationProvider.namespace());
             if (!"fanme".equals(extension.getType())) {
                 return;
@@ -250,10 +245,10 @@ public class FavoritedMeManager extends xepmodule{
 
     /**
      * arraylist中是FavoritedMeObject对象
+     *
      * @return
      */
-    public ArrayList<FavoritedMeObject> getFavoritedMeObjects()
-    {
+    public ArrayList<FavoritedMeObject> getFavoritedMeObjects() {
         return cacheStorage.getAllEntires();
     }
 
@@ -281,16 +276,16 @@ public class FavoritedMeManager extends xepmodule{
         FavoritedMeResultListener packetListener = new FavoritedMeResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(fetchFavoritedMe);
+        XepQueryInfo queryInfo = new XepQueryInfo(fetchFavoritedMe);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
     }
 
-    private class FavoritedMeResultListener implements PacketListener{
+    private class FavoritedMeResultListener implements PacketListener {
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
-            xepQueryInfo queryInfo = getQueryInfo(packetIdString);
+            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
             if (queryInfo != null) {
                 removeQueryInfo(queryInfo, packetIdString);
                 processQueryResponse(packet, queryInfo);

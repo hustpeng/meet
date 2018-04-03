@@ -1,6 +1,8 @@
 
 package org.jivesoftware.smackx.vcardextend;
 
+import android.text.TextUtils;
+
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
@@ -10,15 +12,14 @@ import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.db.CacheStoreBase;
-import org.jivesoftware.smackx.xepmodule.xepmodule;
-
-import android.text.TextUtils;
+import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
+import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class VCardExtendManager extends xepmodule{
+public class VCardExtendManager extends Xepmodule {
     /**
      * vcard过期时间in millisecond,超过这个时间获取时会刷新vcard
      */
@@ -90,8 +91,7 @@ public class VCardExtendManager extends xepmodule{
     }
 
     @Override
-    public void processQueryWithFailureCode(xepQueryInfo queryInfo, String error)
-    {
+    public void processQueryWithFailureCode(XepQueryInfo queryInfo, String error) {
         switch (queryInfo.getQueryType()) {
             case fetchVCardExtend:
                 notifyFetchVCardExtendResult(queryInfo.getParam1(), null);
@@ -106,13 +106,11 @@ public class VCardExtendManager extends xepmodule{
         }
     }
 
-    private void processQueryResponse(Packet packet, xepQueryInfo queryInfo)
-    {
+    private void processQueryResponse(Packet packet, XepQueryInfo queryInfo) {
         switch (queryInfo.getQueryType()) {
-            case fetchVCardExtend:
-            {
+            case fetchVCardExtend: {
                 if (packet.getError() == null) {
-                    VCardExtendObject object = ((VCardExtendPacket)packet).getObject();
+                    VCardExtendObject object = ((VCardExtendPacket) packet).getObject();
                     if (object != null) {
                         object.setJid(packet.getFrom());
                         object.setUpdate_date(new Date());
@@ -120,29 +118,26 @@ public class VCardExtendManager extends xepmodule{
                     }
 
                     notifyFetchVCardExtendResult(queryInfo.getParam1(), object);
-                }
-                else {
+                } else {
                     notifyFetchVCardExtendResult(queryInfo.getParam1(), null);
                 }
             }
-                break;
+            break;
 
-            case setMyVCardExtend:
-            {
+            case setMyVCardExtend: {
                 if (packet.getError() == null) {
-                    VCardExtendObject object = (VCardExtendObject)queryInfo.getParam3();
+                    VCardExtendObject object = (VCardExtendObject) queryInfo.getParam3();
                     if (object != null) {
                         object.setUpdate_date(new Date());
                         cacheStorage.insertOrUpdate(object);
                     }
 
                     notifySetMyVCardExtendResult(true);
-                }
-                else {
+                } else {
                     notifySetMyVCardExtendResult(false);
                 }
             }
-                break;
+            break;
 
             default:
                 break;
@@ -157,27 +152,24 @@ public class VCardExtendManager extends xepmodule{
 
         public String getChildElementXML() {
             return new StringBuffer()
-                        .append("<")
-                        .append(VCardExtendProvider.elementName())
-                        .append(" xmlns=\"")
-                        .append(VCardExtendProvider.namespace())
-                        .append("\"/>")
-                        .toString();
+                    .append("<")
+                    .append(VCardExtendProvider.elementName())
+                    .append(" xmlns=\"")
+                    .append(VCardExtendProvider.namespace())
+                    .append("\"/>")
+                    .toString();
         }
     }
 
     /**
-    *
-    * @return 返回vcard; 如果返回null, 则会异步去服务器获取,然后通过notifyFetchVCardResult返回结果
-    * 如果当前没有登录，notifyFetchVCardResult(jid, null)会在函数返回前被调用。
-    */
-    public VCardExtendObject fetchMyVCardExtend()
-    {
+     * @return 返回vcard; 如果返回null, 则会异步去服务器获取,然后通过notifyFetchVCardResult返回结果
+     * 如果当前没有登录，notifyFetchVCardResult(jid, null)会在函数返回前被调用。
+     */
+    public VCardExtendObject fetchMyVCardExtend() {
         return fetchVCardExtend(xmppConnection.getBareJid());
     }
 
     /**
-     *
      * @param jid 必须传bare jid,不能带resource
      * @return 返回vcard; 如果返回null, 则会异步去服务器获取,然后通过notifyFetchVCardResult返回结果
      * 如果输入jid为空，或者当前没有登录，notifyFetchVCardResult(jid, null)会在函数返回前被调用。
@@ -192,7 +184,7 @@ public class VCardExtendManager extends xepmodule{
             return null;
         }
 
-        VCardExtendObject vCardExtend = (VCardExtendObject)cacheStorage.getEntryWithKey(jid.toLowerCase());
+        VCardExtendObject vCardExtend = (VCardExtendObject) cacheStorage.getEntryWithKey(jid.toLowerCase());
         if (vCardExtend != null) {
             if (jid.equalsIgnoreCase(xmppConnection.getBareJid())) {
                 return vCardExtend;
@@ -218,7 +210,7 @@ public class VCardExtendManager extends xepmodule{
         VcardExtendResultListener packetListener = new VcardExtendResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(fetchVCardExtend, jid);
+        XepQueryInfo queryInfo = new XepQueryInfo(fetchVCardExtend, jid);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -241,9 +233,9 @@ public class VCardExtendManager extends xepmodule{
 
     /**
      * 异步接口，结果通过notifySetMyVCardResult返回
+     *
      * @param newVCard
-     * @return
-     * 如果输入newVCard为空，或者当前没有登录，notifySetMyVCardResult(false)会在函数返回前被调用。
+     * @return 如果输入newVCard为空，或者当前没有登录，notifySetMyVCardResult(false)会在函数返回前被调用。
      */
     public void setMyVCardExtend(VCardExtendObject newVCardExtend) {
         if (newVCardExtend == null) {
@@ -258,21 +250,21 @@ public class VCardExtendManager extends xepmodule{
 
         SetVCardExtendPacket packet = new SetVCardExtendPacket(newVCardExtend);
 
-        String packetId =  packet.getPacketID();
+        String packetId = packet.getPacketID();
         PacketFilter idFilter = new PacketIDFilter(packetId);
         VcardExtendResultListener packetListener = new VcardExtendResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(setMyVCardExtend, null, null, newVCardExtend);
+        XepQueryInfo queryInfo = new XepQueryInfo(setMyVCardExtend, null, null, newVCardExtend);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
     }
 
-    private class VcardExtendResultListener implements PacketListener{
+    private class VcardExtendResultListener implements PacketListener {
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
-            xepQueryInfo queryInfo = getQueryInfo(packetIdString);
+            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
             if (queryInfo != null) {
                 removeQueryInfo(queryInfo, packetIdString);
                 processQueryResponse(packet, queryInfo);

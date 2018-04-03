@@ -10,13 +10,13 @@ import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.XmppStringUtils;
-import org.jivesoftware.smackx.xepmodule.xepmodule;
-
+import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
+import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class FindServerManager extends xepmodule{
+public class FindServerManager extends Xepmodule {
     private final static int findServer = 0;
     //private final static int setMyVCardExtend = 1;
 
@@ -66,16 +66,14 @@ public class FindServerManager extends xepmodule{
         findServerListeners.remove(findServerListener);
     }
 
-    private void notifyFindServersResult(FindServerObject serverObject)
-    {
+    private void notifyFindServersResult(FindServerObject serverObject) {
         for (FindServerListener listener : findServerListeners) {
             listener.notifyFindServersResult(serverObject);
         }
     }
 
     @Override
-    public void processQueryWithFailureCode(xepQueryInfo queryInfo, String error)
-    {
+    public void processQueryWithFailureCode(XepQueryInfo queryInfo, String error) {
         switch (queryInfo.getQueryType()) {
             case findServer:
                 notifyFindServersResult(null);
@@ -90,20 +88,17 @@ public class FindServerManager extends xepmodule{
         }
     }
 
-    private void processQueryResponse(Packet packet, xepQueryInfo queryInfo)
-    {
+    private void processQueryResponse(Packet packet, XepQueryInfo queryInfo) {
         switch (queryInfo.getQueryType()) {
-            case findServer:
-            {
+            case findServer: {
                 if (packet.getError() == null) {
-                    FindServerObject serverObject = ((FindServerPacket)packet).getFindServerObject();
+                    FindServerObject serverObject = ((FindServerPacket) packet).getFindServerObject();
                     notifyFindServersResult(serverObject);
-                }
-                else {
+                } else {
                     notifyFindServersResult(null);
                 }
             }
-                break;
+            break;
 
 //            case setMyVCardExtend:
 //            {
@@ -154,16 +149,16 @@ public class FindServerManager extends xepmodule{
         FindServerResultListener packetListener = new FindServerResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(findServer);
+        XepQueryInfo queryInfo = new XepQueryInfo(findServer);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
     }
 
-    private class FindServerResultListener implements PacketListener{
+    private class FindServerResultListener implements PacketListener {
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
-            xepQueryInfo queryInfo = getQueryInfo(packetIdString);
+            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
             if (queryInfo != null) {
                 removeQueryInfo(queryInfo, packetIdString);
                 processQueryResponse(packet, queryInfo);
@@ -179,20 +174,21 @@ public class FindServerManager extends xepmodule{
         private String category;
         private String content;
 
-        public sendReportPacket(String jid,String category,String content){
+        public sendReportPacket(String jid, String category, String content) {
             this.jid = jid;
             this.category = category;
             this.content = content;
             setType(Type.SET);
         }
 
-/*
- <iq id="HTi3o-11" type="set">
-<query xmlns="jabber:iq:report">
-<item jid="aaa\40email.com@10.2.7.139" reportcategory="Fake photo" reportcontent="Fake photo"/>
-</query>
-</iq>
- */       @Override
+        /*
+         <iq id="HTi3o-11" type="set">
+        <query xmlns="jabber:iq:report">
+        <item jid="aaa\40email.com@10.2.7.139" reportcategory="Fake photo" reportcontent="Fake photo"/>
+        </query>
+        </iq>
+         */
+        @Override
         public String getChildElementXML() {
             StringBuilder buf = new StringBuilder();
             buf.append("<");
@@ -227,7 +223,7 @@ public class FindServerManager extends xepmodule{
         sendReportResultListener packetListener = new sendReportResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        xepQueryInfo queryInfo = new xepQueryInfo(1, jid);
+        XepQueryInfo queryInfo = new XepQueryInfo(1, jid);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
@@ -236,7 +232,7 @@ public class FindServerManager extends xepmodule{
     private class sendReportResultListener implements PacketListener {
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
-            xepQueryInfo queryInfo = getQueryInfo(packetIdString);
+            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
             if (queryInfo != null) {
                 removeQueryInfo(queryInfo, packetIdString);
                 processQueryResponse(packet, queryInfo);
