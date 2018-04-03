@@ -40,7 +40,7 @@ public class MainTabActivity extends FragmentActivity {
         tabManager.addTab(tabContacts, "tabContacts", new ContactsFragment());
         View tabFound = createTabItemView(R.string.tab_found, R.drawable.tab_found);
         tabManager.addTab(tabFound, "tabFound", new FoundFragment());
-        View tabMe = createTabItemView(R.string.tab_me, R.drawable.tab_profile);
+        View tabMe = createTabItemView(R.string.tab_profile, R.drawable.tab_profile);
         tabManager.addTab(tabMe, "tabMe", new ProfileFragment());
         tabManager.setCurrentTab(TAB_INDEX_MSG);
     }

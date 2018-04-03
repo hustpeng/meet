@@ -5,6 +5,16 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="48.0dip"
+        android:layout_gravity="center"
+        android:background="#ff232325"
+        android:gravity="center"
+        android:text="@string/tab_profile"
+        android:textColor="#ffffffff"
+        android:textSize="20sp" />
+
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -86,14 +96,14 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/im_setting_item"
-                android:drawableLeft="@drawable/icon_me_photo"
+                android:drawableLeft="@drawable/im_icon_me_photo"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/im_ic_right"
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="@string/my_posts"
+                android:text="@string/im_my_posts"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -107,14 +117,14 @@
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/im_setting_item"
-                android:drawableLeft="@drawable/icon_me_collect"
+                android:drawableLeft="@drawable/im_icon_me_collect"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/im_ic_right"
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="@string/collection"
+                android:text="@string/im_collection"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -128,14 +138,14 @@
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/im_setting_item"
-                android:drawableLeft="@drawable/icon_me_money"
+                android:drawableLeft="@drawable/im_icon_me_money"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/im_ic_right"
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="@string/wallet"
+                android:text="@string/im_wallet"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -149,14 +159,14 @@
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/im_setting_item"
-                android:drawableLeft="@drawable/icon_me_card"
+                android:drawableLeft="@drawable/im_icon_me_card"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/im_ic_right"
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="@string/card_bag"
+                android:text="@string/im_card_bag"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -172,14 +182,14 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/im_setting_item"
-                android:drawableLeft="@drawable/icon_me_smail"
+                android:drawableLeft="@drawable/im_icon_me_smail"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/im_ic_right"
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="@string/expression2"
+                android:text="@string/im_emoji"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -194,14 +204,14 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/im_setting_item"
-                android:drawableLeft="@drawable/icon_me_setting"
+                android:drawableLeft="@drawable/im_icon_me_setting"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/im_ic_right"
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="10dp"
-                android:text="@string/settings"
+                android:text="@string/im_settings"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 

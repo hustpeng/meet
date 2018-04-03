@@ -1,28 +1,44 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <com.agmbat.swipemenulist.SwipeMenuListView
-        android:id="@+id/recent_chat_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="#ffe9e9e9"
-        android:dividerHeight="1dip" />
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/result"
-        android:layout_width="240dip"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="48.0dip"
         android:layout_gravity="center"
+        android:background="#ff232325"
         android:gravity="center"
-        android:textColor="#ff1c1c1c" />
+        android:text="@string/tab_msg"
+        android:textColor="#ffffffff"
+        android:textSize="20sp" />
 
-</FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.agmbat.swipemenulist.SwipeMenuListView
+            android:id="@+id/recent_chat_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="#ffe9e9e9"
+            android:dividerHeight="1dip" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/result"
+            android:layout_width="240dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="#ff1c1c1c" />
+
+    </FrameLayout>
+</LinearLayout>
