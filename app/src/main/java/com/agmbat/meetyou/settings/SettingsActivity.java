@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.agmbat.android.AppResources;
+import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.meetyou.R;
 
 /**
@@ -15,6 +17,7 @@ public class SettingsActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_settings);
         setupViews();
     }

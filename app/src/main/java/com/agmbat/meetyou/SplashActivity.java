@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.permissions.PermissionArrayAction;
 import com.agmbat.android.permissions.Permissions;
+import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.meetyou.login.LoginActivity;
 import com.nostra13.universalimageloader.core.download.Scheme;
 
@@ -34,6 +35,7 @@ public class SplashActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowUtils.setStatusBarColor(this, 0xff232325);
         ImageView imageView = new ImageView(this);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         String uri = Scheme.wrapUri("drawable", String.valueOf(R.drawable.splash));

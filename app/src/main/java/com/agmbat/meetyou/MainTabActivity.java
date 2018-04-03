@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;
 import com.agmbat.meetyou.tab.found.FoundFragment;
 import com.agmbat.meetyou.tab.msg.MsgFragment;
@@ -21,6 +22,7 @@ public class MainTabActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_maintab);
         setupViews();
 //        EventBus.getDefault().register(this);

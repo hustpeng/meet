@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.account.ApiResult;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.MainTabActivity;
@@ -31,6 +32,7 @@ public class LoginActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_login);
         mLoginManager = new ImAccountManager(this);
         setupViews();

@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.imsdk.account.RegisterInfo;
 import com.agmbat.meetyou.MainTabActivity;
@@ -81,6 +82,7 @@ public class RegisterActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_register);
         mLoginManager = new ImAccountManager(this);
         setupViews();
