@@ -72,6 +72,9 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
+        // for test
+        mUserNameView.setText("13437122759");
+        mPasswordView.setText("a123123");
     }
 
     private void login() {
