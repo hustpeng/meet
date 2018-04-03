@@ -1,5 +1,6 @@
 package com.agmbat.meetyou.tab.profile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.settings.SettingsActivity;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
@@ -26,7 +28,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.txt_money).setOnClickListener(this);
         view.findViewById(R.id.txt_card).setOnClickListener(this);
         view.findViewById(R.id.txt_smail).setOnClickListener(this);
-        view.findViewById(R.id.txt_setting).setOnClickListener(this);
+        view.findViewById(R.id.txt_setting).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
+            }
+        });
     }
 
     @Override
