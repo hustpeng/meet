@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.tab.me;
+package com.agmbat.meetyou.tab.profile;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 
 import com.agmbat.meetyou.R;
 
-public class MeFragment extends Fragment {
+public class ProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.tab_fragment_me, null);
+        return inflater.inflate(R.layout.tab_fragment_profile, null);
     }
 }

@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;
 import com.agmbat.meetyou.tab.found.FoundFragment;
 import com.agmbat.meetyou.tab.msg.MsgFragment;
-import com.agmbat.meetyou.tab.me.MeFragment;
+import com.agmbat.meetyou.tab.profile.ProfileFragment;
 import com.agmbat.tab.TabManager;
 
 /**
@@ -41,7 +41,7 @@ public class MainTabActivity extends FragmentActivity {
         View tabFound = createTabItemView(R.string.tab_found, R.drawable.tab_found);
         tabManager.addTab(tabFound, "tabFound", new FoundFragment());
         View tabMe = createTabItemView(R.string.tab_me, R.drawable.tab_profile);
-        tabManager.addTab(tabMe, "tabMe", new MeFragment());
+        tabManager.addTab(tabMe, "tabMe", new ProfileFragment());
         tabManager.setCurrentTab(TAB_INDEX_MSG);
     }
 
