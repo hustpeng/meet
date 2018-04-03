@@ -158,11 +158,10 @@ public class AccountApi {
     public static ApiResult changePassword(String phone, String ticket, String pwd, String newpwd) {
         String apiName = "changepwd";
         HttpRequester.Builder builder = new HttpRequester.Builder();
-        builder.method("GET");
+        builder.method("POST");
         builder.url(getBaseUrl(apiName));
         builder.postParam("uid", phone);
-//        builder.postParam("ticket", ticket);
-        builder.postParam("ticket", "abcd");
+        builder.postParam("ticket", ticket);
         builder.postParam("pwd", pwd);
         builder.postParam("newpwd", newpwd);
         builder.postParam("sign", getSign(apiName, phone));

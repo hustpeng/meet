@@ -23,6 +23,9 @@
     <string name="invite_code">邀请码</string>
     <string name="input_invite_code">输入邀请码</string>
 
+    <!-- 修改密码 -->
+    <string name="change_password_processing">processing&#8230;</string>
+
     <!-- tab name -->
     <string name="tab_msg">聊天</string>
     <string name="tab_contacts">好友</string>
@@ -44,6 +47,8 @@
     <string name="im_settings_common">通用</string>
     <string name="im_settings_about">关于微信</string>
     <string name="im_settings_logout">退出登录</string>
+    <string name="im_change_password">修改密码</string>
+
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
