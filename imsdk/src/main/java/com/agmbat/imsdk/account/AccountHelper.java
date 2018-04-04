@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.R;
+import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.util.AppConfigUtils;
 

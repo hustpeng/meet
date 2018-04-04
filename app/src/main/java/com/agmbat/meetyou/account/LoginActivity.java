@@ -11,7 +11,7 @@ import android.widget.EditText;
 
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.account.ApiResult;
+import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;

@@ -31,4 +31,5 @@ dependencies {
     compile 'com.disbts:swipemenulist:3.5.2@aar'
     compile "com.disbts:pulltorefresh:3.5.2@aar"
     compile project(':imsdk')
+    compile 'com.google.code.gson:gson:2.7'
 }

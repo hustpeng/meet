@@ -1,4 +1,4 @@
-package com.agmbat.meetyou;
+package com.agmbat.imsdk.splash;
 
 import android.Manifest;
 import android.app.Activity;
@@ -10,12 +10,9 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
-import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.permissions.PermissionArrayAction;
 import com.agmbat.android.permissions.Permissions;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.meetyou.account.LoginActivity;
-import com.nostra13.universalimageloader.core.download.Scheme;
 
 /**
  * 闪屏页面
@@ -28,7 +25,9 @@ public class SplashActivity extends Activity {
         @Override
         public void run() {
             finish();
-            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+            Intent intent = new Intent();
+            intent.setClassName(getPackageName(), SplashManager.getMainClassName());
+            startActivity(intent);
         }
     };
 
@@ -38,10 +37,8 @@ public class SplashActivity extends Activity {
         WindowUtils.setStatusBarColor(this, 0xff232325);
         ImageView imageView = new ImageView(this);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        String uri = Scheme.wrapUri("drawable", String.valueOf(R.drawable.splash));
-        ImageManager.displayImage(uri, imageView);
-        imageView.setImageResource(R.drawable.splash);
         setContentView(imageView);
+        SplashManager.displaySplash(imageView);
         Permissions.request(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.READ_PHONE_STATE,
