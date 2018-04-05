@@ -44,22 +44,10 @@
     <string name="tab_found">发现</string>
     <string name="tab_profile">我的</string>
 
-    <!-- tab - profile -->
-    <string name="im_settings">设置</string>
-    <string name="im_emoji">表情</string>
-    <string name="im_card_bag">卡包</string>
-    <string name="im_wallet">钱包</string>
-    <string name="im_my_posts">相册</string>
-    <string name="im_collection">收藏</string>
-
-    <!-- 设置界面 -->
-    <string name="im_settings_account_security">账号与安全</string>
     <string name="im_settings_new_msg">新消息通知</string>
     <string name="im_settings_privacy">隐私</string>
-    <string name="im_settings_common">通用</string>
     <string name="im_settings_about">关于遇缘</string>
     <string name="im_settings_logout">退出登录</string>
-
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>

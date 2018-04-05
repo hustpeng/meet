@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.settings.SettingsActivity;
+import com.agmbat.meetyou.account.ChangePasswordActivity;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
@@ -32,17 +32,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         TextView nickNameView = (TextView) view.findViewById(R.id.nickname);
 
         view.findViewById(R.id.view_user).setOnClickListener(this);
-        view.findViewById(R.id.txt_album).setOnClickListener(this);
-        view.findViewById(R.id.txt_collect).setOnClickListener(this);
-        view.findViewById(R.id.txt_money).setOnClickListener(this);
-        view.findViewById(R.id.txt_card).setOnClickListener(this);
-        view.findViewById(R.id.txt_smail).setOnClickListener(this);
-        view.findViewById(R.id.txt_setting).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.btn_change_password).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Activity activity = getActivity();
-                activity.startActivity(new Intent(activity, SettingsActivity.class));
-                activity.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                startActivity(new Intent(getActivity(), ChangePasswordActivity.class));
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
     }
