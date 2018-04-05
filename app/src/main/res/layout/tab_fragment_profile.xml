@@ -80,7 +80,7 @@
                     android:layout_height="20dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="22dp"
-                    android:layout_toRightOf="@+id/user_name"
+                    android:layout_toRightOf="@+id/nickname"
                     android:src="@drawable/im_ic_sex_female" />
             </RelativeLayout>
 
@@ -95,7 +95,6 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/im_setting_item"
-                android:contentDescription="@string/app_name"
                 android:drawableRight="@drawable/im_ic_right"
                 android:focusable="false"
                 android:gravity="center_vertical"
@@ -113,12 +112,104 @@
 
 
             <TextView
-                android:id="@+id/txt_msgtip"
+                android:id="@+id/btn_signature"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/im_setting_item"
-                android:contentDescription="@string/app_name"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="@string/im_settings_signature"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="身份认证"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="会员升级"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="我的缘币"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="邀请好友"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+
+            <TextView
+                android:id="@+id/btn_new_msg"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/im_setting_item"
                 android:drawableRight="@drawable/im_ic_right"
                 android:focusable="false"
                 android:gravity="center_vertical"
@@ -135,11 +226,10 @@
 
 
             <TextView
-                android:id="@+id/txt_yinsi"
+                android:id="@+id/btn_privacy"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/im_setting_item"
-                android:contentDescription="@string/app_name"
                 android:drawableRight="@drawable/im_ic_right"
                 android:focusable="false"
                 android:gravity="center_vertical"
@@ -155,32 +245,11 @@
                 android:background="#ffeeeeee" />
 
             <TextView
-                android:id="@+id/txt_tongyong"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/im_setting_item"
-                android:contentDescription="@string/app_name"
-                android:drawableRight="@drawable/im_ic_right"
-                android:focusable="false"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:paddingRight="10dp"
-                android:text="@string/im_settings_common"
-                android:textColor="#000000"
-                android:textSize="16sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1.0dip"
-                android:background="#ffeeeeee" />
-
-            <TextView
                 android:id="@+id/btn_about"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/im_setting_item"
-                android:contentDescription="@string/app_name"
                 android:drawableRight="@drawable/im_ic_right"
                 android:focusable="false"
                 android:gravity="center_vertical"

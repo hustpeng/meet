@@ -44,6 +44,8 @@
     <string name="tab_found">发现</string>
     <string name="tab_profile">我的</string>
 
+    <!-- 我的 -->
+    <string name="im_settings_signature">个性签名</string>
     <string name="im_settings_new_msg">新消息通知</string>
     <string name="im_settings_privacy">隐私</string>
     <string name="im_settings_about">关于遇缘</string>
@@ -52,6 +54,7 @@
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
+
 
 
 </resources>
