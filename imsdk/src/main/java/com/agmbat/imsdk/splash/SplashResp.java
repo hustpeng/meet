@@ -38,6 +38,7 @@ public class SplashResp {
      * }
      */
     public static class SplashInfo {
+
         @SerializedName("can_skip")
         public boolean can_skip;
 

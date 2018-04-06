@@ -28,7 +28,7 @@ public class AccountApi {
     public static ApiResult getVerificationCode(String phone) {
         String apiName = "sms";
         HttpRequester.Builder builder = new HttpRequester.Builder();
-        builder.baseUrl(Api.getBaseUrl(apiName));
+        builder.baseUrl(Api.getBaseUserUrl(apiName));
         builder.urlParam("uid", phone);
         builder.urlParam("sign", Api.getSign(apiName, phone));
         HttpRequester requester = builder.build();
@@ -58,7 +58,7 @@ public class AccountApi {
     public static ApiResult<Boolean> existedUser(String phone) {
         String apiName = "existed";
         HttpRequester.Builder builder = new HttpRequester.Builder();
-        builder.baseUrl(Api.getBaseUrl(apiName));
+        builder.baseUrl(Api.getBaseUserUrl(apiName));
         builder.urlParam("uid", phone);
         builder.urlParam("sign", Api.getSign(apiName, phone));
         HttpRequester requester = builder.build();
@@ -83,7 +83,7 @@ public class AccountApi {
     public static ApiResult<Boolean> checkSms(String phone, String verificationCode) {
         String apiName = "checksms";
         HttpRequester.Builder builder = new HttpRequester.Builder();
-        builder.baseUrl(Api.getBaseUrl(apiName));
+        builder.baseUrl(Api.getBaseUserUrl(apiName));
         builder.urlParam("uid", phone);
         builder.urlParam("sms", verificationCode);
         builder.urlParam("sign", Api.getSign(apiName, phone));
@@ -110,7 +110,7 @@ public class AccountApi {
         String apiName = "changepwd";
         HttpRequester.Builder builder = new HttpRequester.Builder();
         builder.method("POST");
-        builder.url(Api.getBaseUrl(apiName));
+        builder.url(Api.getBaseUserUrl(apiName));
         builder.postParam("uid", phone);
         builder.postParam("ticket", ticket);
         builder.postParam("pwd", pwd);
@@ -145,7 +145,7 @@ public class AccountApi {
         String apiName = "resetpwd";
         HttpRequester.Builder builder = new HttpRequester.Builder();
         builder.method("POST");
-        builder.url(Api.getBaseUrl(apiName));
+        builder.url(Api.getBaseUserUrl(apiName));
         builder.postParam("uid", phone);
         builder.postParam("sms", verificationCode);
         builder.postParam("newpwd", newPassword);

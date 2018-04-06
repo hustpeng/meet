@@ -1,6 +1,5 @@
 package com.agmbat.meetyou.tab.profile;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,7 +12,11 @@ import android.widget.TextView;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
+import com.agmbat.meetyou.credits.CoinsActivity;
 
+/**
+ * Tab 我的界面
+ */
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     @Override
@@ -36,6 +39,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), ChangePasswordActivity.class));
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+            }
+        });
+
+        view.findViewById(R.id.btn_credits).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), CoinsActivity.class));
                 getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });

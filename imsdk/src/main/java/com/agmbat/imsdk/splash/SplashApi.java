@@ -35,7 +35,7 @@ public class SplashApi {
      * 获取Splash信息
      * <p>
      * GET
-     * https://{DOMAIN}/egret/v1/promotion/splash.api.json?uid=<phone>&ver=<ver>&appver=<appver>&package=<package>&sign=<sign>
+     * https://{DOMAIN}/egret/v1/promotion/splash.api?uid=<phone>&ver=<ver>&appver=<appver>&package=<package>&sign=<sign>
      * <p>
      * {
      * "result": true,     //true  API调用成功，否则调用失败
@@ -59,7 +59,7 @@ public class SplashApi {
      * @return
      */
     public static ApiResult<SplashResp> getSplash(String uid, int ver, int appver, String packageName) {
-        String url = Api.getDomain() + "/egret/v1/promotion/splash.api.json";
+        String url = Api.getDomain() + "/egret/v1/promotion/splash.api";
         String apiName = "splash";
         HttpRequester.Builder builder = new HttpRequester.Builder();
         builder.baseUrl(url);

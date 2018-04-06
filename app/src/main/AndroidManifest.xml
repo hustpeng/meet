@@ -31,15 +31,11 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.agmbat.meetyou.settings.SettingsActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.agmbat.meetyou.settings.AccountSecurityActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.agmbat.meetyou.account.ChangePasswordActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.credits.CoinsActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity

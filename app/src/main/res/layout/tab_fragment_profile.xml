@@ -168,6 +168,7 @@
                 android:background="#ffeeeeee" />
 
             <TextView
+                android:id="@+id/btn_credits"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/im_setting_item"
@@ -176,7 +177,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="10dp"
-                android:text="我的缘币"
+                android:text="@string/my_credits"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 

@@ -32,7 +32,7 @@ public class Api {
      * @param apiName
      * @return
      */
-    public static String getBaseUrl(String apiName) {
+    public static String getBaseUserUrl(String apiName) {
         return DOMAIN + "/" + APP_CODE + "/v1/user/" + apiName + ".api";
     }
 
