@@ -32,8 +32,7 @@
         android:layout_height="80dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/im_setting_item"
-        android:gravity="center_vertical"
-        android:paddingRight="3dp">
+        android:gravity="center_vertical">
 
         <TextView
             android:layout_width="0dp"
@@ -54,6 +53,12 @@
             android:layout_marginRight="15dp"
             android:scaleType="centerCrop"
             android:src="@drawable/im_default_head" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/im_ic_right" />
     </LinearLayout>
 
     <View
@@ -62,7 +67,7 @@
         android:background="#ffeeeeee" />
 
     <TextView
-        android:id="@+id/oivName"
+        android:id="@+id/nick_name"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/im_setting_item"
@@ -74,7 +79,6 @@
         android:text="@string/nickname"
         android:textColor="#000000"
         android:textSize="16sp" />
-
 
     <View
         android:layout_width="match_parent"

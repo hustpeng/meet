@@ -60,6 +60,8 @@
     <string name="my_location">我的地址</string>
     <string name="not_fill">未填写</string>
     <string name="area">国家/地区</string>
+    <string name="change_my_name_tip">好名字可以让你的朋友 更容易记住你。</string>
+    <string name="save">保存</string>
 
 
     <string name="contacts_recently">最近</string>

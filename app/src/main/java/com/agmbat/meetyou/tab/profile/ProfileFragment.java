@@ -13,7 +13,7 @@ import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
 import com.agmbat.meetyou.coins.CoinsActivity;
-import com.agmbat.meetyou.settings.MyInfoActivity;
+import com.agmbat.meetyou.settings.PersonalInfoActivity;
 
 /**
  * Tab 我的界面
@@ -38,7 +38,7 @@ public class ProfileFragment extends Fragment {
         view.findViewById(R.id.view_user).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), MyInfoActivity.class));
+                startActivity(new Intent(getActivity(), PersonalInfoActivity.class));
                 getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
