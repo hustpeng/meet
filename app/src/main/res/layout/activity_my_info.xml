@@ -24,8 +24,169 @@
             android:text="@string/im_personal_info"
             android:textColor="#ffffffff"
             android:textSize="20sp" />
-
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/im_header"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/im_setting_item"
+        android:gravity="center_vertical"
+        android:paddingRight="3dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:text="@string/header_pic"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:id="@+id/ivHeader"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/im_default_head" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.0dip"
+        android:background="#ffeeeeee" />
+
+    <TextView
+        android:id="@+id/oivName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/im_setting_item"
+        android:drawableRight="@drawable/im_ic_right"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp"
+        android:text="@string/nickname"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.0dip"
+        android:background="#ffeeeeee" />
+
+    <TextView
+        android:id="@+id/oivAccount"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/im_setting_item"
+        android:drawableRight="@drawable/im_ic_right"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp"
+        android:text="@string/gender"
+        android:textColor="#000000"
+        android:textSize="16sp"
+
+        />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.0dip"
+        android:background="#ffeeeeee" />
+
+    <TextView
+        android:id="@+id/oivQRCodeCard"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/im_setting_item"
+        android:drawableRight="@drawable/im_ic_right"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp"
+        android:text="@string/qr_code_card"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.0dip"
+        android:background="#ffeeeeee" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/im_setting_item"
+        android:drawableRight="@drawable/im_ic_right"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp"
+        android:text="@string/my_location"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/oivGender"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/im_setting_item"
+        android:drawableRight="@drawable/im_ic_right"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp"
+        android:text="@string/gender"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.0dip"
+        android:background="#ffeeeeee" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/im_setting_item"
+        android:drawableRight="@drawable/im_ic_right"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp"
+        android:text="@string/area"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.0dip"
+        android:background="#ffeeeeee" />
+
+    <TextView
+        android:id="@+id/oivSignature"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/im_setting_item"
+        android:drawableRight="@drawable/im_ic_right"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp"
+        android:text="@string/im_settings_signature"
+        android:textColor="#000000"
+        android:textSize="16sp" />
 
 
 </LinearLayout>
