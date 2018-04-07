@@ -1,7 +1,7 @@
 {
   "result": true,
   "balance": 300,
-  "records": 3,
+  "records": 30,
   "resp": [
     {
       "summary": "邀请好友",

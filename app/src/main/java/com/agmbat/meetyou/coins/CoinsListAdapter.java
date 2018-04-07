@@ -1,10 +1,9 @@
-package com.agmbat.meetyou.credits;
+package com.agmbat.meetyou.coins;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -17,11 +16,10 @@ public class CoinsListAdapter extends ArrayAdapter<CoinsRecords> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = new TextView(getContext());
+            convertView = new CoinsView(getContext());
         }
-        TextView textView = (TextView) convertView;
-        CoinsRecords item = getItem(position);
-        textView.setText(item.summary);
+        CoinsView view = (CoinsView) convertView;
+        view.update(getItem(position));
         return convertView;
     }
 

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
-import com.agmbat.meetyou.credits.CoinsActivity;
+import com.agmbat.meetyou.coins.CoinsActivity;
 
 /**
  * Tab 我的界面

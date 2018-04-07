@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.credits;
+package com.agmbat.meetyou.coins;
 
 
 import com.agmbat.android.AppResources;
@@ -16,6 +16,11 @@ import java.lang.reflect.Type;
 public class CoinsApi {
 
     private static final boolean ENABLE_MOCK = true;
+
+    /**
+     * 每页数据20
+     */
+    public static final int PAGE_SIZE = 20;
 
     /**
      * 我的缘币明细, 每页返回20条记录，按记录发生时间倒序排列
@@ -56,7 +61,9 @@ public class CoinsApi {
         builder.baseUrl(url);
         builder.urlParam("uid", uid);
         builder.urlParam("ticket", ticket);
-        builder.urlParam("pageIndex", String.valueOf(pageIndex));
+        // server api是从1开始
+        int apiPageIndex = pageIndex + 1;
+        builder.urlParam("pageIndex", String.valueOf(apiPageIndex));
         builder.urlParam("sign", Api.getSign(apiName, uid));
         HttpRequester requester = builder.build();
         String text = requester.requestAsString();
@@ -69,6 +76,7 @@ public class CoinsApi {
         Type jsonType = new TypeToken<CoinsApiResult>() {
         }.getType();
         CoinsApiResult apiResult = GsonHelper.fromJson(text, jsonType);
+        apiResult.mPageNum = pageIndex;
         return apiResult;
     }
 

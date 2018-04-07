@@ -1,9 +1,11 @@
-package com.agmbat.meetyou.credits;
+package com.agmbat.meetyou.coins;
+
+import android.util.TimeUtils;
 
 import com.google.gson.annotations.SerializedName;
 
 /**
- * 第一条记录
+ * 每一条记录
  */
 public class CoinsRecords {
 
@@ -15,5 +17,14 @@ public class CoinsRecords {
 
     @SerializedName("time")
     public long time;
+
+    /**
+     * 获取毫秒数
+     *
+     * @return
+     */
+    public long getTimeInMillis() {
+        return time * 1000;
+    }
 
 }

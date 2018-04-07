@@ -26,10 +26,11 @@ dependencies {
     compile "com.disbts:jhttp:${JHTTP_VERSION}"
     compile "com.disbts:universal-image-loader:1.9.7"
     compile "com.disbts:widget:3.5.1@aar"
-    compile "com.disbts:jhttp:3.5.4"
+    compile "com.disbts:jhttp:3.5.6"
     compile 'com.disbts:tab:3.5.2@aar'
     compile 'com.disbts:swipemenulist:3.5.2@aar'
-    compile "com.disbts:pulltorefresh:3.5.2@aar"
+    compile "com.disbts:pulltorefresh:3.5.5@aar"
+    compile 'com.disbts:pagedataloader:3.5.7@aar'
     compile project(':imsdk')
-    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.google.code.gson:gson:2.8.0'
 }
