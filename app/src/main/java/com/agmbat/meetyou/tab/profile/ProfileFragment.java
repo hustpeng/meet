@@ -13,11 +13,12 @@ import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
 import com.agmbat.meetyou.coins.CoinsActivity;
+import com.agmbat.meetyou.settings.MyInfoActivity;
 
 /**
  * Tab 我的界面
  */
-public class ProfileFragment extends Fragment implements View.OnClickListener {
+public class ProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -34,7 +35,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         TextView nickNameView = (TextView) view.findViewById(R.id.nickname);
 
-        view.findViewById(R.id.view_user).setOnClickListener(this);
+        view.findViewById(R.id.view_user).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), MyInfoActivity.class));
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+            }
+        });
         view.findViewById(R.id.btn_change_password).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,7 +49,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
-
         view.findViewById(R.id.btn_credits).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,8 +58,4 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
 }

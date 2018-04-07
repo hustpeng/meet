@@ -1,7 +1,5 @@
 package com.agmbat.meetyou.coins;
 
-import android.util.TimeUtils;
-
 import com.google.gson.annotations.SerializedName;
 
 /**

@@ -50,12 +50,14 @@
     <string name="im_settings_privacy">隐私</string>
     <string name="im_settings_about">关于遇缘</string>
     <string name="im_settings_logout">退出登录</string>
+    <string name="my_coins">我的缘币</string>
+    <string name="coins_detail">缘币明细</string>
+    <string name="im_personal_info">个人信息</string>
+
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
-    <string name="my_coins">我的缘币</string>
-    <string name="coins_detail">缘币明细</string>
 
 
 </resources>

@@ -67,12 +67,21 @@
                     android:textSize="14.0dip" />
 
                 <ImageView
+                    android:id="@+id/right_arrow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
                     android:src="@drawable/im_ic_right" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@+id/right_arrow"
+                    android:src="@drawable/im_ic_qr_code" />
 
                 <ImageView
                     android:id="@+id/iv_sex"
