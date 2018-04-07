@@ -86,7 +86,7 @@
         android:background="#ffeeeeee" />
 
     <TextView
-        android:id="@+id/oivAccount"
+        android:id="@+id/gender"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/im_setting_item"
@@ -97,10 +97,7 @@
         android:paddingRight="10dp"
         android:text="@string/gender"
         android:textColor="#000000"
-        android:textSize="16sp"
-
-        />
-
+        android:textSize="16sp" />
 
     <View
         android:layout_width="match_parent"
@@ -108,7 +105,7 @@
         android:background="#ffeeeeee" />
 
     <TextView
-        android:id="@+id/oivQRCodeCard"
+        android:id="@+id/my_qrcode"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/im_setting_item"

@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/im_personal_info"
+            android:text="@string/edit_nickname"
             android:textColor="#ffffffff"
             android:textSize="20sp" />
 

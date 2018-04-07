@@ -56,10 +56,11 @@
     <!--我的个人信息-->
     <string name="im_personal_info">个人信息</string>
     <string name="header_pic">头像</string>
-    <string name="qr_code_card">二维码名片</string>
+    <string name="qr_code_card">我的二维码</string>
     <string name="my_location">我的地址</string>
     <string name="not_fill">未填写</string>
     <string name="area">国家/地区</string>
+    <string name="edit_nickname">设置昵称</string>
     <string name="change_my_name_tip">好名字可以让你的朋友 更容易记住你。</string>
     <string name="save">保存</string>
 
