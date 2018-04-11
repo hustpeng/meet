@@ -119,7 +119,6 @@ public class ProfileFragment extends Fragment {
         mGenderView.setImageResource(getGenderImage(mVCardObject.getGender()));
     }
 
-
     private int getGenderImage(int gender) {
         if (gender == 1) {
             return R.drawable.im_ic_gender_female;

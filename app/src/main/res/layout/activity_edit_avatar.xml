@@ -25,31 +25,37 @@
             android:textColor="#ffffffff"
             android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/btn_save"
-            android:layout_width="60dp"
+        <!--更多按钮-->
+        <ImageButton
+            android:id="@+id/ibToolbarMore"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="right|center_vertical"
             android:layout_margin="10dp"
-            android:background="@drawable/bg_btn_login"
-            android:text="@string/save"
-            android:textColor="#ffffff" />
+            android:background="@null"
+            android:src="@drawable/ic_title_menu_more" />
+
     </FrameLayout>
 
-    <com.agmbat.photoview.PhotoView
-        android:id="@+id/pv"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:scaleType="centerInside" />
+        android:background="#ff000000">
 
-    <ProgressBar
-        android:id="@+id/pb"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone" />
+        <com.agmbat.photoview.PhotoView
+            android:id="@+id/pv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside" />
+
+        <ProgressBar
+            android:id="@+id/pb"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
+
 
 </LinearLayout>
