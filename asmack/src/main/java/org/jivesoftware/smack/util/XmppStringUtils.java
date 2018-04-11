@@ -803,4 +803,23 @@ public class XmppStringUtils {
         }
     }
 
+    /**
+     * 标签开始
+     *
+     * @param key
+     * @return
+     */
+    public static String xmlTagStart(String key) {
+        return "<" + key + ">";
+    }
+
+    /**
+     * 标签结束
+     *
+     * @param key
+     * @return
+     */
+    public static String xmlTagEnd(String key) {
+        return "</" + key + ">";
+    }
 }

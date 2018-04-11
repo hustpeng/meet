@@ -205,14 +205,12 @@ public class AccountHelper {
             return result;
         }
 
-
 //        try {
 
         // TODO 使用http api实现
 //            XMPPManager.getInstance().changePassword(oldPassword, newPassword);
 
-        String user = XMPPManager.getInstance().getXmppConnection().getUser();
-        String phone = XmppStringUtils.parseName(user);
+        String phone = XMPPManager.getInstance().getConnectionUserName();
         String token = XMPPManager.getInstance().getTokenManager().getTokenRetry();
         if (!TextUtils.isEmpty(token)) {
             ApiResult apiResult = AccountApi.changePassword(phone, token, oldPassword, newPassword);

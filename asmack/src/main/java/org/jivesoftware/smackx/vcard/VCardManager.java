@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.vcard;
 
 import android.text.TextUtils;
@@ -9,7 +8,6 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.db.CacheStoreBase;
 import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
@@ -32,19 +30,6 @@ public class VCardManager extends Xepmodule {
 
     private final List<VCardListener> listeners;
 
-    public VCardManager(final Connection connection) {
-        this.xmppConnection = connection;
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-
-            @Override
-            public void connectionCreated(Connection connection) {
-                connection.addConnectionListener(myConnectionListener);
-            }
-        });
-        listeners = new CopyOnWriteArrayList<VCardListener>();
-        cacheStorage = new CacheStoreBase<VCardObject>();
-    }
-
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {
@@ -63,9 +48,17 @@ public class VCardManager extends Xepmodule {
         }
     };
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
+    public VCardManager(final Connection connection) {
+        this.xmppConnection = connection;
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(myConnectionListener);
+            }
+        });
+        listeners = new CopyOnWriteArrayList<VCardListener>();
+        cacheStorage = new CacheStoreBase<VCardObject>();
     }
 
     public void addListener(VCardListener listener) {
@@ -96,7 +89,6 @@ public class VCardManager extends Xepmodule {
             case fetchVCard:
                 notifyFetchVCardResult(queryInfo.getParam1(), null);
                 break;
-
             case setMyVCard:
                 notifySetMyVCardResult(false);
                 break;
@@ -116,14 +108,12 @@ public class VCardManager extends Xepmodule {
                         object.setUpdate_date(new Date());
                         cacheStorage.insertOrUpdate(object);
                     }
-
                     notifyFetchVCardResult(queryInfo.getParam1(), object);
                 } else {
                     notifyFetchVCardResult(queryInfo.getParam1(), null);
                 }
             }
             break;
-
             case setMyVCard: {
                 if (packet.getError() == null) {
                     VCardObject object = (VCardObject) queryInfo.getParam3();
@@ -131,35 +121,17 @@ public class VCardManager extends Xepmodule {
                         object.setUpdate_date(new Date());
                         cacheStorage.insertOrUpdate(object);
                     }
-
                     notifySetMyVCardResult(true);
                 } else {
                     notifySetMyVCardResult(false);
                 }
             }
             break;
-
             default:
                 break;
         }
     }
 
-    public class FetchVCardPacket extends IQ {
-
-        public FetchVCardPacket(String aJid) {
-            setTo(aJid);
-        }
-
-        public String getChildElementXML() {
-            return new StringBuffer()
-                    .append("<")
-                    .append(VCardProvider.elementName())
-                    .append(" xmlns=\"")
-                    .append(VCardProvider.namespace())
-                    .append("\"/>")
-                    .toString();
-        }
-    }
 
     /**
      * @return 返回vcard; 如果返回null, 则会异步去服务器获取,然后通过notifyFetchVCardResult返回结果
@@ -217,20 +189,6 @@ public class VCardManager extends Xepmodule {
         return null;
     }
 
-    public class SetVCardPacket extends IQ {
-
-        private final VCardObject vcard;
-
-        public SetVCardPacket(VCardObject newVCard) {
-            vcard = newVCard;
-            setType(Type.SET);
-        }
-
-        public String getChildElementXML() {
-            return VCardObject.getXmlNode(vcard);
-        }
-    }
-
     /**
      * 异步接口，结果通过notifySetMyVCardResult返回
      *
@@ -242,26 +200,23 @@ public class VCardManager extends Xepmodule {
             notifySetMyVCardResult(false);
             return;
         }
-
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             notifySetMyVCardResult(false);
             return;
         }
-
         SetVCardPacket packet = new SetVCardPacket(newVCard);
-
         String packetId = packet.getPacketID();
         PacketFilter idFilter = new PacketIDFilter(packetId);
         VcardResultListener packetListener = new VcardResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
-
         XepQueryInfo queryInfo = new XepQueryInfo(setMyVCard, null, null, newVCard);
         addQueryInfo(queryInfo, packetId, packetListener);
-
         xmppConnection.sendPacket(packet);
     }
 
     private class VcardResultListener implements PacketListener {
+
+        @Override
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
             XepQueryInfo queryInfo = getQueryInfo(packetIdString);

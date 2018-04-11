@@ -1,52 +1,57 @@
 
 package org.jivesoftware.smackx.vcard;
 
+import android.text.TextUtils;
+
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.ICacheStoreObject;
 
-import android.text.TextUtils;
-
 import java.util.Date;
 
-public class VCardObject implements ICacheStoreObject{
+/**
+ * 描述VCardObject
+ */
+public class VCardObject implements ICacheStoreObject {
+
+    /**
+     * 昵称
+     */
+    public static final String KEY_NICKNAME = "nickname";
+
+    /**
+     * 性别
+     */
+    public static final String KEY_GENDER = "gender";
+
+    /**
+     * 出生年份
+     */
+    public static final String KEY_BIRTH = "birth";
+
+    /**
+     * 头像地址
+     */
+    public static final String KEY_AVATAR = "avatar";
 
     private String jid;
     private String avatar;
-    private String nickname;
     private String status;
     private Date update_date;
 
-    public String getKey() {
-        if (TextUtils.isEmpty(jid)) {
-            return "";
-        }
+    /**
+     * 昵称
+     */
+    private String nickname;
 
-        return jid.toLowerCase();
-    }
+    /**
+     * 性别
+     */
+    private int gender;
 
-    public String getJid() {
-        if (TextUtils.isEmpty(jid)) {
-            return "";
-        }
-
-        return jid;
-    }
-
-    public void setJid(String jid) {
-        this.jid = jid;
-    }
-
-    public String getAvatar() {
-        if (TextUtils.isEmpty(avatar)) {
-            return "";
-        }
-
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
+    /**
+     * 出生年份
+     */
+    private int birthYear;
 
     public String getNickname() {
         if (TextUtils.isEmpty(nickname)) {
@@ -58,6 +63,59 @@ public class VCardObject implements ICacheStoreObject{
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setBirthYear(int birthYear) {
+        this.birthYear = birthYear;
+    }
+
+    public int getBirthYear() {
+        return birthYear;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    @Override
+    public String getKey() {
+        if (TextUtils.isEmpty(jid)) {
+            return "";
+        }
+        return jid.toLowerCase();
+    }
+
+    public String getJid() {
+        if (TextUtils.isEmpty(jid)) {
+            return "";
+        }
+        return jid;
+    }
+
+    /**
+     * 获取用户名
+     *
+     * @return
+     */
+    public String getUserName() {
+        return XmppStringUtils.parseName(jid);
+    }
+
+    public void setJid(String jid) {
+        this.jid = jid;
+    }
+
 
     public Date getUpdate_date() {
         return update_date;
@@ -78,12 +136,10 @@ public class VCardObject implements ICacheStoreObject{
         this.status = status;
     }
 
-    public static String getXmlNode(VCardObject object)
-    {
+    public static String getXmlNode(VCardObject object) {
         if (object == null) {
             return null;
         }
-
         StringBuilder buf = new StringBuilder();
         buf.append("<");
         buf.append(VCardProvider.elementName());
@@ -91,23 +147,25 @@ public class VCardObject implements ICacheStoreObject{
         buf.append(VCardProvider.namespace());
         buf.append("\">");
 
-        buf.append("<NICKNAME>");
+        buf.append(XmppStringUtils.xmlTagStart(KEY_NICKNAME));
         if (!TextUtils.isEmpty(object.getNickname())) {
             buf.append(XmppStringUtils.escapeForXML(object.getNickname()));
         }
-        buf.append("</NICKNAME>");
+        buf.append(XmppStringUtils.xmlTagEnd(KEY_NICKNAME));
 
-        buf.append("<AVATAR>");
+        buf.append(XmppStringUtils.xmlTagStart(KEY_GENDER));
+        buf.append(XmppStringUtils.escapeForXML(String.valueOf(object.getGender())));
+        buf.append(XmppStringUtils.xmlTagEnd(KEY_GENDER));
+
+        buf.append(XmppStringUtils.xmlTagStart(KEY_BIRTH));
+        buf.append(XmppStringUtils.escapeForXML(String.valueOf(object.getBirthYear())));
+        buf.append(XmppStringUtils.xmlTagEnd(KEY_BIRTH));
+
+        buf.append(XmppStringUtils.xmlTagStart(KEY_AVATAR));
         if (!TextUtils.isEmpty(object.getAvatar())) {
             buf.append(XmppStringUtils.escapeForXML(object.getAvatar()));
         }
-        buf.append("</AVATAR>");
-
-        buf.append("<STATUS>");
-        if (!TextUtils.isEmpty(object.getStatus())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getStatus()));
-        }
-        buf.append("</STATUS>");
+        buf.append(XmppStringUtils.xmlTagEnd(KEY_AVATAR));
 
         buf.append("</");
         buf.append(VCardProvider.elementName());
@@ -119,4 +177,6 @@ public class VCardObject implements ICacheStoreObject{
     public String toString() {
         return getXmlNode(this);
     }
+
+
 }

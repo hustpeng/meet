@@ -63,6 +63,7 @@
     <string name="edit_nickname">设置昵称</string>
     <string name="change_my_name_tip">好名字可以让你的朋友 更容易记住你。</string>
     <string name="save">保存</string>
+    <string name="personal_header">个人头像</string>
 
 
     <string name="contacts_recently">最近</string>

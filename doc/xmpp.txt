@@ -1,0 +1,16 @@
+SENT (126535443): <presence id="EkMF4-13"></presence>
+SENT (126535443): <iq id="EkMF4-14" type="get"><query xmlns="jabber:iq:fans"/></iq>
+SENT (126535443): <iq id="EkMF4-15" type="get"><query xmlns="jabber:iq:permit"/></iq>
+SENT (126535443): <iq id="EkMF4-16" type="get"><query xmlns="jabber:iq:privacy"/></iq>
+SENT (126535443): <iq id="EkMF4-17" to="13437122759@yuan520.com" type="get"><vCard xmlns="vcard-temp"/></iq>
+SENT (126535443): <iq id="EkMF4-18" to="13437122759@yuan520.com" type="get"><vCard xmlns="vcard-extended"/></iq>
+SENT (126535443): <iq id="EkMF4-19" to="yuan520.com" type="get"><query xmlns="http://jabber.org/protocol/disco#items"/></iq>
+RCV  (126535443): <presence id="EkMF4-13" from="13437122759@yuan520.com/Android" to="13437122759@yuan520.com" xmlns="jabber:client"/>
+RCV  (126535443): <iq id="EkMF4-14" to="13437122759@yuan520.com/Android" type="error" xmlns="jabber:client"><query xmlns="jabber:iq:fans"/><error code="501" type="cancel"><feature-not-implemented xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/><text xml:lang="en" xmlns="urn:ietf:params:xml:ns:xmpp-stanzas">Feature not supported yet.</text></error></iq>
+RCV  (126535443): <iq id="EkMF4-15" to="13437122759@yuan520.com/Android" type="error" xmlns="jabber:client"><query xmlns="jabber:iq:permit"/><error code="501" type="cancel"><feature-not-implemented xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/><text xml:lang="en" xmlns="urn:ietf:params:xml:ns:xmpp-stanzas">Feature not supported yet.</text></error></iq>
+                  <iq id="EkMF4-16" to="13437122759@yuan520.com/Android" type="result" xmlns="jabber:client"><query xmlns="jabber:iq:privacy"/></iq>
+                  <iq id="EkMF4-17" from="13437122759@yuan520.com" to="13437122759@yuan520.com/Android" type="result" xmlns="jabber:client">
+                    <vCard xmlns="vcard-temp"><nickname>是您</nickname><gender>1</gender><birth>1990</birth><avatar/></vCard>
+                  </iq>
+                  <iq id="EkMF4-18" from="13437122759@yuan520.com" to="13437122759@yuan520.com/Android" type="result" xmlns="jabber:client"><vCard xmlns="vcard-extended"/></iq>
+                  <iq id="EkMF4-19" from="yuan520.com" to="13437122759@yuan520.com/Android" type="result" xmlns="jabber:client"><query xmlns="http://jabber.org/protocol/disco#items"><item jid="srecv.yuan520.com" name="Stanza Receiver"/><item jid="ticket.yuan520.com" name="ticket"/></query></iq>

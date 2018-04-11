@@ -21,6 +21,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
+    compile "com.android.support:recyclerview-v7:${SUPPORT_V7_VERSION}"
+
     compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
     compile "com.disbts:jutils:${JUTILS_VERSION}"
     compile "com.disbts:jhttp:${JHTTP_VERSION}"
@@ -33,6 +35,9 @@ dependencies {
     compile 'com.disbts:pagedataloader:3.5.7@aar'
     compile 'com.disbts:zxing-core:1.0.0'
     compile 'com.disbts:zxing-android-core:1.0.2@aar'
+    compile "com.disbts:imagepicker:3.5.7@aar"
+    compile "com.disbts:photoview:3.5.7@aar"
     compile 'com.google.code.gson:gson:2.8.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
     compile project(':imsdk')
 }

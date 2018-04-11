@@ -25,12 +25,19 @@ public class PersonalInfoActivity extends Activity {
                 finish();
             }
         });
+        findViewById(R.id.im_header).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PersonalInfoActivity.this, EditAvatarActivity.class);
+                intent.putExtra("url", "http://cdnq.duitang.com/uploads/item/201504/04/20150404H3338_N8Wir.jpeg");
+                startActivity(intent);
+            }
+        });
         findViewById(R.id.nick_name).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(PersonalInfoActivity.this, EditNameActivity.class);
                 startActivity(intent);
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
         findViewById(R.id.my_qrcode).setOnClickListener(new View.OnClickListener() {
@@ -38,7 +45,6 @@ public class PersonalInfoActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(PersonalInfoActivity.this, QRCodeCardActivity.class);
                 startActivity(intent);
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
     }
@@ -49,4 +55,9 @@ public class PersonalInfoActivity extends Activity {
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
 }

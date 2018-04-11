@@ -84,7 +84,7 @@
                     android:src="@drawable/im_ic_qr_code" />
 
                 <ImageView
-                    android:id="@+id/iv_sex"
+                    android:id="@+id/gender"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginLeft="5dp"
@@ -121,8 +121,8 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_marginTop="20dp"
                 android:layout_height="50dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/im_setting_item"
                 android:drawableRight="@drawable/im_ic_right"
                 android:focusable="false"

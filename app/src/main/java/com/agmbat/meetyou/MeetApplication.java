@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.android.image.ImageManager;
+import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.splash.SplashManager;
 import com.agmbat.meetyou.account.LoginActivity;
 
@@ -15,5 +16,6 @@ public class MeetApplication extends Application {
         AppResources.init(this);
         ImageManager.initImageLoader(this);
         SplashManager.init(LoginActivity.class.getName());
+        IM.get().init();
     }
 }

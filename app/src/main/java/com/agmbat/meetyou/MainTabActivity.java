@@ -25,12 +25,10 @@ public class MainTabActivity extends FragmentActivity {
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_maintab);
         setupViews();
-//        EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onDestroy() {
-//        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
