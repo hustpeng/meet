@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
@@ -31,6 +31,9 @@ public class PersonalInfoActivity extends Activity {
      */
     @BindView(R.id.head)
     ImageView mHeadView;
+
+    @BindView(R.id.nick_name)
+    TextView mNickNameView;
 
     /**
      * 用户信息
@@ -66,6 +69,11 @@ public class PersonalInfoActivity extends Activity {
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
+    /**
+     * 收到vcard更新信息
+     *
+     * @param vCardObject
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(VCardObject vCardObject) {
         mVCardObject = vCardObject;
@@ -95,7 +103,7 @@ public class PersonalInfoActivity extends Activity {
     /**
      * 点击昵称
      */
-    @OnClick(R.id.nick_name)
+    @OnClick(R.id.btn_nick_name)
     void onClickNickname() {
         Intent intent = new Intent(this, EditNameActivity.class);
         startActivity(intent);
@@ -116,6 +124,7 @@ public class PersonalInfoActivity extends Activity {
         }
 //        mNickNameView.setText(mVCardObject.getNickname());
         ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView);
+        mNickNameView.setText(mVCardObject.getNickname());
 //        mUserNameView.setText(getString(R.string.id_name_format) + " " + mVCardObject.getUserName());
 //        mGenderView.setImageResource(getGenderImage(mVCardObject.getGender()));
     }

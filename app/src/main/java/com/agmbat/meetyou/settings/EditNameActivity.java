@@ -10,41 +10,51 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.IM;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smackx.vcard.VCardObject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 编辑昵称界面
  */
 public class EditNameActivity extends Activity {
 
-    private EditText mNameEditText;
-    private Button mSaveButton;
+    /**
+     * 昵称编辑框
+     */
+    @BindView(R.id.input_name)
+    EditText mNameEditText;
+
+    /**
+     * 保存button
+     */
+    @BindView(R.id.btn_save)
+    Button mSaveButton;
+
+    /**
+     * 用户信息
+     */
+    private VCardObject mVCardObject;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
+        EventBus.getDefault().register(this);
         setContentView(R.layout.activity_edit_name);
-        findViewById(R.id.title_btn_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        mSaveButton = (Button) findViewById(R.id.btn_save);
-        mSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeNickName();
-            }
-        });
-        mNameEditText = (EditText) findViewById(R.id.input_name);
-        mNameEditText.setText("Test");
-        mNameEditText.setSelection(mNameEditText.getText().toString().trim().length());
+        ButterKnife.bind(this);
         mNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -60,12 +70,13 @@ public class EditNameActivity extends Activity {
             public void afterTextChanged(Editable s) {
             }
         });
+        IM.get().fetchMyVCard();
     }
 
-    private void changeNickName() {
-        String nickName = mNameEditText.getText().toString();
-        // TODO 添加修改昵称的逻辑
-        finish();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -73,5 +84,51 @@ public class EditNameActivity extends Activity {
         super.finish();
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
+
+    /**
+     * 收到vcard更新信息
+     *
+     * @param vCardObject
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(VCardObject vCardObject) {
+        mVCardObject = vCardObject;
+        mNameEditText.setText(vCardObject.getNickname());
+        mNameEditText.setSelection(mNameEditText.getText().toString().trim().length());
+    }
+
+    /**
+     * 点击返回键
+     */
+    @OnClick(R.id.title_btn_back)
+    void onClickBack() {
+        finish();
+    }
+
+    /**
+     * 点击保存
+     */
+    @OnClick(R.id.btn_save)
+    void onClickSave() {
+        changeNickName();
+    }
+
+    /**
+     * 修改昵称
+     */
+    private void changeNickName() {
+        String nickName = mNameEditText.getText().toString();
+        if (nickName.equals(mVCardObject.getNickname())) {
+            // 未修改
+            finish();
+        } else {
+            // 添加修改昵称的逻辑
+            mVCardObject.setNickname(nickName);
+            EventBus.getDefault().post(mVCardObject);
+            XMPPManager.getInstance().getvCardManager().setMyVCard(mVCardObject);
+            finish();
+        }
+    }
+
 
 }
