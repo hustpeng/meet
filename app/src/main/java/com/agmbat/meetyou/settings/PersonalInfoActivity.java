@@ -89,7 +89,6 @@ public class PersonalInfoActivity extends Activity {
             return;
         }
         Intent intent = new Intent(this, EditAvatarActivity.class);
-        intent.putExtra("url", mVCardObject.getAvatar());
         startActivity(intent);
     }
 

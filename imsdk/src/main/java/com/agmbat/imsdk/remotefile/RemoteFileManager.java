@@ -8,6 +8,10 @@ import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.file.FileUtils;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.text.StringUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.jivesoftware.smackx.vcard.VCardObject;
 
 import java.io.File;
 
@@ -96,12 +100,23 @@ public class RemoteFileManager {
         String phone = XMPPManager.getInstance().getConnectionUserName();
         String ticket = XMPPManager.getInstance().getTokenManager().getTokenRetry();
         String format = FileUtils.getExtension(path);
-        byte[] imageData = FileUtils.readFileBytes(new File(path));
-        ApiResult<String> result = FileApi.uploadAvatar(phone, ticket, format, imageData);
+        ApiResult<String> result = FileApi.uploadAvatar(phone, ticket, format, new File(path));
         if (result == null) {
             result = new ApiResult<String>();
             result.mResult = false;
             result.mErrorMsg = "网络请求失败";
+        }
+        if (result.mResult) {
+            String imageUrl = result.mData;
+            if (!StringUtils.isEmpty(imageUrl)) {
+                result.mErrorMsg = "上传头像成功";
+                VCardObject vCardObject = XMPPManager.getInstance().getvCardManager().fetchMyVCard();
+                if (vCardObject != null) {
+                    vCardObject.setAvatar(imageUrl);
+                    EventBus.getDefault().post(vCardObject);
+                    XMPPManager.getInstance().getvCardManager().setMyVCard(vCardObject);
+                }
+            }
         }
         return result;
     }

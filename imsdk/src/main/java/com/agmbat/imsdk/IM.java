@@ -1,7 +1,6 @@
 package com.agmbat.imsdk;
 
 import com.agmbat.imsdk.asmack.XMPPManager;
-import com.agmbat.log.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jivesoftware.smackx.vcard.VCardListener;
@@ -22,16 +21,12 @@ public class IM {
 
         @Override
         public void notifySetMyVCardResult(boolean success) {
-//            if (success) {
-//                mHandler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mVCardObject = XMPPManager.getInstance().getvCardManager().fetchMyVCard();
-//                        showMenuProfile(mVCardObject);
-//                    }
-//                });
-//            }
-//            Log.i(TAG, "notifySetMyVCardResult: " + success);
+            if (success) {
+                VCardObject vcard = XMPPManager.getInstance().getvCardManager().fetchMyVCard();
+                if (vcard != null) {
+                    EventBus.getDefault().post(vcard);
+                }
+            }
         }
 
         @Override
@@ -39,16 +34,6 @@ public class IM {
             if (vcard != null) {
                 EventBus.getDefault().post(vcard);
             }
-//            if (null != vcard) {
-//                mVCardObject = vcard;
-//                mHandler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        showMenuProfile(mVCardObject);
-//                    }
-//                });
-//            }
-//            Log.i(TAG, "notifyFetchVCardResult: " + jid + " " + vcard);
         }
     });
 
