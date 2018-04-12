@@ -122,13 +122,13 @@ public class EditNameActivity extends Activity {
             // 未修改
             finish();
         } else {
-            // 添加修改昵称的逻辑
+            // TODO 需要添加loading框
+            // 修改昵称的逻辑
             mVCardObject.setNickname(nickName);
             EventBus.getDefault().post(mVCardObject);
             XMPPManager.getInstance().getvCardManager().setMyVCard(mVCardObject);
             finish();
         }
     }
-
 
 }
