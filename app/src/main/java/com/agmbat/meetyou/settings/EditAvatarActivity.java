@@ -3,7 +3,6 @@ package com.agmbat.meetyou.settings;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;

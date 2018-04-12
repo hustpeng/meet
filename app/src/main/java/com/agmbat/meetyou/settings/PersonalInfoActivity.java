@@ -17,6 +17,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smackx.vcard.VCardObject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * 我的信息界面
  */
@@ -25,7 +29,8 @@ public class PersonalInfoActivity extends Activity {
     /**
      * 头像
      */
-    private ImageView mHeadView;
+    @BindView(R.id.head)
+    ImageView mHeadView;
 
     /**
      * 用户信息
@@ -38,38 +43,7 @@ public class PersonalInfoActivity extends Activity {
         WindowUtils.setStatusBarColor(this, 0xff232325);
         EventBus.getDefault().register(this);
         setContentView(R.layout.activity_personal_info);
-        findViewById(R.id.title_btn_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        mHeadView = (ImageView) findViewById(R.id.head);
-        findViewById(R.id.im_header).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mVCardObject == null) {
-                    return;
-                }
-                Intent intent = new Intent(PersonalInfoActivity.this, EditAvatarActivity.class);
-                intent.putExtra("url", mVCardObject.getAvatar());
-                startActivity(intent);
-            }
-        });
-        findViewById(R.id.nick_name).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(PersonalInfoActivity.this, EditNameActivity.class);
-                startActivity(intent);
-            }
-        });
-        findViewById(R.id.my_qrcode).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(PersonalInfoActivity.this, QRCodeCardActivity.class);
-                startActivity(intent);
-            }
-        });
+        ButterKnife.bind(this);
         updateView();
         IM.get().fetchMyVCard();
     }
@@ -98,6 +72,45 @@ public class PersonalInfoActivity extends Activity {
         updateView();
     }
 
+    /**
+     * 点击返回键
+     */
+    @OnClick(R.id.title_btn_back)
+    void onClickBack() {
+        finish();
+    }
+
+    /**
+     * 点击头像
+     */
+    @OnClick(R.id.im_header)
+    void onClickHead() {
+        if (mVCardObject == null) {
+            return;
+        }
+        Intent intent = new Intent(this, EditAvatarActivity.class);
+        intent.putExtra("url", mVCardObject.getAvatar());
+        startActivity(intent);
+    }
+
+    /**
+     * 点击昵称
+     */
+    @OnClick(R.id.nick_name)
+    void onClickNickname() {
+        Intent intent = new Intent(this, EditNameActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 点击我的二维码
+     */
+    @OnClick(R.id.my_qrcode)
+    void onClickQRCode() {
+        Intent intent = new Intent(this, QRCodeCardActivity.class);
+        startActivity(intent);
+    }
+
     private void updateView() {
         if (mVCardObject == null) {
             return;
@@ -107,5 +120,6 @@ public class PersonalInfoActivity extends Activity {
 //        mUserNameView.setText(getString(R.string.id_name_format) + " " + mVCardObject.getUserName());
 //        mGenderView.setImageResource(getGenderImage(mVCardObject.getGender()));
     }
+
 
 }
