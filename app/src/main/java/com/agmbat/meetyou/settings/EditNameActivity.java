@@ -17,7 +17,6 @@ import com.agmbat.meetyou.R;
  */
 public class EditNameActivity extends Activity {
 
-
     private EditText mNameEditText;
     private Button mSaveButton;
 

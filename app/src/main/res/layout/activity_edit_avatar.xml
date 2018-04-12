@@ -27,7 +27,7 @@
 
         <!--更多按钮-->
         <ImageButton
-            android:id="@+id/ibToolbarMore"
+            android:id="@+id/title_menu_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
