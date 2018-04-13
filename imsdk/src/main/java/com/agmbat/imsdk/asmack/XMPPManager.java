@@ -74,6 +74,16 @@ public class XMPPManager {
     // 47.106.77.125
     private static final String URL = "http://yuan520.com";
 
+    /**
+     * 端口
+     */
+    private static final int PORT = 5222;
+    /**
+     * 由于服务器与ip地址未进行域名绑定
+     */
+    private static final String HOST = "47.106.77.125";
+    private static final String TIGASE_SERVER = "yuan520.com";
+
     public static synchronized XMPPManager getInstance() {
         if (sInstance == null) {
             sInstance = new XMPPManager();
@@ -83,8 +93,7 @@ public class XMPPManager {
 
     private XMPPManager() {
         configureProviderManager();
-        String tigaseServerAddress = "yuan520.com";
-        ConnectionConfiguration configuration = initConnectionConfig(tigaseServerAddress, 5222);
+        ConnectionConfiguration configuration = initConnectionConfig(HOST, PORT, TIGASE_SERVER);
         xmppConnection = new XMPPConnection(configuration);
 
         reconnectionManager = new ReconnectionManager(xmppConnection);
@@ -154,9 +163,13 @@ public class XMPPManager {
     }
 
     private ConnectionConfiguration initConnectionConfig(String host, int port) {
+        return initConnectionConfig(host, port, host);
+    }
+
+    private ConnectionConfiguration initConnectionConfig(String host, int port, String serverName) {
         SmackConfiguration.setPacketReplyTimeout(30000);// 所有跟服务器的延迟请求时间
         SmackConfiguration.setKeepAliveInterval(120000);// 设置心跳时间间隔2分钟
-        ConnectionConfiguration config = new ConnectionConfiguration(host, port);
+        ConnectionConfiguration config = new ConnectionConfiguration(host, port, serverName);
         config.setDebuggerEnabled(true);
         config.setSendPresence(true);
         config.setSecurityMode(SecurityMode.disabled);

@@ -373,12 +373,6 @@ public abstract class Connection {
      */
     public abstract void login(String username, String password, String resource) throws XMPPException;
 
-    public void loginWithFacebook(String username, String password, String email, String deviceToken) throws XMPPException {
-        loginWithFacebook(username, password, email, "Android", deviceToken);
-    }
-
-    public abstract void loginWithFacebook(String username, String password, String email, String resource, String deviceToken) throws XMPPException;
-
     /**
      * Logs in to the server anonymously. Very few servers are configured to support anonymous
      * authentication, so it's fairly likely logging in anonymously will fail. If anonymous login

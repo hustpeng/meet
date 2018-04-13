@@ -12,10 +12,8 @@ import java.io.File;
  * activity in the main thread.
  *
  * @author Florian Schmaus fschmaus@gmail.com
- *
  */
 public class AndroidConnectionConfiguration extends ConnectionConfiguration {
-    private static final int DEFAULT_TIMEOUT = 1000;
 
     /**
      * Creates a new ConnectionConfiguration for the specified service name.
@@ -25,52 +23,29 @@ public class AndroidConnectionConfiguration extends ConnectionConfiguration {
      * @param serviceName the name of the service provided by an XMPP server.
      */
     public AndroidConnectionConfiguration(String serviceName) throws XMPPException {
-        super();
-        AndroidInit(serviceName, DEFAULT_TIMEOUT);
-    }
-
-    /**
-     *
-     * @param serviceName
-     * @param timeout
-     * @throws XMPPException
-     */
-    public AndroidConnectionConfiguration(String serviceName, int timeout) throws XMPPException {
-        super();
-        AndroidInit(serviceName, timeout);
+        this(serviceName, 5122, serviceName);
     }
 
     public AndroidConnectionConfiguration(String host, int port, String name) {
-    super(host, port, name);
-    AndroidInit();
-    }
-
-    private void AndroidInit() {
+        super(host, port, name);
         // API 14 is Ice Cream Sandwich
-    if (Build.VERSION.SDK_INT >= 14) {
-        setTruststoreType("AndroidCAStore");
-        setTruststorePassword(null);
-        setTruststorePath(null);
-    } else {
-        setTruststoreType("BKS");
-        String path = System.getProperty("javax.net.ssl.trustStore");
-        if (path == null)
-        path = System.getProperty("java.home") + File.separator + "etc"
-            + File.separator + "security" + File.separator
-            + "cacerts.bks";
-        setTruststorePath(path);
-    }
+        if (Build.VERSION.SDK_INT >= 14) {
+            setTruststoreType("AndroidCAStore");
+            setTruststorePassword(null);
+            setTruststorePath(null);
+        } else {
+            setTruststoreType("BKS");
+            String path = System.getProperty("javax.net.ssl.trustStore");
+            if (path == null)
+                path = System.getProperty("java.home") + File.separator + "etc"
+                        + File.separator + "security" + File.separator
+                        + "cacerts.bks";
+            setTruststorePath(path);
+        }
     }
 
-    /**
-     *
-     * @param serviceName
-     * @param timeout
-     * @throws XMPPException
-     */
-    private void AndroidInit(String serviceName, int timeout) throws XMPPException {
-    AndroidInit();
-//        class DnsSrvLookupRunnable implements Runnable {
+
+    //        class DnsSrvLookupRunnable implements Runnable {
 //            String serviceName;
 //            volatile DNSUtil.HostAddress address;
 //
@@ -103,10 +78,4 @@ public class AndroidConnectionConfiguration extends ConnectionConfiguration {
 //        	throw new XMPPException("DNS lookup failure");
 //        }
 
-        String host = serviceName;//address.getHost();
-        int port = 5122;//address.getPort();
-        ProxyInfo proxy = ProxyInfo.forDefaultProxy();
-
-        init(host, port, serviceName, proxy);
-    }
 }

@@ -2,15 +2,15 @@
  * $RCSfile$
  * $Revision: 3306 $
  * $Date: 2006-01-16 14:34:56 -0300 (Mon, 16 Jan 2006) $
- *
+ * <p>
  * Copyright 2003-2007 Jive Software.
- *
+ * <p>
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@ import javax.net.ssl.SSLContext;
  * Configuration to use while establishing the connection to the server. It is possible to
  * configure the path to the trustore file that keeps the trusted CA root certificates and
  * enable or disable all or some of the checkings done while verifying server certificates.<p>
- *
+ * <p>
  * It is also possible to configure if TLS, SASL, and compression are used or not.
  *
  * @author Gaston Dombiak
@@ -93,6 +93,13 @@ public class ConnectionConfiguration implements Cloneable {
     protected ProxyInfo proxy;
 
     /**
+     *
+     */
+    protected ConnectionConfiguration() {
+      /* Does nothing */
+    }
+
+    /**
      * Creates a new ConnectionConfiguration for the specified service name.
      * A DNS SRV lookup will be performed to find out the actual host address
      * and port to use for the connection.
@@ -102,15 +109,7 @@ public class ConnectionConfiguration implements Cloneable {
     public ConnectionConfiguration(String serviceName) {
         // Perform DNS lookup to get host and port to use
         //DNSUtil.HostAddress address = DNSUtil.resolveXMPPDomain(serviceName);
-        init(serviceName, 5122, serviceName,
-            ProxyInfo.forDefaultProxy());
-    }
-
-    /**
-     *
-     */
-    protected ConnectionConfiguration() {
-      /* Does nothing */
+        init(serviceName, 5122, serviceName, ProxyInfo.forDefaultProxy());
     }
 
     /**
@@ -120,9 +119,9 @@ public class ConnectionConfiguration implements Cloneable {
      * and port to use for the connection.
      *
      * @param serviceName the name of the service provided by an XMPP server.
-     * @param proxy the proxy through which XMPP is to be connected
+     * @param proxy       the proxy through which XMPP is to be connected
      */
-    public ConnectionConfiguration(String serviceName,ProxyInfo proxy) {
+    public ConnectionConfiguration(String serviceName, ProxyInfo proxy) {
         // Perform DNS lookup to get host and port to use
         //DNSUtil.HostAddress address = DNSUtil.resolveXMPPDomain(serviceName);
         init(serviceName, 5122, serviceName, proxy);
@@ -138,8 +137,8 @@ public class ConnectionConfiguration implements Cloneable {
      * to the server in that case since a DNS SRV lookup for example.com would not
      * point to the local testing server.
      *
-     * @param host the host where the XMPP server is running.
-     * @param port the port where the XMPP is listening.
+     * @param host        the host where the XMPP server is running.
+     * @param port        the port where the XMPP is listening.
      * @param serviceName the name of the service provided by an XMPP server.
      */
     public ConnectionConfiguration(String host, int port, String serviceName) {
@@ -156,10 +155,10 @@ public class ConnectionConfiguration implements Cloneable {
      * to the server in that case since a DNS SRV lookup for example.com would not
      * point to the local testing server.
      *
-     * @param host the host where the XMPP server is running.
-     * @param port the port where the XMPP is listening.
+     * @param host        the host where the XMPP server is running.
+     * @param port        the port where the XMPP is listening.
      * @param serviceName the name of the service provided by an XMPP server.
-     * @param proxy the proxy through which XMPP is to be connected
+     * @param proxy       the proxy through which XMPP is to be connected
      */
     public ConnectionConfiguration(String host, int port, String serviceName, ProxyInfo proxy) {
         init(host, port, serviceName, proxy);
@@ -180,8 +179,8 @@ public class ConnectionConfiguration implements Cloneable {
      * Creates a new ConnectionConfiguration for a connection that will connect
      * to the desired host and port with desired proxy.
      *
-     * @param host the host where the XMPP server is running.
-     * @param port the port where the XMPP is listening.
+     * @param host  the host where the XMPP server is running.
+     * @param port  the port where the XMPP is listening.
      * @param proxy the proxy through which XMPP is to be connected
      */
     public ConnectionConfiguration(String host, int port, ProxyInfo proxy) {
@@ -399,7 +398,7 @@ public class ConnectionConfiguration implements Cloneable {
      * be checked. By default the certificate chain is not verified.
      *
      * @return true if the whole chaing of certificates presented by the server are going to
-     *         be checked.
+     * be checked.
      */
     public boolean isVerifyChainEnabled() {
         return verifyChainEnabled;
@@ -410,7 +409,7 @@ public class ConnectionConfiguration implements Cloneable {
      * be checked. By default the certificate chain is not verified.
      *
      * @param verifyChainEnabled if the whole chaing of certificates presented by the server
-     *        are going to be checked.
+     *                           are going to be checked.
      */
     public void setVerifyChainEnabled(boolean verifyChainEnabled) {
         this.verifyChainEnabled = verifyChainEnabled;
@@ -459,7 +458,7 @@ public class ConnectionConfiguration implements Cloneable {
      * validity. By default certificates are not verified.
      *
      * @return true if certificates presented by the server are going to be checked for their
-     *         validity.
+     * validity.
      */
     public boolean isExpiredCertificatesCheckEnabled() {
         return expiredCertificatesCheckEnabled;
@@ -470,7 +469,7 @@ public class ConnectionConfiguration implements Cloneable {
      * validity. By default certificates are not verified.
      *
      * @param expiredCertificatesCheckEnabled if certificates presented by the server are going
-     *        to be checked for their validity.
+     *                                        to be checked for their validity.
      */
     public void setExpiredCertificatesCheckEnabled(boolean expiredCertificatesCheckEnabled) {
         this.expiredCertificatesCheckEnabled = expiredCertificatesCheckEnabled;
@@ -481,7 +480,7 @@ public class ConnectionConfiguration implements Cloneable {
      * domain. By default certificates are not verified.
      *
      * @return true if certificates presented by the server are going to be checked for their
-     *         domain.
+     * domain.
      */
     public boolean isNotMatchingDomainCheckEnabled() {
         return notMatchingDomainCheckEnabled;
@@ -492,7 +491,7 @@ public class ConnectionConfiguration implements Cloneable {
      * domain. By default certificates are not verified.
      *
      * @param notMatchingDomainCheckEnabled if certificates presented by the server are going
-     *        to be checked for their domain.
+     *                                      to be checked for their domain.
      */
     public void setNotMatchingDomainCheckEnabled(boolean notMatchingDomainCheckEnabled) {
         this.notMatchingDomainCheckEnabled = notMatchingDomainCheckEnabled;
@@ -547,7 +546,7 @@ public class ConnectionConfiguration implements Cloneable {
      * By default SASL is enabled.
      *
      * @return true if the client is going to use SASL authentication when logging into the
-     *         server.
+     * server.
      */
     public boolean isSASLAuthenticationEnabled() {
         return saslAuthenticationEnabled;
@@ -559,7 +558,7 @@ public class ConnectionConfiguration implements Cloneable {
      * By default, SASL is enabled.
      *
      * @param saslAuthenticationEnabled if the client is going to use SASL authentication when
-     *        logging into the server.
+     *                                  logging into the server.
      */
     public void setSASLAuthenticationEnabled(boolean saslAuthenticationEnabled) {
         this.saslAuthenticationEnabled = saslAuthenticationEnabled;
@@ -594,6 +593,7 @@ public class ConnectionConfiguration implements Cloneable {
     public void setReconnectionAllowed(boolean isAllowed) {
         this.reconnectionAllowed = isAllowed;
     }
+
     /**
      * Returns if the reconnection mechanism is allowed to be used. By default
      * reconnection is allowed.
@@ -668,7 +668,7 @@ public class ConnectionConfiguration implements Cloneable {
      * using SASL authentication.
      *
      * @param callbackHandler to obtain information, such as the password or
-     * principal information during the SASL authentication.
+     *                        principal information during the SASL authentication.
      */
     public void setCallbackHandler(CallbackHandler callbackHandler) {
         this.callbackHandler = callbackHandler;
@@ -738,11 +738,11 @@ public class ConnectionConfiguration implements Cloneable {
         return resource;
     }
 
-    boolean isRosterVersioningAvailable(){
+    boolean isRosterVersioningAvailable() {
         return isRosterVersioningAvailable;
     }
 
-    void setRosterVersioningAvailable(boolean enabled){
+    void setRosterVersioningAvailable(boolean enabled) {
         isRosterVersioningAvailable = enabled;
     }
 

@@ -59,7 +59,7 @@ public class XMPPConnection extends Connection {
     /**
      * The socket which is used for this connection.
      */
-    Socket socket;
+    private Socket socket;
 
     String connectionID = null;
     private String user = null;
@@ -233,74 +233,7 @@ public class XMPPConnection extends Connection {
             if (password != null) {
                 response = saslAuthentication.authenticate(username, password, resource);
             } else {
-                response = saslAuthentication
-                        .authenticate(username, resource, config.getCallbackHandler());
-            }
-        } else {
-            // Authenticate using Non-SASL
-            response = new NonSASLAuthentication(this).authenticate(username, password, resource);
-        }
-
-        // Set the user.
-        if (response != null) {
-            this.user = response;
-            // Update the serviceName with the one returned by the server
-            config.setServiceName(XmppStringUtils.parseServer(response));
-        } else {
-            this.user = username + "@" + getServiceName();
-            if (resource != null) {
-                this.user += "/" + resource;
-            }
-        }
-
-        // If compression is enabled then request the server to use stream compression
-        if (config.isCompressionEnabled()) {
-            useCompression();
-        }
-
-        // Indicate that we're now authenticated.
-        authenticated = true;
-        anonymous = false;
-
-        // Set presence to online.
-        if (config.isSendPresence()) {
-            packetWriter.sendPacket(new Presence(Presence.Type.available));
-        }
-
-        // Stores the authentication for future reconnection
-        config.setLoginInfo(username, password, resource);
-
-        // If debugging is enabled, change the the debug window title to include the
-        // name we are now logged-in as.
-        // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger
-        // will be null
-        if (config.isDebuggerEnabled() && debugger != null) {
-            debugger.userHasLogged(user);
-        }
-
-        notifyLoginSuccessful();
-    }
-
-    @Override
-    public synchronized void loginWithFacebook(String username, String password, String email, String resource, String deviceToken) throws XMPPException {
-        if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
-        }
-        if (authenticated) {
-            throw new IllegalStateException("Already logged in to server.");
-        }
-        // Do partial version of nameprep on the username.
-        username = username.toLowerCase().trim();
-
-        String response;
-        if (config.isSASLAuthenticationEnabled() &&
-                saslAuthentication.hasNonAnonymousAuthentication()) {
-            // Authenticate using SASL
-            if (password != null) {
-                response = saslAuthentication.authenticateWithFacebook(username, password, resource, email, deviceToken);
-            } else {
-                response = saslAuthentication
-                        .authenticate(username, resource, config.getCallbackHandler());
+                response = saslAuthentication.authenticate(username, resource, config.getCallbackHandler());
             }
         } else {
             // Authenticate using Non-SASL
@@ -357,8 +290,7 @@ public class XMPPConnection extends Connection {
         }
 
         String response;
-        if (config.isSASLAuthenticationEnabled() &&
-                saslAuthentication.hasAnonymousAuthentication()) {
+        if (config.isSASLAuthenticationEnabled() && saslAuthentication.hasAnonymousAuthentication()) {
             response = saslAuthentication.authenticateAnonymously();
         } else {
             // Authenticate using Non-SASL
