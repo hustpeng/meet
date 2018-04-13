@@ -95,7 +95,7 @@ public class PersonalInfoActivity extends Activity {
     /**
      * 点击头像
      */
-    @OnClick(R.id.im_header)
+    @OnClick(R.id.btn_head)
     void onClickHead() {
         if (mVCardObject == null) {
             return;
@@ -125,7 +125,7 @@ public class PersonalInfoActivity extends Activity {
     /**
      * 点击我的二维码
      */
-    @OnClick(R.id.my_qrcode)
+    @OnClick(R.id.btn_qrcode)
     void onClickQRCode() {
         Intent intent = new Intent(this, QRCodeCardActivity.class);
         startActivity(intent);
