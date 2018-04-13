@@ -83,6 +83,7 @@ public class EditGenderActivity extends Activity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(VCardObject vCardObject) {
         mVCardObject = vCardObject;
+        updateGenderSelected(mVCardObject.getGender());
     }
 
     /**
@@ -99,6 +100,7 @@ public class EditGenderActivity extends Activity {
     @OnClick(R.id.btn_gender_male)
     void onClickMale() {
         mGender = GenderHelper.GENDER_MALE;
+        updateGenderSelected(mGender);
     }
 
     /**
@@ -107,6 +109,7 @@ public class EditGenderActivity extends Activity {
     @OnClick(R.id.btn_gender_female)
     void onClickFemale() {
         mGender = GenderHelper.GENDER_FEMALE;
+        updateGenderSelected(mGender);
     }
 
     /**
@@ -124,6 +127,16 @@ public class EditGenderActivity extends Activity {
             EventBus.getDefault().post(mVCardObject);
             XMPPManager.getInstance().getvCardManager().setMyVCard(mVCardObject);
             finish();
+        }
+    }
+
+    private void updateGenderSelected(int gender) {
+        if (gender == GenderHelper.GENDER_MALE) {
+            mGenderMaleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_selected, 0);
+            mGenderFemaleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        } else if (gender == GenderHelper.GENDER_FEMALE) {
+            mGenderMaleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mGenderFemaleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_selected, 0);
         }
     }
 
