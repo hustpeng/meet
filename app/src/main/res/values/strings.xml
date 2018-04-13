@@ -65,13 +65,13 @@
     <string name="save">保存</string>
     <string name="personal_header">个人头像</string>
     <string name="edit_gender">设置性别</string>
+    <string name="gender_male">男</string>
+    <string name="gender_female">女</string>
 
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
-    <string name="gender_male">男</string>
-    <string name="gender_female">女</string>
 
 
 </resources>
