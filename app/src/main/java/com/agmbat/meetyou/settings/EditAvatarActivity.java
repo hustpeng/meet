@@ -1,6 +1,7 @@
 package com.agmbat.meetyou.settings;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.os.Bundle;
@@ -19,8 +20,7 @@ import com.agmbat.imagepicker.view.CropImageView;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
-import com.agmbat.isalertview.AlertView;
-import com.agmbat.isalertview.OnItemClickListener;
+import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.R;
 import com.agmbat.photoview.PhotoView;
 
@@ -95,20 +95,29 @@ public class EditAvatarActivity extends Activity {
      */
     @OnClick(R.id.title_menu_more)
     void onClickMenuMore() {
-        new AlertView(null, null, "取消", null,
-                new String[]{"拍照", "从手机相册选择", "保存图片"},
-                this, AlertView.Style.ActionSheet, new OnItemClickListener() {
+        ISAlertDialog dialog = new ISAlertDialog(this);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.useNegativeButton();
+        dialog.addItem("拍照", new DialogInterface.OnClickListener() {
             @Override
-            public void onItemClick(AlertView view, int position) {
-                if (position == 0) {
-                    takePicture();
-                } else if (position == 1) {
-                    selectPicture();
-                } else if (position == 2) {
-                    savePicture();
-                }
+            public void onClick(DialogInterface dialog, int which) {
+                takePicture();
             }
-        }).setCancelable(true).show();
+        });
+        dialog.addItem("从手机相册选择", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectPicture();
+            }
+        });
+        dialog.addItem("保存图片", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                savePicture();
+            }
+        });
+        dialog.show();
     }
 
 
