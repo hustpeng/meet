@@ -16,6 +16,7 @@ import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
 import com.agmbat.meetyou.coins.CoinsActivity;
+import com.agmbat.meetyou.data.GenderHelper;
 import com.agmbat.meetyou.settings.PersonalInfoActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -116,13 +117,8 @@ public class ProfileFragment extends Fragment {
         mNickNameView.setText(mVCardObject.getNickname());
         ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView);
         mUserNameView.setText(getString(R.string.id_name_format) + " " + mVCardObject.getUserName());
-        mGenderView.setImageResource(getGenderImage(mVCardObject.getGender()));
+        mGenderView.setImageResource(GenderHelper.getIconRes(mVCardObject.getGender()));
     }
 
-    private int getGenderImage(int gender) {
-        if (gender == 1) {
-            return R.drawable.im_ic_gender_female;
-        }
-        return R.drawable.im_ic_gender_male;
-    }
+
 }

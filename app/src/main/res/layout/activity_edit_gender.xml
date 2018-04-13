@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/edit_nickname"
+            android:text="@string/edit_gender"
             android:textColor="#ffffffff"
             android:textSize="20sp" />
 
@@ -36,30 +36,37 @@
             android:textColor="#ffffff" />
     </FrameLayout>
 
-    <EditText
-        android:id="@+id/input_name"
+    <TextView
+        android:id="@+id/btn_gender_male"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="25dp"
-        android:background="@null"
-        android:drawableBottom="@drawable/shape_bottom_green"
-        android:drawablePadding="5dp"
-        android:gravity="bottom"
-        android:maxLength="255"
-        android:padding="5dp"
-        android:singleLine="true"
-        android:textSize="16sp"
-        android:visibility="visible" />
+        android:layout_height="42dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/im_setting_item"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="@string/gender_male"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.0dip"
+        android:background="#ffeeeeee" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:text="@string/change_my_name_tip"
-        android:textColor="#7e7e7e"
-        android:textSize="14sp" />
+        android:id="@+id/btn_gender_female"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="@drawable/im_setting_item"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="@string/gender_female"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
 
 </LinearLayout>

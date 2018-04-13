@@ -161,10 +161,6 @@ public class EditAvatarActivity extends Activity {
                 if (images != null) {
                     String path = images.get(0).path;
                     uploadAvatarFile(path);
-//                Bitmap bm = BitmapFactory.decodeFile(images.get(0).path);
-//                if (null != bm) {
-//                    uploadAvatarFile(bm);
-//                }
                 }
             }
         }

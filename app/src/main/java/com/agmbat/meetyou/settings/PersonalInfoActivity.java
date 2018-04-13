@@ -11,6 +11,7 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.data.GenderHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,6 +35,9 @@ public class PersonalInfoActivity extends Activity {
 
     @BindView(R.id.nick_name)
     TextView mNickNameView;
+
+    @BindView(R.id.gender)
+    TextView mGenderView;
 
     /**
      * 用户信息
@@ -110,6 +114,15 @@ public class PersonalInfoActivity extends Activity {
     }
 
     /**
+     * 点击编辑性别
+     */
+    @OnClick(R.id.btn_gender)
+    void onClickGender() {
+        Intent intent = new Intent(this, EditGenderActivity.class);
+        startActivity(intent);
+    }
+
+    /**
      * 点击我的二维码
      */
     @OnClick(R.id.my_qrcode)
@@ -122,9 +135,10 @@ public class PersonalInfoActivity extends Activity {
         if (mVCardObject == null) {
             return;
         }
-//        mNickNameView.setText(mVCardObject.getNickname());
         ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView);
         mNickNameView.setText(mVCardObject.getNickname());
+        mGenderView.setText(GenderHelper.getName(mVCardObject.getGender()));
+
 //        mUserNameView.setText(getString(R.string.id_name_format) + " " + mVCardObject.getUserName());
 //        mGenderView.setImageResource(getGenderImage(mVCardObject.getGender()));
     }

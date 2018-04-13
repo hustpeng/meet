@@ -52,13 +52,20 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.agmbat.meetyou.settings.EditNameActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.agmbat.meetyou.settings.EditAvatarActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.agmbat.meetyou.settings.EditNameActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.agmbat.meetyou.settings.EditGenderActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.agmbat.meetyou.settings.QRCodeCardActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
