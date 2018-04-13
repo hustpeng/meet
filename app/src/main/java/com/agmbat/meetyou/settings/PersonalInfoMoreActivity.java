@@ -25,19 +25,7 @@ import butterknife.OnClick;
 /**
  * 我的信息界面
  */
-public class PersonalInfoActivity extends Activity {
-
-    /**
-     * 头像
-     */
-    @BindView(R.id.head)
-    ImageView mHeadView;
-
-    @BindView(R.id.nickname)
-    TextView mNickNameView;
-
-    @BindView(R.id.gender)
-    TextView mGenderView;
+public class PersonalInfoMoreActivity extends Activity {
 
     /**
      * 用户信息
@@ -48,10 +36,9 @@ public class PersonalInfoActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
-        setContentView(R.layout.activity_personal_info);
+        setContentView(R.layout.activity_personal_more_info);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        updateView();
         IM.get().fetchMyVCard();
     }
 
@@ -81,7 +68,6 @@ public class PersonalInfoActivity extends Activity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(VCardObject vCardObject) {
         mVCardObject = vCardObject;
-        updateView();
     }
 
     /**
@@ -90,63 +76,6 @@ public class PersonalInfoActivity extends Activity {
     @OnClick(R.id.title_btn_back)
     void onClickBack() {
         finish();
-    }
-
-    /**
-     * 点击头像
-     */
-    @OnClick(R.id.btn_head)
-    void onClickHead() {
-        if (mVCardObject == null) {
-            return;
-        }
-        Intent intent = new Intent(this, EditAvatarActivity.class);
-        startActivity(intent);
-    }
-
-    /**
-     * 点击昵称
-     */
-    @OnClick(R.id.btn_nickname)
-    void onClickNickname() {
-        Intent intent = new Intent(this, EditNameActivity.class);
-        startActivity(intent);
-    }
-
-    /**
-     * 点击编辑性别
-     */
-    @OnClick(R.id.btn_gender)
-    void onClickGender() {
-        Intent intent = new Intent(this, EditGenderActivity.class);
-        startActivity(intent);
-    }
-
-    /**
-     * 点击我的二维码
-     */
-    @OnClick(R.id.btn_qrcode)
-    void onClickQRCode() {
-        Intent intent = new Intent(this, QRCodeCardActivity.class);
-        startActivity(intent);
-    }
-
-    /**
-     * 点击我的二维码
-     */
-    @OnClick(R.id.personal_more_info)
-    void onClickMore() {
-        Intent intent = new Intent(this, PersonalInfoMoreActivity.class);
-        startActivity(intent);
-    }
-
-    private void updateView() {
-        if (mVCardObject == null) {
-            return;
-        }
-        ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView);
-        mNickNameView.setText(mVCardObject.getNickname());
-        mGenderView.setText(GenderHelper.getName(mVCardObject.getGender()));
     }
 
 

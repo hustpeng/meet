@@ -199,12 +199,17 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="@string/my_location"
+                android:text="出生年份"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
             <TextView
-                android:id="@+id/oivGender"
+                android:id="@+id/personal_more_info"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
@@ -214,47 +219,13 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="@string/gender"
+                android:text="更多"
                 android:textColor="#000000"
                 android:textSize="16sp" />
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1.0dip"
                 android:background="#ffeeeeee" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/im_setting_item"
-                android:drawableRight="@drawable/im_ic_right"
-                android:focusable="false"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:text="@string/area"
-                android:textColor="#000000"
-                android:textSize="16sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1.0dip"
-                android:background="#ffeeeeee" />
-
-            <TextView
-                android:id="@+id/oivSignature"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/im_setting_item"
-                android:drawableRight="@drawable/im_ic_right"
-                android:focusable="false"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:text="@string/im_settings_signature"
-                android:textColor="#000000"
-                android:textSize="16sp" />
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

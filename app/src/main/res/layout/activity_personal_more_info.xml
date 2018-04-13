@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff5f5f5"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48.0dip"
+        android:background="#ff232325">
+
+        <ImageView
+            android:id="@+id/title_btn_back"
+            android:layout_width="40dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_title_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/im_personal_info"
+            android:textColor="#ffffffff"
+            android:textSize="20sp" />
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="身高"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="学历"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="月薪"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="工作地区"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="婚况"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="体重"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="籍贯"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="户口在地"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="行业"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="职业"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="住房情况"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="购车情况"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="兴趣爱好"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="自我简介"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="择友要求"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="@string/im_settings_signature"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
