@@ -57,9 +57,9 @@ public class EditGenderActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
-        EventBus.getDefault().register(this);
         setContentView(R.layout.activity_edit_gender);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         IM.get().fetchMyVCard();
     }
 

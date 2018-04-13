@@ -33,7 +33,7 @@ public class PersonalInfoActivity extends Activity {
     @BindView(R.id.head)
     ImageView mHeadView;
 
-    @BindView(R.id.nick_name)
+    @BindView(R.id.nickname)
     TextView mNickNameView;
 
     @BindView(R.id.gender)
@@ -48,9 +48,9 @@ public class PersonalInfoActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
-        EventBus.getDefault().register(this);
         setContentView(R.layout.activity_personal_info);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         updateView();
         IM.get().fetchMyVCard();
     }
@@ -107,7 +107,7 @@ public class PersonalInfoActivity extends Activity {
     /**
      * 点击昵称
      */
-    @OnClick(R.id.btn_nick_name)
+    @OnClick(R.id.btn_nickname)
     void onClickNickname() {
         Intent intent = new Intent(this, EditNameActivity.class);
         startActivity(intent);
@@ -138,9 +138,6 @@ public class PersonalInfoActivity extends Activity {
         ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView);
         mNickNameView.setText(mVCardObject.getNickname());
         mGenderView.setText(GenderHelper.getName(mVCardObject.getGender()));
-
-//        mUserNameView.setText(getString(R.string.id_name_format) + " " + mVCardObject.getUserName());
-//        mGenderView.setImageResource(getGenderImage(mVCardObject.getGender()));
     }
 
 

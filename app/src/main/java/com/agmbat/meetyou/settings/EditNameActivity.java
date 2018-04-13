@@ -49,9 +49,9 @@ public class EditNameActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
-        EventBus.getDefault().register(this);
         setContentView(R.layout.activity_edit_name);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         mNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
