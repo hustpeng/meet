@@ -20,7 +20,9 @@ import com.agmbat.imagepicker.view.CropImageView;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
+import com.agmbat.isdialog.ISActionSheetDialog;
 import com.agmbat.isdialog.ISAlertDialog;
+import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
 import com.agmbat.photoview.PhotoView;
 
@@ -95,7 +97,7 @@ public class EditAvatarActivity extends Activity {
      */
     @OnClick(R.id.title_menu_more)
     void onClickMenuMore() {
-        ISAlertDialog dialog = new ISAlertDialog(this);
+        ISActionSheetDialog dialog = new ISActionSheetDialog(this);
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         dialog.useNegativeButton();
@@ -145,8 +147,8 @@ public class EditAvatarActivity extends Activity {
         imagePicker.setStyle(CropImageView.Style.RECTANGLE); //裁剪框的形状
         imagePicker.setFocusWidth(800); //裁剪框的宽度。单位像素（圆形自动取宽高最小值）
         imagePicker.setFocusHeight(800); //裁剪框的高度。单位像素（圆形自动取宽高最小值）
-        imagePicker.setOutPutX(1000);//保存文件的宽度。单位像素
-        imagePicker.setOutPutY(1000);//保存文件的高度。单位像素 }
+        imagePicker.setOutPutX(200);//保存文件的宽度。单位像素
+        imagePicker.setOutPutY(200);//保存文件的高度。单位像素 }
         Intent intent = new Intent(this, ImageGridActivity.class);
         startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
     }
@@ -182,11 +184,16 @@ public class EditAvatarActivity extends Activity {
      */
     private void uploadAvatarFile(String path) {
         // TODO 添加loading框
+        final ISLoadingDialog dialog = new ISLoadingDialog(this);
+        dialog.setMessage("正在上传头像...");
+        dialog.setCancelable(false);
+        dialog.show();
         RemoteFileManager.uploadAvatarFile(path, new RemoteFileManager.OnFileUploadListener() {
 
             @Override
             public void onUpload(ApiResult<String> apiResult) {
                 ToastUtil.showToastLong(apiResult.mErrorMsg);
+                dialog.dismiss();
             }
         });
     }
