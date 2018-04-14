@@ -3,7 +3,7 @@ package org.jivesoftware.smackx.findserver;
 
 import org.jivesoftware.smackx.db.ICacheStoreObject;
 
-public class FindServerObject implements ICacheStoreObject{
+public class FindServerObject implements ICacheStoreObject {
 
     private String tokenServer;
     private String paidServer;

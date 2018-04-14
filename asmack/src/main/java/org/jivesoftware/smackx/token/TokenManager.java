@@ -59,11 +59,6 @@ public class TokenManager extends Xepmodule {
         }
     };
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-    }
-
     public void addListener(TokenListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
@@ -166,10 +161,6 @@ public class TokenManager extends Xepmodule {
 
         xmppConnection.sendPacket(packet);
         return null;
-    }
-
-    public String getTokenServer() {
-        return tokenServer;
     }
 
     public void setTokenServer(String tokenServer) {

@@ -94,6 +94,7 @@ public class XMPPManager {
     private XMPPManager() {
         configureProviderManager();
         ConnectionConfiguration configuration = initConnectionConfig(HOST, PORT, TIGASE_SERVER);
+//        ConnectionConfiguration configuration = initConnectionConfig(TIGASE_SERVER, PORT);
         xmppConnection = new XMPPConnection(configuration);
 
         reconnectionManager = new ReconnectionManager(xmppConnection);
@@ -105,6 +106,7 @@ public class XMPPManager {
         vCardExtendManager = new VCardExtendManager(xmppConnection);
         findServerManager = new FindServerManager(xmppConnection);
         tokenManager = new TokenManager(xmppConnection);
+//        tokenManager.setTokenServer("13437122759@yuan520.com");
         locateManager = new LocateManager(xmppConnection);
         visitorManager = new VisitorManager(xmppConnection);
         messageManager = new MessageManager(xmppConnection);
@@ -118,6 +120,8 @@ public class XMPPManager {
             public void notifyFindServersResult(FindServerObject serverObject) {
                 Log.i("XMPPManager", "notifyFindServersResult = " + serverObject);
                 findServerManager.removeListener(this);
+
+                getTokenManager().setTokenServer(HOST);
                 if (serverObject != null) {
                     getTokenManager().setTokenServer(serverObject.getTokenServer());
                     getPaidManager().setPaidServer(serverObject.getPaidServer());

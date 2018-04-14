@@ -7,23 +7,17 @@ import org.xmlpull.v1.XmlPullParser;
 
 public class FindServerProvider implements IQProvider {
 
-    public FindServerProvider() {
-    }
-
-    public static String elementName()
-    {
+    public static String elementName() {
         return "query";
     }
 
-    public static String namespace()
-    {
+    public static String namespace() {
         return "http://jabber.org/protocol/disco#items";
     }
 
     public IQ parseIQ(XmlPullParser parser) throws Exception {
         FindServerPacket findServerPacket = new FindServerPacket();
         FindServerObject item = new FindServerObject();
-
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
@@ -33,24 +27,20 @@ public class FindServerProvider implements IQProvider {
                     if ("ticket".equals(name)) {
                         String value = parser.getAttributeValue("", "jid");
                         item.setTokenServer(value);
-                    }
-                    else if ("circle".equals(name)) {
+                    } else if ("circle".equals(name)) {
                         String value = parser.getAttributeValue("", "jid");
                         item.setCircleServer(value);
-                    }
-                    else if ("vip".equals(name)) {
+                    } else if ("vip".equals(name)) {
                         String value = parser.getAttributeValue("", "jid");
                         item.setPaidServer(value);
                     }
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.END_TAG) {
                 if ("query".equals(parser.getName())) {
                     done = true;
                 }
             }
         }
-
         findServerPacket.setFindServerObject(item);
         return findServerPacket;
     }

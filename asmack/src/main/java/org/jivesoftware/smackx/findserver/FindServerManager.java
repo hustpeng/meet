@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.findserver;
 
 import org.jivesoftware.smack.Connection;
@@ -7,7 +6,6 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
@@ -17,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class FindServerManager extends Xepmodule {
+
     private final static int findServer = 0;
     //private final static int setMyVCardExtend = 1;
 
@@ -50,11 +49,6 @@ public class FindServerManager extends Xepmodule {
             abortAllQuery();
         }
     };
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-    }
 
     public void addListener(FindServerListener findServerListener) {
         if (!findServerListeners.contains(findServerListener)) {
@@ -116,42 +110,20 @@ public class FindServerManager extends Xepmodule {
         }
     }
 
-    public class findServersPacket extends IQ {
-
-        public findServersPacket() {
-            setTo(xmppConnection.getHost());
-        }
-
-        public String getChildElementXML() {
-            return new StringBuffer()
-                    .append("<")
-                    .append(FindServerProvider.elementName())
-                    .append(" xmlns=\"")
-                    .append(FindServerProvider.namespace())
-                    .append("\"/>")
-                    .toString();
-        }
-    }
-
     public void findServer() {
         if (!xmppConnection.isConnected()) {
             return;
         }
-
         if (isQueryExist(findServer, null, null)) {
             return;
         }
-
-        findServersPacket packet = new findServersPacket();
-
+        FindServersPacket packet = new FindServersPacket(xmppConnection.getServiceName());
         String packetId = packet.getPacketID();
         PacketFilter idFilter = new PacketIDFilter(packetId);
         FindServerResultListener packetListener = new FindServerResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
-
         XepQueryInfo queryInfo = new XepQueryInfo(findServer);
         addQueryInfo(queryInfo, packetId, packetListener);
-
         xmppConnection.sendPacket(packet);
     }
 
@@ -166,49 +138,6 @@ public class FindServerManager extends Xepmodule {
         }
     }
 
-
-    // /////////////////////////////sendReportPacket/////////////////////////////////
-    public class sendReportPacket extends IQ {
-
-        private String jid;
-        private String category;
-        private String content;
-
-        public sendReportPacket(String jid, String category, String content) {
-            this.jid = jid;
-            this.category = category;
-            this.content = content;
-            setType(Type.SET);
-        }
-
-        /*
-         <iq id="HTi3o-11" type="set">
-        <query xmlns="jabber:iq:report">
-        <item jid="aaa\40email.com@10.2.7.139" reportcategory="Fake photo" reportcontent="Fake photo"/>
-        </query>
-        </iq>
-         */
-        @Override
-        public String getChildElementXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<");
-            buf.append("query");
-            buf.append(" xmlns=\"");
-            buf.append("jabber:iq:report");
-            buf.append("\">");
-            buf.append("<item jid=\"");
-            buf.append(XmppStringUtils.escapeForXML(jid));
-            buf.append("\" reportcategory=\"");
-            buf.append(category);
-            buf.append("\" reportcontent=\"");
-            buf.append(content);
-            buf.append("\"/></query>");
-            buf.toString();
-            return buf.toString();
-        }
-
-    }
-
     public void sendReport(String jid, String reportCategory, String reportContent) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             return;
@@ -216,7 +145,7 @@ public class FindServerManager extends Xepmodule {
         if (isQueryExist(1, jid, null)) {
             return;
         }
-        sendReportPacket packet = new sendReportPacket(XmppStringUtils.parseBareAddress(jid),
+        SendReportPacket packet = new SendReportPacket(XmppStringUtils.parseBareAddress(jid),
                 reportCategory, reportContent);
         String packetId = packet.getPacketID();
         PacketFilter idFilter = new PacketIDFilter(packetId);
@@ -239,5 +168,4 @@ public class FindServerManager extends Xepmodule {
             }
         }
     }
-    // /////////////////////////////sendReportPacket/////////////////////////////////
 }
