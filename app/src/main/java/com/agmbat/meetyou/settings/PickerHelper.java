@@ -30,4 +30,24 @@ public class PickerHelper {
         picker.setOnNumberPickListener(l);
         picker.show();
     }
+
+    /**
+     * 显示选择身高的Picker
+     */
+    public static void showHeightPicker(Activity activity, int selected, NumberPicker.OnNumberPickListener l) {
+        int start = 100;
+        int end = 200;
+
+        NumberPicker picker = new NumberPicker(activity);
+        picker.setWidth(picker.getScreenWidthPixels() / 2);
+        picker.setCycleDisable(true);
+        picker.setDividerVisible(false);
+        picker.setOffset(2); // 偏移量
+        picker.setGravity(Gravity.CENTER);
+        picker.setRange(start, end, 1); // 数字范围
+        picker.setSelectedItem(selected);
+        picker.setLabel("厘米");
+        picker.setOnNumberPickListener(l);
+        picker.show();
+    }
 }

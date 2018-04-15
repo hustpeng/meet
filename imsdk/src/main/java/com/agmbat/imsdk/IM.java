@@ -5,6 +5,7 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import org.greenrobot.eventbus.EventBus;
 import org.jivesoftware.smackx.vcard.VCardListener;
 import org.jivesoftware.smackx.vcard.VCardObject;
+import org.jivesoftware.smackx.vcardextend.VCardExtendObject;
 
 /**
  * 对外暴露统一的接口
@@ -46,6 +47,16 @@ public class IM {
      */
     public void fetchMyVCard() {
         VCardObject vCardObject = XMPPManager.getInstance().getvCardManager().fetchMyVCard();
+        if (vCardObject != null) {
+            EventBus.getDefault().post(vCardObject);
+        }
+    }
+
+    /**
+     * 获取登陆后的用户信息
+     */
+    public void fetchMyVCardExtend() {
+        VCardExtendObject vCardObject = XMPPManager.getInstance().getvCardExtendManager().fetchMyVCardExtend();
         if (vCardObject != null) {
             EventBus.getDefault().post(vCardObject);
         }

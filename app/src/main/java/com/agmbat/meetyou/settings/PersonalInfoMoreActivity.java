@@ -10,13 +10,17 @@ import android.widget.TextView;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.GenderHelper;
+import com.agmbat.picker.wheel.picker.NumberPicker;
+import com.agmbat.text.StringParser;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smackx.vcard.VCardObject;
+import org.jivesoftware.smackx.vcardextend.VCardExtendObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,10 +31,14 @@ import butterknife.OnClick;
  */
 public class PersonalInfoMoreActivity extends Activity {
 
+
+    @BindView(R.id.height)
+    TextView mHeightView;
+
     /**
      * 用户信息
      */
-    private VCardObject mVCardObject;
+    private VCardExtendObject mVCardExtendObject;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,7 +47,7 @@ public class PersonalInfoMoreActivity extends Activity {
         setContentView(R.layout.activity_personal_more_info);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        IM.get().fetchMyVCard();
+        IM.get().fetchMyVCardExtend();
     }
 
     @Override
@@ -66,8 +74,9 @@ public class PersonalInfoMoreActivity extends Activity {
      * @param vCardObject
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(VCardObject vCardObject) {
-        mVCardObject = vCardObject;
+    public void onEvent(VCardExtendObject vCardObject) {
+        mVCardExtendObject = vCardObject;
+        mHeightView.setText(String.valueOf(mVCardExtendObject.getHeight()) + "厘米");
     }
 
     /**
@@ -78,4 +87,17 @@ public class PersonalInfoMoreActivity extends Activity {
         finish();
     }
 
+    @OnClick(R.id.btn_height)
+    void onClickHeight() {
+        int selected = mVCardExtendObject.getHeight();
+        NumberPicker.OnNumberPickListener l = new NumberPicker.OnNumberPickListener() {
+            @Override
+            public void onNumberPicked(int index, Number item) {
+                mVCardExtendObject.setHeight(item.intValue());
+                EventBus.getDefault().post(mVCardExtendObject);
+                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+            }
+        };
+        PickerHelper.showHeightPicker(this, selected, l);
+    }
 }

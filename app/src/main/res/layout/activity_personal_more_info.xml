@@ -36,19 +36,36 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/btn_height"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
+                android:layout_height="wrap_content"
                 android:background="@drawable/im_setting_item"
-                android:drawableRight="@drawable/im_ic_right"
-                android:focusable="false"
-                android:gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:text="身高"
-                android:textColor="#000000"
-                android:textSize="16sp" />
+                android:paddingRight="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/personal_height"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/height"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:drawablePadding="10dp"
+                    android:drawableRight="@drawable/im_ic_right"
+                    android:gravity="center_vertical"
+                    android:textColor="#969696"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
