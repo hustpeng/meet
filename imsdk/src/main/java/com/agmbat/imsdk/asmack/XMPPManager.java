@@ -237,7 +237,7 @@ public class XMPPManager {
         map.put("password", password);
         map.put("nickname", registerInfo.getNickName());
         map.put("gender", String.valueOf(registerInfo.getGender()));
-        map.put("birth", registerInfo.getBirthYear());
+        map.put("birth", String.valueOf(registerInfo.getBirthYear()));
         map.put("invite", registerInfo.getInviteCode());
         xmppConnection.getAccountManager().createAccount(map);
         if (needSignIn) {

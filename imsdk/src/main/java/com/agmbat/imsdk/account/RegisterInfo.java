@@ -34,7 +34,7 @@ public class RegisterInfo {
     /**
      * 出生年份
      */
-    private String mBirthYear;
+    private int mBirthYear;
 
     /**
      * 邀请码
@@ -81,11 +81,11 @@ public class RegisterInfo {
         return mNickName;
     }
 
-    public void setBirthYear(String year) {
+    public void setBirthYear(int year) {
         mBirthYear = year;
     }
 
-    public String getBirthYear() {
+    public int getBirthYear() {
         return mBirthYear;
     }
 

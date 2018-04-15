@@ -7,20 +7,31 @@ import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.android.utils.UiUtils;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.imsdk.account.RegisterInfo;
+import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.data.GenderHelper;
+import com.agmbat.meetyou.settings.PickerHelper;
+import com.agmbat.picker.wheel.picker.NumberPicker;
+import com.agmbat.picker.wheel.picker.OptionPicker;
 import com.agmbat.text.PhoneNumberUtil;
+import com.agmbat.text.StringParser;
+
+import org.greenrobot.eventbus.EventBus;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 注册界面
@@ -30,47 +41,61 @@ public class RegisterActivity extends Activity {
     /**
      * 注册button
      */
-    private Button mRegisterButton;
+    @BindView(R.id.btn_register)
+    Button mRegisterButton;
 
     /**
      * 获取验证码控件
      */
-    private Button mGetVerificationCodeButton;
+    @BindView(R.id.btn_get_verification_code)
+    Button mGetVerificationCodeButton;
 
     /**
      * 用户名
      */
-    private EditText mUserNameView;
+    @BindView(R.id.input_username)
+    EditText mUserNameView;
 
     /**
      * 密码
      */
-    private EditText mPasswordView;
+    @BindView(R.id.input_password)
+    EditText mPasswordView;
 
     /**
      * 验证码
      */
-    private EditText mVerificationCodeView;
+    @BindView(R.id.input_code)
+    EditText mVerificationCodeView;
 
     /**
      * 昵称
      */
-    private EditText mNickNameView;
+    @BindView(R.id.input_nickname)
+    EditText mNickNameView;
 
     /**
      * 性别
      */
-    private TextView mGaderView;
+    @BindView(R.id.input_gender)
+    TextView mGenderView;
 
     /**
      * 出生年份
      */
-    private TextView mBirthYearView;
+    @BindView(R.id.input_birth_year)
+    TextView mBirthYearView;
 
     /**
      * 邀请码
      */
-    private EditText mInviteCodeView;
+    @BindView(R.id.input_invite_code)
+    EditText mInviteCodeView;
+
+    /**
+     * 注册Loading框
+     */
+    private ISLoadingDialog mLoadingDialog;
 
     private Counter mCountDownTimer;
 
@@ -102,14 +127,72 @@ public class RegisterActivity extends Activity {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_register);
+        ButterKnife.bind(this);
         mLoginManager = new ImAccountManager(this);
-        setupViews();
+        mUserNameView.addTextChangedListener(new TelTextWatcher(mOnInputTelephoneListener));
+        mPasswordView.addTextChangedListener(new TextChange());
+        mGenderView.setText(GenderHelper.female());
+        mBirthYearView.setText("1990");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         cancelTimer();
+    }
+
+
+    /**
+     * 点击返回键
+     */
+    @OnClick(R.id.title_btn_back)
+    void onClickBack() {
+        finish();
+    }
+
+    /**
+     * 选择性别
+     */
+    @OnClick(R.id.btn_gender)
+    void onClickGender() {
+        int gender = GenderHelper.getGender(mGenderView.getText().toString());
+        PickerHelper.showGenderPicker(this, gender, new OptionPicker.OnOptionPickListener() {
+            @Override
+            public void onOptionPicked(int index, String item) {
+                mGenderView.setText(item);
+            }
+        });
+    }
+
+    @OnClick(R.id.btn_birth_year)
+    void onClickBirthYear() {
+        int year = StringParser.parseInt(mBirthYearView.getText().toString());
+        PickerHelper.showYearPicker(this, year, new NumberPicker.OnNumberPickListener() {
+            @Override
+            public void onNumberPicked(int index, Number item) {
+                mBirthYearView.setText(item.toString());
+            }
+        });
+    }
+
+    @OnClick(R.id.btn_get_verification_code)
+    void onClickGetVerificationCode() {
+        startTimer();
+        String phone = mUserNameView.getText().toString();
+        mLoginManager.getRegisterVerificationCode(phone, new ImAccountManager.OnGetVerificationCodeListener() {
+            @Override
+            public void onGetVerificationCode(ApiResult result) {
+                mCountDownTimer.cancel();
+                mGetVerificationCodeButton.setEnabled(true);
+                mGetVerificationCodeButton.setText(getText(R.string.get_verification_code));
+                ToastUtil.showToastLong(result.mErrorMsg);
+            }
+        });
+    }
+
+    @OnClick(R.id.btn_register)
+    void onClickRegister() {
+        register();
     }
 
     /**
@@ -132,54 +215,13 @@ public class RegisterActivity extends Activity {
         }
     }
 
-    private void setupViews() {
-        findViewById(R.id.title_btn_back).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        mUserNameView = (EditText) findViewById(R.id.input_username);
-        mPasswordView = (EditText) findViewById(R.id.input_password);
-        mVerificationCodeView = (EditText) findViewById(R.id.et_code);
-        mUserNameView.addTextChangedListener(new TelTextWatcher(mOnInputTelephoneListener));
-        mPasswordView.addTextChangedListener(new TextChange());
-        mGetVerificationCodeButton = (Button) findViewById(R.id.btn_get_verification_code);
-        mGetVerificationCodeButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startTimer();
-                String phone = mUserNameView.getText().toString();
-                mLoginManager.getRegisterVerificationCode(phone, new ImAccountManager.OnGetVerificationCodeListener() {
-                    @Override
-                    public void onGetVerificationCode(ApiResult result) {
-//                        mCountDownTimer.cancel();
-//                        mGetVerificationCodeButton.setEnabled(true);
-//                        mGetVerificationCodeButton.setText(getText(R.string.get_verification_code));
-                        ToastUtil.showToastLong(result.mErrorMsg);
-                    }
-                });
-            }
-        });
-        mNickNameView = (EditText) findViewById(R.id.input_nickname);
-        mGaderView = (TextView) findViewById(R.id.input_gender);
-        mBirthYearView = (TextView) findViewById(R.id.input_birthday);
-        mInviteCodeView = (EditText) findViewById(R.id.input_invite_code);
-        mRegisterButton = (Button) findViewById(R.id.btn_register);
-        mRegisterButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                register();
-            }
-        });
-    }
-
     private void register() {
         String name = mUserNameView.getText().toString();
         String password = mPasswordView.getText().toString();
         String verificationCode = mVerificationCodeView.getText().toString();
         String nickName = mNickNameView.getText().toString();
-        String birthYear = mBirthYearView.getText().toString();
+        int gender = GenderHelper.getGender(mGenderView.getText().toString());
+        int birthYear = StringParser.parseInt(mBirthYearView.getText().toString());
         String inviteCode = mInviteCodeView.getText().toString();
         if (ImAccountManager.DEBUG_CHECK_SMS && !PhoneNumberUtil.isValidPhoneNumber(name)) {
             ToastUtil.showToastLong("请使用手机号码注册账户！");
@@ -202,7 +244,7 @@ public class RegisterActivity extends Activity {
         registerInfo.setPassword(password);
         registerInfo.setVerificationCode(verificationCode);
         registerInfo.setNickName(nickName);
-        registerInfo.setGender(1);
+        registerInfo.setGender(gender);
         registerInfo.setBirthYear(birthYear);
         registerInfo.setInviteCode(inviteCode);
 
@@ -211,12 +253,10 @@ public class RegisterActivity extends Activity {
             public void onRegister(ApiResult result) {
                 dismissDialog();
                 if (result.mResult) {
-//                    Intent intent = new Intent(RegisterActivity.this, EditUserInfoActivity.class);
-//                    startActivity(intent);
-//                    overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
                     Intent intent = new Intent(RegisterActivity.this, MainTabActivity.class);
                     startActivity(intent);
                     finish();
+                    EventBus.getDefault().post(new RegisterSuccessEvent());
                 } else {
                     mRegisterButton.setEnabled(true);
                     mGetVerificationCodeButton.setEnabled(true);
@@ -292,18 +332,16 @@ public class RegisterActivity extends Activity {
     }
 
     private void showDialog() {
-//        getLoadingDialog("正在登录...").show();
+        if (mLoadingDialog == null) {
+            mLoadingDialog = new ISLoadingDialog(this);
+            mLoadingDialog.setCancelable(false);
+            mLoadingDialog.setMessage("正在注册...");
+        }
+        mLoadingDialog.show();
     }
 
     private void dismissDialog() {
-//        getLoadingDialog("正在登录").dismiss();
+        UiUtils.dismissDialogSafely(mLoadingDialog);
     }
-
-//    private FlippingLoadingDialog getLoadingDialog(String msg) {
-//        if (mLoadingDialog == null) {
-//            mLoadingDialog = new FlippingLoadingDialog(this, msg);
-//        }
-//        return mLoadingDialog;
-//    }
 
 }

@@ -8,7 +8,6 @@ import com.agmbat.meetyou.R;
  */
 public class GenderHelper {
 
-
     /**
      * 0表示女
      */
@@ -31,6 +30,24 @@ public class GenderHelper {
     public static final int GENDER_SECRET = 3;
 
     /**
+     * 男性
+     *
+     * @return
+     */
+    public static String male() {
+        return AppResources.getString(R.string.gender_male);
+    }
+
+    /**
+     * 女性
+     *
+     * @return
+     */
+    public static String female() {
+        return AppResources.getString(R.string.gender_female);
+    }
+
+    /**
      * 获取性别名称文本
      *
      * @param gender
@@ -40,13 +57,28 @@ public class GenderHelper {
         if (gender == GENDER_UNKNOWN) {
             return "未设置";
         } else if (gender == GENDER_MALE) {
-            return AppResources.getString(R.string.gender_male);
+            return male();
         } else if (gender == GENDER_FEMALE) {
-            return AppResources.getString(R.string.gender_female);
+            return female();
         } else if (gender == GENDER_SECRET) {
             return "保密";
         }
         return "";
+    }
+
+    /**
+     * 通过name获取性别值
+     *
+     * @param name
+     * @return
+     */
+    public static int getGender(String name) {
+        if (male().equals(name)) {
+            return GENDER_MALE;
+        } else if (female().equals(name)) {
+            return GENDER_FEMALE;
+        }
+        return GENDER_MALE;
     }
 
     /**

@@ -4,12 +4,49 @@ package com.agmbat.meetyou.settings;
 import android.app.Activity;
 import android.view.Gravity;
 
+import com.agmbat.meetyou.data.GenderHelper;
 import com.agmbat.picker.wheel.picker.NumberPicker;
+import com.agmbat.picker.wheel.picker.OptionPicker;
 
 /**
  * 选择器辅助类
  */
 public class PickerHelper {
+
+    /**
+     * 显示性别选择器
+     *
+     * @param activity
+     * @param gender   默认选中的性别
+     * @param l
+     */
+    public static void showGenderPicker(Activity activity, int gender, OptionPicker.OnOptionPickListener l) {
+        String[] items = new String[]{
+                GenderHelper.male(), GenderHelper.female()
+        };
+        int selected = 0;
+        if (gender == GenderHelper.GENDER_MALE) {
+            selected = 0;
+        } else if (gender == GenderHelper.GENDER_FEMALE) {
+            selected = 1;
+        }
+        OptionPicker picker = new OptionPicker(activity, items);
+        picker.setWidth(picker.getScreenWidthPixels() / 2);
+        picker.setCanceledOnTouchOutside(false);
+        picker.setDividerVisible(false);
+        picker.setOffset(2); // 偏移量
+        picker.setGravity(Gravity.CENTER);
+
+//        picker.setDividerRatio(WheelView.DividerConfig.FILL);
+//        picker.setShadowColor(Color.RED, 40);
+        picker.setSelectedIndex(selected);
+        picker.setCycleDisable(true);
+//        picker.setTextSize(11);
+        picker.setOnOptionPickListener(l);
+        picker.show();
+
+
+    }
 
     /**
      * 显示选择年的Picker

@@ -16,6 +16,15 @@ import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smackx.vcard.VCardObject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * 登陆界面
  */
@@ -23,9 +32,14 @@ public class LoginActivity extends FragmentActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
-    private Button mLoginButton;
-    private EditText mUserNameView;
-    private EditText mPasswordView;
+    @BindView(R.id.btn_login)
+    Button mLoginButton;
+
+    @BindView(R.id.input_username)
+    EditText mUserNameView;
+
+    @BindView(R.id.input_password)
+    EditText mPasswordView;
 
     private ImAccountManager mLoginManager;
 
@@ -34,48 +48,52 @@ public class LoginActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
+
+        EventBus.getDefault().register(this);
         mLoginManager = new ImAccountManager(this);
-        setupViews();
-    }
 
-    private void setupViews() {
-        findViewById(R.id.title_btn_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        mLoginButton = (Button) findViewById(R.id.btn_login);
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                login();
-            }
-        });
-
-        findViewById(R.id.btn_signup).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-            }
-        });
-
-        mUserNameView = (EditText) findViewById(R.id.input_username);
         mUserNameView.addTextChangedListener(new TextChange());
-        mPasswordView = (EditText) findViewById(R.id.input_password);
         mPasswordView.addTextChangedListener(new TextChange());
-
-        findViewById(R.id.login_problem).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
-            }
-        });
-
         // for test
         mUserNameView.setText("13437122759");
         mPasswordView.setText("a123123");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * 收到注册成功的消息
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(RegisterSuccessEvent event) {
+        finish();
+    }
+
+    @OnClick(R.id.title_btn_back)
+    void onClickBack() {
+        finish();
+    }
+
+    @OnClick(R.id.btn_login)
+    void onClickLogin() {
+        login();
+    }
+
+    @OnClick(R.id.btn_signup)
+    void onClickSignup() {
+        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+    }
+
+    @OnClick(R.id.login_problem)
+    void onClickLoginProblem() {
+        startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
     }
 
     private void login() {
