@@ -1,7 +1,8 @@
-
 package org.jivesoftware.smackx.vcardextend;
 
 import android.text.TextUtils;
+
+import com.agmbat.text.StringParser;
 
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.ICacheStoreObject;
@@ -11,13 +12,168 @@ import java.util.Date;
 
 public class VCardExtendObject implements ICacheStoreObject {
 
+    /**
+     * 身高height
+     */
+    public static final String KEY_HEIGHT = "height";
+
+    /**
+     * 学历education
+     */
+    public static final String KEY_EDUCATION = "education";
+
+    /**
+     * 月薪wage
+     */
+    public static final String KEY_WAGE = "wage";
+
+    /**
+     * 工作地区workarea
+     */
+    public static final String KEY_WORKAREA = "workarea";
+
+    /**
+     * 婚况marriage
+     */
+    public static final String KEY_MARRIAGE = "marriage";
+
+    /**
+     * 体重weight
+     */
+    public static final String KEY_WEIGHT = "weight";
+
+    /**
+     * 籍贯birthplace
+     */
+    public static final String KEY_BIRTHPLACE = "birthplace";
+
+    /**
+     * 户口在地residence
+     */
+    public static final String KEY_RESIDENCE = "residence";
+
+    /**
+     * 行业industry
+     */
+    public static final String KEY_INDUSTRY = "industry";
+
+    /**
+     * 职业career
+     */
+    public static final String KEY_CAREER = "career";
+
+    /**
+     * 住房情况house
+     */
+    public static final String KEY_HOUSE = "house";
+
+    /**
+     * 购车情况car
+     */
+    public static final String KEY_CAR = "car";
+
+    /**
+     * 兴趣爱好hobby
+     */
+    public static final String KEY_HOBBY = "hobby";
+
+    /**
+     * 自我简介introduce
+     */
+    public static final String KEY_INTRODUCE = "introduce";
+
+    /**
+     * 择友要求demand
+     */
+    public static final String KEY_DEMAND = "demand";
+
+    /**
+     * 个人签名status
+     */
+    public static final String KEY_STATUS = "status";
+
+
+    /**
+     * 身高
+     */
+    private int height;
+
+    /**
+     * 学历
+     */
+    private int education;
+
+    /**
+     * 月薪
+     */
+    private int wage;
+
+    /**
+     * 工作地区
+     */
+    private String workarea;
+
+    /**
+     * 婚况
+     */
+    private int marriage;
+
+    /**
+     * 体重
+     */
+    private int weight;
+
+    /**
+     * 籍贯
+     */
+    private String birthplace;
+
+    /**
+     * 户口在地
+     */
+    private String residence;
+
+    /**
+     * 行业
+     */
+    private int industry;
+
+    /**
+     * 职业
+     */
+    private int career;
+
+    /**
+     * 购车情况
+     */
+    private int car;
+
+    /**
+     * 兴趣爱好
+     */
+    private int hobby;
+
+    /**
+     * 自我简介
+     */
+    private String introduce;
+
+    /**
+     * 择友要求
+     */
+    private int demand;
+
+    /**
+     * 个人签名
+     */
+    private String status;
+
+    //            //
     private String jid;
 
     //public info
     private String birthday;
     private String astrological;
-    private String height;
-    private String weight;
     private String bodyType;
     private String ethnicity;
     private String relationship;
@@ -38,6 +194,126 @@ public class VCardExtendObject implements ICacheStoreObject {
 
     //update date
     private Date update_date;
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getEducation() {
+        return education;
+    }
+
+    public void setEducation(int education) {
+        this.education = education;
+    }
+
+    public int getWage() {
+        return wage;
+    }
+
+    public void setWage(int wage) {
+        this.wage = wage;
+    }
+
+    public String getWorkarea() {
+        return workarea;
+    }
+
+    public void setWorkarea(String workarea) {
+        this.workarea = workarea;
+    }
+
+    public int getMarriage() {
+        return marriage;
+    }
+
+    public void setMarriage(int marriage) {
+        this.marriage = marriage;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public String getBirthplace() {
+        return birthplace;
+    }
+
+    public void setBirthplace(String birthplace) {
+        this.birthplace = birthplace;
+    }
+
+    public String getResidence() {
+        return residence;
+    }
+
+    public void setResidence(String residence) {
+        this.residence = residence;
+    }
+
+    public int getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(int industry) {
+        this.industry = industry;
+    }
+
+    public int getCareer() {
+        return career;
+    }
+
+    public void setCareer(int career) {
+        this.career = career;
+    }
+
+    public int getCar() {
+        return car;
+    }
+
+    public void setCar(int car) {
+        this.car = car;
+    }
+
+    public int getHobby() {
+        return hobby;
+    }
+
+    public void setHobby(int hobby) {
+        this.hobby = hobby;
+    }
+
+    public String getIntroduce() {
+        return introduce;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
+    }
+
+    public int getDemand() {
+        return demand;
+    }
+
+    public void setDemand(int demand) {
+        this.demand = demand;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getKey() {
         if (TextUtils.isEmpty(jid)) {
@@ -75,21 +351,6 @@ public class VCardExtendObject implements ICacheStoreObject {
         this.astrological = astrological;
     }
 
-    public String getHeight() {
-        return height;
-    }
-
-    public void setHeight(String height) {
-        this.height = height;
-    }
-
-    public String getWeight() {
-        return weight;
-    }
-
-    public void setWeight(String weight) {
-        this.weight = weight;
-    }
 
     public String getBodyType() {
         return bodyType;
@@ -219,6 +480,7 @@ public class VCardExtendObject implements ICacheStoreObject {
         this.update_date = update_date;
     }
 
+
     public static String getXmlNode(VCardExtendObject object) {
         if (object == null) {
             return null;
@@ -232,135 +494,27 @@ public class VCardExtendObject implements ICacheStoreObject {
         buf.append("\">");
 //public
         buf.append("<PUBLIC>");
-        buf.append("<BIRTHDAY>");
-        if (!TextUtils.isEmpty(object.getBirthday())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getBirthday()));
-        }
-        buf.append("</BIRTHDAY>");
+        XmppStringUtils.appendXml(buf, KEY_HEIGHT, String.valueOf(object.getHeight()));
+        XmppStringUtils.appendXml(buf, KEY_EDUCATION, String.valueOf(object.getEducation()));
+        XmppStringUtils.appendXml(buf, KEY_WAGE, String.valueOf(object.getWage()));
+        XmppStringUtils.appendXml(buf, KEY_WORKAREA, object.getWorkarea());
+        XmppStringUtils.appendXml(buf, KEY_MARRIAGE, String.valueOf(object.getMarriage()));
+        XmppStringUtils.appendXml(buf, KEY_WEIGHT, String.valueOf(object.getWeight()));
+        XmppStringUtils.appendXml(buf, KEY_BIRTHPLACE, object.getBirthplace());
+        XmppStringUtils.appendXml(buf, KEY_RESIDENCE, object.getResidence());
+        XmppStringUtils.appendXml(buf, KEY_INDUSTRY, String.valueOf(object.getIndustry()));
+        XmppStringUtils.appendXml(buf, KEY_CAREER, String.valueOf(object.getCareer()));
+        XmppStringUtils.appendXml(buf, KEY_HOUSE, String.valueOf(object.getWage()));
+        XmppStringUtils.appendXml(buf, KEY_CAR, String.valueOf(object.getCar()));
+        XmppStringUtils.appendXml(buf, KEY_HOBBY, String.valueOf(object.getHobby()));
+        XmppStringUtils.appendXml(buf, KEY_INTRODUCE, String.valueOf(object.getIntroduce()));
+        XmppStringUtils.appendXml(buf, KEY_DEMAND, String.valueOf(object.getDemand()));
+        XmppStringUtils.appendXml(buf, KEY_STATUS, object.getStatus());
 
-        buf.append("<ASTROLOGICAL>");
-        if (!TextUtils.isEmpty(object.getAstrological())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getAstrological()));
-        }
-        buf.append("</ASTROLOGICAL>");
-
-        buf.append("<ETHNICITY>");
-        if (!TextUtils.isEmpty(object.getEthnicity())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getEthnicity()));
-        }
-        buf.append("</ETHNICITY>");
-
-        buf.append("<HEIGHT>");
-        if (!TextUtils.isEmpty(object.getHeight())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getHeight()));
-        }
-        buf.append("</HEIGHT>");
-
-        buf.append("<WEIGHT>");
-        if (!TextUtils.isEmpty(object.getWeight())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getWeight()));
-        }
-        buf.append("</WEIGHT>");
-
-        buf.append("<BODYTYPE>");
-        if (!TextUtils.isEmpty(object.getBodyType())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getBodyType()));
-        }
-        buf.append("</BODYTYPE>");
-
-        buf.append("<RELATIONSHIP>");
-        if (!TextUtils.isEmpty(object.getRelationship())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getRelationship()));
-        }
-        buf.append("</RELATIONSHIP>");
-
-        buf.append("<PERSONALITY>");
-        if (object.getPersonality() != null) {
-            for (String item : object.getPersonality()) {
-                buf.append("<V>");
-                buf.append(XmppStringUtils.escapeForXML(item));
-                buf.append("</V>");
-            }
-        }
-        buf.append("</PERSONALITY>");
-
-        buf.append("<LOOKINGFOR>");
-        if (object.getLookingFor() != null) {
-            for (String item : object.getLookingFor()) {
-                buf.append("<V>");
-                buf.append(XmppStringUtils.escapeForXML(item));
-                buf.append("</V>");
-            }
-        }
-        buf.append("</LOOKINGFOR>");
-
-        buf.append("<LANGUAGE>");
-        if (object.getLanguage() != null) {
-            for (String item : object.getLanguage()) {
-                buf.append("<V>");
-                buf.append(XmppStringUtils.escapeForXML(item));
-                buf.append("</V>");
-            }
-        }
-        buf.append("</LANGUAGE>");
-
-        buf.append("<PUBLICPHOTOS>");
-        if (object.getPublicPhotos() != null) {
-            for (String item : object.getPublicPhotos()) {
-                buf.append("<V>");
-                buf.append(XmppStringUtils.escapeForXML(item));
-                buf.append("</V>");
-            }
-        }
-        buf.append("</PUBLICPHOTOS>");
         buf.append("</PUBLIC>");
+
 //private info
         buf.append("<PRIVATE>");
-        buf.append("<SEXUALPOSITION>");
-        if (!TextUtils.isEmpty(object.getSexualPosition())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getSexualPosition()));
-        }
-        buf.append("</SEXUALPOSITION>");
-
-        buf.append("<ORIENTATION>");
-        if (!TextUtils.isEmpty(object.getOrientation())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getOrientation()));
-        }
-        buf.append("</ORIENTATION>");
-
-        buf.append("<HIV>");
-        if (!TextUtils.isEmpty(object.getHIVStatus())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getHIVStatus()));
-        }
-        buf.append("</HIV>");
-
-//        buf.append("<DRUGS>");
-//        if (!TextUtils.isEmpty(getDrugs())) {
-//            buf.append(XmppStringUtils.escapeForXML(getDrugs()));
-//        }
-//        buf.append("</DRUGS>");
-//
-//        buf.append("<LIVEIN>");
-//        if (!TextUtils.isEmpty(getLivin())) {
-//            buf.append(XmppStringUtils.escapeForXML(getLivin()));
-//        }
-//        buf.append("</LIVEIN>");
-//
-//        buf.append("<SEXUALINTERESTS>");
-//        for (String item:getSexualInterests()) {
-//           buf.append("<V>");
-//           buf.append(XmppStringUtils.escapeForXML(item));
-//           buf.append("</V>");
-//        }
-//        buf.append("</SEXUALINTERESTS>");
-//
-//        buf.append("<PRIVATEPHOTOS>");
-//        for (String item:getPrivatePhotos()) {
-//           buf.append("<V>");
-//           buf.append(XmppStringUtils.escapeForXML(item));
-//           buf.append("</V>");
-//        }
-//        buf.append("</PRIVATEPHOTOS>");
         buf.append("</PRIVATE>");
 
         buf.append("</");
@@ -373,4 +527,6 @@ public class VCardExtendObject implements ICacheStoreObject {
     public String toString() {
         return getXmlNode(this);
     }
+
+
 }

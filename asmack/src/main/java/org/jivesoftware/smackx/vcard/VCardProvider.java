@@ -5,7 +5,13 @@ import com.agmbat.text.StringParser;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
+
+/**
+ * 接收VCard信息并解析
+ */
 public class VCardProvider implements IQProvider {
 
     public static String elementName() {
@@ -25,25 +31,38 @@ public class VCardProvider implements IQProvider {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 String parserName = parser.getName();
-                if (VCardObject.KEY_NICKNAME.equals(parserName)) {
-                    item.setNickname(parser.nextText());
-                } else if (VCardObject.KEY_GENDER.equals(parserName)) {
-                    item.setGender(StringParser.parseInt(parser.nextText()));
-                } else if (VCardObject.KEY_BIRTH.equals(parserName)) {
-                    item.setBirthYear(StringParser.parseInt(parser.nextText()));
-                } else if (VCardObject.KEY_AVATAR.equals(parserName)) {
-                    item.setAvatar(parser.nextText());
-                } else if ("STATUS".equals(parserName)) {
-                    item.setStatus(parser.nextText());
-                }
+                parseField(item, parserName, parser);
             } else if (eventType == XmlPullParser.END_TAG) {
                 if ("vCard".equals(parser.getName())) {
                     done = true;
                 }
             }
         }
-
         packet.setObject(item);
         return packet;
+    }
+
+    /**
+     * 解析字段
+     *
+     * @param item
+     * @param parserName
+     * @param parser
+     * @throws IOException
+     * @throws XmlPullParserException
+     */
+    private static void parseField(VCardObject item, String parserName, XmlPullParser parser)
+            throws IOException, XmlPullParserException {
+        if (VCardObject.KEY_NICKNAME.equals(parserName)) {
+            item.setNickname(parser.nextText());
+        } else if (VCardObject.KEY_GENDER.equals(parserName)) {
+            item.setGender(StringParser.parseInt(parser.nextText()));
+        } else if (VCardObject.KEY_BIRTH.equals(parserName)) {
+            item.setBirthYear(StringParser.parseInt(parser.nextText()));
+        } else if (VCardObject.KEY_AVATAR.equals(parserName)) {
+            item.setAvatar(parser.nextText());
+        } else if ("STATUS".equals(parserName)) {
+            item.setStatus(parser.nextText());
+        }
     }
 }

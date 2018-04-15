@@ -20,6 +20,8 @@
 
 package org.jivesoftware.smack.util;
 
+import android.text.TextUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -821,5 +823,20 @@ public class XmppStringUtils {
      */
     public static String xmlTagEnd(String key) {
         return "</" + key + ">";
+    }
+
+    /**
+     * 添加Xml内容
+     *
+     * @param builder
+     * @param key
+     * @param value
+     */
+    public static void appendXml(StringBuilder builder, String key, String value) {
+        builder.append(xmlTagStart(key));
+        if (!TextUtils.isEmpty(value)) {
+            builder.append(escapeForXML(value));
+        }
+        builder.append(xmlTagEnd(key));
     }
 }

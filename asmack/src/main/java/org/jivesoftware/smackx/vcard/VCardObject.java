@@ -34,7 +34,6 @@ public class VCardObject implements ICacheStoreObject {
     public static final String KEY_AVATAR = "avatar";
 
     private String jid;
-    private String avatar;
     private String status;
     private Date update_date;
 
@@ -52,6 +51,11 @@ public class VCardObject implements ICacheStoreObject {
      * 出生年份
      */
     private int birthYear;
+
+    /**
+     * 头像url
+     */
+    private String avatar;
 
     public String getNickname() {
         if (TextUtils.isEmpty(nickname)) {
@@ -147,25 +151,10 @@ public class VCardObject implements ICacheStoreObject {
         buf.append(VCardProvider.namespace());
         buf.append("\">");
 
-        buf.append(XmppStringUtils.xmlTagStart(KEY_NICKNAME));
-        if (!TextUtils.isEmpty(object.getNickname())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getNickname()));
-        }
-        buf.append(XmppStringUtils.xmlTagEnd(KEY_NICKNAME));
-
-        buf.append(XmppStringUtils.xmlTagStart(KEY_GENDER));
-        buf.append(XmppStringUtils.escapeForXML(String.valueOf(object.getGender())));
-        buf.append(XmppStringUtils.xmlTagEnd(KEY_GENDER));
-
-        buf.append(XmppStringUtils.xmlTagStart(KEY_BIRTH));
-        buf.append(XmppStringUtils.escapeForXML(String.valueOf(object.getBirthYear())));
-        buf.append(XmppStringUtils.xmlTagEnd(KEY_BIRTH));
-
-        buf.append(XmppStringUtils.xmlTagStart(KEY_AVATAR));
-        if (!TextUtils.isEmpty(object.getAvatar())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getAvatar()));
-        }
-        buf.append(XmppStringUtils.xmlTagEnd(KEY_AVATAR));
+        XmppStringUtils.appendXml(buf, KEY_NICKNAME, object.getNickname());
+        XmppStringUtils.appendXml(buf, KEY_GENDER, String.valueOf(object.getGender()));
+        XmppStringUtils.appendXml(buf, KEY_BIRTH, String.valueOf(object.getBirthYear()));
+        XmppStringUtils.appendXml(buf, KEY_AVATAR, object.getAvatar());
 
         buf.append("</");
         buf.append(VCardProvider.elementName());
