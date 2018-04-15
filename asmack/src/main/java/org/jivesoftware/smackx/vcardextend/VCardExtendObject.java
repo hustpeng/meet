@@ -1,19 +1,19 @@
 
 package org.jivesoftware.smackx.vcardextend;
 
+import android.text.TextUtils;
+
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.ICacheStoreObject;
-
-import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-public class VCardExtendObject implements ICacheStoreObject{
+public class VCardExtendObject implements ICacheStoreObject {
 
     private String jid;
 
-//public info
+    //public info
     private String birthday;
     private String astrological;
     private String height;
@@ -26,7 +26,7 @@ public class VCardExtendObject implements ICacheStoreObject{
     private ArrayList<String> language;
     private ArrayList<String> publicPhotos;
 
-//private info
+    //private info
     private boolean hasPrivateInfo;
     private String sexualPosition;
     private String orientation;
@@ -36,7 +36,7 @@ public class VCardExtendObject implements ICacheStoreObject{
     private ArrayList<String> sexualInterests;
     private ArrayList<String> privatePhotos;
 
-//update date
+    //update date
     private Date update_date;
 
     public String getKey() {
@@ -219,8 +219,7 @@ public class VCardExtendObject implements ICacheStoreObject{
         this.update_date = update_date;
     }
 
-    public static String getXmlNode(VCardExtendObject object)
-    {
+    public static String getXmlNode(VCardExtendObject object) {
         if (object == null) {
             return null;
         }
@@ -277,41 +276,41 @@ public class VCardExtendObject implements ICacheStoreObject{
 
         buf.append("<PERSONALITY>");
         if (object.getPersonality() != null) {
-            for (String item:object.getPersonality()) {
+            for (String item : object.getPersonality()) {
                 buf.append("<V>");
                 buf.append(XmppStringUtils.escapeForXML(item));
                 buf.append("</V>");
-             }
+            }
         }
         buf.append("</PERSONALITY>");
 
         buf.append("<LOOKINGFOR>");
         if (object.getLookingFor() != null) {
-            for (String item:object.getLookingFor()) {
+            for (String item : object.getLookingFor()) {
                 buf.append("<V>");
                 buf.append(XmppStringUtils.escapeForXML(item));
                 buf.append("</V>");
-             }
+            }
         }
         buf.append("</LOOKINGFOR>");
 
         buf.append("<LANGUAGE>");
         if (object.getLanguage() != null) {
-            for (String item:object.getLanguage()) {
+            for (String item : object.getLanguage()) {
                 buf.append("<V>");
                 buf.append(XmppStringUtils.escapeForXML(item));
                 buf.append("</V>");
-             }
+            }
         }
         buf.append("</LANGUAGE>");
 
         buf.append("<PUBLICPHOTOS>");
         if (object.getPublicPhotos() != null) {
-            for (String item:object.getPublicPhotos()) {
+            for (String item : object.getPublicPhotos()) {
                 buf.append("<V>");
                 buf.append(XmppStringUtils.escapeForXML(item));
                 buf.append("</V>");
-             }
+            }
         }
         buf.append("</PUBLICPHOTOS>");
         buf.append("</PUBLIC>");

@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.vcardextend;
 
 import android.text.TextUtils;
@@ -9,7 +8,6 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.db.CacheStoreBase;
 import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
@@ -25,8 +23,8 @@ public class VCardExtendManager extends Xepmodule {
      */
     private final static int VCARDEXTEND_REFRESH_TIME = 180000;
 
-    private final static int fetchVCardExtend = 0;
-    private final static int setMyVCardExtend = 1;
+    private final static int FETCH_VCARDEXTEND = 0;
+    private final static int SET_MY_VCARDEXTEND = 1;
 
     private CacheStoreBase<VCardExtendObject> cacheStorage;
 
@@ -63,11 +61,6 @@ public class VCardExtendManager extends Xepmodule {
         }
     };
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-    }
-
     public void addListener(VCardExtendListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
@@ -93,14 +86,12 @@ public class VCardExtendManager extends Xepmodule {
     @Override
     public void processQueryWithFailureCode(XepQueryInfo queryInfo, String error) {
         switch (queryInfo.getQueryType()) {
-            case fetchVCardExtend:
+            case FETCH_VCARDEXTEND:
                 notifyFetchVCardExtendResult(queryInfo.getParam1(), null);
                 break;
-
-            case setMyVCardExtend:
+            case SET_MY_VCARDEXTEND:
                 notifySetMyVCardExtendResult(false);
                 break;
-
             default:
                 break;
         }
@@ -108,7 +99,7 @@ public class VCardExtendManager extends Xepmodule {
 
     private void processQueryResponse(Packet packet, XepQueryInfo queryInfo) {
         switch (queryInfo.getQueryType()) {
-            case fetchVCardExtend: {
+            case FETCH_VCARDEXTEND: {
                 if (packet.getError() == null) {
                     VCardExtendObject object = ((VCardExtendPacket) packet).getObject();
                     if (object != null) {
@@ -116,50 +107,30 @@ public class VCardExtendManager extends Xepmodule {
                         object.setUpdate_date(new Date());
                         cacheStorage.insertOrUpdate(object);
                     }
-
                     notifyFetchVCardExtendResult(queryInfo.getParam1(), object);
                 } else {
                     notifyFetchVCardExtendResult(queryInfo.getParam1(), null);
                 }
             }
             break;
-
-            case setMyVCardExtend: {
+            case SET_MY_VCARDEXTEND: {
                 if (packet.getError() == null) {
                     VCardExtendObject object = (VCardExtendObject) queryInfo.getParam3();
                     if (object != null) {
                         object.setUpdate_date(new Date());
                         cacheStorage.insertOrUpdate(object);
                     }
-
                     notifySetMyVCardExtendResult(true);
                 } else {
                     notifySetMyVCardExtendResult(false);
                 }
             }
             break;
-
             default:
                 break;
         }
     }
 
-    public class FetchVCardExtendPacket extends IQ {
-
-        public FetchVCardExtendPacket(String aJid) {
-            setTo(aJid);
-        }
-
-        public String getChildElementXML() {
-            return new StringBuffer()
-                    .append("<")
-                    .append(VCardExtendProvider.elementName())
-                    .append(" xmlns=\"")
-                    .append(VCardExtendProvider.namespace())
-                    .append("\"/>")
-                    .toString();
-        }
-    }
 
     /**
      * @return 返回vcard; 如果返回null, 则会异步去服务器获取,然后通过notifyFetchVCardResult返回结果
@@ -199,7 +170,7 @@ public class VCardExtendManager extends Xepmodule {
             }
         }
 
-        if (isQueryExist(fetchVCardExtend, jid, null)) {
+        if (isQueryExist(FETCH_VCARDEXTEND, jid, null)) {
             return null;
         }
 
@@ -210,31 +181,17 @@ public class VCardExtendManager extends Xepmodule {
         VcardExtendResultListener packetListener = new VcardExtendResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        XepQueryInfo queryInfo = new XepQueryInfo(fetchVCardExtend, jid);
+        XepQueryInfo queryInfo = new XepQueryInfo(FETCH_VCARDEXTEND, jid);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
         return null;
     }
 
-    public class SetVCardExtendPacket extends IQ {
-
-        private final VCardExtendObject vcardExtend;
-
-        public SetVCardExtendPacket(VCardExtendObject newVCardExtend) {
-            vcardExtend = newVCardExtend;
-            setType(Type.SET);
-        }
-
-        public String getChildElementXML() {
-            return VCardExtendObject.getXmlNode(vcardExtend);
-        }
-    }
-
     /**
      * 异步接口，结果通过notifySetMyVCardResult返回
      *
-     * @param newVCard
+     * @param newVCardExtend
      * @return 如果输入newVCard为空，或者当前没有登录，notifySetMyVCardResult(false)会在函数返回前被调用。
      */
     public void setMyVCardExtend(VCardExtendObject newVCardExtend) {
@@ -255,13 +212,15 @@ public class VCardExtendManager extends Xepmodule {
         VcardExtendResultListener packetListener = new VcardExtendResultListener();
         xmppConnection.addPacketListener(packetListener, idFilter);
 
-        XepQueryInfo queryInfo = new XepQueryInfo(setMyVCardExtend, null, null, newVCardExtend);
+        XepQueryInfo queryInfo = new XepQueryInfo(SET_MY_VCARDEXTEND, null, null, newVCardExtend);
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
     }
 
     private class VcardExtendResultListener implements PacketListener {
+
+        @Override
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
             XepQueryInfo queryInfo = getQueryInfo(packetIdString);

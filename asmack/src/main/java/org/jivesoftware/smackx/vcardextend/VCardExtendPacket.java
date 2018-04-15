@@ -33,7 +33,6 @@ public class VCardExtendPacket extends IQ {
 
     @Override
     public String getChildElementXML() {
-        // TODO Auto-generated method stub
         return null;
     }
 
