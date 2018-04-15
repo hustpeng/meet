@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
+import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.GenderHelper;
+import com.agmbat.picker.wheel.picker.NumberPicker;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,6 +42,9 @@ public class PersonalInfoActivity extends Activity {
 
     @BindView(R.id.gender)
     TextView mGenderView;
+
+    @BindView(R.id.birth_year)
+    TextView mBirthYearView;
 
     /**
      * 用户信息
@@ -132,6 +139,23 @@ public class PersonalInfoActivity extends Activity {
     }
 
     /**
+     * 点击出生年份
+     */
+    @OnClick(R.id.btn_birth_year)
+    void onClickBirthYear() {
+        int year = mVCardObject.getBirthYear();
+        NumberPicker.OnNumberPickListener l = new NumberPicker.OnNumberPickListener() {
+            @Override
+            public void onNumberPicked(int index, Number item) {
+                mVCardObject.setBirthYear(item.intValue());
+                EventBus.getDefault().post(mVCardObject);
+                XMPPManager.getInstance().getvCardManager().setMyVCard(mVCardObject);
+            }
+        };
+        PickerHelper.showYearPicker(this, year, l);
+    }
+
+    /**
      * 点击我的二维码
      */
     @OnClick(R.id.personal_more_info)
@@ -140,6 +164,9 @@ public class PersonalInfoActivity extends Activity {
         startActivity(intent);
     }
 
+    /**
+     * 更新UI显示
+     */
     private void updateView() {
         if (mVCardObject == null) {
             return;
@@ -147,7 +174,7 @@ public class PersonalInfoActivity extends Activity {
         ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView);
         mNickNameView.setText(mVCardObject.getNickname());
         mGenderView.setText(GenderHelper.getName(mVCardObject.getGender()));
+        mBirthYearView.setText(String.valueOf(mVCardObject.getBirthYear()));
     }
-
 
 }

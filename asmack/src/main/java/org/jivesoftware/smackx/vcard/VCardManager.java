@@ -190,6 +190,7 @@ public class VCardManager extends Xepmodule {
     }
 
     /**
+     * 更新基本信息
      * 异步接口，结果通过notifySetMyVCardResult返回
      *
      * @param newVCard

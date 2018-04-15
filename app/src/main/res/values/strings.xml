@@ -19,7 +19,7 @@
     <string name="nickname">昵称</string>
     <string name="input_nickname">输入昵称</string>
     <string name="gender">性别</string>
-    <string name="birthday_year">出生年份</string>
+    <string name="birth_year">出生年份</string>
     <string name="invite_code">邀请码</string>
     <string name="input_invite_code">输入邀请码</string>
 
@@ -72,6 +72,7 @@
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
+
 
 
 </resources>
