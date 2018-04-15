@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.token;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -10,13 +9,11 @@ public class TokenProvider implements IQProvider {
     public TokenProvider() {
     }
 
-    public static String elementName()
-    {
+    public static String elementName() {
         return "query";
     }
 
-    public static String namespace()
-    {
+    public static String namespace() {
         return "jabber:iq:ticket";
     }
 
@@ -30,8 +27,7 @@ public class TokenProvider implements IQProvider {
             if (eventType == XmlPullParser.START_TAG) {
                 if ("key".equals(parser.getName())) {
                     item.setToken(parser.nextText());
-                }
-                else if ("expiretime".equals(parser.getName())) {
+                } else if ("expiretime".equals(parser.getName())) {
                     String expirdString = parser.nextText();
                     try {
                         Long expirdTime = Long.valueOf(expirdString);
@@ -40,8 +36,7 @@ public class TokenProvider implements IQProvider {
                         item.setExpirdTime(0);
                     }
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.END_TAG) {
                 if ("query".equals(parser.getName())) {
                     done = true;
                 }

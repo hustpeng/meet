@@ -3,7 +3,7 @@ package org.jivesoftware.smackx.token;
 
 import org.jivesoftware.smackx.db.ICacheStoreObject;
 
-public class TokenObject implements ICacheStoreObject{
+public class TokenObject implements ICacheStoreObject {
 
     private String token;
     private long expirdTime;

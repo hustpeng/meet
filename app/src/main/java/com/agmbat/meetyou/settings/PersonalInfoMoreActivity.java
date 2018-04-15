@@ -78,5 +78,4 @@ public class PersonalInfoMoreActivity extends Activity {
         finish();
     }
 
-
 }

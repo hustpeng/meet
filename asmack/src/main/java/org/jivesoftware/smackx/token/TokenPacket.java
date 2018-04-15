@@ -9,7 +9,6 @@ public class TokenPacket extends IQ {
 
     @Override
     public String getChildElementXML() {
-        // TODO Auto-generated method stub
         return null;
     }
 
