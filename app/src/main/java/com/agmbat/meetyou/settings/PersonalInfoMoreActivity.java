@@ -4,22 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.data.GenderHelper;
-import com.agmbat.picker.wheel.picker.NumberPicker;
-import com.agmbat.text.StringParser;
+import com.agmbat.picker.NumberPicker;
+import com.agmbat.picker.PickerHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smackx.vcard.VCardObject;
 import org.jivesoftware.smackx.vcardextend.VCardExtendObject;
 
 import butterknife.BindView;
@@ -76,7 +72,7 @@ public class PersonalInfoMoreActivity extends Activity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(VCardExtendObject vCardObject) {
         mVCardExtendObject = vCardObject;
-        mHeightView.setText(String.valueOf(mVCardExtendObject.getHeight()) + "厘米");
+        mHeightView.setText(String.valueOf(mVCardExtendObject.getHeight()) + "cm");
     }
 
     /**

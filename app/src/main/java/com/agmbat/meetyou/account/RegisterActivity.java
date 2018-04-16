@@ -21,9 +21,9 @@ import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.GenderHelper;
-import com.agmbat.meetyou.settings.PickerHelper;
-import com.agmbat.picker.wheel.picker.NumberPicker;
-import com.agmbat.picker.wheel.picker.OptionPicker;
+import com.agmbat.picker.NumberPicker;
+import com.agmbat.picker.OptionPicker;
+import com.agmbat.picker.PickerHelper;
 import com.agmbat.text.PhoneNumberUtil;
 import com.agmbat.text.StringParser;
 
@@ -155,8 +155,7 @@ public class RegisterActivity extends Activity {
      */
     @OnClick(R.id.btn_gender)
     void onClickGender() {
-        int gender = GenderHelper.getGender(mGenderView.getText().toString());
-        PickerHelper.showGenderPicker(this, gender, new OptionPicker.OnOptionPickListener() {
+        PickerHelper.showGenderPicker(this, mGenderView.getText().toString(), new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {
                 mGenderView.setText(item);
