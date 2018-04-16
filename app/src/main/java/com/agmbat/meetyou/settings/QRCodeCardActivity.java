@@ -84,7 +84,7 @@ public class QRCodeCardActivity extends Activity {
         Bitmap bitmap = QRCodeEncoder.encode(text, dimension);
         mQrCodeView.setImageBitmap(bitmap);
         mNickNameView.setText(mVCardObject.getNickname());
-        ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView);
+        ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView, ImageManager.getCircleOptions());
         mGenderView.setImageResource(GenderHelper.getIconRes(mVCardObject.getGender()));
     }
 

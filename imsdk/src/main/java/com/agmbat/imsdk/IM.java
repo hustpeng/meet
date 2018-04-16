@@ -1,10 +1,13 @@
 package com.agmbat.imsdk;
 
+import com.agmbat.android.utils.UiUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.log.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jivesoftware.smackx.vcard.VCardListener;
 import org.jivesoftware.smackx.vcard.VCardObject;
+import org.jivesoftware.smackx.vcardextend.VCardExtendListener;
 import org.jivesoftware.smackx.vcardextend.VCardExtendObject;
 
 /**
@@ -38,8 +41,29 @@ public class IM {
         }
     });
 
+    private VCardExtendListener mVCardExtendListener = (new VCardExtendListener() {
+
+        @Override
+        public void notifySetMyVCardExtendResult(boolean success) {
+            if (success) {
+                VCardExtendObject vcard = XMPPManager.getInstance().getvCardExtendManager().fetchMyVCardExtend();
+                if (vcard != null) {
+                    EventBus.getDefault().post(vcard);
+                }
+            }
+        }
+
+        @Override
+        public void notifyFetchVCardExtendResult(String jid, VCardExtendObject vcardExtend) {
+            if (vcardExtend != null) {
+                EventBus.getDefault().post(vcardExtend);
+            }
+        }
+    });
+
     public void init() {
         XMPPManager.getInstance().getvCardManager().addListener(mVCardListener);
+        XMPPManager.getInstance().getvCardExtendManager().addListener(mVCardExtendListener);
     }
 
     /**

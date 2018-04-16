@@ -115,7 +115,7 @@ public class ProfileFragment extends Fragment {
             return;
         }
         mNickNameView.setText(mVCardObject.getNickname());
-        ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView);
+        ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView, ImageManager.getCircleOptions());
         mUserNameView.setText(getString(R.string.id_name_format) + " " + mVCardObject.getUserName());
         mGenderView.setImageResource(GenderHelper.getIconRes(mVCardObject.getGender()));
     }

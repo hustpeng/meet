@@ -171,7 +171,7 @@ public class PersonalInfoActivity extends Activity {
         if (mVCardObject == null) {
             return;
         }
-        ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView);
+        ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView, ImageManager.getCircleOptions());
         mNickNameView.setText(mVCardObject.getNickname());
         mGenderView.setText(GenderHelper.getName(mVCardObject.getGender()));
         mBirthYearView.setText(String.valueOf(mVCardObject.getBirthYear()));

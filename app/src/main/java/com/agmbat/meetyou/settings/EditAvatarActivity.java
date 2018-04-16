@@ -181,7 +181,7 @@ public class EditAvatarActivity extends Activity {
      * @param path
      */
     private void uploadAvatarFile(String path) {
-        // TODO 添加loading框
+        // 添加loading框
         final ISLoadingDialog dialog = new ISLoadingDialog(this);
         dialog.setMessage("正在上传头像...");
         dialog.setCancelable(false);

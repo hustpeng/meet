@@ -2,8 +2,6 @@ package org.jivesoftware.smackx.vcardextend;
 
 import android.text.TextUtils;
 
-import com.agmbat.text.StringParser;
-
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.ICacheStoreObject;
 
