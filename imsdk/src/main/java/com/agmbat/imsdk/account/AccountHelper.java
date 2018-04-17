@@ -73,12 +73,6 @@ public class AccountHelper {
             return getCodeResult;
         }
 
-        ApiResult verificationCodeResult = AccountApi.getVerificationCode(phone);
-        if (verificationCodeResult == null || !verificationCodeResult.mResult) {
-            getCodeResult.mResult = false;
-            getCodeResult.mErrorMsg = "网络请求失败!";
-            return getCodeResult;
-        }
         getCodeResult.mResult = true;
         getCodeResult.mErrorMsg = "请求成功!";
         return getCodeResult;
@@ -98,25 +92,15 @@ public class AccountHelper {
             return getCodeResult;
         }
 
-        // 检测帐号是否已被注册
-        ApiResult<Boolean> result = AccountApi.existedUser(phone);
-        if (result == null || !result.mResult) {
-            getCodeResult.mResult = false;
-            getCodeResult.mErrorMsg = "网络请求失败!";
-            return getCodeResult;
-        }
-
-        // result.mResult 为 true
-        if (!result.mData) {
-            getCodeResult.mResult = false;
-            getCodeResult.mErrorMsg = "此账号未注册!";
-            return getCodeResult;
-        }
-
-        ApiResult verificationCodeResult = AccountApi.getVerificationCode(phone);
+        ApiResult<Boolean> verificationCodeResult = AccountApi.getVerificationCode(phone);
         if (verificationCodeResult == null || !verificationCodeResult.mResult) {
             getCodeResult.mResult = false;
             getCodeResult.mErrorMsg = "网络请求失败!";
+            return getCodeResult;
+        }
+        if(!verificationCodeResult.mData){
+            getCodeResult.mResult = false;
+            getCodeResult.mErrorMsg = "此账号未注册!";
             return getCodeResult;
         }
         getCodeResult.mResult = true;

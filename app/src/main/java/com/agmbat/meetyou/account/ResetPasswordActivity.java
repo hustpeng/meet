@@ -5,15 +5,18 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.account.ImAccountManager;
+import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.meetyou.R;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 重置密码
@@ -23,27 +26,32 @@ public class ResetPasswordActivity extends Activity {
     /**
      * 重置button
      */
-    private Button mResetButton;
+    @BindView(R.id.btn_reset)
+    Button mResetButton;
 
     /**
      * 获取验证码控件
      */
-    private Button mGetVerificationCodeButton;
+    @BindView(R.id.btn_get_verification_code)
+    Button mGetVerificationCodeButton;
 
     /**
      * 用户名
      */
-    private EditText mUserNameView;
+    @BindView(R.id.input_username)
+    EditText mUserNameView;
 
     /**
      * 密码
      */
-    private EditText mPasswordView;
+    @BindView(R.id.input_password)
+    EditText mPasswordView;
 
     /**
      * 验证码
      */
-    private EditText mVerificationCodeView;
+    @BindView(R.id.et_code)
+    EditText mVerificationCodeView;
 
     private Counter mCountDownTimer;
 
@@ -75,8 +83,11 @@ public class ResetPasswordActivity extends Activity {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_reset_password);
+        ButterKnife.bind(this);
         mLoginManager = new ImAccountManager(this);
-        setupViews();
+        // setupViews
+        mUserNameView.addTextChangedListener(new TelTextWatcher(mOnInputTelephoneListener));
+        mPasswordView.addTextChangedListener(new TextChange());
     }
 
     @Override
@@ -105,41 +116,26 @@ public class ResetPasswordActivity extends Activity {
         }
     }
 
-    private void setupViews() {
-        findViewById(R.id.title_btn_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+    @OnClick(R.id.title_btn_back)
+    void onClickBack() {
+        finish();
+    }
 
-        mUserNameView = (EditText) findViewById(R.id.input_username);
-        mPasswordView = (EditText) findViewById(R.id.input_password);
-        mVerificationCodeView = (EditText) findViewById(R.id.et_code);
-        mUserNameView.addTextChangedListener(new TelTextWatcher(mOnInputTelephoneListener));
-        mPasswordView.addTextChangedListener(new TextChange());
-        mGetVerificationCodeButton = (Button) findViewById(R.id.btn_get_verification_code);
-        mGetVerificationCodeButton.setOnClickListener(new View.OnClickListener() {
+    @OnClick(R.id.btn_get_verification_code)
+    void onClickGetVerificationCode() {
+        startTimer();
+        String phone = mUserNameView.getText().toString();
+        mLoginManager.getResetVerificationCode(phone, new ImAccountManager.OnGetVerificationCodeListener() {
             @Override
-            public void onClick(View view) {
-                startTimer();
-                String phone = mUserNameView.getText().toString();
-                mLoginManager.getResetVerificationCode(phone, new ImAccountManager.OnGetVerificationCodeListener() {
-                    @Override
-                    public void onGetVerificationCode(ApiResult result) {
-                        ToastUtil.showToastLong(result.mErrorMsg);
-                    }
-                });
+            public void onGetVerificationCode(ApiResult result) {
+                ToastUtil.showToastLong(result.mErrorMsg);
             }
         });
+    }
 
-        mResetButton = (Button) findViewById(R.id.btn_reset);
-        mResetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resetPassword();
-            }
-        });
+    @OnClick(R.id.btn_reset)
+    void onClickReset() {
+        resetPassword();
     }
 
     private void updateResetButtonState() {

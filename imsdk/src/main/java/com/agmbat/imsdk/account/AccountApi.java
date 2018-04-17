@@ -14,18 +14,19 @@ import org.json.JSONObject;
 public class AccountApi {
 
     /**
-     * 获取短信验证码
+     * 获取短信验证码, 针对找回密码
      * <p>
      * https://www.xmpp.org.cn/egret/v1/user/sms.api?uid=13400000000&sign=abc
      * {
      * "result":true, //true  API调用成功，否则调用失败
+     * "existed":true,  //true：该手机号存在并发送短信验证码，false：号码未注册
      * "msg":""       //若result为false,则msg返回出错信息，否则为""字符串
      * }
      *
      * @param phone
      * @return
      */
-    public static ApiResult getVerificationCode(String phone) {
+    public static ApiResult<Boolean> getVerificationCode(String phone) {
         String apiName = "sms";
         HttpRequester.Builder builder = new HttpRequester.Builder();
         builder.baseUrl(Api.getBaseUserUrl(apiName));
@@ -36,9 +37,10 @@ public class AccountApi {
         if (StringUtils.isEmpty(text)) {
             return null;
         }
-        ApiResult apiResult = new ApiResult();
+        ApiResult<Boolean> apiResult = new ApiResult<Boolean>();
         JSONObject jsonObject = JsonUtils.asJsonObject(text);
         apiResult.mResult = jsonObject.optBoolean("result");
+        apiResult.mData = jsonObject.optBoolean("existed");
         apiResult.mErrorMsg = jsonObject.optString("msg");
         return apiResult;
     }
@@ -49,7 +51,7 @@ public class AccountApi {
      * https://www.xmpp.org.cn/egret/v1/user/existed.api?uid=13400000000&sign=abc
      * {
      * "result":true, //true  API调用成功，否则调用失败
-     * "existed":true  //true：已注册，false：未注册
+     * "existed":true  true：已注册，false：未注册并发送短信验证码
      * }
      *
      * @param phone
