@@ -34,6 +34,9 @@ public class PersonalInfoMoreActivity extends Activity {
     @BindView(R.id.weight)
     TextView mWeightView;
 
+    @BindView(R.id.wage)
+    TextView mWageView;
+
     /**
      * 用户信息
      */
@@ -77,6 +80,7 @@ public class PersonalInfoMoreActivity extends Activity {
         mVCardExtendObject = vCardObject;
         mHeightView.setText(String.valueOf(mVCardExtendObject.getHeight()) + "cm");
         mWeightView.setText(String.valueOf(mVCardExtendObject.getWeight()) + "kg");
+        mWageView.setText(String.valueOf(mVCardExtendObject.getWage()) + "元以上/月");
     }
 
     /**
@@ -114,4 +118,20 @@ public class PersonalInfoMoreActivity extends Activity {
         };
         PickerHelper.showWeightPicker(this, selected, l);
     }
+
+    @OnClick(R.id.btn_wage)
+    void onClickWage() {
+        int selected = mVCardExtendObject.getWage();
+        NumberPicker.OnNumberPickListener l = new NumberPicker.OnNumberPickListener() {
+            @Override
+            public void onNumberPicked(int index, Number item) {
+                mVCardExtendObject.setWage(item.intValue());
+                EventBus.getDefault().post(mVCardExtendObject);
+                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+            }
+        };
+        PickerHelper.showWagePicker(this, selected, l);
+    }
+
+
 }

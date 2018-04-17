@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">遇缘</string>
 
     <!--  登录模块 -->
     <string name="login">登录</string>
@@ -70,10 +70,11 @@
 
     <!-- 更多 -->
     <string name="personal_height">身高</string>
+    <string name="personal_weight">体重</string>
+    <string name="personal_wage">月薪</string>
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
-
 
 </resources>
