@@ -16,7 +16,7 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.GenderHelper;
 import com.agmbat.picker.NumberPicker;
-import com.agmbat.picker.PickerHelper;
+import com.agmbat.picker.helper.PickerHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

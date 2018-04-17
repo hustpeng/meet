@@ -23,7 +23,7 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.GenderHelper;
 import com.agmbat.picker.NumberPicker;
 import com.agmbat.picker.OptionPicker;
-import com.agmbat.picker.PickerHelper;
+import com.agmbat.picker.helper.PickerHelper;
 import com.agmbat.text.PhoneNumberUtil;
 import com.agmbat.text.StringParser;
 

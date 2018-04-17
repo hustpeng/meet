@@ -72,9 +72,12 @@
     <string name="personal_height">身高</string>
     <string name="personal_weight">体重</string>
     <string name="personal_wage">月薪</string>
+    <string name="personal_education">学历</string>
+    <string name="personal_marriage">婚况</string>
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
+
 
 </resources>

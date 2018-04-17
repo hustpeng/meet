@@ -99,7 +99,7 @@ public class VCardExtendObject implements ICacheStoreObject {
     /**
      * 学历
      */
-    private int education;
+    private String education;
 
     /**
      * 月薪
@@ -114,7 +114,7 @@ public class VCardExtendObject implements ICacheStoreObject {
     /**
      * 婚况
      */
-    private int marriage;
+    private String marriage;
 
     /**
      * 体重
@@ -201,11 +201,11 @@ public class VCardExtendObject implements ICacheStoreObject {
         this.height = height;
     }
 
-    public int getEducation() {
+    public String getEducation() {
         return education;
     }
 
-    public void setEducation(int education) {
+    public void setEducation(String education) {
         this.education = education;
     }
 
@@ -225,11 +225,11 @@ public class VCardExtendObject implements ICacheStoreObject {
         this.workarea = workarea;
     }
 
-    public int getMarriage() {
+    public String getMarriage() {
         return marriage;
     }
 
-    public void setMarriage(int marriage) {
+    public void setMarriage(String marriage) {
         this.marriage = marriage;
     }
 

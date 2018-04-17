@@ -11,7 +11,8 @@ import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.NumberPicker;
-import com.agmbat.picker.PickerHelper;
+import com.agmbat.picker.OptionPicker;
+import com.agmbat.picker.helper.PickerHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,6 +37,12 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @BindView(R.id.wage)
     TextView mWageView;
+
+    @BindView(R.id.education)
+    TextView mEducationView;
+
+    @BindView(R.id.marriage)
+    TextView mMarriageView;
 
     /**
      * 用户信息
@@ -81,6 +88,8 @@ public class PersonalInfoMoreActivity extends Activity {
         mHeightView.setText(String.valueOf(mVCardExtendObject.getHeight()) + "cm");
         mWeightView.setText(String.valueOf(mVCardExtendObject.getWeight()) + "kg");
         mWageView.setText(String.valueOf(mVCardExtendObject.getWage()) + "元以上/月");
+        mEducationView.setText(mVCardExtendObject.getEducation());
+        mMarriageView.setText(mVCardExtendObject.getMarriage());
     }
 
     /**
@@ -107,7 +116,7 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_weight)
     void onClickWeight() {
-        int selected = mVCardExtendObject.getHeight();
+        int selected = mVCardExtendObject.getWeight();
         NumberPicker.OnNumberPickListener l = new NumberPicker.OnNumberPickListener() {
             @Override
             public void onNumberPicked(int index, Number item) {
@@ -133,5 +142,32 @@ public class PersonalInfoMoreActivity extends Activity {
         PickerHelper.showWagePicker(this, selected, l);
     }
 
+    @OnClick(R.id.btn_education)
+    void onClickEducation() {
+        String selected = mVCardExtendObject.getEducation();
+        OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
+            @Override
+            public void onOptionPicked(int index, String item) {
+                mVCardExtendObject.setEducation(item);
+                EventBus.getDefault().post(mVCardExtendObject);
+                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+            }
+        };
+        PickerHelper.showEducationPicker(this, selected, l);
+    }
+
+    @OnClick(R.id.btn_marriage)
+    void onClickMarriage() {
+        String selected = mVCardExtendObject.getMarriage();
+        OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
+            @Override
+            public void onOptionPicked(int index, String item) {
+                mVCardExtendObject.setMarriage(item);
+                EventBus.getDefault().post(mVCardExtendObject);
+                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+            }
+        };
+        PickerHelper.showMarriagePicker(this, selected, l);
+    }
 
 }
