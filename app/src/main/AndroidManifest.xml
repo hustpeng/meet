@@ -71,6 +71,16 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="com.agmbat.meetyou.settings.EditSignatureActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.agmbat.meetyou.settings.EditIntroduceActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.agmbat.meetyou.settings.QRCodeCardActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />

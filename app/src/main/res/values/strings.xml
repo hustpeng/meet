@@ -45,7 +45,6 @@
     <string name="tab_profile">我的</string>
 
     <!-- 我的 -->
-    <string name="im_settings_signature">个性签名</string>
     <string name="im_settings_new_msg">新消息通知</string>
     <string name="im_settings_privacy">隐私</string>
     <string name="im_settings_about">关于遇缘</string>
@@ -65,6 +64,7 @@
     <string name="save">保存</string>
     <string name="personal_header">个人头像</string>
     <string name="edit_gender">设置性别</string>
+
     <string name="gender_male">男</string>
     <string name="gender_female">女</string>
 
@@ -74,10 +74,15 @@
     <string name="personal_wage">月薪</string>
     <string name="personal_education">学历</string>
     <string name="personal_marriage">婚况</string>
+    <string name="personal_signature">个性签名</string>
+    <string name="edit_signature">设置个性签名</string>
+    <string name="personal_introduce">自我简介</string>
+    <string name="edit_introduce">设置自我简介</string>
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
+
 
 
 </resources>

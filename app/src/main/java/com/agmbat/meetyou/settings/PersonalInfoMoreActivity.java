@@ -45,6 +45,18 @@ public class PersonalInfoMoreActivity extends Activity {
     TextView mMarriageView;
 
     /**
+     * 修改签名
+     */
+    @BindView(R.id.signature)
+    TextView mSignatureView;
+
+    /**
+     * 自我简介
+     */
+    @BindView(R.id.introduce)
+    TextView mIntroduceView;
+
+    /**
      * 用户信息
      */
     private VCardExtendObject mVCardExtendObject;
@@ -90,6 +102,8 @@ public class PersonalInfoMoreActivity extends Activity {
         mWageView.setText(String.valueOf(mVCardExtendObject.getWage()) + "元以上/月");
         mEducationView.setText(mVCardExtendObject.getEducation());
         mMarriageView.setText(mVCardExtendObject.getMarriage());
+        mSignatureView.setText(mVCardExtendObject.getStatus());
+        mIntroduceView.setText(mVCardExtendObject.getIntroduce());
     }
 
     /**
@@ -168,6 +182,18 @@ public class PersonalInfoMoreActivity extends Activity {
             }
         };
         PickerHelper.showMarriagePicker(this, selected, l);
+    }
+
+    @OnClick(R.id.btn_signature)
+    void onClickSignature() {
+        Intent intent = new Intent(this, EditSignatureActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_introduce)
+    void onClickIntroduce() {
+        Intent intent = new Intent(this, EditIntroduceActivity.class);
+        startActivity(intent);
     }
 
 }
