@@ -31,6 +31,9 @@ public class PersonalInfoMoreActivity extends Activity {
     @BindView(R.id.height)
     TextView mHeightView;
 
+    @BindView(R.id.weight)
+    TextView mWeightView;
+
     /**
      * 用户信息
      */
@@ -73,6 +76,7 @@ public class PersonalInfoMoreActivity extends Activity {
     public void onEvent(VCardExtendObject vCardObject) {
         mVCardExtendObject = vCardObject;
         mHeightView.setText(String.valueOf(mVCardExtendObject.getHeight()) + "cm");
+        mWeightView.setText(String.valueOf(mVCardExtendObject.getWeight()) + "kg");
     }
 
     /**
@@ -95,5 +99,19 @@ public class PersonalInfoMoreActivity extends Activity {
             }
         };
         PickerHelper.showHeightPicker(this, selected, l);
+    }
+
+    @OnClick(R.id.btn_weight)
+    void onClickWeight() {
+        int selected = mVCardExtendObject.getHeight();
+        NumberPicker.OnNumberPickListener l = new NumberPicker.OnNumberPickListener() {
+            @Override
+            public void onNumberPicked(int index, Number item) {
+                mVCardExtendObject.setWeight(item.intValue());
+                EventBus.getDefault().post(mVCardExtendObject);
+                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+            }
+        };
+        PickerHelper.showWeightPicker(this, selected, l);
     }
 }
