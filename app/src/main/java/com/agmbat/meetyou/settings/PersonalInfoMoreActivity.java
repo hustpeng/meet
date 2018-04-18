@@ -12,6 +12,8 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.NumberPicker;
 import com.agmbat.picker.OptionPicker;
+import com.agmbat.picker.address.Address;
+import com.agmbat.picker.address.AddressPicker;
 import com.agmbat.picker.helper.PickerHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -27,7 +29,6 @@ import butterknife.OnClick;
  * 我的信息界面
  */
 public class PersonalInfoMoreActivity extends Activity {
-
 
     @BindView(R.id.height)
     TextView mHeightView;
@@ -55,6 +56,23 @@ public class PersonalInfoMoreActivity extends Activity {
      */
     @BindView(R.id.introduce)
     TextView mIntroduceView;
+
+    /**
+     * 工作地区
+     */
+    @BindView(R.id.workarea)
+    TextView mWorkareaView;
+    /**
+     * 籍贯
+     */
+    @BindView(R.id.birthplace)
+    TextView mBirthplaceView;
+
+    /**
+     * 户口在地
+     */
+    @BindView(R.id.residence)
+    TextView mResidenceView;
 
     /**
      * 用户信息
@@ -104,6 +122,27 @@ public class PersonalInfoMoreActivity extends Activity {
         mMarriageView.setText(mVCardExtendObject.getMarriage());
         mSignatureView.setText(mVCardExtendObject.getStatus());
         mIntroduceView.setText(mVCardExtendObject.getIntroduce());
+
+        Address workarea = Address.fromJson(mVCardExtendObject.getWorkarea());
+        if (workarea != null) {
+            mWorkareaView.setText(workarea.getDisplayName());
+        } else {
+            mWorkareaView.setText("");
+        }
+
+        Address birthplace = Address.fromJson(mVCardExtendObject.getBirthplace());
+        if (birthplace != null) {
+            mBirthplaceView.setText(birthplace.getDisplayName());
+        } else {
+            mBirthplaceView.setText("");
+        }
+
+        Address residence = Address.fromJson(mVCardExtendObject.getResidence());
+        if (residence != null) {
+            mResidenceView.setText(residence.getDisplayName());
+        } else {
+            mResidenceView.setText("");
+        }
     }
 
     /**
@@ -194,6 +233,47 @@ public class PersonalInfoMoreActivity extends Activity {
     void onClickIntroduce() {
         Intent intent = new Intent(this, EditIntroduceActivity.class);
         startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_workarea)
+    void onClickWorkarea() {
+        Address address = Address.fromJson(mVCardExtendObject.getWorkarea());
+        PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
+            @Override
+            public void onAddressPicked(Address address) {
+                mVCardExtendObject.setWorkarea(address.toJson());
+                EventBus.getDefault().post(mVCardExtendObject);
+                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+            }
+        });
+    }
+
+    @OnClick(R.id.btn_birthplace)
+    void onClickBirthplace() {
+        Address address = Address.fromJson(mVCardExtendObject.getBirthday());
+        PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
+            @Override
+            public void onAddressPicked(Address address) {
+                mVCardExtendObject.setBirthplace(address.toJson());
+                EventBus.getDefault().post(mVCardExtendObject);
+                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+            }
+
+        });
+    }
+
+    @OnClick(R.id.btn_residence)
+    void onClickResidence() {
+        Address address = Address.fromJson(mVCardExtendObject.getResidence());
+        PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
+            @Override
+            public void onAddressPicked(Address address) {
+                mVCardExtendObject.setResidence(address.toJson());
+                EventBus.getDefault().post(mVCardExtendObject);
+                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+            }
+
+        });
     }
 
 }
