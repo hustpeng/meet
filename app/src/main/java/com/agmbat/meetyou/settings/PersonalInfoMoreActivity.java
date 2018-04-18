@@ -250,7 +250,7 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_birthplace)
     void onClickBirthplace() {
-        Address address = Address.fromJson(mVCardExtendObject.getBirthday());
+        Address address = Address.fromJson(mVCardExtendObject.getBirthplace());
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {
