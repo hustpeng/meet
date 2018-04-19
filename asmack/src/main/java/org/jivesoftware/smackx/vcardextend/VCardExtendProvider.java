@@ -72,9 +72,9 @@ public class VCardExtendProvider implements IQProvider {
         } else if (VCardExtendObject.KEY_CAREER.equals(parserName)) {
             item.setCareer(StringParser.parseInt(parser.nextText()));
         } else if (VCardExtendObject.KEY_HOUSE.equals(parserName)) {
-            item.setWage(StringParser.parseInt(parser.nextText()));
+            item.setHouse(parser.nextText());
         } else if (VCardExtendObject.KEY_CAR.equals(parserName)) {
-            item.setCar(StringParser.parseInt(parser.nextText()));
+            item.setCar(parser.nextText());
         } else if (VCardExtendObject.KEY_HOBBY.equals(parserName)) {
             item.setHobby(parser.nextText());
         } else if (VCardExtendObject.KEY_INTRODUCE.equals(parserName)) {

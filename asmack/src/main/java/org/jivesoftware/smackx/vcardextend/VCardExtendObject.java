@@ -142,9 +142,14 @@ public class VCardExtendObject implements ICacheStoreObject {
     private int career;
 
     /**
+     * 购房情况
+     */
+    private String house;
+
+    /**
      * 购车情况
      */
-    private int car;
+    private String car;
 
     /**
      * 兴趣爱好
@@ -273,11 +278,11 @@ public class VCardExtendObject implements ICacheStoreObject {
         this.career = career;
     }
 
-    public int getCar() {
+    public String getCar() {
         return car;
     }
 
-    public void setCar(int car) {
+    public void setCar(String car) {
         this.car = car;
     }
 
@@ -527,4 +532,11 @@ public class VCardExtendObject implements ICacheStoreObject {
     }
 
 
+    public String getHouse() {
+        return house;
+    }
+
+    public void setHouse(String house) {
+        this.house = house;
+    }
 }

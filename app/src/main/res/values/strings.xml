@@ -81,10 +81,13 @@
     <string name="personal_signature">个性签名</string>
     <string name="personal_demand">择友要求</string>
     <string name="personal_hobby">兴趣爱好</string>
+    <string name="personal_car">购车情况</string>
+    <string name="personal_house">住房情况</string>
     <string name="edit_signature">设置个性签名</string>
     <string name="edit_introduce">设置自我简介</string>
     <string name="edit_demand">设置择友要求</string>
     <string name="edit_hobby">设置兴趣爱好</string>
+
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>

@@ -79,6 +79,16 @@ public class PersonalInfoMoreActivity extends Activity {
      */
     @BindView(R.id.residence)
     TextView mResidenceView;
+    /**
+     * 户口在地
+     */
+    @BindView(R.id.car)
+    TextView mCarView;
+    /**
+     * 户口在地
+     */
+    @BindView(R.id.house)
+    TextView mHouseView;
 
 
     /**
@@ -133,6 +143,8 @@ public class PersonalInfoMoreActivity extends Activity {
         mHobbyView.setText(mVCardExtendObject.getHobby());
 
         mIntroduceView.setText(mVCardExtendObject.getIntroduce());
+        mCarView.setText(mVCardExtendObject.getCar());
+        mHouseView.setText(mVCardExtendObject.getHouse());
 
         Address workarea = Address.fromJson(mVCardExtendObject.getWorkarea());
         if (workarea != null) {
@@ -232,6 +244,34 @@ public class PersonalInfoMoreActivity extends Activity {
             }
         };
         PickerHelper.showMarriagePicker(this, selected, l);
+    }
+
+    @OnClick(R.id.btn_car)
+    void onClickCar() {
+        String selected = mVCardExtendObject.getCar();
+        OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
+            @Override
+            public void onOptionPicked(int index, String item) {
+                mVCardExtendObject.setCar(item);
+                EventBus.getDefault().post(mVCardExtendObject);
+                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+            }
+        };
+        PickerHelper.showCarPicker(this, selected, l);
+    }
+
+    @OnClick(R.id.btn_house)
+    void onClickHouse() {
+        String selected = mVCardExtendObject.getHouse();
+        OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
+            @Override
+            public void onOptionPicked(int index, String item) {
+                mVCardExtendObject.setHouse(item);
+                EventBus.getDefault().post(mVCardExtendObject);
+                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+            }
+        };
+        PickerHelper.showHousePicker(this, selected, l);
     }
 
     @OnClick(R.id.btn_demand)

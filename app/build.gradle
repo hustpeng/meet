@@ -38,7 +38,7 @@ dependencies {
     compile "com.disbts:imagepicker:3.5.7@aar"
     compile "com.disbts:photoview:3.5.7@aar"
     compile "com.disbts:isdialog:3.6.0@aar"
-    compile "com.disbts:wheelpicker:3.6.9@aar"
+    compile "com.disbts:wheelpicker:3.7.0@aar"
 
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.greenrobot:eventbus:3.0.0'
