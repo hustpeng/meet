@@ -134,12 +134,12 @@ public class VCardExtendObject implements ICacheStoreObject {
     /**
      * 行业
      */
-    private int industry;
+    private String industry;
 
     /**
      * 职业
      */
-    private int career;
+    private String career;
 
     /**
      * 购房情况
@@ -262,19 +262,19 @@ public class VCardExtendObject implements ICacheStoreObject {
         this.residence = residence;
     }
 
-    public int getIndustry() {
+    public String getIndustry() {
         return industry;
     }
 
-    public void setIndustry(int industry) {
+    public void setIndustry(String industry) {
         this.industry = industry;
     }
 
-    public int getCareer() {
+    public String getCareer() {
         return career;
     }
 
-    public void setCareer(int career) {
+    public void setCareer(String career) {
         this.career = career;
     }
 

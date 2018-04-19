@@ -90,6 +90,11 @@ public class PersonalInfoMoreActivity extends Activity {
     @BindView(R.id.house)
     TextView mHouseView;
 
+    @BindView(R.id.industry)
+    TextView mIndustryView;
+
+    @BindView(R.id.career)
+    TextView mCareerView;
 
     /**
      * 用户信息
@@ -141,6 +146,8 @@ public class PersonalInfoMoreActivity extends Activity {
         mSignatureView.setText(mVCardExtendObject.getStatus());
         mDemandView.setText(mVCardExtendObject.getDemand());
         mHobbyView.setText(mVCardExtendObject.getHobby());
+        mIndustryView.setText(mVCardExtendObject.getIndustry());
+        mCareerView.setText(mVCardExtendObject.getCareer());
 
         mIntroduceView.setText(mVCardExtendObject.getIntroduce());
         mCarView.setText(mVCardExtendObject.getCar());
@@ -273,6 +280,36 @@ public class PersonalInfoMoreActivity extends Activity {
         };
         PickerHelper.showHousePicker(this, selected, l);
     }
+
+    @OnClick(R.id.btn_career)
+    void onClickCareer() {
+        String selected = mVCardExtendObject.getCareer();
+        OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
+            @Override
+            public void onOptionPicked(int index, String item) {
+                mVCardExtendObject.setCareer(item);
+                EventBus.getDefault().post(mVCardExtendObject);
+                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+            }
+        };
+        PickerHelper.showCareerPicker(this, selected, l);
+    }
+
+
+    @OnClick(R.id.btn_industry)
+    void onClickIndustry() {
+        String selected = mVCardExtendObject.getIntroduce();
+        OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
+            @Override
+            public void onOptionPicked(int index, String item) {
+                mVCardExtendObject.setIndustry(item);
+                EventBus.getDefault().post(mVCardExtendObject);
+                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+            }
+        };
+        PickerHelper.showIndustryPicker(this, selected, l);
+    }
+
 
     @OnClick(R.id.btn_demand)
     void onClickDemand() {

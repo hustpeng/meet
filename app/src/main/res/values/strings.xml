@@ -87,12 +87,13 @@
     <string name="edit_introduce">设置自我简介</string>
     <string name="edit_demand">设置择友要求</string>
     <string name="edit_hobby">设置兴趣爱好</string>
+    <string name="personal_career">职业</string>
+    <string name="personal_industry">行业</string>
 
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
-
 
 
 </resources>

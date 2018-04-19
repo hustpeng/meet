@@ -68,9 +68,9 @@ public class VCardExtendProvider implements IQProvider {
         } else if (VCardExtendObject.KEY_RESIDENCE.equals(parserName)) {
             item.setResidence(parser.nextText());
         } else if (VCardExtendObject.KEY_INDUSTRY.equals(parserName)) {
-            item.setIndustry(StringParser.parseInt(parser.nextText()));
+            item.setIndustry(parser.nextText());
         } else if (VCardExtendObject.KEY_CAREER.equals(parserName)) {
-            item.setCareer(StringParser.parseInt(parser.nextText()));
+            item.setCareer(parser.nextText());
         } else if (VCardExtendObject.KEY_HOUSE.equals(parserName)) {
             item.setHouse(parser.nextText());
         } else if (VCardExtendObject.KEY_CAR.equals(parserName)) {
@@ -84,42 +84,6 @@ public class VCardExtendProvider implements IQProvider {
         } else if (VCardExtendObject.KEY_STATUS.equals(parserName)) {
             item.setStatus(parser.nextText());
         }
-
-//        if ("BIRTHDAY".equals(parserName)) {
-//            item.setBirthday(parser.nextText());
-//        } else if ("ASTROLOGICAL".equals(parserName)) {
-//            item.setAstrological(parser.nextText());
-//        } else if ("ETHNICITY".equals(parserName)) {
-//            item.setEthnicity(parser.nextText());
-//        } else if ("HEIGHT".equals(parserName)) {
-//            item.setHeight(StringParser.parseInt(parser.nextText()));
-//        } else if ("WEIGHT".equals(parserName)) {
-//            item.setWeight(parser.nextText());
-//        } else if ("BODYTYPE".equals(parserName)) {
-//            item.setBodyType(parser.nextText());
-//        } else if ("RELATIONSHIP".equals(parserName)) {
-//            item.setRelationship(parser.nextText());
-//        } else if ("PERSONALITY".equals(parserName)) {
-//            item.setPersonality(getItemsOfParser(parser, parserName));
-//        } else if ("LOOKINGFOR".equals(parserName)) {
-//            item.setLookingFor(getItemsOfParser(parser, parserName));
-//        } else if ("PERSONALITY".equals(parserName)) {
-//            item.setPersonality(getItemsOfParser(parser, parserName));
-//        } else if ("LANGUAGE".equals(parserName)) {
-//            item.setLanguage(getItemsOfParser(parser, parserName));
-//        } else if ("PUBLICPHOTOS".equals(parserName)) {
-//            item.setPublicPhotos(getItemsOfParser(parser, parserName));
-//        } else if ("PRIVATE".equals(parserName)) {
-//            item.setHasPrivateInfo(true);
-//        } else if ("SEXUALPOSITION".equals(parserName)) {
-//            item.setSexualPosition(parser.nextText());
-//        } else if ("ORIENTATION".equals(parserName)) {
-//            item.setOrientation(parser.nextText());
-//        } else if ("HIV".equals(parserName)) {
-//            item.setHIVStatus(parser.nextText());
-//        } else if ("PRIVATEPHOTOS".equals(parserName)) {
-//            item.setPrivatePhotos(getItemsOfParser(parser, parserName));
-//        }
     }
 
     private static ArrayList<String> getItemsOfParser(XmlPullParser parser, String nodeName) {
