@@ -24,10 +24,10 @@ public class SplashActivity extends Activity {
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            finish();
             Intent intent = new Intent();
             intent.setClassName(getPackageName(), SplashManager.getMainClassName());
             startActivity(intent);
+            finish();
         }
     };
 
