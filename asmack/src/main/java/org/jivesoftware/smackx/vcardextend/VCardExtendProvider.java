@@ -80,7 +80,7 @@ public class VCardExtendProvider implements IQProvider {
         } else if (VCardExtendObject.KEY_INTRODUCE.equals(parserName)) {
             item.setIntroduce(parser.nextText());
         } else if (VCardExtendObject.KEY_DEMAND.equals(parserName)) {
-            item.setDemand(StringParser.parseInt(parser.nextText()));
+            item.setDemand(parser.nextText());
         } else if (VCardExtendObject.KEY_STATUS.equals(parserName)) {
             item.setStatus(parser.nextText());
         }

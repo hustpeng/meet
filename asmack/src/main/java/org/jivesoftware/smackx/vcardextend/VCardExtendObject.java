@@ -159,7 +159,7 @@ public class VCardExtendObject implements ICacheStoreObject {
     /**
      * 择友要求
      */
-    private int demand;
+    private String demand;
 
     /**
      * 个人签名
@@ -297,11 +297,11 @@ public class VCardExtendObject implements ICacheStoreObject {
         this.introduce = introduce;
     }
 
-    public int getDemand() {
+    public String getDemand() {
         return demand;
     }
 
-    public void setDemand(int demand) {
+    public void setDemand(String demand) {
         this.demand = demand;
     }
 

@@ -74,16 +74,19 @@
     <string name="personal_wage">月薪</string>
     <string name="personal_education">学历</string>
     <string name="personal_marriage">婚况</string>
-    <string name="personal_signature">个性签名</string>
-    <string name="edit_signature">设置个性签名</string>
-    <string name="personal_introduce">自我简介</string>
-    <string name="edit_introduce">设置自我简介</string>
     <string name="personal_workarea">工作地区</string>
     <string name="personal_birthplace">籍贯</string>
     <string name="personal_residence">户口在地</string>
+    <string name="personal_introduce">自我简介</string>
+    <string name="personal_signature">个性签名</string>
+    <string name="personal_demand">择友要求</string>
+    <string name="edit_signature">设置个性签名</string>
+    <string name="edit_introduce">设置自我简介</string>
+    <string name="edit_demand">设置择友要求</string>
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
+
 
 </resources>
