@@ -99,7 +99,7 @@ public class VCardExtendObject implements ICacheStoreObject {
     /**
      * 学历
      */
-    private String education;
+    private int education;
 
     /**
      * 月薪
@@ -206,11 +206,11 @@ public class VCardExtendObject implements ICacheStoreObject {
         this.height = height;
     }
 
-    public String getEducation() {
+    public int getEducation() {
         return education;
     }
 
-    public void setEducation(String education) {
+    public void setEducation(int education) {
         this.education = education;
     }
 
@@ -501,17 +501,17 @@ public class VCardExtendObject implements ICacheStoreObject {
         XmppStringUtils.appendXml(buf, KEY_EDUCATION, String.valueOf(object.getEducation()));
         XmppStringUtils.appendXml(buf, KEY_WAGE, String.valueOf(object.getWage()));
         XmppStringUtils.appendXml(buf, KEY_WORKAREA, object.getWorkarea());
-        XmppStringUtils.appendXml(buf, KEY_MARRIAGE, String.valueOf(object.getMarriage()));
+        XmppStringUtils.appendXml(buf, KEY_MARRIAGE, object.getMarriage());
         XmppStringUtils.appendXml(buf, KEY_WEIGHT, String.valueOf(object.getWeight()));
         XmppStringUtils.appendXml(buf, KEY_BIRTHPLACE, object.getBirthplace());
         XmppStringUtils.appendXml(buf, KEY_RESIDENCE, object.getResidence());
-        XmppStringUtils.appendXml(buf, KEY_INDUSTRY, String.valueOf(object.getIndustry()));
-        XmppStringUtils.appendXml(buf, KEY_CAREER, String.valueOf(object.getCareer()));
-        XmppStringUtils.appendXml(buf, KEY_HOUSE, String.valueOf(object.getWage()));
-        XmppStringUtils.appendXml(buf, KEY_CAR, String.valueOf(object.getCar()));
-        XmppStringUtils.appendXml(buf, KEY_HOBBY, String.valueOf(object.getHobby()));
-        XmppStringUtils.appendXml(buf, KEY_INTRODUCE, String.valueOf(object.getIntroduce()));
-        XmppStringUtils.appendXml(buf, KEY_DEMAND, String.valueOf(object.getDemand()));
+        XmppStringUtils.appendXml(buf, KEY_INDUSTRY, object.getIndustry());
+        XmppStringUtils.appendXml(buf, KEY_CAREER, object.getCareer());
+        XmppStringUtils.appendXml(buf, KEY_HOUSE, object.getHouse());
+        XmppStringUtils.appendXml(buf, KEY_CAR, object.getCar());
+        XmppStringUtils.appendXml(buf, KEY_HOBBY, object.getHobby());
+        XmppStringUtils.appendXml(buf, KEY_INTRODUCE, object.getIntroduce());
+        XmppStringUtils.appendXml(buf, KEY_DEMAND,object.getDemand());
         XmppStringUtils.appendXml(buf, KEY_STATUS, object.getStatus());
 
         buf.append("</PUBLIC>");

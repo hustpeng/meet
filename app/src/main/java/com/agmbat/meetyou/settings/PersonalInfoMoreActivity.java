@@ -12,9 +12,12 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.NumberPicker;
 import com.agmbat.picker.OptionPicker;
+import com.agmbat.picker.SinglePicker;
 import com.agmbat.picker.address.Address;
 import com.agmbat.picker.address.AddressPicker;
+import com.agmbat.picker.helper.EducationItem;
 import com.agmbat.picker.helper.PickerHelper;
+import com.agmbat.picker.helper.WageItem;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -139,8 +142,10 @@ public class PersonalInfoMoreActivity extends Activity {
         mVCardExtendObject = vCardObject;
         mHeightView.setText(String.valueOf(mVCardExtendObject.getHeight()) + "cm");
         mWeightView.setText(String.valueOf(mVCardExtendObject.getWeight()) + "kg");
-        mWageView.setText(String.valueOf(mVCardExtendObject.getWage()) + "元以上/月");
-        mEducationView.setText(mVCardExtendObject.getEducation());
+        WageItem wageItem = WageItem.valueOf(mVCardExtendObject.getWage());
+        mWageView.setText(wageItem == null ? "" : wageItem.mName);
+        EducationItem educationItem = EducationItem.valueOf(mVCardExtendObject.getEducation());
+        mEducationView.setText(educationItem == null ? "" : educationItem.mName);
         mMarriageView.setText(mVCardExtendObject.getMarriage());
 
         mSignatureView.setText(mVCardExtendObject.getStatus());
@@ -213,30 +218,32 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_wage)
     void onClickWage() {
-        int selected = mVCardExtendObject.getWage();
-        NumberPicker.OnNumberPickListener l = new NumberPicker.OnNumberPickListener() {
+        int value = mVCardExtendObject.getWage();
+        SinglePicker.OnItemPickListener<WageItem> l = new SinglePicker.OnItemPickListener<WageItem>() {
             @Override
-            public void onNumberPicked(int index, Number item) {
-                mVCardExtendObject.setWage(item.intValue());
+            public void onItemPicked(int index, WageItem item) {
+                mVCardExtendObject.setWage(item.mValue);
                 EventBus.getDefault().post(mVCardExtendObject);
                 XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
             }
         };
-        PickerHelper.showWagePicker(this, selected, l);
+        WageItem item = WageItem.valueOf(value);
+        PickerHelper.showWagePicker(this, item, l);
     }
 
     @OnClick(R.id.btn_education)
     void onClickEducation() {
-        String selected = mVCardExtendObject.getEducation();
-        OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
+        int value = mVCardExtendObject.getEducation();
+        EducationItem item = EducationItem.valueOf(value);
+        SinglePicker.OnItemPickListener<EducationItem> l = new SinglePicker.OnItemPickListener<EducationItem>() {
             @Override
-            public void onOptionPicked(int index, String item) {
-                mVCardExtendObject.setEducation(item);
+            public void onItemPicked(int index, EducationItem item) {
+                mVCardExtendObject.setEducation(item.mValue);
                 EventBus.getDefault().post(mVCardExtendObject);
                 XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
             }
         };
-        PickerHelper.showEducationPicker(this, selected, l);
+        PickerHelper.showEducationPicker(this, item, l);
     }
 
     @OnClick(R.id.btn_marriage)
@@ -337,7 +344,7 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_workarea)
     void onClickWorkarea() {
-        Address address = Address.fromJson(mVCardExtendObject.getWorkarea());
+        Address address = Address.fromProvinceCityText(mVCardExtendObject.getWorkarea());
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {
@@ -350,7 +357,7 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_birthplace)
     void onClickBirthplace() {
-        Address address = Address.fromJson(mVCardExtendObject.getBirthplace());
+        Address address = Address.fromProvinceCityText(mVCardExtendObject.getBirthplace());
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {
@@ -364,7 +371,7 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_residence)
     void onClickResidence() {
-        Address address = Address.fromJson(mVCardExtendObject.getResidence());
+        Address address = Address.fromProvinceCityText(mVCardExtendObject.getResidence());
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {

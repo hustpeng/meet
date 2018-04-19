@@ -23,6 +23,8 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.GenderHelper;
 import com.agmbat.picker.NumberPicker;
 import com.agmbat.picker.OptionPicker;
+import com.agmbat.picker.SinglePicker;
+import com.agmbat.picker.helper.GenderItem;
 import com.agmbat.picker.helper.PickerHelper;
 import com.agmbat.text.PhoneNumberUtil;
 import com.agmbat.text.StringParser;
@@ -155,11 +157,15 @@ public class RegisterActivity extends Activity {
      */
     @OnClick(R.id.btn_gender)
     void onClickGender() {
-        PickerHelper.showGenderPicker(this, mGenderView.getText().toString(), new OptionPicker.OnOptionPickListener() {
+        String text = mGenderView.getText().toString();
+        int value = GenderHelper.getGender(text);
+        GenderItem item = GenderItem.valueOf(value);
+        PickerHelper.showGenderPicker(this, item, new SinglePicker.OnItemPickListener<GenderItem>() {
             @Override
-            public void onOptionPicked(int index, String item) {
-                mGenderView.setText(item);
+            public void onItemPicked(int index, GenderItem item) {
+                mGenderView.setText(item.mName);
             }
+
         });
     }
 
