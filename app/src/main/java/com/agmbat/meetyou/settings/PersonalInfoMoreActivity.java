@@ -54,6 +54,9 @@ public class PersonalInfoMoreActivity extends Activity {
     @BindView(R.id.demand)
     TextView mDemandView;
 
+    @BindView(R.id.hobby)
+    TextView mHobbyView;
+
     /**
      * 自我简介
      */
@@ -127,6 +130,7 @@ public class PersonalInfoMoreActivity extends Activity {
 
         mSignatureView.setText(mVCardExtendObject.getStatus());
         mDemandView.setText(mVCardExtendObject.getDemand());
+        mHobbyView.setText(mVCardExtendObject.getHobby());
 
         mIntroduceView.setText(mVCardExtendObject.getIntroduce());
 
@@ -245,6 +249,12 @@ public class PersonalInfoMoreActivity extends Activity {
     @OnClick(R.id.btn_introduce)
     void onClickIntroduce() {
         Intent intent = new Intent(this, EditIntroduceActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_hobby)
+    void onClickHobby() {
+        Intent intent = new Intent(this, EditHobbyActivity.class);
         startActivity(intent);
     }
 

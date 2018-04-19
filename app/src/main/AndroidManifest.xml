@@ -83,6 +83,10 @@
             android:name="com.agmbat.meetyou.settings.EditIntroduceActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.settings.EditHobbyActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.agmbat.meetyou.settings.QRCodeCardActivity"

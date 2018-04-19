@@ -149,7 +149,7 @@ public class VCardExtendObject implements ICacheStoreObject {
     /**
      * 兴趣爱好
      */
-    private int hobby;
+    private String hobby;
 
     /**
      * 自我简介
@@ -281,11 +281,11 @@ public class VCardExtendObject implements ICacheStoreObject {
         this.car = car;
     }
 
-    public int getHobby() {
+    public String getHobby() {
         return hobby;
     }
 
-    public void setHobby(int hobby) {
+    public void setHobby(String hobby) {
         this.hobby = hobby;
     }
 
