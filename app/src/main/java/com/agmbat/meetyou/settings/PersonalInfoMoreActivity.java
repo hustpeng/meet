@@ -153,21 +153,21 @@ public class PersonalInfoMoreActivity extends Activity {
         mCarView.setText(mVCardExtendObject.getCar());
         mHouseView.setText(mVCardExtendObject.getHouse());
 
-        Address workarea = Address.fromJson(mVCardExtendObject.getWorkarea());
+        Address workarea = Address.fromProvinceCityText(mVCardExtendObject.getWorkarea());
         if (workarea != null) {
             mWorkareaView.setText(workarea.getDisplayName());
         } else {
             mWorkareaView.setText("");
         }
 
-        Address birthplace = Address.fromJson(mVCardExtendObject.getBirthplace());
+        Address birthplace = Address.fromProvinceCityText(mVCardExtendObject.getBirthplace());
         if (birthplace != null) {
             mBirthplaceView.setText(birthplace.getDisplayName());
         } else {
             mBirthplaceView.setText("");
         }
 
-        Address residence = Address.fromJson(mVCardExtendObject.getResidence());
+        Address residence = Address.fromProvinceCityText(mVCardExtendObject.getResidence());
         if (residence != null) {
             mResidenceView.setText(residence.getDisplayName());
         } else {
@@ -341,7 +341,7 @@ public class PersonalInfoMoreActivity extends Activity {
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {
-                mVCardExtendObject.setWorkarea(address.toJson());
+                mVCardExtendObject.setWorkarea(address.toProvinceCityText());
                 EventBus.getDefault().post(mVCardExtendObject);
                 XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
             }
@@ -354,7 +354,7 @@ public class PersonalInfoMoreActivity extends Activity {
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {
-                mVCardExtendObject.setBirthplace(address.toJson());
+                mVCardExtendObject.setBirthplace(address.toProvinceCityText());
                 EventBus.getDefault().post(mVCardExtendObject);
                 XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
             }
@@ -368,7 +368,7 @@ public class PersonalInfoMoreActivity extends Activity {
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {
-                mVCardExtendObject.setResidence(address.toJson());
+                mVCardExtendObject.setResidence(address.toProvinceCityText());
                 EventBus.getDefault().post(mVCardExtendObject);
                 XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
             }

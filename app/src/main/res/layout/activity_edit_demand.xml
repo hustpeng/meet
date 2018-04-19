@@ -47,7 +47,7 @@
         android:background="@null"
         android:drawableBottom="@drawable/shape_bottom_green"
         android:drawablePadding="5dp"
-        android:maxLength="30"
+        android:maxLength="100"
         android:minHeight="120dp"
         android:padding="5dp"
         android:textSize="16sp"
@@ -57,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:text="最多30字符"
+        android:text="最多100字符"
         android:textColor="#7e7e7e"
         android:textSize="14sp" />
 
