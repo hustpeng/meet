@@ -156,30 +156,43 @@ public class MsgFragment extends Fragment {
 
     @OnClick(R.id.title_btn_add)
     void onClickAdd() {
-        View view = getView().findViewById(R.id.title_btn_add);
-        PopupMenu popupMenu = new PopupMenu(getContext(), view);
-        popupMenu.addItem("1", new OnClickMenuListener() {
+        PopupMenu popupMenu = new PopupMenu(getContext());
 
+        MenuInfo groupChat = new MenuInfo();
+        groupChat.setTitle(getString(R.string.menu_groupchat));
+        groupChat.setIcon(getResources().getDrawable(R.drawable.im_ic_menu_group));
+        groupChat.setOnClickMenuListener(new OnClickMenuListener() {
             @Override
             public void onClick(MenuInfo menu, int index) {
 
             }
         });
-        popupMenu.addItem("2", new OnClickMenuListener() {
+        popupMenu.addItem(groupChat);
 
+        MenuInfo addFriend = new MenuInfo();
+        addFriend.setTitle(getString(R.string.menu_addfriend));
+        addFriend.setIcon(getResources().getDrawable(R.drawable.im_ic_menu_addfriend));
+        addFriend.setOnClickMenuListener(new OnClickMenuListener() {
             @Override
             public void onClick(MenuInfo menu, int index) {
 
             }
         });
-        popupMenu.addItem("3", new OnClickMenuListener() {
+        popupMenu.addItem(addFriend);
 
+        MenuInfo scan = new MenuInfo();
+        scan.setTitle(getString(R.string.menu_qrcode));
+        scan.setIcon(getResources().getDrawable(R.drawable.im_ic_menu_sao));
+        scan.setOnClickMenuListener(new OnClickMenuListener() {
             @Override
             public void onClick(MenuInfo menu, int index) {
 
             }
         });
-        popupMenu.show();
+        popupMenu.addItem(scan);
+
+        View view = (View) getView().findViewById(R.id.title_btn_add).getParent();
+        popupMenu.show(view);
     }
 
     private void setState(int state) {
