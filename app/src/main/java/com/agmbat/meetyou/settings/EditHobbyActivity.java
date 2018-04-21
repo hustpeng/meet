@@ -15,6 +15,7 @@ import com.agmbat.meetyou.R;
 import com.agmbat.picker.tag.CategoryTag;
 import com.agmbat.picker.tag.CategoryTagPickerView;
 import com.agmbat.server.GsonHelper;
+import com.agmbat.text.TagText;
 import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
@@ -84,12 +85,37 @@ public class EditHobbyActivity extends Activity {
         Type jsonType = new TypeToken<List<CategoryTag>>() {
         }.getType();
         List<CategoryTag> list = GsonHelper.fromJson(text, jsonType);
-
-        List<String> checkedList = parseText(vCardObject.getHobby());
+        List<String> checkedList = TagText.parseTagList(vCardObject.getHobby());
+        cleanCheckedList(list, checkedList);
         mPickerView.setCategoryTagList(list);
         mPickerView.setMaxSelectCount(5);
         mPickerView.setCheckedList(checkedList);
         mPickerView.update();
+    }
+
+    /**
+     * 将选中的tag中不在tag面板了tag移除
+     *
+     * @param list
+     * @param checkedList
+     */
+    private static void cleanCheckedList(List<CategoryTag> list, List<String> checkedList) {
+        List<String> removeList = new ArrayList<>();
+        for (String tag : checkedList) {
+            if (!checkTag(list, tag)) {
+                removeList.add(tag);
+            }
+        }
+        checkedList.removeAll(removeList);
+    }
+
+    private static boolean checkTag(List<CategoryTag> list, String tag) {
+        for (CategoryTag categoryTag : list) {
+            if (categoryTag.contains(tag)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -106,7 +132,7 @@ public class EditHobbyActivity extends Activity {
     @OnClick(R.id.btn_save)
     void onClickSave() {
         List<String> tagList = mPickerView.getCheckedList();
-        String text = toText(tagList);
+        String text = TagText.toTagText(tagList);
         if (text.equals(mVCardObject.getHobby())) {
             // 未修改
             finish();
@@ -119,26 +145,5 @@ public class EditHobbyActivity extends Activity {
         }
     }
 
-    private static String toText(List<String> tagList) {
-        StringBuilder builder = new StringBuilder();
-        for (String tag : tagList) {
-            builder.append(tag);
-            builder.append(",");
-        }
-        if (builder.length() > 0) {
-            builder.deleteCharAt(builder.length() - 1);
-        }
-        return builder.toString();
-    }
 
-    private static List<String> parseText(String text) {
-        List<String> list = new ArrayList<>();
-        if (!TextUtils.isEmpty(text)) {
-            String[] array = text.split(",");
-            for (String item : array) {
-                list.add(item);
-            }
-        }
-        return list;
-    }
 }
