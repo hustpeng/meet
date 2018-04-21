@@ -3,18 +3,28 @@ package com.agmbat.meetyou.settings;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
+import com.agmbat.picker.tag.CategoryTag;
+import com.agmbat.picker.tag.CategoryTagPickerView;
+import com.agmbat.server.GsonHelper;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smackx.vcardextend.VCardExtendObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,11 +35,8 @@ import butterknife.OnClick;
  */
 public class EditHobbyActivity extends Activity {
 
-    /**
-     * 昵称编辑框
-     */
-    @BindView(R.id.input_name)
-    EditText mNameEditText;
+    @BindView(R.id.picker)
+    CategoryTagPickerView mPickerView;
 
     /**
      * 保存button
@@ -72,8 +79,17 @@ public class EditHobbyActivity extends Activity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(VCardExtendObject vCardObject) {
         mVCardObject = vCardObject;
-        mNameEditText.setText(vCardObject.getHobby());
-        mNameEditText.setSelection(mNameEditText.getText().toString().trim().length());
+
+        String text = AppResources.readAssetFile("wheelpicker/hobby_category.json");
+        Type jsonType = new TypeToken<List<CategoryTag>>() {
+        }.getType();
+        List<CategoryTag> list = GsonHelper.fromJson(text, jsonType);
+
+        List<String> checkedList = parseText(vCardObject.getHobby());
+        mPickerView.setCategoryTagList(list);
+        mPickerView.setMaxSelectCount(5);
+        mPickerView.setCheckedList(checkedList);
+        mPickerView.update();
     }
 
     /**
@@ -89,7 +105,8 @@ public class EditHobbyActivity extends Activity {
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
-        String text = mNameEditText.getText().toString();
+        List<String> tagList = mPickerView.getCheckedList();
+        String text = toText(tagList);
         if (text.equals(mVCardObject.getHobby())) {
             // 未修改
             finish();
@@ -100,5 +117,28 @@ public class EditHobbyActivity extends Activity {
             XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardObject);
             finish();
         }
+    }
+
+    private static String toText(List<String> tagList) {
+        StringBuilder builder = new StringBuilder();
+        for (String tag : tagList) {
+            builder.append(tag);
+            builder.append(",");
+        }
+        if (builder.length() > 0) {
+            builder.deleteCharAt(builder.length() - 1);
+        }
+        return builder.toString();
+    }
+
+    private static List<String> parseText(String text) {
+        List<String> list = new ArrayList<>();
+        if (!TextUtils.isEmpty(text)) {
+            String[] array = text.split(",");
+            for (String item : array) {
+                list.add(item);
+            }
+        }
+        return list;
     }
 }
