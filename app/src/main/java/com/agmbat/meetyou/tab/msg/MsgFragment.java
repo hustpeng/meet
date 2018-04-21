@@ -1,5 +1,6 @@
 package com.agmbat.meetyou.tab.msg;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -14,12 +15,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.agmbat.android.AppResources;
+import com.agmbat.android.utils.ApkUtils;
+import com.agmbat.android.utils.AppUtils;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.data.RecentChat;
 import com.agmbat.meetyou.db.MeetDatabase;
+import com.agmbat.menu.MenuInfo;
+import com.agmbat.menu.OnClickMenuListener;
+import com.agmbat.menu.PopupMenu;
 import com.agmbat.swipemenulist.SwipeMenu;
 import com.agmbat.swipemenulist.SwipeMenuCreator;
 import com.agmbat.swipemenulist.SwipeMenuItem;
@@ -27,10 +33,17 @@ import com.agmbat.swipemenulist.SwipeMenuListView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
+
+import static com.agmbat.android.utils.ApkUtils.getPackageName;
+
 /**
  * Tab聊天
  */
-public class MsgFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class MsgFragment extends Fragment {
 
     private static final String TAG = MsgFragment.class.getSimpleName();
 
@@ -38,10 +51,16 @@ public class MsgFragment extends Fragment implements AdapterView.OnItemClickList
     private static final int STATE_SUCCESS = 1;
     private static final int STATE_NO_DATA = 2;
 
-    private SwipeMenuListView mListView;
-    private TextView mResultView;
+    @BindView(R.id.recent_chat_list)
+    SwipeMenuListView mListView;
+
+    @BindView(R.id.result)
+    TextView mResultView;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar mProgressBar;
+
     private RecentChatAdapter mRecentChatAdapter;
-    private ProgressBar mProgressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,9 +70,7 @@ public class MsgFragment extends Fragment implements AdapterView.OnItemClickList
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-        mListView = (SwipeMenuListView) view.findViewById(R.id.recent_chat_list);
-        mListView.setOnItemClickListener(this);
+        ButterKnife.bind(this, view);
 
         // step 1. create a MenuCreator
         SwipeMenuCreator creator = new SwipeMenuCreator() {
@@ -115,7 +132,6 @@ public class MsgFragment extends Fragment implements AdapterView.OnItemClickList
             }
         });
 
-        mResultView = (TextView) view.findViewById(R.id.result);
         new InitRecentChatTask().execute();
     }
 
@@ -131,11 +147,39 @@ public class MsgFragment extends Fragment implements AdapterView.OnItemClickList
         super.onDestroy();
     }
 
-    @Override
+    @OnItemClick(R.id.recent_chat_list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         RecentChat recentChat = mRecentChatAdapter.getItem(position);
         ContactInfo contactInfo = recentChat.getContact();
         ChatActivity.openChat(getActivity(), contactInfo);
+    }
+
+    @OnClick(R.id.title_btn_add)
+    void onClickAdd() {
+        View view = getView().findViewById(R.id.title_btn_add);
+        PopupMenu popupMenu = new PopupMenu(getContext(), view);
+        popupMenu.addItem("1", new OnClickMenuListener() {
+
+            @Override
+            public void onClick(MenuInfo menu, int index) {
+
+            }
+        });
+        popupMenu.addItem("2", new OnClickMenuListener() {
+
+            @Override
+            public void onClick(MenuInfo menu, int index) {
+
+            }
+        });
+        popupMenu.addItem("3", new OnClickMenuListener() {
+
+            @Override
+            public void onClick(MenuInfo menu, int index) {
+
+            }
+        });
+        popupMenu.show();
     }
 
     private void setState(int state) {

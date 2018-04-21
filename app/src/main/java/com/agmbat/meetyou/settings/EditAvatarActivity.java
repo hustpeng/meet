@@ -22,6 +22,8 @@ import com.agmbat.imsdk.remotefile.RemoteFileManager;
 import com.agmbat.isdialog.ISActionSheetDialog;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
+import com.agmbat.menu.MenuInfo;
+import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.photoview.PhotoView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -99,21 +101,22 @@ public class EditAvatarActivity extends Activity {
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         dialog.useNegativeButton();
-        dialog.addItem("拍照", new DialogInterface.OnClickListener() {
+        dialog.addItem("拍照", new OnClickMenuListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(MenuInfo menu, int index) {
                 takePicture();
             }
+
         });
-        dialog.addItem("从手机相册选择", new DialogInterface.OnClickListener() {
+        dialog.addItem("从手机相册选择", new OnClickMenuListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(MenuInfo menu, int which) {
                 selectPicture();
             }
         });
-        dialog.addItem("保存图片", new DialogInterface.OnClickListener() {
+        dialog.addItem("保存图片", new OnClickMenuListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(MenuInfo menu, int which) {
                 savePicture();
             }
         });
