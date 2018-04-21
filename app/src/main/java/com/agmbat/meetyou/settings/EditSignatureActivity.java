@@ -7,8 +7,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
-import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
@@ -17,7 +17,6 @@ import com.agmbat.meetyou.R;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smackx.vcard.VCardObject;
 import org.jivesoftware.smackx.vcardextend.VCardExtendObject;
 
 import butterknife.BindView;
@@ -32,8 +31,11 @@ public class EditSignatureActivity extends Activity {
     /**
      * 昵称编辑框
      */
-    @BindView(R.id.input_name)
-    EditText mNameEditText;
+    @BindView(R.id.input_text)
+    EditText mEditText;
+
+    @BindView(R.id.tips)
+    TextView mTipsView;
 
     /**
      * 保存button
@@ -53,6 +55,24 @@ public class EditSignatureActivity extends Activity {
         setContentView(R.layout.activity_edit_signature);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+        mEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = mEditText.getText().toString();
+                int remainder = 50 - text.length();
+                mTipsView.setText(String.valueOf(remainder));
+            }
+        });
         IM.get().fetchMyVCardExtend();
     }
 
@@ -76,8 +96,8 @@ public class EditSignatureActivity extends Activity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(VCardExtendObject vCardObject) {
         mVCardObject = vCardObject;
-        mNameEditText.setText(vCardObject.getStatus());
-        mNameEditText.setSelection(mNameEditText.getText().toString().trim().length());
+        mEditText.setText(vCardObject.getStatus());
+        mEditText.setSelection(mEditText.getText().toString().trim().length());
     }
 
     /**
@@ -93,7 +113,7 @@ public class EditSignatureActivity extends Activity {
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
-        String text = mNameEditText.getText().toString();
+        String text = mEditText.getText().toString();
         if (text.equals(mVCardObject.getStatus())) {
             // 未修改
             finish();

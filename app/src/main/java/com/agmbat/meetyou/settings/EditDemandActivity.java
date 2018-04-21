@@ -3,8 +3,11 @@ package com.agmbat.meetyou.settings;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
@@ -26,10 +29,13 @@ import butterknife.OnClick;
 public class EditDemandActivity extends Activity {
 
     /**
-     * 昵称编辑框
+     * 编辑框
      */
-    @BindView(R.id.input_name)
-    EditText mNameEditText;
+    @BindView(R.id.input_text)
+    EditText mEditText;
+
+    @BindView(R.id.tips)
+    TextView mTipsView;
 
     /**
      * 保存button
@@ -49,6 +55,24 @@ public class EditDemandActivity extends Activity {
         setContentView(R.layout.activity_edit_demand);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+        mEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = mEditText.getText().toString();
+                int remainder = 100 - text.length();
+                mTipsView.setText(String.valueOf(remainder));
+            }
+        });
         IM.get().fetchMyVCardExtend();
     }
 
@@ -72,8 +96,8 @@ public class EditDemandActivity extends Activity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(VCardExtendObject vCardObject) {
         mVCardObject = vCardObject;
-        mNameEditText.setText(vCardObject.getDemand());
-        mNameEditText.setSelection(mNameEditText.getText().toString().trim().length());
+        mEditText.setText(vCardObject.getDemand());
+        mEditText.setSelection(mEditText.getText().toString().trim().length());
     }
 
     /**
@@ -89,7 +113,7 @@ public class EditDemandActivity extends Activity {
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
-        String text = mNameEditText.getText().toString();
+        String text = mEditText.getText().toString();
         if (text.equals(mVCardObject.getDemand())) {
             // 未修改
             finish();

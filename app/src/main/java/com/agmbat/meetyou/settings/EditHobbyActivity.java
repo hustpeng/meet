@@ -3,9 +3,7 @@ package com.agmbat.meetyou.settings;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.WindowUtils;
@@ -32,7 +30,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * 编辑个人介绍
+ * 编辑兴趣爱好
  */
 public class EditHobbyActivity extends Activity {
 

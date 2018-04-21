@@ -114,7 +114,7 @@ public class VCardExtendObject implements ICacheStoreObject {
     /**
      * 婚况
      */
-    private String marriage;
+    private int marriage;
 
     /**
      * 体重
@@ -144,12 +144,12 @@ public class VCardExtendObject implements ICacheStoreObject {
     /**
      * 购房情况
      */
-    private String house;
+    private int house;
 
     /**
      * 购车情况
      */
-    private String car;
+    private int car;
 
     /**
      * 兴趣爱好
@@ -230,11 +230,11 @@ public class VCardExtendObject implements ICacheStoreObject {
         this.workarea = workarea;
     }
 
-    public String getMarriage() {
+    public int getMarriage() {
         return marriage;
     }
 
-    public void setMarriage(String marriage) {
+    public void setMarriage(int marriage) {
         this.marriage = marriage;
     }
 
@@ -278,11 +278,11 @@ public class VCardExtendObject implements ICacheStoreObject {
         this.career = career;
     }
 
-    public String getCar() {
+    public int getCar() {
         return car;
     }
 
-    public void setCar(String car) {
+    public void setCar(int car) {
         this.car = car;
     }
 
@@ -316,6 +316,14 @@ public class VCardExtendObject implements ICacheStoreObject {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getHouse() {
+        return house;
+    }
+
+    public void setHouse(int house) {
+        this.house = house;
     }
 
     public String getKey() {
@@ -501,19 +509,18 @@ public class VCardExtendObject implements ICacheStoreObject {
         XmppStringUtils.appendXml(buf, KEY_EDUCATION, String.valueOf(object.getEducation()));
         XmppStringUtils.appendXml(buf, KEY_WAGE, String.valueOf(object.getWage()));
         XmppStringUtils.appendXml(buf, KEY_WORKAREA, object.getWorkarea());
-        XmppStringUtils.appendXml(buf, KEY_MARRIAGE, object.getMarriage());
+        XmppStringUtils.appendXml(buf, KEY_MARRIAGE, String.valueOf(object.getMarriage()));
         XmppStringUtils.appendXml(buf, KEY_WEIGHT, String.valueOf(object.getWeight()));
         XmppStringUtils.appendXml(buf, KEY_BIRTHPLACE, object.getBirthplace());
         XmppStringUtils.appendXml(buf, KEY_RESIDENCE, object.getResidence());
         XmppStringUtils.appendXml(buf, KEY_INDUSTRY, object.getIndustry());
         XmppStringUtils.appendXml(buf, KEY_CAREER, object.getCareer());
-        XmppStringUtils.appendXml(buf, KEY_HOUSE, object.getHouse());
-        XmppStringUtils.appendXml(buf, KEY_CAR, object.getCar());
+        XmppStringUtils.appendXml(buf, KEY_HOUSE, String.valueOf(object.getHouse()));
+        XmppStringUtils.appendXml(buf, KEY_CAR, String.valueOf(object.getCar()));
         XmppStringUtils.appendXml(buf, KEY_HOBBY, object.getHobby());
         XmppStringUtils.appendXml(buf, KEY_INTRODUCE, object.getIntroduce());
-        XmppStringUtils.appendXml(buf, KEY_DEMAND,object.getDemand());
+        XmppStringUtils.appendXml(buf, KEY_DEMAND, object.getDemand());
         XmppStringUtils.appendXml(buf, KEY_STATUS, object.getStatus());
-
         buf.append("</PUBLIC>");
 
 //private info
@@ -532,11 +539,4 @@ public class VCardExtendObject implements ICacheStoreObject {
     }
 
 
-    public String getHouse() {
-        return house;
-    }
-
-    public void setHouse(String house) {
-        this.house = house;
-    }
 }

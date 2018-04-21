@@ -15,7 +15,10 @@ import com.agmbat.picker.OptionPicker;
 import com.agmbat.picker.SinglePicker;
 import com.agmbat.picker.address.Address;
 import com.agmbat.picker.address.AddressPicker;
+import com.agmbat.picker.helper.CarItem;
 import com.agmbat.picker.helper.EducationItem;
+import com.agmbat.picker.helper.HouseItem;
+import com.agmbat.picker.helper.MarriageItem;
 import com.agmbat.picker.helper.PickerHelper;
 import com.agmbat.picker.helper.WageItem;
 
@@ -82,17 +85,22 @@ public class PersonalInfoMoreActivity extends Activity {
      */
     @BindView(R.id.residence)
     TextView mResidenceView;
+
     /**
-     * 户口在地
+     * 购车情况
      */
     @BindView(R.id.car)
     TextView mCarView;
+
     /**
-     * 户口在地
+     * 房子情况
      */
     @BindView(R.id.house)
     TextView mHouseView;
 
+    /**
+     * 行业
+     */
     @BindView(R.id.industry)
     TextView mIndustryView;
 
@@ -146,7 +154,9 @@ public class PersonalInfoMoreActivity extends Activity {
         mWageView.setText(wageItem == null ? "" : wageItem.mName);
         EducationItem educationItem = EducationItem.valueOf(mVCardExtendObject.getEducation());
         mEducationView.setText(educationItem == null ? "" : educationItem.mName);
-        mMarriageView.setText(mVCardExtendObject.getMarriage());
+
+        MarriageItem marriageItem = MarriageItem.valueOf(mVCardExtendObject.getMarriage());
+        mMarriageView.setText(marriageItem == null ? "" : marriageItem.mName);
 
         mSignatureView.setText(mVCardExtendObject.getStatus());
         mDemandView.setText(mVCardExtendObject.getDemand());
@@ -155,8 +165,12 @@ public class PersonalInfoMoreActivity extends Activity {
         mCareerView.setText(mVCardExtendObject.getCareer());
 
         mIntroduceView.setText(mVCardExtendObject.getIntroduce());
-        mCarView.setText(mVCardExtendObject.getCar());
-        mHouseView.setText(mVCardExtendObject.getHouse());
+
+        CarItem carItem = CarItem.valueOf(mVCardExtendObject.getCar());
+        mCarView.setText(carItem == null ? "" : carItem.mName);
+
+        HouseItem houseItem = HouseItem.valueOf(mVCardExtendObject.getHouse());
+        mHouseView.setText(houseItem == null ? "" : houseItem.mName);
 
         Address workarea = Address.fromProvinceCityText(mVCardExtendObject.getWorkarea());
         if (workarea != null) {
@@ -248,44 +262,47 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_marriage)
     void onClickMarriage() {
-        String selected = mVCardExtendObject.getMarriage();
-        OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
+        int selected = mVCardExtendObject.getMarriage();
+        MarriageItem item = MarriageItem.valueOf(selected);
+        SinglePicker.OnItemPickListener<MarriageItem> l = new SinglePicker.OnItemPickListener<MarriageItem>() {
             @Override
-            public void onOptionPicked(int index, String item) {
-                mVCardExtendObject.setMarriage(item);
+            public void onItemPicked(int index, MarriageItem item) {
+                mVCardExtendObject.setMarriage(item.mValue);
                 EventBus.getDefault().post(mVCardExtendObject);
                 XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
             }
         };
-        PickerHelper.showMarriagePicker(this, selected, l);
+        PickerHelper.showMarriagePicker(this, item, l);
     }
 
     @OnClick(R.id.btn_car)
     void onClickCar() {
-        String selected = mVCardExtendObject.getCar();
-        OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
+        int selected = mVCardExtendObject.getCar();
+        CarItem item = CarItem.valueOf(selected);
+        SinglePicker.OnItemPickListener<CarItem> l = new SinglePicker.OnItemPickListener<CarItem>() {
             @Override
-            public void onOptionPicked(int index, String item) {
-                mVCardExtendObject.setCar(item);
+            public void onItemPicked(int index, CarItem item) {
+                mVCardExtendObject.setCar(item.mValue);
                 EventBus.getDefault().post(mVCardExtendObject);
                 XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
             }
         };
-        PickerHelper.showCarPicker(this, selected, l);
+        PickerHelper.showCarPicker(this, item, l);
     }
 
     @OnClick(R.id.btn_house)
     void onClickHouse() {
-        String selected = mVCardExtendObject.getHouse();
-        OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
+        int selected = mVCardExtendObject.getHouse();
+        HouseItem item = HouseItem.valueOf(selected);
+        SinglePicker.OnItemPickListener<HouseItem> l = new SinglePicker.OnItemPickListener<HouseItem>() {
             @Override
-            public void onOptionPicked(int index, String item) {
-                mVCardExtendObject.setHouse(item);
+            public void onItemPicked(int index, HouseItem item) {
+                mVCardExtendObject.setHouse(item.mValue);
                 EventBus.getDefault().post(mVCardExtendObject);
                 XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
             }
         };
-        PickerHelper.showHousePicker(this, selected, l);
+        PickerHelper.showHousePicker(this, item, l);
     }
 
     @OnClick(R.id.btn_career)
@@ -305,7 +322,7 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_industry)
     void onClickIndustry() {
-        String selected = mVCardExtendObject.getIntroduce();
+        String selected = mVCardExtendObject.getIndustry();
         OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {

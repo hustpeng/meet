@@ -48,7 +48,7 @@
         android:drawableBottom="@drawable/shape_bottom_green"
         android:drawablePadding="5dp"
         android:gravity="bottom"
-        android:maxLength="255"
+        android:maxLength="32"
         android:padding="5dp"
         android:singleLine="true"
         android:textSize="16sp"

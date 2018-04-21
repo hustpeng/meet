@@ -11,16 +11,16 @@ height     int    身高, 默认170cm, 可选择 138-230cm
 weight     int    体重, 默认50kg, 可选择 30-150kg
 education  int    学历, 默认[本科], 可选择[小学, 初中, 高中, 专科, 本科, 硕士, 博士]
 wage       int    月薪, 默认[1000], 可选择 [1000, 3000, 5000, 1万, 2万, 5万, 10万, 50万 100万以上]
-marriage   String 婚况, 默认[单身], 可选择 [单身, 非单身]
+marriage   int    婚况, 默认[单身], 可选择 [单身, 非单身]
 industry   String 行业, 默认[其他], 可选择, 见json配置
 career     String 职业, 默认[其他], 可选择, 见json配置
-house      String 住房情况, 默认[保密], 可选择[有自住房, 无自住房, 保密]
-car        String 购车情况, 默认[已购], 可选择[已购, 未购]
-hobby      String 兴趣爱好, 多选1-5关键词, 见json配置
+house      int    住房情况, 默认[保密], 可选择[有自住房, 无自住房, 保密]
+car        int    购车情况, 默认[已购], 可选择[已购, 未购]
+hobby      String 兴趣爱好, 多选0-5关键词, 见json配置, 面板与支付宝一致
 introduce  String 自我简介, 0-100字符 多行
 demand     String 择友要求, 0-100字符 多行
 status     String 个人签名, 0-50字符, 单行
-workarea   json   工作地区, [province, city], 目前只使用province和city
+workarea   json   工作地区, 使用"," 分隔[province, city], 目前只使用province和city
 birthplace json   籍贯, 同上
 residence  json   户口在地, 同上
 
@@ -33,8 +33,15 @@ residence  json   户口在地, 同上
 硕士 ->   5
 博士 ->   6
 
+婚况对应值
+单身 ->   0
+非单身 ->   1
 
+住房情况对应值
+无自住房 ->   0
+有自住房 ->   1
+保密     ->   2
 
-
-
-
+购车情况
+未购 ->   0
+已购 ->   1

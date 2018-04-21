@@ -60,7 +60,7 @@ public class VCardExtendProvider implements IQProvider {
         } else if (VCardExtendObject.KEY_WORKAREA.equals(parserName)) {
             item.setWorkarea(parser.nextText());
         } else if (VCardExtendObject.KEY_MARRIAGE.equals(parserName)) {
-            item.setMarriage(parser.nextText());
+            item.setMarriage(StringParser.parseInt(parser.nextText()));
         } else if (VCardExtendObject.KEY_WEIGHT.equals(parserName)) {
             item.setWeight(StringParser.parseInt(parser.nextText()));
         } else if (VCardExtendObject.KEY_BIRTHPLACE.equals(parserName)) {
@@ -72,9 +72,9 @@ public class VCardExtendProvider implements IQProvider {
         } else if (VCardExtendObject.KEY_CAREER.equals(parserName)) {
             item.setCareer(parser.nextText());
         } else if (VCardExtendObject.KEY_HOUSE.equals(parserName)) {
-            item.setHouse(parser.nextText());
+            item.setHouse(StringParser.parseInt(parser.nextText()));
         } else if (VCardExtendObject.KEY_CAR.equals(parserName)) {
-            item.setCar(parser.nextText());
+            item.setCar(StringParser.parseInt(parser.nextText()));
         } else if (VCardExtendObject.KEY_HOBBY.equals(parserName)) {
             item.setHobby(parser.nextText());
         } else if (VCardExtendObject.KEY_INTRODUCE.equals(parserName)) {
