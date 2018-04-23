@@ -96,6 +96,11 @@
             android:name="com.agmbat.meetyou.search.SearchUserActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.agmbat.meetyou.search.UserInfoActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
