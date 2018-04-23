@@ -1,6 +1,7 @@
 package com.agmbat.meetyou.search;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -80,9 +81,9 @@ public class SearchUserActivity extends Activity {
             mNoResultTipView.setVisibility(View.VISIBLE);
             mSearchButton.setVisibility(View.GONE);
         } else {
-//            Intent intent = new Intent(this, UserInfoActivity.class);
-//            intent.putExtra("userInfo", userInfo);
-//            mContext.jumpToActivity(intent);
+            Intent intent = new Intent(this, UserInfoActivity.class);
+            intent.putExtra("userInfo", contactInfo.getBareJid());
+            startActivity(intent);
         }
     }
 }

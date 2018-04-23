@@ -8,9 +8,12 @@ import android.support.annotation.Nullable;
  * 用户信息界面
  */
 public class UserInfoActivity extends Activity {
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     //    UserInfo mUserInfo;
@@ -18,8 +21,6 @@ public class UserInfoActivity extends Activity {
 //    @Bind(R.id.ibToolbarMore)
 //    ImageButton mIbToolbarMore;
 //
-//    @Bind(R.id.ivHeader)
-//    ImageView mIvHeader;
 //    @Bind(R.id.tvName)
 //    TextView mTvName;
 //    @Bind(R.id.ivGender)
