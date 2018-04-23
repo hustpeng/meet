@@ -23,6 +23,7 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.data.RecentChat;
 import com.agmbat.meetyou.db.MeetDatabase;
+import com.agmbat.meetyou.search.SearchUserActivity;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.menu.PopupMenu;
@@ -175,7 +176,9 @@ public class MsgFragment extends Fragment {
         addFriend.setOnClickMenuListener(new OnClickMenuListener() {
             @Override
             public void onClick(MenuInfo menu, int index) {
-
+                Intent intent = new Intent(getActivity(), SearchUserActivity.class);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
         popupMenu.addItem(addFriend);
