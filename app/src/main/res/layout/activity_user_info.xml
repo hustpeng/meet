@@ -5,38 +5,61 @@
     android:background="#EBEBEB"
     android:orientation="vertical">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48.0dip"
+        android:background="#ff232325">
+
+        <ImageView
+            android:id="@+id/title_btn_back"
+            android:layout_width="40dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_title_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/personal_details"
+            android:textColor="#ffffffff"
+            android:textSize="20sp" />
+
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40px"
-        android:padding="20px">
+        android:layout_marginTop="20dp"
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/ivHeader"
-            android:layout_width="120px"
-            android:layout_height="120px"
-            android:layout_marginLeft="10px"
-            android:scaleType="centerCrop" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="5dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_default_avatar" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20px"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="6px"
+                android:layout_marginBottom="3dp"
                 android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20px"
+                    android:layout_marginRight="10dp"
                     android:gravity="center"
                     android:singleLine="true"
                     android:text="沧晓"
@@ -48,6 +71,7 @@
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/im_ic_gender_female"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -56,6 +80,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
+                android:text="@string/my_chat_account"
+                android:textColor="#969696"
                 android:textSize="12sp" />
 
             <TextView
@@ -64,17 +90,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:singleLine="true"
+                android:text="@string/nickname_colon"
+                android:textColor="#969696"
                 android:textSize="12sp" />
 
         </LinearLayout>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/oivAliasAndTag"
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/selector_common_item"
+        android:text="@string/set_alias_and_tag" />
 
     <LinearLayout
         android:id="@+id/llArea"
         android:layout_width="match_parent"
-        android:layout_height="96px"
-        android:layout_marginTop="40px"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/selector_common_item"
         android:gravity="center_vertical">
 
         <TextView
@@ -90,32 +126,41 @@
             android:id="@+id/tvArea"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30px"
+            android:layout_marginLeft="15dp"
             android:layout_weight="4"
             android:textColor="#7e7e7e"
             android:textSize="16sp" />
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="#D2D2D2" />
 
     <LinearLayout
         android:id="@+id/llSignature"
         android:layout_width="match_parent"
-        android:layout_height="96px"
+        android:layout_height="48dp"
+        android:background="@drawable/selector_common_item"
         android:gravity="center_vertical">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30px"
+            android:layout_marginLeft="15dp"
             android:layout_weight="1"
+            android:text="@string/personal_signature"
+            android:textColor="#000000"
             android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tvSignature"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30px"
+            android:layout_marginLeft="15dp"
             android:layout_weight="4"
             android:textColor="#7e7e7e"
             android:textSize="16sp" />
@@ -126,11 +171,14 @@
         android:id="@+id/btnCheat"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
-        android:layout_height="90px"
-        android:layout_marginBottom="40px"
-        android:layout_marginLeft="30px"
-        android:layout_marginRight="30px"
-        android:layout_marginTop="40px"
+        android:layout_height="45dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/shape_user_info_send_msg"
+        android:text="@string/send_message"
+        android:textColor="#ffffff"
         android:textSize="16sp" />
 
     <Button
@@ -142,6 +190,9 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/shape_user_info_add_to_contact"
+        android:text="@string/add_to_contact"
+        android:textColor="#ffffff"
         android:textSize="16sp" />
 </LinearLayout>
 

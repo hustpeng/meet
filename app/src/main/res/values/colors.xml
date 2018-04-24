@@ -6,4 +6,6 @@
 
     <color name="im_settings_pressed">#ffeeeeee</color>
     <color name="im_settings_normal">#ffffff</color>
+
+    <color name="gray">#D9D9D9</color>
 </resources>

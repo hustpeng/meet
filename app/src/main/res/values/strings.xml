@@ -95,10 +95,20 @@
     <string name="menu_groupchat">发起群聊</string>
     <string name="menu_addfriend">添加朋友</string>
     <string name="menu_qrcode">扫一扫</string>
-    
+
+    <!--用户信息-->
+    <string name="personal_details">详细资料</string>
+    <string name="my_chat_account">微信号:%1$s</string>
+    <string name="nickname_colon">昵称:%1$s</string>
+    <string name="set_alias_and_tag">设置备注和标签</string>
+    <string name="send_message">发消息</string>
+    <string name="add_to_contact">添加到通讯录</string>
+
+
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
+
 
 
 </resources>
