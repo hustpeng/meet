@@ -19,6 +19,7 @@ import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -43,6 +44,7 @@ public class SearchUserActivity extends Activity {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_search_user);
+        ButterKnife.bind(this);
         mNoResultTipView.setVisibility(View.GONE);
 
         mEditText.addTextChangedListener(new TextWatcher() {
@@ -66,6 +68,20 @@ public class SearchUserActivity extends Activity {
             public void afterTextChanged(Editable s) {
             }
         });
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+    }
+
+    /**
+     * 点击返回键
+     */
+    @OnClick(R.id.title_btn_back)
+    void onClickBack() {
+        finish();
     }
 
     @OnClick(R.id.btn_search)

@@ -1,182 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#EBEBEB"
+    android:orientation="vertical">
 
-    <!--内容-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#EBEBEB"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40px"
+        android:padding="20px">
+
+        <ImageView
+            android:id="@+id/ivHeader"
+            android:layout_width="120px"
+            android:layout_height="120px"
+            android:layout_marginLeft="10px"
+            android:scaleType="centerCrop" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40px"
-            android:padding="20px">
-
-            <ImageView
-                android:id="@+id/ivHeader"
-                android:layout_width="120px"
-                android:layout_height="120px"
-                android:layout_marginLeft="10px"
-                android:scaleType="centerCrop" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20px"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="20px"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="6px"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:id="@+id/tvName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="20px"
-                        android:gravity="center"
-                        android:singleLine="true"
-                        android:text="沧晓"
-                        android:textColor="@color/gray0"
-                        android:textSize="15sp" />
-
-                    <ImageView
-                        android:id="@+id/ivGender"
-                        android:layout_width="30px"
-                        android:layout_height="30px"
-                        android:scaleType="centerCrop"
-                        android:visibility="gone" />
-                </LinearLayout>
+                android:layout_marginBottom="6px"
+                android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/tvAccount"
+                    android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="20px"
+                    android:gravity="center"
                     android:singleLine="true"
-                    android:textSize="12sp" />
+                    android:text="沧晓"
+                    android:textColor="#464646"
+                    android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/tvNickName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6px"
-                    android:singleLine="true"
-                    android:textSize="12sp" />
-
+                <ImageView
+                    android:id="@+id/ivGender"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
             </LinearLayout>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/llArea"
-            android:layout_width="match_parent"
-            android:layout_height="96px"
-            android:layout_marginTop="40px"
-            android:gravity="center_vertical">
 
             <TextView
-                android:layout_width="0dp"
+                android:id="@+id/tvAccount"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30px"
-                android:layout_weight="1.5"
-                android:text="@string/area"
-                android:textColor="@color/black0"
-                android:textSize="16sp" />
+                android:singleLine="true"
+                android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/tvArea"
-                android:layout_width="0dp"
+                android:id="@+id/tvNickName"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30px"
-                android:layout_weight="4"
-                android:textColor="#7e7e7e"
-                android:textSize="16sp" />
+                android:layout_marginTop="3dp"
+                android:singleLine="true"
+                android:textSize="12sp" />
 
         </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/llSignature"
-            android:layout_width="match_parent"
-            android:layout_height="96px"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30px"
-                android:layout_weight="1"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tvSignature"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30px"
-                android:layout_weight="4"
-                android:textColor="#7e7e7e"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/btnCheat"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="90px"
-            android:layout_marginBottom="40px"
-            android:layout_marginLeft="30px"
-            android:layout_marginRight="30px"
-            android:layout_marginTop="40px"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/btnAddToContact"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="90px"
-            android:layout_marginBottom="40px"
-            android:layout_marginLeft="30px"
-            android:layout_marginRight="30px"
-            android:layout_marginTop="40px"
-            android:textSize="16sp"
-            android:visibility="gone" />
     </LinearLayout>
 
-    <!--菜单-->
-    <RelativeLayout
-        android:id="@+id/rlMenu"
+
+    <LinearLayout
+        android:id="@+id/llArea"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="96px"
+        android:layout_marginTop="40px"
+        android:gravity="center_vertical">
 
-        <View
-            android:id="@+id/vMask"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <ScrollView
-            android:id="@+id/svMenu"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:scrollbars="none">
+            android:layout_marginLeft="30px"
+            android:layout_weight="1.5"
+            android:text="@string/area"
+            android:textColor="#000000"
+            android:textSize="16sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvArea"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30px"
+            android:layout_weight="4"
+            android:textColor="#7e7e7e"
+            android:textSize="16sp" />
 
-            </LinearLayout>
-        </ScrollView>
-    </RelativeLayout>
-</FrameLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/llSignature"
+        android:layout_width="match_parent"
+        android:layout_height="96px"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30px"
+            android:layout_weight="1"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvSignature"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30px"
+            android:layout_weight="4"
+            android:textColor="#7e7e7e"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnCheat"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="90px"
+        android:layout_marginBottom="40px"
+        android:layout_marginLeft="30px"
+        android:layout_marginRight="30px"
+        android:layout_marginTop="40px"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/btnAddToContact"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp" />
+</LinearLayout>
+
