@@ -103,6 +103,7 @@
         android:layout_height="51dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/selector_common_item"
+        android:gravity="center_vertical"
         android:text="@string/set_alias_and_tag" />
 
     <LinearLayout
