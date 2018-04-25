@@ -314,36 +314,43 @@ public class Presence extends Packet {
 
         /**
          * The user is available to receive messages (default).
+         * (默认）用户空闲状态，即在线
          */
         available,
 
         /**
          * The user is unavailable to receive messages.
+         * 用户没空看消息，即离线
          */
         unavailable,
 
         /**
          * Request subscription to recipient's presence.
+         * 请求订阅别人，即请求加对方为好友
          */
         subscribe,
 
         /**
          * Grant subscription to sender's presence.
+         * 同意被别人订阅，也就是确认被对方加为好友
          */
         subscribed,
 
         /**
          * Request removal of subscription to sender's presence.
+         * 取消订阅别人，请求删除某好友
          */
         unsubscribe,
 
         /**
          * Grant removal of subscription to sender's presence.
+         * 拒绝被别人订阅，即拒绝对放的添加请求
          */
         unsubscribed,
 
         /**
          * The presence packet contains an error message.
+         * 当前状态packet有错误
          */
         error
     }
@@ -355,26 +362,31 @@ public class Presence extends Packet {
 
         /**
          * Free to chat.
+         * 相当于qq的q我吧
          */
         chat,
 
         /**
          * Available (the default).
+         * 默认即在线状态
          */
         available,
 
         /**
          * Away.
+         * 离开
          */
         away,
 
         /**
          * Away for an extended period of time.
+         * 离开一段时间
          */
         xa,
 
         /**
          * Do not disturb.
+         * 请勿打扰
          */
         dnd
     }

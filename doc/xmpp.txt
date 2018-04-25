@@ -50,6 +50,38 @@ RCV  (126535443): <iq id="EkMF4-15" to="13437122759@yuan520.com/Android" type="e
 <PRIVATE></PRIVATE></vCard>
 
 
+SENT (61866260):
+<iq id="8Vv8B-15" type="set">
+  <query xmlns="jabber:iq:roster" >
+    <item jid="15002752759@yuan520.com" name="接电弧" robot="false" subscription="from" ask="subscribe" lat="0.0" lon="0.0">
+      <group>Hotlist</group>
+    </item>
+  </query>
+</iq>
+
+RCV  (61866260):
+<iq id="rsttig12" to="13437122759@yuan520.com/Android" type="set" xmlns="jabber:client">
+  <query xmlns="jabber:iq:roster" ver="0c976b2fe72dff15fb34f818d481b912">
+    <item jid="15002752759@yuan520.com" subscription="none" name="接电弧">
+    <group>Hotlist</group>
+    </item></query>
+</iq>
+
+SENT (61866260):
+<iq id="rsttig12" from="13437122759@yuan520.com/Android" type="error">
+  <error code="501" type="CANCEL">
+  <feature-not-implemented xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
+  </error>
+</iq>
+
+
+RCV  (61866260): <iq id="8Vv8B-15" to="13437122759@yuan520.com/Android" type="result" xmlns="jabber:client"/>
+
+SENT (61866260): <presence id="8Vv8B-16" to="15002752759@yuan520.com" type="subscribe"></presence>
+RCV  (61866260): <iq id="rsttig13" to="13437122759@yuan520.com/Android" type="set" xmlns="jabber:client"><query xmlns="jabber:iq:roster" ver="0c976b2fe72dff15fb34f818d481b912"><item jid="15002752759@yuan520.com" subscription="none" name="接电弧" ask="subscribe"><group>Hotlist</group></item></query></iq>
+SENT (61866260): <iq id="rsttig13" from="13437122759@yuan520.com/Android" type="error"><error code="501" type="CANCEL"><feature-not-implemented xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/></error></iq>
+
+
 [meet]
 SEND:1
 <iq id="2IOwn-10" type="set">

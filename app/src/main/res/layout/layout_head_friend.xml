@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/layout_search"
+        layout="@layout/layout_head_search" />
+
+    <LinearLayout
+        android:id="@+id/layout_addfriend"
+        android:layout_width="fill_parent"
+        android:layout_height="55.0dip"
+        android:background="@drawable/im_setting_item"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="15dip"
+        android:paddingRight="4.0dip">
+
+        <ImageView
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:src="@drawable/icon_addfriend" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="13dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="@string/recommended_friends"
+            android:textColor="#ff000000"
+            android:textSize="16.0dip" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ffeeeeee" />
+
+    <LinearLayout
+        android:id="@+id/layout_group"
+        android:layout_width="fill_parent"
+        android:layout_height="55.0dip"
+        android:background="@drawable/im_setting_item"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="15dip"
+        android:paddingRight="4.0dip">
+
+        <ImageView
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:src="@drawable/icon_qunliao" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="@string/group_chats"
+            android:textColor="#ff000000"
+            android:textSize="16.0dip" />
+    </LinearLayout>
+
+
+</LinearLayout>

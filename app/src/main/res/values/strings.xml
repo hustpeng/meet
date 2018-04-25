@@ -109,6 +109,8 @@
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
 
-
+    <string name="search">搜索</string>
+    <string name="group_chats">群聊</string>
+    <string name="recommended_friends">新的朋友</string>
 
 </resources>

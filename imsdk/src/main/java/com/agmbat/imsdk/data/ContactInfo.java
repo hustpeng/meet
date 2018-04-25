@@ -10,7 +10,16 @@ public class ContactInfo {
      */
     private String mBareJid = "";
 
+    /**
+     * 联系人昵称
+     */
     private String mNickname;
+
+    /**
+     * 用户给好友的备注
+     */
+    private String mRemark;
+
 
     public void setNickname(String nickname) {
         mNickname = nickname;
@@ -31,5 +40,13 @@ public class ContactInfo {
 
     public String getBareJid() {
         return mBareJid;
+    }
+
+    public String getRemark() {
+        return mRemark;
+    }
+
+    public void setRemark(String remark) {
+        mRemark = remark;
     }
 }

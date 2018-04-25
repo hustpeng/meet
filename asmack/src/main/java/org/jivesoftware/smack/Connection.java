@@ -24,6 +24,9 @@ import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.roster.RosterListener;
 
 import java.io.Reader;
 import java.io.Writer;
@@ -403,6 +406,19 @@ public abstract class Connection {
         }
         return accountManager;
     }
+
+    /**
+     * Returns the roster for the user.
+     * <p>
+     * This method will never return <code>null</code>, instead if the user has not yet logged into
+     * the server or is logged in anonymously all modifying methods of the returned roster object
+     * like {@link Roster#createEntry(String, String, String[])},
+     * {@link Roster#removeEntry(RosterEntry)} , etc. except adding or removing
+     * {@link RosterListener}s will throw an IllegalStateException.
+     *
+     * @return the user's roster.
+     */
+    public abstract Roster getRoster();
 
     /**
      * Returns the SASLAuthentication manager that is responsible for authenticating with

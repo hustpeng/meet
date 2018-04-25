@@ -70,6 +70,7 @@ public class XMPPManager {
     private LocationHelper locationHelper;
     private LocationAutoSync locationAutoSync;
     private ReconnectionManager reconnectionManager;
+    private RosterManager mRosterManager;
 
     // 47.106.77.125
     private static final String URL = "http://yuan520.com";
@@ -106,11 +107,12 @@ public class XMPPManager {
         vCardExtendManager = new VCardExtendManager(xmppConnection);
         findServerManager = new FindServerManager(xmppConnection);
         tokenManager = new TokenManager(xmppConnection);
-//        tokenManager.setTokenServer("13437122759@yuan520.com");
         locateManager = new LocateManager(xmppConnection);
         visitorManager = new VisitorManager(xmppConnection);
         messageManager = new MessageManager(xmppConnection);
         paidManager = new PaidManager(xmppConnection);
+
+        mRosterManager = new RosterManager(xmppConnection, xmppConnection.getRoster());
 
         locationHelper = new LocationHelper();
         locationAutoSync = new LocationAutoSync();
@@ -334,6 +336,10 @@ public class XMPPManager {
 
     public PaidManager getPaidManager() {
         return paidManager;
+    }
+
+    public RosterManager getRosterManager() {
+        return mRosterManager;
     }
 
     /**

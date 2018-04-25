@@ -4,17 +4,42 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.agmbat.imsdk.asmack.RosterManager;
+import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 用户信息界面
  */
 public class UserInfoActivity extends Activity {
 
+    private RosterManager mRosterManager;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
+        ButterKnife.bind(this);
+        mRosterManager = XMPPManager.getInstance().getRosterManager();
+    }
+
+    @OnClick(R.id.title_btn_back)
+    void onClickBack() {
+        finish();
+    }
+
+    /**
+     * 点击添加联系人
+     */
+    @OnClick(R.id.btn_add_to_contact)
+    void onClickAddToContact() {
+        ContactInfo contactInfo = new ContactInfo("15002752759@yuan520.com");
+        contactInfo.setNickname("接电弧");
+        mRosterManager.addContactToFriend(contactInfo);
     }
 
     //    UserInfo mUserInfo;

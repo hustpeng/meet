@@ -954,6 +954,10 @@ public class Roster {
                     fireRosterPresenceEvent(presence);
                 }
             } else if (presence.getType() == Presence.Type.subscribe) {
+                // 收到好友申请
+                // TODO 如果已经发送过好友申请，接收到对方的好友申请，说明对方同意，直接回复同意
+
+                //如果没发送过，需要其他界面来判断是否同意
                 if (subscriptionMode == SubscriptionMode.accept_all) {
                     // Accept all subscription requests.
                     Presence response = new Presence(Presence.Type.subscribed);
@@ -967,6 +971,7 @@ public class Roster {
                 }
                 // Otherwise, in manual mode so ignore.
             } else if (presence.getType() == Presence.Type.unsubscribe) {
+                // 删除好友
                 if (subscriptionMode != SubscriptionMode.manual) {
                     // Acknowledge and accept unsubscription notification so that the
                     // server will stop sending notifications saying that the contact
@@ -976,6 +981,14 @@ public class Roster {
                     connection.sendPacket(response);
                 }
                 // Otherwise, in manual mode so ignore.
+            } else if (presence.getType() == Presence.Type.subscribed) {
+                //同意添加好友
+                //加对方为好友
+                //存入数据库（好友表+分组表）
+                //存入集合
+            } else if (presence.getType() == Presence.Type.unsubscribed) {
+                //拒绝添加好友
+                //发通知告诉用户对方拒绝添加好友========================
             }
             // Error presence packets from a bare JID mean we invalidate all existing
             // presence info for the user.

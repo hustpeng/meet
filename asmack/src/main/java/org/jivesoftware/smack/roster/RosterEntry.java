@@ -32,6 +32,8 @@ import java.util.List;
 /**
  * Each user in your roster is represented by a roster entry, which contains the user's
  * JID and a name or nickname you assign.
+ * <p>
+ * 表示Roster（花名册）中的每条记录.它包含了用户的JID，用户名，或用户分配的昵称.
  *
  * @author Matt Tucker
  */

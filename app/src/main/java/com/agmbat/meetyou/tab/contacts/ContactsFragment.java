@@ -1,8 +1,10 @@
 
 package com.agmbat.meetyou.tab.contacts;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -20,8 +22,13 @@ import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.db.MeetDatabase;
+import com.agmbat.meetyou.search.SearchUserActivity;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ContactsFragment extends Fragment implements OnGroupClickListener,
         OnChildClickListener, OnCreateContextMenuListener {
@@ -38,8 +45,12 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
 
     private InitContactListTask mInitListTask = null;
 
-    private ProgressBar mProgressBar;
-    private ExpandableListView mListView;
+    @BindView(R.id.progress_bar)
+    ProgressBar mProgressBar;
+
+    @BindView(R.id.friend_list)
+    ExpandableListView mListView;
+
     private ContactsAdapter mFriendsAdapter;
 
     private String mLoginUserName;
@@ -50,11 +61,11 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.i(TAG, "onActivityCreated");
-        mProgressBar = (ProgressBar) getView().findViewById(R.id.progress_bar);
-        mListView = (ExpandableListView) getView().findViewById(R.id.friend_list);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
+        View headerView = View.inflate(getActivity(), R.layout.layout_head_friend, null);
+        mListView.addHeaderView(headerView);
         mListView.setOnChildClickListener(this);
         mListView.setOnGroupClickListener(this);
         mListView.setOnCreateContextMenuListener(this);
@@ -64,6 +75,13 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @OnClick(R.id.title_btn_add)
+    void onClickAdd() {
+        Intent intent = new Intent(getActivity(), SearchUserActivity.class);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     private void initContactList() {

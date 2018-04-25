@@ -26,6 +26,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.util.XmppStringUtils;
 
 import javax.net.ssl.KeyManager;
@@ -82,6 +83,8 @@ public class XMPPConnection extends Connection {
 
     PacketWriter packetWriter;
     PacketReader packetReader;
+
+    Roster roster = null;
 
     /**
      * Collection of available stream compression methods offered by the server.
@@ -323,6 +326,52 @@ public class XMPPConnection extends Connection {
         }
     }
 
+    @Override
+    public Roster getRoster() {
+        // synchronize against login()
+        synchronized (this) {
+            // if connection is authenticated the roster is already set by login()
+            // or a previous call to getRoster()
+            if (!isAuthenticated() || isAnonymous()) {
+                if (roster == null) {
+                    roster = new Roster(this);
+                }
+                return roster;
+            }
+        }
+
+        if (!config.isRosterLoadedAtLogin()) {
+            roster.reload();
+        }
+        // If this is the first time the user has asked for the roster after calling
+        // login, we want to wait for the server to send back the user's roster. This
+        // behavior shields API users from having to worry about the fact that roster
+        // operations are asynchronous, although they'll still have to listen for
+        // changes to the roster. Note: because of this waiting logic, internal
+        // Smack code should be wary about calling the getRoster method, and may need to
+        // access the roster object directly.
+        if (!roster.rosterInitialized) {
+            try {
+                synchronized (roster) {
+                    long waitTime = SmackConfiguration.getPacketReplyTimeout();
+                    long start = System.currentTimeMillis();
+                    while (!roster.rosterInitialized) {
+                        if (waitTime <= 0) {
+                            break;
+                        }
+                        roster.wait(waitTime);
+                        long now = System.currentTimeMillis();
+                        waitTime -= now - start;
+                        start = now;
+                    }
+                }
+            } catch (InterruptedException ie) {
+                // Ignore.
+            }
+        }
+        return roster;
+    }
+    @Override
     public boolean isConnected() {
         return connected;
     }
