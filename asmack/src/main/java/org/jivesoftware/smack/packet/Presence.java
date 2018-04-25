@@ -20,6 +20,7 @@
 
 package org.jivesoftware.smack.packet;
 
+import org.jivesoftware.smack.roster.RosterPacket;
 import org.jivesoftware.smack.util.XmppStringUtils;
 
 /**
@@ -62,7 +63,9 @@ public class Presence extends Packet {
     private String status = null;
     private int priority = Integer.MIN_VALUE;
     private Mode mode = null;
-    private String language;
+    private String language = null;
+    private String name = null; //Notify the change of name
+    private String avatarId = null; //Notify the change of avatarId
 
     /**
      * Creates a new presence update. Status, priority, and mode are left un-set.
@@ -209,7 +212,7 @@ public class Presence extends Packet {
      * @return the xml:lang of this Presence, or null if one has not been set.
      * @since 3.0.2
      */
-    public String getLanguage() {
+    private String getLanguage() {
         return language;
     }
 
@@ -223,6 +226,23 @@ public class Presence extends Packet {
         this.language = language;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAvatarId() {
+        return avatarId;
+    }
+
+    public void setAvatarId(String avatarId) {
+        this.avatarId = avatarId;
+    }
+
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<presence");
@@ -248,26 +268,29 @@ public class Presence extends Packet {
         if (status != null) {
             buf.append("<status>").append(XmppStringUtils.escapeForXML(status)).append("</status>");
         }
+        if (name != null) {
+            buf.append("<name>").append(XmppStringUtils.escapeForXML(name)).append("</name>");
+        }
+        if (avatarId != null) {
+            buf.append("<avatarId>").append(avatarId).append("</avatarId>");
+        }
         if (priority != Integer.MIN_VALUE) {
             buf.append("<priority>").append(priority).append("</priority>");
         }
         if (mode != null && mode != Mode.available) {
             buf.append("<show>").append(mode).append("</show>");
         }
-
         buf.append(this.getExtensionsXML());
-
         // Add the error sub-packet, if there is one.
         XMPPError error = getError();
         if (error != null) {
             buf.append(error.toXML());
         }
-
         buf.append("</presence>");
-
         return buf.toString();
     }
 
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append(type);

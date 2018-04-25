@@ -738,7 +738,7 @@ public class ConnectionConfiguration implements Cloneable {
         return resource;
     }
 
-    boolean isRosterVersioningAvailable() {
+    public boolean isRosterVersioningAvailable() {
         return isRosterVersioningAvailable;
     }
 

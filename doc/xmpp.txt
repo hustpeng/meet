@@ -14,3 +14,99 @@ RCV  (126535443): <iq id="EkMF4-15" to="13437122759@yuan520.com/Android" type="e
                   </iq>
                   <iq id="EkMF4-18" from="13437122759@yuan520.com" to="13437122759@yuan520.com/Android" type="result" xmlns="jabber:client"><vCard xmlns="vcard-extended"/></iq>
                   <iq id="EkMF4-19" from="yuan520.com" to="13437122759@yuan520.com/Android" type="result" xmlns="jabber:client"><query xmlns="http://jabber.org/protocol/disco#items"><item jid="srecv.yuan520.com" name="Stanza Receiver"/><item jid="ticket.yuan520.com" name="ticket"/></query></iq>
+
+
+
+
+
+<vCard xmlns="vcard-temp">
+<nickname>接电弧</nickname>
+<gender>0</gender>
+<birth>1990</birth>
+<avatar>http://p6bt95t1n.bkt.clouddn.com/0d252ea965248e8eaffd37b63fb33d2243520.jpg</avatar>
+</vCard>
+
+
+
+<vCard xmlns="vcard-extended">
+<PUBLIC>
+<height>0</height>
+<education>0</education>
+<wage>0</wage>
+<workarea></workarea>
+<marriage>0</marriage>
+<weight>0</weight>
+<birthplace></birthplace>
+<residence></residence>
+<industry></industry>
+<career></career>
+<house>0</house>
+<car>0</car>
+<hobby></hobby>
+<introduce></introduce>
+<demand></demand>
+<status></status>
+</PUBLIC>
+<PRIVATE></PRIVATE></vCard>
+
+
+[meet]
+SEND:1
+<iq id="2IOwn-10" type="set">
+  <query xmlns="jabber:iq:roster" >
+    <item jid="15002752759@yuan520.com" name="接电弧" nickname="接电弧" robot="false" subscription="from" ask="subscribe" lat="0.0" lon="0.0">
+      <group>Hotlist</group>
+    </item>
+  </query>
+</iq>
+
+SEND:2
+<presence id="4WW0N-11" to="15002752759@yuan520.com" type="subscribe">
+<c xmlns='http://jabber.org/protocol/caps' hash='sha-1' node='http://www.igniterealtime.org/projects/smack/' ver='SIRab7+VchDFqLFagWobRaY3Xkc='/></presence>
+
+添加他人为好友：
+
+SEND:
+<iq id="agsXMPP_19" type="set">
+  <query xmlns="jabber:iq:roster">
+    <item jid="16671001788@yuan520.com" name="1788" />
+  </query>
+</iq>
+
+SEND:
+<presence type="subscribe" to="16671001788@yuan520.com" />
+
+
+RECV:
+<iq type="set" xmlns="jabber:client" id="rsttig5" to="16671001488@yuan520.com/android">
+<query xmlns="jabber:iq:roster" ver="">
+  <item subscription="none" name="1788" jid="16671001788@yuan520.com"/>
+</query>
+</iq>
+
+RECV: <iq type="result" xmlns="jabber:client" id="agsXMPP_19" to="16671001488@yuan520.com/android"/><iq type="set" xmlns="jabber:client" id="rsttig6" to="16671001488@yuan520.com/android"><query xmlns="jabber:iq:roster" ver=""><item subscription="none" name="1788" ask="subscribe" jid="16671001788@yuan520.com"/></query></iq>
+
+//对方同意好友申请：
+RECV: <presence xmlns="jabber:client" from="16671001788@yuan520.com" to="16671001488@yuan520.com" type="subscribed"/>
+//对方也申请加自己为好友
+RECV: <iq type="set" xmlns="jabber:client" id="rsttig7" to="16671001488@yuan520.com/android"><query xmlns="jabber:iq:roster" ver=""><item subscription="to" name="1788" jid="16671001788@yuan520.com"/></query></iq><presence xmlns="jabber:client" from="16671001788@yuan520.com/Pandion" to="16671001488@yuan520.com"><x xmlns="jabber:x:avatar"><hash>6aea9fffbb8d97491e96c40f8e8abd1c178fad00</hash></x><priority>8</priority></presence><presence xmlns="jabber:client" from="16671001788@yuan520.com" to="16671001488@yuan520.com" type="subscribe"/>
+//同意对方的申请
+SEND: <presence type="subscribed" to="16671001788@yuan520.com" />
+//双向好友添加成功
+RECV: <iq type="set" xmlns="jabber:client" id="rsttig8" to="16671001488@yuan520.com/android"><query xmlns="jabber:iq:roster" ver=""><item subscription="both" name="1788" jid="16671001788@yuan520.com"/></query></iq>
+
+
+
+被人添加好友, 并同意添加好友：
+RECV: <presence xmlns="jabber:client" from="16671001788@yuan520.com" to="16671001488@yuan520.com" type="subscribe"/>
+
+同意加好友
+SEND: <presence type="subscribed" to="16671001788@yuan520.com" />
+
+RECV:
+<iq type="set" xmlns="jabber:client" id="rsttig3" to="16671001488@yuan520.com/android">
+<query xmlns="jabber:iq:roster" ver="">
+<item subscription="from" name="16671001788" jid="16671001788@yuan520.com"/>
+</query>
+</iq>
+
