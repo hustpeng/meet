@@ -66,12 +66,24 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         View headerView = View.inflate(getActivity(), R.layout.layout_head_friend, null);
+        headerView.findViewById(R.id.btn_search).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickAdd();
+            }
+        });
         headerView.findViewById(R.id.btn_new_friend).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), NewFriendsActivity.class);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+            }
+        });
+        headerView.findViewById(R.id.btn_group_chat).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
         mListView.addHeaderView(headerView);

@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/layout_search"
+        android:id="@+id/btn_search"
         layout="@layout/layout_head_search" />
 
     <LinearLayout
@@ -41,7 +41,7 @@
         android:background="#ffeeeeee" />
 
     <LinearLayout
-        android:id="@+id/layout_group"
+        android:id="@+id/btn_group_chat"
         android:layout_width="fill_parent"
         android:layout_height="55.0dip"
         android:background="@drawable/im_setting_item"
