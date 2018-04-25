@@ -9,7 +9,7 @@
         layout="@layout/layout_head_search" />
 
     <LinearLayout
-        android:id="@+id/layout_addfriend"
+        android:id="@+id/btn_new_friend"
         android:layout_width="fill_parent"
         android:layout_height="55.0dip"
         android:background="@drawable/im_setting_item"
@@ -30,7 +30,7 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:text="@string/recommended_friends"
+            android:text="@string/new_friends"
             android:textColor="#ff000000"
             android:textSize="16.0dip" />
     </LinearLayout>

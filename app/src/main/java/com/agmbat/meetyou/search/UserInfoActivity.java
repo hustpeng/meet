@@ -27,6 +27,12 @@ public class UserInfoActivity extends Activity {
         mRosterManager = XMPPManager.getInstance().getRosterManager();
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+    }
+
     @OnClick(R.id.title_btn_back)
     void onClickBack() {
         finish();

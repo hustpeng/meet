@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.log.Log;
+import com.agmbat.meetyou.NewFriendsActivity;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.db.MeetDatabase;
 import com.agmbat.meetyou.search.SearchUserActivity;
@@ -65,6 +66,14 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         View headerView = View.inflate(getActivity(), R.layout.layout_head_friend, null);
+        headerView.findViewById(R.id.btn_new_friend).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), NewFriendsActivity.class);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+            }
+        });
         mListView.addHeaderView(headerView);
         mListView.setOnChildClickListener(this);
         mListView.setOnGroupClickListener(this);

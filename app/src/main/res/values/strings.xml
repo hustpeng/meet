@@ -111,6 +111,6 @@
 
     <string name="search">搜索</string>
     <string name="group_chats">群聊</string>
-    <string name="recommended_friends">新的朋友</string>
+    <string name="new_friends">新的朋友</string>
 
 </resources>
