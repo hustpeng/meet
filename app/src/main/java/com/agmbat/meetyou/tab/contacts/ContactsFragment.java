@@ -19,10 +19,11 @@ import android.widget.ProgressBar;
 
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.data.GroupHolder;
+import com.agmbat.imsdk.db.MeetDatabase;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
-import com.agmbat.meetyou.NewFriendActivity;
+import com.agmbat.meetyou.search.NewFriendActivity;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.db.MeetDatabase;
 import com.agmbat.meetyou.search.SearchUserActivity;
 
 import org.greenrobot.eventbus.EventBus;

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.data.GroupHolder;
 
 import java.util.List;
 

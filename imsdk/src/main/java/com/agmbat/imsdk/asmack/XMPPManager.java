@@ -70,6 +70,10 @@ public class XMPPManager {
     private LocationHelper locationHelper;
     private LocationAutoSync locationAutoSync;
     private ReconnectionManager reconnectionManager;
+
+    /**
+     * 好友列表管理
+     */
     private RosterManager mRosterManager;
 
     // 47.106.77.125
@@ -181,7 +185,7 @@ public class XMPPManager {
         config.setSecurityMode(SecurityMode.disabled);
         config.setCompressionEnabled(false);
         config.setReconnectionAllowed(false);
-        config.setRosterLoadedAtLogin(false);
+        config.setRosterLoadedAtLogin(true);
         return config;
     }
 

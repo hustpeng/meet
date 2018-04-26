@@ -15,14 +15,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.agmbat.android.AppResources;
-import com.agmbat.android.utils.ApkUtils;
-import com.agmbat.android.utils.AppUtils;
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.data.RecentChat;
+import com.agmbat.imsdk.db.MeetDatabase;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
-import com.agmbat.meetyou.data.RecentChat;
-import com.agmbat.meetyou.db.MeetDatabase;
 import com.agmbat.meetyou.search.SearchUserActivity;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
@@ -38,8 +36,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
-
-import static com.agmbat.android.utils.ApkUtils.getPackageName;
 
 /**
  * Tab聊天

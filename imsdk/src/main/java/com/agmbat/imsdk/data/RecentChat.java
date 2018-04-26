@@ -1,7 +1,4 @@
-package com.agmbat.meetyou.data;
-
-import com.agmbat.imsdk.data.ChatMessage;
-import com.agmbat.imsdk.data.ContactInfo;
+package com.agmbat.imsdk.data;
 
 import java.util.Comparator;
 

@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.data.ChatMessage;
+import com.agmbat.imsdk.data.RecentChat;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.data.RecentChat;
 import com.agmbat.time.TimeUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.CircleBitmapDisplayer;

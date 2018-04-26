@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.agmbat.imsdk.data.GroupHolder;
 import com.agmbat.meetyou.R;
 
 public class ContactsGroupView extends LinearLayout {

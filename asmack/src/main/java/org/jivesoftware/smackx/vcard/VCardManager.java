@@ -150,19 +150,16 @@ public class VCardManager extends Xepmodule {
         if (TextUtils.isEmpty(jid)) {
             return null;
         }
-
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             notifyFetchVCardResult(jid, null);
             return null;
         }
-
-        VCardObject vCard = (VCardObject) cacheStorage.getEntryWithKey(jid.toLowerCase());
+        VCardObject vCard = cacheStorage.getEntryWithKey(jid.toLowerCase());
         if (vCard != null) {
             if (jid.equalsIgnoreCase(xmppConnection.getBareJid())) {
                 return vCard;
             }
-
-            //vcard还没有过期
+            // vcard还没有过期
             Date lastUpdateDate = vCard.getUpdate_date();
             if (lastUpdateDate != null) {
                 if (lastUpdateDate.after(new Date(System.currentTimeMillis() - VCARD_REFRESH_TIME))) {

@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.agmbat.imsdk.data.ChatMessage;
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.db.MeetDatabase;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.db.MeetDatabase;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
 
 import java.util.ArrayList;

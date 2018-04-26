@@ -4,6 +4,7 @@ import com.agmbat.android.utils.UiUtils;
 import com.agmbat.imsdk.asmack.RosterManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.db.MeetDatabase;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.log.Log;
 
@@ -84,6 +85,8 @@ public class IM {
 
         @Override
         public void presenceSubscribe(ContactInfo contactInfo) {
+            // TODO 需要用本地数据库存为列表
+            MeetDatabase.getInstance().saveFriendRequest(contactInfo);
             EventBus.getDefault().post(new PresenceSubscribeEvent(contactInfo));
         }
     };
@@ -109,6 +112,16 @@ public class IM {
      */
     public void fetchMyVCardExtend() {
         VCardExtendObject vCardObject = XMPPManager.getInstance().getvCardExtendManager().fetchMyVCardExtend();
+        if (vCardObject != null) {
+            EventBus.getDefault().post(vCardObject);
+        }
+    }
+
+    /**
+     * 获取登陆后的用户信息
+     */
+    public void fetchVCard(String jid) {
+        VCardObject vCardObject = XMPPManager.getInstance().getvCardManager().fetchVCard(jid);
         if (vCardObject != null) {
             EventBus.getDefault().post(vCardObject);
         }
