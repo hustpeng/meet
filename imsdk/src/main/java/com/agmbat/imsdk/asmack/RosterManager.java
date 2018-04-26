@@ -30,6 +30,13 @@ public class RosterManager {
 
         void onEntriesDeleted(List<String> addresses);
 
+        /**
+         * 收到添加自己为好友的申请
+         *
+         * @param contactInfo
+         */
+        void presenceSubscribe(ContactInfo contactInfo);
+
 //        void onPresenceChanged(PresenceAdapter presence);
 
     }
@@ -92,7 +99,6 @@ public class RosterManager {
             mRoster.createEntry(contact.getBareJid(), contact.getNickName(),
                     contact.getRemark(), "", "", 0,
                     0, false, groups);
-//            contact.setAccount(mLoginUserName);
             return true;
         } catch (XMPPException e) {
             e.printStackTrace();
@@ -119,12 +125,16 @@ public class RosterManager {
         }
     }
 
-    public ContactInfo getContact(String jid) {
-//        ContactInfo contactInfo = null;
-//        if (mRoster.contains(jid)) {
-//            contactInfo = getContactFromRosterEntry(mRoster.getEntry(jid));
-//        }
-//        return contactInfo;
+    /**
+     * 获取联系人信息
+     *
+     * @param jid
+     * @return
+     */
+    private ContactInfo getContact(String jid) {
+        if (mRoster.contains(jid)) {
+            return getContactFromRosterEntry(mRoster.getEntry(jid));
+        }
         return null;
     }
 
@@ -132,7 +142,7 @@ public class RosterManager {
         Collection<RosterEntry> list = mRoster.getEntries();
         List<ContactInfo> contactList = new ArrayList<ContactInfo>(list.size());
         for (RosterEntry entry : list) {
-//            contactList.add(getContactFromRosterEntry(entry));
+            contactList.add(getContactFromRosterEntry(entry));
         }
         return contactList;
     }
@@ -193,17 +203,17 @@ public class RosterManager {
     public Roster getRoster() {
         return mRoster;
     }
-//
-//    /**
-//     * Get a contact from a RosterEntry.
-//     *
-//     * @param entry a roster entry containing information for the contact.
-//     * @return a contact for this entry.
-//     */
-//    private ContactInfo getContactFromRosterEntry(RosterEntry entry) {
-//        String user = entry.getUser();
-//        ContactInfo contact = new ContactInfo(user);
-//        Presence presence = mRoster.getPresence(user);
+
+    /**
+     * Get a contact from a RosterEntry.
+     *
+     * @param entry a roster entry containing information for the contact.
+     * @return a contact for this entry.
+     */
+    private ContactInfo getContactFromRosterEntry(RosterEntry entry) {
+        String user = entry.getUser();
+        ContactInfo contact = new ContactInfo(user);
+        Presence presence = mRoster.getPresence(user);
 //        contact.setStatus(presence);
 //        contact.setGroups(entry.getGroups());
 //        Iterator<Presence> iPres = mRoster.getPresences(user);
@@ -213,16 +223,17 @@ public class RosterManager {
 //                contact.addResource(XmppStringUtils.parseResource(presence.getFrom()));
 //            }
 //        }
-//        contact.setNickName(entry.getNickName());
-//        contact.setName(entry.getName());
-//        contact.setAvatarId(entry.getAvatarId());
+        contact.setNickname(entry.getName());
+        contact.setRemark(entry.getNickName());
+        contact.setAvatar(entry.getAvatarId());
+
 //        contact.setPersonalMsg(entry.getPersonalMsg());
 //        contact.setLatitude(entry.getLatitude());
 //        contact.setLongitude(entry.getLongitude());
 //        contact.setRobot(entry.isRobot());
 //        contact.setAccount(mLoginUserName);
-//        return contact;
-//    }
+        return contact;
+    }
 //
 //    private void insertContactTable(ContactInfo friend) {
 //        if (null != friend) {
@@ -348,6 +359,18 @@ public class RosterManager {
 //            for (IRosterListener l : mRemoteRosListeners) {
 //                l.onPresenceChanged(presenceAdapter);
 //            }
+        }
+
+        @Override
+        public void presenceSubscribe(Presence presence) {
+            String from = presence.getFrom();
+            ContactInfo contactInfo = getContact(from);
+            if (contactInfo == null) {
+                contactInfo = new ContactInfo(from);
+            }
+            for (IRosterListener l : mRemoteRosListeners) {
+                l.presenceSubscribe(contactInfo);
+            }
         }
     }
 //

@@ -843,6 +843,17 @@ public class Roster {
     }
 
     /**
+     * Fires roster presence changed event to roster listeners.
+     *
+     * @param presence the presence change.
+     */
+    private void fireRosterPresenceSubscribe(Presence presence) {
+        for (RosterListener listener : rosterListeners) {
+            listener.presenceSubscribe(presence);
+        }
+    }
+
+    /**
      * An enumeration for the subscription mode options.
      */
     public enum SubscriptionMode {
@@ -956,7 +967,6 @@ public class Roster {
             } else if (presence.getType() == Presence.Type.subscribe) {
                 // 收到好友申请
                 // TODO 如果已经发送过好友申请，接收到对方的好友申请，说明对方同意，直接回复同意
-
                 //如果没发送过，需要其他界面来判断是否同意
                 if (subscriptionMode == SubscriptionMode.accept_all) {
                     // Accept all subscription requests.
@@ -968,6 +978,8 @@ public class Roster {
                     Presence response = new Presence(Presence.Type.unsubscribed);
                     response.setTo(presence.getFrom());
                     connection.sendPacket(response);
+                } else {
+                    fireRosterPresenceSubscribe(presence);
                 }
                 // Otherwise, in manual mode so ignore.
             } else if (presence.getType() == Presence.Type.unsubscribe) {

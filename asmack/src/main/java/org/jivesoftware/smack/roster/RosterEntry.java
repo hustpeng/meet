@@ -40,8 +40,15 @@ import java.util.List;
 public class RosterEntry {
 
     private final String user;
-    private String name;//用户自己取的昵称
-    private String nickName;//我给好友取的备注名称
+    /**
+     * 用户自己取的昵称
+     */
+    private String name;
+
+    /**
+     * 我给好友取的备注名称
+     */
+    private String nickName;
     private final RosterPacketItemType type;
     private final RosterPacketItemStatus status;
     final private Roster roster;

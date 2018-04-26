@@ -20,6 +20,10 @@ public class ContactInfo {
      */
     private String mRemark;
 
+    /**
+     * 用户头像url
+     */
+    private String mAvatar;
 
     public void setNickname(String nickname) {
         mNickname = nickname;
@@ -48,5 +52,13 @@ public class ContactInfo {
 
     public void setRemark(String remark) {
         mRemark = remark;
+    }
+
+    public String getAvatar() {
+        return mAvatar;
+    }
+
+    public void setAvatar(String avatar) {
+        mAvatar = avatar;
     }
 }

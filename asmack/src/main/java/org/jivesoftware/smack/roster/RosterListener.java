@@ -80,4 +80,12 @@ public interface RosterListener {
      * @see Roster#getPresence(String)
      */
     public void presenceChanged(Presence presence);
+
+
+    /**
+     * 收到其他人申请添加好友, 需要在UI层处理是否接受
+     *
+     * @param presence
+     */
+    public void presenceSubscribe(Presence presence);
 }

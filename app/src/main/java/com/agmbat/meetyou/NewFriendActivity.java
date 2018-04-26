@@ -7,12 +7,15 @@ import android.support.annotation.Nullable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class NewFriendsActivity extends Activity {
+/**
+ * 新的朋友申请列表
+ */
+public class NewFriendActivity extends Activity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_friends);
+        setContentView(R.layout.activity_new_friend);
         ButterKnife.bind(this);
     }
 

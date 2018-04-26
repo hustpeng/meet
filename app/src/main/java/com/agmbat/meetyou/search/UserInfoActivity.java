@@ -4,10 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.RosterManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
+
+import org.jivesoftware.smackx.vcard.VCardObject;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -43,9 +47,21 @@ public class UserInfoActivity extends Activity {
      */
     @OnClick(R.id.btn_add_to_contact)
     void onClickAddToContact() {
-        ContactInfo contactInfo = new ContactInfo("15002752759@yuan520.com");
-        contactInfo.setNickname("接电弧");
-        mRosterManager.addContactToFriend(contactInfo);
+        ContactInfo contactInfo = null;
+        String loginUser = XMPPManager.getInstance().getConnectionUserName();
+        if (loginUser.equals("13437122759")) {
+            contactInfo = new ContactInfo("15002752759@yuan520.com/Android");
+            contactInfo.setNickname("接电弧");
+        } else {
+            contactInfo = new ContactInfo("13437122759@yuan520.com/Android");
+            contactInfo.setNickname("好名");
+        }
+        boolean result = mRosterManager.addContactToFriend(contactInfo);
+        if (result) {
+            ToastUtil.showToastLong("已发送");
+        } else {
+            ToastUtil.showToastLong("添加好友失败");
+        }
     }
 
     //    UserInfo mUserInfo;

@@ -103,7 +103,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.agmbat.meetyou.NewFriendsActivity"
+            android:name="com.agmbat.meetyou.NewFriendActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
     </application>

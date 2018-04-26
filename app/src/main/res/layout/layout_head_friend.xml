@@ -21,7 +21,7 @@
         <ImageView
             android:layout_width="40dip"
             android:layout_height="40dip"
-            android:src="@drawable/icon_addfriend" />
+            android:src="@drawable/im_ic_new_friend" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:text="@string/new_friends"
+            android:text="@string/new_friend"
             android:textColor="#ff000000"
             android:textSize="16.0dip" />
     </LinearLayout>
@@ -53,7 +53,7 @@
         <ImageView
             android:layout_width="40dip"
             android:layout_height="40dip"
-            android:src="@drawable/icon_qunliao" />
+            android:src="@drawable/im_ic_group_chat" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -62,7 +62,7 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:text="@string/group_chats"
+            android:text="@string/group_chat"
             android:textColor="#ff000000"
             android:textSize="16.0dip" />
     </LinearLayout>

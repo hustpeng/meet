@@ -42,12 +42,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:cacheColorHint="@android:color/transparent"
-            android:childDivider="#C1C1C1"
-            android:divider="#C1C1C1"
+            android:childDivider="#c1c1c1"
+            android:divider="#c1c1c1"
             android:dividerHeight="1dip"
-            android:groupIndicator="@null"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp" />
+            android:groupIndicator="@null" />
 
     </FrameLayout>
 </LinearLayout>

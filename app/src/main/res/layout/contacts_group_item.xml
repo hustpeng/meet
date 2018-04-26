@@ -2,8 +2,9 @@
     android:layout_width="match_parent"
     android:layout_height="38dip"
     android:minHeight="38dip"
-    android:orientation="horizontal">
-
+    android:orientation="horizontal"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
 
     <TextView
         android:id="@+id/group_name"

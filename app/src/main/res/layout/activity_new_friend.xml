@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/new_friends"
+            android:text="@string/new_friend"
             android:textColor="#ffffffff"
             android:textSize="20sp" />
 

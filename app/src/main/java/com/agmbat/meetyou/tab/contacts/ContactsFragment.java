@@ -1,4 +1,3 @@
-
 package com.agmbat.meetyou.tab.contacts;
 
 import android.content.Intent;
@@ -18,12 +17,17 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
 
+import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.log.Log;
-import com.agmbat.meetyou.NewFriendsActivity;
+import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
+import com.agmbat.meetyou.NewFriendActivity;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.db.MeetDatabase;
 import com.agmbat.meetyou.search.SearchUserActivity;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -57,6 +61,12 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     private String mLoginUserName;
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.tab_fragment_contacts, null);
     }
@@ -75,7 +85,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         headerView.findViewById(R.id.btn_new_friend).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NewFriendsActivity.class);
+                Intent intent = new Intent(getActivity(), NewFriendActivity.class);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
@@ -96,6 +106,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @OnClick(R.id.title_btn_add)
@@ -103,6 +114,17 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         Intent intent = new Intent(getActivity(), SearchUserActivity.class);
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
+    /**
+     * 收到申请添加自己为好友的消息
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(PresenceSubscribeEvent event) {
+        ContactInfo contactInfo = event.getContactInfo();
+        ToastUtil.showToastLong("收到添加好友请求" + contactInfo.getBareJid());
     }
 
     private void initContactList() {
