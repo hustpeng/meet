@@ -1,1 +1,3 @@
+layout文件中id定义如下
 所有头像view的id为 avatar, 而不使用head, header
+昵称使用nickname, 不使用nick_name

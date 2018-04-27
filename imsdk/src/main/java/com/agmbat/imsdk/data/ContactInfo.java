@@ -1,5 +1,7 @@
 package com.agmbat.imsdk.data;
 
+import org.jivesoftware.smack.util.XmppStringUtils;
+
 /**
  * 联系人
  */
@@ -25,6 +27,11 @@ public class ContactInfo {
      */
     private String mAvatar;
 
+    /**
+     * 性别
+     */
+    private int mGender;
+
     public void setNickname(String nickname) {
         mNickname = nickname;
     }
@@ -32,7 +39,6 @@ public class ContactInfo {
     public String getNickName() {
         return mNickname;
     }
-
 
     public String getPersonalMsg() {
         return "getPersonalMsg";
@@ -60,5 +66,22 @@ public class ContactInfo {
 
     public void setAvatar(String avatar) {
         mAvatar = avatar;
+    }
+
+    public void setGender(int gender) {
+        mGender = gender;
+    }
+
+    public int getGender() {
+        return mGender;
+    }
+
+    /**
+     * 获取用户名称,登录帐号名称
+     *
+     * @return
+     */
+    public String getUserName() {
+        return XmppStringUtils.parseName(mBareJid);
     }
 }

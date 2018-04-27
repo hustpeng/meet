@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.user.UserManager;
@@ -39,6 +40,7 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_new_friend);
         ButterKnife.bind(this);
         mListView.setAdapter(new FriendAdapter(this, UserManager.getInstance().getFriendRequestList()));

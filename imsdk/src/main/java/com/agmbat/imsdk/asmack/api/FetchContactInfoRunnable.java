@@ -68,6 +68,7 @@ public class FetchContactInfoRunnable implements Runnable {
             contactInfo.setBareJid(vCardObject.getJid());
             contactInfo.setNickname(vCardObject.getNickname());
             contactInfo.setAvatar(vCardObject.getAvatar());
+            contactInfo.setGender(vCardObject.getGender());
         }
     }
 }

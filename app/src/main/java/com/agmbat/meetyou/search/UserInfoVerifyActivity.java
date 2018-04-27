@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
-import com.agmbat.imsdk.asmack.RosterManager;
-import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.data.GenderHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,26 +22,36 @@ import butterknife.OnClick;
  */
 public class UserInfoVerifyActivity extends Activity {
 
-    private RosterManager mRosterManager;
-
     /**
      * 申请人信息
      */
     private ContactInfo mContactInfo;
 
-
     @BindView(R.id.avatar)
     ImageView mAvatarView;
+
+    @BindView(R.id.nickname)
+    TextView mNickNameView;
+
+    @BindView(R.id.gender)
+    ImageView mGenderView;
+
+    @BindView(R.id.username)
+    TextView mUserNameView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
+        WindowUtils.setStatusBarColor(this, 0xff232325);
         ButterKnife.bind(this);
         String jid = getIntent().getStringExtra("userInfo");
         mContactInfo = UserManager.getInstance().getFriendRequest(jid);
-        mRosterManager = XMPPManager.getInstance().getRosterManager();
-        ImageManager.displayImage(mContactInfo.getAvatar(), mAvatarView);
+        mNickNameView.setText(mContactInfo.getNickName());
+        mGenderView.setImageResource(GenderHelper.getIconRes(mContactInfo.getGender()));
+        ImageManager.displayImage(mContactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+        mUserNameView.setText(getString(R.string.id_name_format) + " " + mContactInfo.getUserName());
+
     }
 
     @Override
@@ -60,25 +71,11 @@ public class UserInfoVerifyActivity extends Activity {
     }
 
     /**
-     * 点击添加联系人
+     * 点击添加联系人, 接受用户申请加为好友
      */
     @OnClick(R.id.btn_add_to_contact)
     void onClickAddToContact() {
-//        ContactInfo contactInfo = null;
-//        String loginUser = XMPPManager.getInstance().getConnectionUserName();
-//        if (loginUser.equals("13437122759")) {
-//            contactInfo = new ContactInfo("15002752759@yuan520.com/Android");
-//            contactInfo.setNickname("接电弧");
-//        } else {
-//            contactInfo = new ContactInfo("13437122759@yuan520.com/Android");
-//            contactInfo.setNickname("好名");
-//        }
-//        boolean result = mRosterManager.addContactToFriend(contactInfo);
-//        if (result) {
-//            ToastUtil.showToastLong("已发送");
-//        } else {
-//            ToastUtil.showToastLong("添加好友失败");
-//        }
+        UserManager.getInstance().acceptFriend(mContactInfo);
     }
 
 
