@@ -11,6 +11,7 @@ import com.agmbat.android.AppResources;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
+import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.GenderHelper;
 import com.google.zxing.client.android.encode.QRCodeEncoder;
@@ -74,12 +75,12 @@ public class QRCodeCardActivity extends Activity {
     /**
      * 收到vcard更新信息
      *
-     * @param vCardObject
+     * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(VCardObject vCardObject) {
-        mVCardObject = vCardObject;
-        String text = vCardObject.getUserName();
+    public void onEvent(LoginUserUpdateEvent event) {
+        mVCardObject = event.mVCardObject;
+        String text = mVCardObject.getUserName();
         int dimension = (int) AppResources.dipToPixel(250);
         Bitmap bitmap = QRCodeEncoder.encode(text, dimension);
         mQrCodeView.setImageBitmap(bitmap);

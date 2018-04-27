@@ -18,6 +18,7 @@ import com.agmbat.imagepicker.ui.ImageGridActivity;
 import com.agmbat.imagepicker.view.CropImageView;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
 import com.agmbat.isdialog.ISActionSheetDialog;
 import com.agmbat.isdialog.ISLoadingDialog;
@@ -79,9 +80,9 @@ public class EditAvatarActivity extends Activity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(VCardObject vCardObject) {
-        mVCardObject = vCardObject;
-        ImageManager.displayImage(vCardObject.getAvatar(), mPhotoView);
+    public void onEvent(LoginUserUpdateEvent event) {
+        mVCardObject = event.mVCardObject;
+        ImageManager.displayImage(mVCardObject.getAvatar(), mPhotoView);
     }
 
     /**

@@ -5,6 +5,7 @@ import com.agmbat.imsdk.asmack.RosterManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.db.MeetDatabase;
+import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.log.Log;
@@ -35,7 +36,9 @@ public class IM {
             if (success) {
                 VCardObject vcard = XMPPManager.getInstance().getvCardManager().fetchMyVCard();
                 if (vcard != null) {
-                    EventBus.getDefault().post(vcard);
+                    LoginUserUpdateEvent event = new LoginUserUpdateEvent();
+                    event.mVCardObject = vcard;
+                    EventBus.getDefault().post(event);
                 }
             }
         }
@@ -43,7 +46,12 @@ public class IM {
         @Override
         public void notifyFetchVCardResult(String jid, VCardObject vcard) {
             if (vcard != null) {
-                EventBus.getDefault().post(vcard);
+                String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
+                if (loginUser.equals(jid)) {
+                    LoginUserUpdateEvent event = new LoginUserUpdateEvent();
+                    event.mVCardObject = vcard;
+                    EventBus.getDefault().post(event);
+                }
             }
         }
     });
@@ -55,7 +63,9 @@ public class IM {
             if (success) {
                 VCardExtendObject vcard = XMPPManager.getInstance().getvCardExtendManager().fetchMyVCardExtend();
                 if (vcard != null) {
-                    EventBus.getDefault().post(vcard);
+                    LoginUserUpdateEvent event = new LoginUserUpdateEvent();
+                    event.mVCardExtendObject = vcard;
+                    EventBus.getDefault().post(event);
                 }
             }
         }
@@ -63,7 +73,12 @@ public class IM {
         @Override
         public void notifyFetchVCardExtendResult(String jid, VCardExtendObject vcardExtend) {
             if (vcardExtend != null) {
-                EventBus.getDefault().post(vcardExtend);
+                String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
+                if (loginUser.equals(jid)) {
+                    LoginUserUpdateEvent event = new LoginUserUpdateEvent();
+                    event.mVCardExtendObject = vcardExtend;
+                    EventBus.getDefault().post(event);
+                }
             }
         }
     };
@@ -110,7 +125,9 @@ public class IM {
     public void fetchMyVCard() {
         VCardObject vCardObject = XMPPManager.getInstance().getvCardManager().fetchMyVCard();
         if (vCardObject != null) {
-            EventBus.getDefault().post(vCardObject);
+            LoginUserUpdateEvent event = new LoginUserUpdateEvent();
+            event.mVCardObject = vCardObject;
+            EventBus.getDefault().post(event);
         }
     }
 
@@ -120,19 +137,10 @@ public class IM {
     public void fetchMyVCardExtend() {
         VCardExtendObject vCardObject = XMPPManager.getInstance().getvCardExtendManager().fetchMyVCardExtend();
         if (vCardObject != null) {
-            EventBus.getDefault().post(vCardObject);
+            LoginUserUpdateEvent event = new LoginUserUpdateEvent();
+            event.mVCardExtendObject = vCardObject;
+            EventBus.getDefault().post(event);
         }
     }
-
-    /**
-     * 获取登陆后的用户信息
-     */
-    public void fetchVCard(String jid) {
-        VCardObject vCardObject = XMPPManager.getInstance().getvCardManager().fetchVCard(jid);
-        if (vCardObject != null) {
-            EventBus.getDefault().post(vCardObject);
-        }
-    }
-
 
 }

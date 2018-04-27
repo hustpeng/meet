@@ -52,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:layout_toRightOf="@+id/head"
+                    android:layout_toRightOf="@+id/avatar"
                     android:text="遇缘"
                     android:textSize="18.0dip" />
 
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/nickname"
                     android:layout_marginTop="10dp"
-                    android:layout_toRightOf="@+id/head"
+                    android:layout_toRightOf="@+id/avatar"
                     android:text="遇缘号："
                     android:textSize="14.0dip" />
 

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.NumberPicker;
 import com.agmbat.picker.OptionPicker;
@@ -143,11 +144,11 @@ public class PersonalInfoMoreActivity extends Activity {
     /**
      * 收到vcard更新信息
      *
-     * @param vCardObject
+     * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(VCardExtendObject vCardObject) {
-        mVCardExtendObject = vCardObject;
+    public void onEvent(LoginUserUpdateEvent event) {
+        mVCardExtendObject = event.mVCardExtendObject;
         mHeightView.setText(String.valueOf(mVCardExtendObject.getHeight()) + "cm");
         mWeightView.setText(String.valueOf(mVCardExtendObject.getWeight()) + "kg");
         WageItem wageItem = WageItem.valueOf(mVCardExtendObject.getWage());

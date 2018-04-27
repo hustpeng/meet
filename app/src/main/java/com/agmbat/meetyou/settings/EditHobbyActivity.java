@@ -9,6 +9,7 @@ import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.tag.CategoryTag;
 import com.agmbat.picker.tag.CategoryTagPickerView;
@@ -73,17 +74,17 @@ public class EditHobbyActivity extends Activity {
     /**
      * 收到vcard更新信息
      *
-     * @param vCardObject
+     * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(VCardExtendObject vCardObject) {
-        mVCardObject = vCardObject;
+    public void onEvent(LoginUserUpdateEvent event) {
+        mVCardObject = event.mVCardExtendObject;
 
         String text = AppResources.readAssetFile("wheelpicker/hobby_category.json");
         Type jsonType = new TypeToken<List<CategoryTag>>() {
         }.getType();
         List<CategoryTag> list = GsonHelper.fromJson(text, jsonType);
-        List<String> checkedList = TagText.parseTagList(vCardObject.getHobby());
+        List<String> checkedList = TagText.parseTagList(mVCardObject.getHobby());
         cleanCheckedList(list, checkedList);
         mPickerView.setCategoryTagList(list);
         mPickerView.setMaxSelectCount(5);

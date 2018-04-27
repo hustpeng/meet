@@ -22,10 +22,15 @@ public class UserManager {
         return INSTANCE;
     }
 
+    /**
+     * 添加申请用户列表, 此方法不对外暴露
+     *
+     * @param willToAdd
+     */
     public void addFriendRequest(ContactInfo willToAdd) {
         ContactInfo exist = getFriendRequest(willToAdd.getBareJid());
         if (exist == null) {
-            mFriendRequestList.add(exist);
+            mFriendRequestList.add(willToAdd);
         }
     }
 

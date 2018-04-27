@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.IM;
+import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
 import com.agmbat.meetyou.coins.CoinsActivity;
@@ -88,8 +89,8 @@ public class ProfileFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(VCardObject vCardObject) {
-        mVCardObject = vCardObject;
+    public void onEvent(LoginUserUpdateEvent event) {
+        mVCardObject = event.mVCardObject;
         updateView();
     }
 

@@ -12,6 +12,7 @@ import android.widget.EditText;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.meetyou.R;
 
 import org.greenrobot.eventbus.EventBus;
@@ -88,12 +89,12 @@ public class EditNameActivity extends Activity {
     /**
      * 收到vcard更新信息
      *
-     * @param vCardObject
+     * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(VCardObject vCardObject) {
-        mVCardObject = vCardObject;
-        mNameEditText.setText(vCardObject.getNickname());
+    public void onEvent(LoginUserUpdateEvent event) {
+        mVCardObject = event.mVCardObject;
+        mNameEditText.setText(mVCardObject.getNickname());
         mNameEditText.setSelection(mNameEditText.getText().toString().trim().length());
     }
 

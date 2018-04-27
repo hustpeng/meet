@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.meetyou.R;
 
 import org.greenrobot.eventbus.EventBus;
@@ -91,12 +92,12 @@ public class EditSignatureActivity extends Activity {
     /**
      * 收到vcard更新信息
      *
-     * @param vCardObject
+     * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(VCardExtendObject vCardObject) {
-        mVCardObject = vCardObject;
-        mEditText.setText(vCardObject.getStatus());
+    public void onEvent(LoginUserUpdateEvent event) {
+        mVCardObject = event.mVCardExtendObject;
+        mEditText.setText(mVCardObject.getStatus());
         mEditText.setSelection(mEditText.getText().toString().trim().length());
     }
 
