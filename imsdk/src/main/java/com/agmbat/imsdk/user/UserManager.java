@@ -46,6 +46,15 @@ public class UserManager implements IUserManager {
         }
     }
 
+    @Override
+    public void removeFriendRequest(ContactInfo contactInfo) {
+        MeetDatabase.getInstance().deleteFriendRequest(contactInfo);
+        ContactInfo exist = getFriendRequest(contactInfo.getBareJid());
+        if (exist != null) {
+            mFriendRequestList.remove(exist);
+        }
+    }
+
     /**
      * 对UI层
      *
@@ -92,6 +101,7 @@ public class UserManager implements IUserManager {
     public boolean requestAddContactToFriend(ContactInfo contactInfo) {
         return mRosterManager.addContactToFriend(contactInfo);
     }
+
 
     @Override
     public void loadContactGroup(final OnLoadContactGroupListener l) {

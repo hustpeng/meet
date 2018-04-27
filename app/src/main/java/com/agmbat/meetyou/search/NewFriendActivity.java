@@ -3,6 +3,8 @@ package com.agmbat.meetyou.search;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,12 +14,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.tab.contacts.ContactsView;
+import com.agmbat.swipemenulist.SwipeMenu;
+import com.agmbat.swipemenulist.SwipeMenuCreator;
+import com.agmbat.swipemenulist.SwipeMenuItem;
+import com.agmbat.swipemenulist.SwipeMenuListView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -35,7 +42,9 @@ import butterknife.OnClick;
 public class NewFriendActivity extends Activity implements AdapterView.OnItemClickListener {
 
     @BindView(android.R.id.list)
-    ListView mListView;
+    SwipeMenuListView mListView;
+
+    private FriendAdapter mAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,8 +52,36 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_new_friend);
         ButterKnife.bind(this);
-        mListView.setAdapter(new FriendAdapter(this, UserManager.getInstance().getFriendRequestList()));
+        mAdapter = new FriendAdapter(this, UserManager.getInstance().getFriendRequestList());
+        mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
+        // step 1. create a MenuCreator
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9, 0x3F, 0x25)));
+                deleteItem.setWidth((int) AppResources.dipToPixel(90));
+                deleteItem.setTitle("删除");
+                menu.addMenuItem(deleteItem);
+            }
+        };
+        // set creator
+        mListView.setMenuCreator(creator);
+        mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                ContactInfo contactInfo = (ContactInfo) mListView.getItemAtPosition(position);
+                switch (index) {
+                    case 0:
+                        UserManager.getInstance().removeFriendRequest(contactInfo);
+                        mAdapter.notifyDataSetChanged();
+                        break;
+                }
+                return false;
+            }
+        });
         EventBus.getDefault().register(this);
     }
 

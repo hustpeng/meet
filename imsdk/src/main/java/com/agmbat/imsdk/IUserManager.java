@@ -38,9 +38,18 @@ public interface IUserManager {
     boolean requestAddContactToFriend(ContactInfo contactInfo);
 
     /**
+     * 删除好友申请消息
+     *
+     * @param contactInfo
+     */
+    void removeFriendRequest(ContactInfo contactInfo);
+
+    /**
      * 加载所有好友分组
      *
      * @param l
      */
     void loadContactGroup(OnLoadContactGroupListener l);
+
+
 }

@@ -261,6 +261,8 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     private void fillData(List<ContactGroup> groups) {
         mFriendsAdapter = new ContactsAdapter(getActivity(), groups);
         mListView.setAdapter(mFriendsAdapter);
-        mListView.expandGroup(0);
+        if (groups.size() > 0) {
+            mListView.expandGroup(0);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.agmbat.imsdk.db;
 
+import android.content.Context;
+
 import com.agmbat.android.AppResources;
 import com.agmbat.db.DbException;
 import com.agmbat.db.DbManager;
@@ -24,7 +26,7 @@ public class MeetDatabase {
     private static SqliteDbConfig initDbConfig() {
         SqliteDbConfig daoConfig = new SqliteDbConfig();
         daoConfig.setDbName(DB_NAME);
-        File dir = AppResources.getAppContext().getDataDir();
+        File dir = AppResources.getAppContext().getDir("sqldb", Context.MODE_PRIVATE);
         daoConfig.setDbDir(dir);
         daoConfig.setDbVersion(DB_VERSION);
         daoConfig.setDbUpgradeListener(new DbManager.DbUpgradeListener() {
@@ -74,6 +76,25 @@ public class MeetDatabase {
     }
 
     /**
+     * 删除好友申请列表中的item
+     *
+     * @param contactInfo
+     */
+    public void deleteFriendRequest(ContactInfo contactInfo) {
+        DbManager db = DbManagerFactory.getInstance(sConfig);
+        try {
+            FriendRequest exist = db.selector(FriendRequest.class)
+                    .where("jid", "in", new String[]{contactInfo.getBareJid()})
+                    .findFirst();
+            if (exist != null) {
+                db.delete(exist);
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 获取好友申请信息
      *
      * @return
@@ -83,8 +104,10 @@ public class MeetDatabase {
         DbManager db = DbManagerFactory.getInstance(sConfig);
         try {
             List<FriendRequest> requestList = db.selector(FriendRequest.class).findAll();
-            for (FriendRequest request : requestList) {
-                list.add(request.toContactInfo());
+            if (requestList != null) {
+                for (FriendRequest request : requestList) {
+                    list.add(request.toContactInfo());
+                }
             }
         } catch (DbException e) {
             e.printStackTrace();
@@ -138,10 +161,10 @@ public class MeetDatabase {
         // recentlyGroup.sort();
 //        blockGroup.sort();
 
-        groups.add(group1);
-        groups.add(group2);
-        groups.add(group3);
-        groups.add(group4);
+//        groups.add(group1);
+//        groups.add(group2);
+//        groups.add(group3);
+//        groups.add(group4);
         return groups;
     }
 
