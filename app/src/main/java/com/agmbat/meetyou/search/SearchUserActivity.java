@@ -92,7 +92,7 @@ public class SearchUserActivity extends Activity {
             return;
         }
         // TODO 显示loading框
-        ContactInfo contactInfo = new ContactInfo("");
+        ContactInfo contactInfo = new ContactInfo();
         if (contactInfo == null) {
             mNoResultTipView.setVisibility(View.VISIBLE);
             mSearchButton.setVisibility(View.GONE);

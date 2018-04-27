@@ -44,7 +44,7 @@ public class FoundFragment extends Fragment {
         mListView.addHeaderView(headerCard);
 
         List<ContactInfo> userList = new ArrayList<>();
-        ContactInfo contactInfo = new ContactInfo("");
+        ContactInfo contactInfo = new ContactInfo();
         contactInfo.setNickname("布丁");
         userList.add(contactInfo);
         userList.add(contactInfo);

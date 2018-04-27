@@ -3,18 +3,14 @@ package com.agmbat.meetyou.search;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
-import com.agmbat.android.utils.ToastUtil;
-import com.agmbat.imsdk.IM;
+import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.asmack.RosterManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smackx.vcard.VCardObject;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -26,21 +22,28 @@ public class UserInfoVerifyActivity extends Activity {
 
     private RosterManager mRosterManager;
 
+    /**
+     * 申请人信息
+     */
+    private ContactInfo mContactInfo;
+
+
+    ImageView mhead;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
         ButterKnife.bind(this);
-        EventBus.getDefault().register(this);
         String jid = getIntent().getStringExtra("userInfo");
+        mContactInfo = UserManager.getInstance().getFriendRequest(jid);
         mRosterManager = XMPPManager.getInstance().getRosterManager();
-        IM.get().fetchVCard(jid);
+        ImageManager.displayImage(mContactInfo.getAvatar(), mhead);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -76,15 +79,5 @@ public class UserInfoVerifyActivity extends Activity {
 //        }
     }
 
-    private VCardObject mVCardObject;
 
-    /**
-     * 收到vcard更新信息
-     *
-     * @param vCardObject
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(VCardObject vCardObject) {
-        mVCardObject = vCardObject;
-    }
 }

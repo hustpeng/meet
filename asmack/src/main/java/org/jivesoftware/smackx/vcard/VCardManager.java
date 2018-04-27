@@ -92,7 +92,6 @@ public class VCardManager extends Xepmodule {
             case setMyVCard:
                 notifySetMyVCardResult(false);
                 break;
-
             default:
                 break;
         }
@@ -167,7 +166,6 @@ public class VCardManager extends Xepmodule {
                 }
             }
         }
-
         if (isQueryExist(fetchVCard, jid, null)) {
             return null;
         }

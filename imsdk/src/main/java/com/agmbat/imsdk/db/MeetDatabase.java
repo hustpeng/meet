@@ -16,8 +16,8 @@ import java.util.List;
 
 public class MeetDatabase {
 
-    public static final String DB_NAME = "meet.db";
-    public static final int DB_VERSION = 1;
+    private static final String DB_NAME = "meet.db";
+    private static final int DB_VERSION = 1;
 
     private static final SqliteDbConfig sConfig;
 
@@ -103,7 +103,7 @@ public class MeetDatabase {
         List<RecentChat> list = new ArrayList<RecentChat>();
         for (int i = 0; i < 50; i++) {
             RecentChat chat = new RecentChat();
-            ContactInfo contactInfo = new ContactInfo("");
+            ContactInfo contactInfo = new ContactInfo();
             contactInfo.setNickname("联系" + i);
             chat.setContact(contactInfo);
             ChatMessage message = new ChatMessage();
@@ -157,7 +157,7 @@ public class MeetDatabase {
     public List<ContactInfo> queryFriends(String mLoginUserName) {
         List<ContactInfo> list = new ArrayList<ContactInfo>();
         for (int i = 0; i < 10; i++) {
-            ContactInfo contactInfo = new ContactInfo("");
+            ContactInfo contactInfo = new ContactInfo();
             contactInfo.setNickname("Friends" + i);
             list.add(contactInfo);
         }
@@ -167,7 +167,7 @@ public class MeetDatabase {
     public List<ContactInfo> queryRecentContacts(String mLoginUserName) {
         List<ContactInfo> list = new ArrayList<ContactInfo>();
         for (int i = 0; i < 10; i++) {
-            ContactInfo contactInfo = new ContactInfo("");
+            ContactInfo contactInfo = new ContactInfo();
             contactInfo.setNickname("Friends" + i);
             list.add(contactInfo);
         }
@@ -177,7 +177,7 @@ public class MeetDatabase {
     public List<ContactInfo> queryAllBlockUsers(String mLoginUserName) {
         List<ContactInfo> list = new ArrayList<ContactInfo>();
         for (int i = 0; i < 10; i++) {
-            ContactInfo contactInfo = new ContactInfo("");
+            ContactInfo contactInfo = new ContactInfo();
             contactInfo.setNickname("Friends" + i);
             list.add(contactInfo);
         }
@@ -191,7 +191,8 @@ public class MeetDatabase {
      * @return
      */
     public ContactInfo findParticipant(String jid) {
-        ContactInfo contactInfo = new ContactInfo(jid);
+        ContactInfo contactInfo = new ContactInfo();
+        contactInfo.setBareJid(jid);
         contactInfo.setNickname("小小");
         return contactInfo;
     }

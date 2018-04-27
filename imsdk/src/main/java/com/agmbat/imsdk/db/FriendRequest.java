@@ -51,7 +51,8 @@ public class FriendRequest {
     }
 
     public ContactInfo toContactInfo() {
-        ContactInfo contactInfo = new ContactInfo(jid);
+        ContactInfo contactInfo = new ContactInfo();
+        contactInfo.setBareJid(jid);
         contactInfo.setRemark(remark);
         contactInfo.setNickname(nickname);
         contactInfo.setAvatar(avatar);

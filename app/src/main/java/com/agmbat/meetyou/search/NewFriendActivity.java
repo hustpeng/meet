@@ -13,9 +13,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.db.MeetDatabase;
+import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.tab.contacts.ContactsView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -36,8 +41,15 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_friend);
         ButterKnife.bind(this);
-        mListView.setAdapter(new FriendAdapter(this, MeetDatabase.getInstance().getFriendRequestList()));
+        mListView.setAdapter(new FriendAdapter(this, UserManager.getInstance().getFriendRequestList()));
         mListView.setOnItemClickListener(this);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -57,6 +69,17 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
         Intent intent = new Intent(this, UserInfoVerifyActivity.class);
         intent.putExtra("userInfo", info.getBareJid());
         startActivity(intent);
+    }
+
+    /**
+     * 收到申请添加自己为好友的消息
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(PresenceSubscribeEvent event) {
+        FriendAdapter adapter = (FriendAdapter) mListView.getAdapter();
+        adapter.notifyDataSetChanged();
     }
 
     private static class FriendAdapter extends ArrayAdapter<ContactInfo> {

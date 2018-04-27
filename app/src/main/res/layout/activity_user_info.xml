@@ -34,7 +34,7 @@
         android:padding="10dp">
 
         <ImageView
-            android:id="@+id/ivHeader"
+            android:id="@+id/head"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginLeft="5dp"

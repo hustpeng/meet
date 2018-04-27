@@ -1,5 +1,8 @@
 package com.agmbat.imsdk.asmack;
 
+import com.agmbat.android.utils.ThreadUtil;
+import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
+import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.log.Log;
 
@@ -12,6 +15,9 @@ import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
 import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smack.util.XmppStringUtils;
+import org.jivesoftware.smackx.vcard.VCardListener;
+import org.jivesoftware.smackx.vcard.VCardManager;
+import org.jivesoftware.smackx.vcard.VCardObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -212,7 +218,8 @@ public class RosterManager {
      */
     private ContactInfo getContactFromRosterEntry(RosterEntry entry) {
         String user = entry.getUser();
-        ContactInfo contact = new ContactInfo(user);
+        ContactInfo contact = new ContactInfo();
+        contact.setBareJid(user);
         Presence presence = mRoster.getPresence(user);
 //        contact.setStatus(presence);
 //        contact.setGroups(entry.getGroups());
@@ -363,16 +370,27 @@ public class RosterManager {
 
         @Override
         public void presenceSubscribe(Presence presence) {
-            String from = presence.getFrom();
+            final String from = presence.getFrom();
             ContactInfo contactInfo = getContact(from);
             if (contactInfo == null) {
-                contactInfo = new ContactInfo(from);
+                new XMPPApi().fetchContactInfo(from, new OnFetchContactListener() {
+                    @Override
+                    public void onFetchContactInfo(ContactInfo contactInfo) {
+                        for (IRosterListener l : mRemoteRosListeners) {
+                            l.presenceSubscribe(contactInfo);
+                        }
+                    }
+                });
+            } else {
+                for (IRosterListener l : mRemoteRosListeners) {
+                    l.presenceSubscribe(contactInfo);
+                }
             }
-            for (IRosterListener l : mRemoteRosListeners) {
-                l.presenceSubscribe(contactInfo);
-            }
+
         }
     }
+
+
 //
 //    public boolean isContactExit(String jid) {
 //        return mRoster.contains(jid);

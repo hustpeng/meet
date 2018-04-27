@@ -57,7 +57,8 @@ public abstract class Body {
             return body;
         } else if (bodyType == BodyType.FRIEND) {
             String jid = XmlUtils.getNodeValue(bodyText, "friend_jid");
-            ContactInfo contactInfo = new ContactInfo(jid);
+            ContactInfo contactInfo = new ContactInfo();
+            contactInfo.setBareJid(jid);
             return new FriendBody(contactInfo);
         }
         return new TextBody(bodyText);

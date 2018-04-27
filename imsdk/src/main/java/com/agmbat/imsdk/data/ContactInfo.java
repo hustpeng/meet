@@ -38,7 +38,7 @@ public class ContactInfo {
         return "getPersonalMsg";
     }
 
-    public ContactInfo(String jid) {
+    public void setBareJid(String jid) {
         mBareJid = jid;
     }
 
