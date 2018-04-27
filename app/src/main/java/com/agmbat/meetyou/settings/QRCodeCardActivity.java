@@ -35,8 +35,8 @@ public class QRCodeCardActivity extends Activity {
     /**
      * 头像
      */
-    @BindView(R.id.head)
-    ImageView mHeadView;
+    @BindView(R.id.avatar)
+    ImageView mAvatarView;
 
     @BindView(R.id.nickname)
     TextView mNickNameView;
@@ -84,7 +84,7 @@ public class QRCodeCardActivity extends Activity {
         Bitmap bitmap = QRCodeEncoder.encode(text, dimension);
         mQrCodeView.setImageBitmap(bitmap);
         mNickNameView.setText(mVCardObject.getNickname());
-        ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView, ImageManager.getCircleOptions());
+        ImageManager.displayImage(mVCardObject.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
         mGenderView.setImageResource(GenderHelper.getIconRes(mVCardObject.getGender()));
     }
 

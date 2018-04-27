@@ -40,7 +40,7 @@
                 android:paddingTop="5dp">
 
                 <ImageView
-                    android:id="@+id/head"
+                    android:id="@+id/avatar"
                     android:layout_width="80.0dip"
                     android:layout_height="80.0dip"
                     android:layout_marginLeft="10dp"

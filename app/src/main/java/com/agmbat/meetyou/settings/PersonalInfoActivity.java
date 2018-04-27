@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
-import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
@@ -35,8 +33,8 @@ public class PersonalInfoActivity extends Activity {
     /**
      * 头像
      */
-    @BindView(R.id.head)
-    ImageView mHeadView;
+    @BindView(R.id.avatar)
+    ImageView mAvatarView;
 
     @BindView(R.id.nickname)
     TextView mNickNameView;
@@ -172,7 +170,7 @@ public class PersonalInfoActivity extends Activity {
         if (mVCardObject == null) {
             return;
         }
-        ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView, ImageManager.getCircleOptions());
+        ImageManager.displayImage(mVCardObject.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
         mNickNameView.setText(mVCardObject.getNickname());
         mGenderView.setText(GenderHelper.getName(mVCardObject.getGender()));
         mBirthYearView.setText(String.valueOf(mVCardObject.getBirthYear()));

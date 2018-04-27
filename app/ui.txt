@@ -1,0 +1,1 @@
+所有头像view的id为 avatar, 而不使用head, header

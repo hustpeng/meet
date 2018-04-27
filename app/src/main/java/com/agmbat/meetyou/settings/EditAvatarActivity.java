@@ -48,7 +48,7 @@ public class EditAvatarActivity extends Activity {
      */
     private static final int REQUEST_CODE_TAKE_PICTURE = 100;
 
-    @BindView(R.id.image)
+    @BindView(R.id.avatar)
     PhotoView mPhotoView;
 
     /**

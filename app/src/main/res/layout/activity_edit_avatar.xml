@@ -43,7 +43,7 @@
         android:background="#ff000000">
 
         <com.agmbat.photoview.PhotoView
-            android:id="@+id/image"
+            android:id="@+id/avatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

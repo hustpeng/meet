@@ -12,6 +12,7 @@ import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -28,7 +29,8 @@ public class UserInfoVerifyActivity extends Activity {
     private ContactInfo mContactInfo;
 
 
-    ImageView mhead;
+    @BindView(R.id.avatar)
+    ImageView mAvatarView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,7 +40,7 @@ public class UserInfoVerifyActivity extends Activity {
         String jid = getIntent().getStringExtra("userInfo");
         mContactInfo = UserManager.getInstance().getFriendRequest(jid);
         mRosterManager = XMPPManager.getInstance().getRosterManager();
-        ImageManager.displayImage(mContactInfo.getAvatar(), mhead);
+        ImageManager.displayImage(mContactInfo.getAvatar(), mAvatarView);
     }
 
     @Override

@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.IM;
-import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
 import com.agmbat.meetyou.coins.CoinsActivity;
@@ -24,6 +23,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smackx.vcard.VCardObject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Tab 我的界面
  */
@@ -32,22 +35,26 @@ public class ProfileFragment extends Fragment {
     /**
      * 头像
      */
-    private ImageView mHeadView;
+    @BindView(R.id.avatar)
+    ImageView mAvatarView;
 
     /**
      * 昵称
      */
-    private TextView mNickNameView;
+    @BindView(R.id.nickname)
+    TextView mNickNameView;
 
     /**
      * 用户名
      */
-    private TextView mUserNameView;
+    @BindView(R.id.user_name)
+    TextView mUserNameView;
 
     /**
      * 性别
      */
-    private ImageView mGenderView;
+    @BindView(R.id.gender)
+    ImageView mGenderView;
 
     /**
      * 用户信息
@@ -69,31 +76,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mUserNameView = (TextView) view.findViewById(R.id.user_name);
-        mNickNameView = (TextView) view.findViewById(R.id.nickname);
-        mHeadView = (ImageView) view.findViewById(R.id.head);
-        mGenderView = (ImageView) view.findViewById(R.id.gender);
-        view.findViewById(R.id.view_user).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), PersonalInfoActivity.class));
-                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-            }
-        });
-        view.findViewById(R.id.btn_change_password).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), ChangePasswordActivity.class));
-                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-            }
-        });
-        view.findViewById(R.id.btn_credits).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), CoinsActivity.class));
-                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-            }
-        });
+        ButterKnife.bind(this, view);
         updateView();
         IM.get().fetchMyVCard();
     }
@@ -110,12 +93,30 @@ public class ProfileFragment extends Fragment {
         updateView();
     }
 
+    @OnClick(R.id.view_user)
+    void onClickUser() {
+        startActivity(new Intent(getActivity(), PersonalInfoActivity.class));
+        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
+
+    @OnClick(R.id.btn_change_password)
+    void onClickChangePassword() {
+        startActivity(new Intent(getActivity(), ChangePasswordActivity.class));
+        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
+    void onClickCredits() {
+        startActivity(new Intent(getActivity(), CoinsActivity.class));
+        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
     private void updateView() {
         if (mVCardObject == null) {
             return;
         }
         mNickNameView.setText(mVCardObject.getNickname());
-        ImageManager.displayImage(mVCardObject.getAvatar(), mHeadView, ImageManager.getCircleOptions());
+        ImageManager.displayImage(mVCardObject.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
         mUserNameView.setText(getString(R.string.id_name_format) + " " + mVCardObject.getUserName());
         mGenderView.setImageResource(GenderHelper.getIconRes(mVCardObject.getGender()));
     }
