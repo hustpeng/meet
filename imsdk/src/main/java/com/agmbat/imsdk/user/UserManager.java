@@ -94,7 +94,6 @@ public class UserManager implements IUserManager {
     public void acceptFriend(ContactInfo contactInfo) {
         // 存入数据库（好友表+分组表）
         mRosterManager.acceptFriend(contactInfo);
-
     }
 
     @Override
@@ -102,12 +101,12 @@ public class UserManager implements IUserManager {
         return mRosterManager.addContactToFriend(contactInfo);
     }
 
-
     @Override
     public void loadContactGroup(final OnLoadContactGroupListener l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, List<ContactGroup>>() {
             @Override
             protected List<ContactGroup> doInBackground(Void... voids) {
+                List<ContactInfo> list2=  mRosterManager.getContactList();
                 return MeetDatabase.getInstance().getGroupList("");
             }
 

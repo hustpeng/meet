@@ -4,22 +4,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.account.ImAccountManager;
+import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smackx.vcard.VCardObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +57,15 @@ public class LoginActivity extends FragmentActivity {
         // for test
         mUserNameView.setText("13437122759");
         mPasswordView.setText("a123123");
+
+        String username = AccountDebug.getUserName();
+        if (!TextUtils.isEmpty(username)) {
+            mUserNameView.setText(username);
+        }
+        String password = AccountDebug.getPassword();
+        if (!TextUtils.isEmpty(password)) {
+            mPasswordView.setText(password);
+        }
     }
 
     @Override
@@ -99,6 +107,8 @@ public class LoginActivity extends FragmentActivity {
     private void login() {
         String userName = mUserNameView.getText().toString();
         String password = mPasswordView.getText().toString();
+
+        AccountDebug.saveAccount(userName, password);
         mLoginManager.login(userName, password, new ImAccountManager.OnLoginListener() {
             @Override
             public void onLogin(ApiResult result) {

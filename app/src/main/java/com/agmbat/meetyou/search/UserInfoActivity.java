@@ -45,11 +45,11 @@ public class UserInfoActivity extends Activity {
         String loginUser = XMPPManager.getInstance().getConnectionUserName();
         if (loginUser.equals("13437122759")) {
             contactInfo = new ContactInfo();
-            contactInfo.setBareJid("15002752759@yuan520.com/Android");
+            contactInfo.setBareJid("15002752759@yuan520.com");
             contactInfo.setNickname("接电弧");
         } else {
             contactInfo = new ContactInfo();
-            contactInfo.setBareJid("13437122759@yuan520.com/Android");
+            contactInfo.setBareJid("13437122759@yuan520.com");
             contactInfo.setNickname("好名");
         }
         boolean result = UserManager.getInstance().requestAddContactToFriend(contactInfo);
