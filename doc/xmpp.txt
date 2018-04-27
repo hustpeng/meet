@@ -142,3 +142,37 @@ RECV:
 </query>
 </iq>
 
+=======
+SENT (30541195): <iq id="rsttig22" from="13437122759@yuan520.com/Android" type="error">
+    <error code="501" type="CANCEL">
+    <feature-not-implemented xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/></error></iq>
+
+SENT (30541195): <iq id="JrJi1-27" type="set">
+    <query xmlns="jabber:iq:roster" ><item jid="15002752759@yuan520.com" name="接电弧" robot="false" subscription="from" ask="subscribe" lat="0.0" lon="0.0">
+    <group>Hotlist</group></item></query></iq>
+
+RCV  (30541195): <iq id="rsttig23" to="13437122759@yuan520.com/Android" type="set" xmlns="jabber:client"><query xmlns="jabber:iq:roster" ver="35393c22c53e70e474613b609028c74a"><item jid="15002752759@yuan520.com" subscription="none" name="接电弧"><group>Hotlist</group></item></query></iq>
+04-28 00:01:09.793 32423-32474/com.agmbat.meetyou D/SMACK:  SENT (30541195): <iq id="rsttig23" from="13437122759@yuan520.com/Android" type="error"><error code="501" type="CANCEL"><feature-not-implemented xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/></error></iq>
+04-28 00:01:09.838 32423-32475/com.agmbat.meetyou D/SMACK:  RCV  (30541195): <iq id="JrJi1-27" to="13437122759@yuan520.com/Android" type="result" xmlns="jabber:client"/>
+04-28 00:01:09.840 32423-32474/com.agmbat.meetyou D/SMACK:  SENT (30541195): <presence id="JrJi1-28" to="15002752759@yuan520.com" type="subscribe"></presence>
+
+RCV  (30541195): <iq id="rsttig24" to="13437122759@yuan520.com/Android" type="set" xmlns="jabber:client"><query xmlns="jabber:iq:roster" ver="35393c22c53e70e474613b609028c74a"><item jid="15002752759@yuan520.com" subscription="none" name="接电弧" ask="subscribe"><group>Hotlist</group></item></query></iq>
+SENT (30541195): <iq id="rsttig24" from="13437122759@yuan520.com/Android" type="error"><error code="501" type="CANCEL"><feature-not-implemented xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/></error></iq>
+
+
+RCV  (30541195): <presence from="15002752759@yuan520.com" to="13437122759@yuan520.com" type="subscribed" xmlns="jabber:client"/>
+
+RCV  (30541195):
+<iq id="rsttig25" to="13437122759@yuan520.com/Android" type="set" xmlns="jabber:client"><query xmlns="jabber:iq:roster" ver="35393c22c53e70e474613b609028c74a"><item jid="15002752759@yuan520.com" subscription="to" name="接电弧"><group>Hotlist</group></item></query></iq><presence to="13437122759@yuan520.com" xmlns="jabber:client" from="15002752759@yuan520.com/PC"><status/><priority>10</priority><c node="http://www.ag-software.de/miniclient/caps" hash="sha-1" xmlns="http://jabber.org/protocol/caps" ver="8RovUdtOmiAjzj+xI7SK5BCw3A8="/></presence>
+04-28 00:01:16.678 32423-32474/com.agmbat.meetyou D/SMACK:  SENT (30541195): <iq id="rsttig25" from="13437122759@yuan520.com/Android" type="error"><error code="501" type="CANCEL"><feature-not-implemented xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/></error></iq>
+
+<iq id="rsttig6" to="13437122759@yuan520.com/Android" type="set" xmlns="jabber:client">
+<query xmlns="jabber:iq:roster" ver="35393c22c53e70e474613b609028c74a">
+<item jid="15002752759@yuan520.com" subscription="to" name="接电弧">
+<group>Hotlist</group></item>
+</query></iq>
+
+<presence to="13437122759@yuan520.com" xmlns="jabber:client" from="15002752759@yuan520.com/PC">
+<status/><priority>10</priority>
+<c node="http://www.ag-software.de/miniclient/caps" hash="sha-1" xmlns="http://jabber.org/protocol/caps" ver="8RovUdtOmiAjzj+xI7SK5BCw3A8="/></presence>
+04-28 00:13:41.786 1044-1088/com.agmbat.meetyou D/SMACK:  SENT (144631400)

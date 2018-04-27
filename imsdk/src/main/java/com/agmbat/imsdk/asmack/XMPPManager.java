@@ -15,6 +15,7 @@ import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.provider.PrivacyProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.block.BlockManager;
@@ -141,6 +142,9 @@ public class XMPPManager {
     private void configureProviderManager() {
         ProviderManager pm = ProviderManager.getInstance();
 
+        // Privacy 黑名单
+        pm.addIQProvider("query", "jabber:iq:privacy", new PrivacyProvider());
+
         pm.addIQProvider(FindServerProvider.elementName(), FindServerProvider.namespace(),
                 new FindServerProvider());
         pm.addIQProvider(FavoritesProvider.elementName(), FavoritesProvider.namespace(),
@@ -185,7 +189,7 @@ public class XMPPManager {
         config.setSecurityMode(SecurityMode.disabled);
         config.setCompressionEnabled(false);
         config.setReconnectionAllowed(false);
-        config.setRosterLoadedAtLogin(true);
+        config.setRosterLoadedAtLogin(false);
         return config;
     }
 

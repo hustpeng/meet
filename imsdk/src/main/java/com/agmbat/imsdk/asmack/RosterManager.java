@@ -90,6 +90,17 @@ public class RosterManager {
     }
 
     /**
+     * 创建组,确保组存在
+     *
+     * @param groups
+     */
+    private void createGroups(String[] groups) {
+        for (String groupName : groups) {
+            createGroup(groupName);
+        }
+    }
+
+    /**
      * 添加好友
      *
      * @param contact
@@ -98,6 +109,7 @@ public class RosterManager {
      */
     public boolean addContact(ContactInfo contact, String[] groups) {
         try {
+            createGroups(groups);
             mRoster.createEntry(contact.getBareJid(), contact.getNickName(),
                     contact.getRemark(), "", "", 0,
                     0, false, groups);
@@ -294,6 +306,8 @@ public class RosterManager {
         public void entriesAdded(Collection<String> addresses) {
 //            MeetDatabase dataManager = MeetDatabase.getInstance();
             for (String address : addresses) {
+                Log.d(TAG, "==>onEntriesAdded(Thread): [address=" + address);
+
                 String bareAddress = XmppStringUtils.parseBareAddress(address);
 //                String userName = XmppStringUtils.parseName(address);
 //                if (!dataManager.isBlockUserExist(mLoginUserName, userName)) {
@@ -310,10 +324,10 @@ public class RosterManager {
 //                    }
 //                }
             }
-//            List<String> tab = new ArrayList<String>(addresses);
-//            for (IRosterListener l : mRemoteRosListeners) {
-//                l.onEntriesAdded(tab);
-//            }
+            List<String> tab = new ArrayList<String>(addresses);
+            for (IRosterListener l : mRemoteRosListeners) {
+                l.onEntriesAdded(tab);
+            }
         }
 
         @Override
@@ -387,7 +401,7 @@ public class RosterManager {
 
         @Override
         public void presenceSubscribed(Presence presence) {
-
+            Log.d(TAG, "presenceSubscribed:" + presence);
         }
     }
 

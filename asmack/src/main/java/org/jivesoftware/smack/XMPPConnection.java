@@ -202,9 +202,11 @@ public class XMPPConnection extends Connection {
     /**
      * Sends a notification indicating that the connection was reconnected successfully.
      */
-    protected void notifyLoginSuccessful() {
+    private void notifyLoginSuccessful() {
         new Thread() {
             public void run() {
+                // 登录成功后重新刷新一次Roster
+                getRoster();
                 for (ConnectionListener listener : XMPPConnection.this.getConnectionListeners()) {
                     try {
                         listener.loginSuccessful();
@@ -279,7 +281,6 @@ public class XMPPConnection extends Connection {
         if (config.isDebuggerEnabled() && debugger != null) {
             debugger.userHasLogged(user);
         }
-
         notifyLoginSuccessful();
     }
 
@@ -371,6 +372,7 @@ public class XMPPConnection extends Connection {
         }
         return roster;
     }
+
     @Override
     public boolean isConnected() {
         return connected;
