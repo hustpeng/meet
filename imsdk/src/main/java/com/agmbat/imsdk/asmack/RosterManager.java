@@ -1,6 +1,5 @@
 package com.agmbat.imsdk.asmack;
 
-import com.agmbat.android.utils.ThreadUtil;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.data.ContactInfo;
@@ -15,9 +14,6 @@ import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
 import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smack.util.XmppStringUtils;
-import org.jivesoftware.smackx.vcard.VCardListener;
-import org.jivesoftware.smackx.vcard.VCardManager;
-import org.jivesoftware.smackx.vcard.VCardObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -246,18 +242,18 @@ public class RosterManager {
 //        if (null != friend) {
 //            MeetDatabase dataManager = MeetDatabase.getInstance();
 //            if (!dataManager.isFriendExist(mLoginUserName, friend.getUserName())) {
-//                friend.setGroups(GroupHolder.GROUP_FRIENDS);
+//                friend.setGroups(ContactGroup.GROUP_FRIENDS);
 //                dataManager.insertFriend(friend);
 //            }
 //
 //            // Update recently and block list, but not insert
 //            if (dataManager.isRecentContactExist(mLoginUserName, friend.getUserName())) {
-//                friend.setGroups(GroupHolder.GROUP_RECENTLY);
+//                friend.setGroups(ContactGroup.GROUP_RECENTLY);
 //                dataManager.updateRecentContact(friend, false);
 //            }
 //
 //            if (dataManager.isBlockUserExist(mLoginUserName, friend.getUserName())) {
-//                friend.setGroups(GroupHolder.GROUP_BLOCK);
+//                friend.setGroups(ContactGroup.GROUP_BLOCK);
 //                dataManager.updateBlockUser(friend);
 //            }
 //
@@ -267,15 +263,15 @@ public class RosterManager {
 //    private void updateContactPresence(ContactInfo contact) {
 //        if (null != contact) {
 //            MeetDatabase dataManager = MeetDatabase.getInstance();
-//            contact.setGroups(GroupHolder.GROUP_FRIENDS);
+//            contact.setGroups(ContactGroup.GROUP_FRIENDS);
 //            dataManager.updateFriend(contact);
 //
 //            if (dataManager.isRecentContactExist(mLoginUserName, contact.getUserName())) {
-//                contact.setGroups(GroupHolder.GROUP_RECENTLY);
+//                contact.setGroups(ContactGroup.GROUP_RECENTLY);
 //                dataManager.updateRecentContact(contact, false);
 //            }
 //
-//            contact.setGroups(GroupHolder.GROUP_BLOCK);
+//            contact.setGroups(ContactGroup.GROUP_BLOCK);
 //            dataManager.updateBlockUser(contact);
 //        }
 //    }
@@ -388,6 +384,11 @@ public class RosterManager {
             }
 
         }
+
+        @Override
+        public void presenceSubscribed(Presence presence) {
+
+        }
     }
 
 
@@ -478,5 +479,15 @@ public class RosterManager {
 //        }
 //        return profile;
 //    }
+
+
+    /**
+     * 同意加对话为好友
+     *
+     * @param contactInfo
+     */
+    public void acceptFriend(ContactInfo contactInfo) {
+        mRoster.sendSubscribed(contactInfo.getBareJid());
+    }
 
 }

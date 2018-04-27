@@ -5,8 +5,8 @@ import com.agmbat.db.DbException;
 import com.agmbat.db.DbManager;
 import com.agmbat.db.DbManagerFactory;
 import com.agmbat.imsdk.data.ChatMessage;
+import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.data.GroupHolder;
 import com.agmbat.imsdk.data.RecentChat;
 import com.agmbat.sqlite.SqliteDbConfig;
 
@@ -115,22 +115,22 @@ public class MeetDatabase {
         return list;
     }
 
-    public List<GroupHolder> getGroupList(String mLoginUserName) {
-        List<GroupHolder> groups = new ArrayList<GroupHolder>();
+    public List<ContactGroup> getGroupList(String mLoginUserName) {
+        List<ContactGroup> groups = new ArrayList<ContactGroup>();
 
-        GroupHolder group1 = new GroupHolder("同事");
+        ContactGroup group1 = new ContactGroup("同事");
         List<ContactInfo> friends = queryFriends(mLoginUserName);
         group1.setContactList(friends);
 
-        GroupHolder group2 = new GroupHolder("恋人");
+        ContactGroup group2 = new ContactGroup("恋人");
         List<ContactInfo> recentContacts = queryRecentContacts(mLoginUserName);
         group2.setContactList(recentContacts);
 
-        GroupHolder group3 = new GroupHolder("亲人");
+        ContactGroup group3 = new ContactGroup("亲人");
         List<ContactInfo> blockContacts = queryAllBlockUsers(mLoginUserName);
         group3.setContactList(blockContacts);
 
-        GroupHolder group4 = new GroupHolder("朋友");
+        ContactGroup group4 = new ContactGroup("朋友");
         List<ContactInfo> blockContacts1 = queryAllBlockUsers(mLoginUserName);
         group4.setContactList(blockContacts1);
 

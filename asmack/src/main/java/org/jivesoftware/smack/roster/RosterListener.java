@@ -88,4 +88,11 @@ public interface RosterListener {
      * @param presence
      */
     public void presenceSubscribe(Presence presence);
+
+    /**
+     * 收到对方同意加我为好友
+     *
+     * @param presence
+     */
+    void presenceSubscribed(Presence presence);
 }

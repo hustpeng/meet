@@ -1,7 +1,6 @@
 package com.agmbat.meetyou.tab.contacts;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,12 +17,13 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
 
 import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.data.GroupHolder;
-import com.agmbat.imsdk.db.MeetDatabase;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
-import com.agmbat.meetyou.search.NewFriendActivity;
+import com.agmbat.imsdk.user.OnLoadContactGroupListener;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.search.NewFriendActivity;
 import com.agmbat.meetyou.search.SearchUserActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ContactsFragment extends Fragment implements OnGroupClickListener,
-        OnChildClickListener, OnCreateContextMenuListener {
+        OnChildClickListener, OnCreateContextMenuListener, OnLoadContactGroupListener {
 
     private static final String TAG = ContactsFragment.class.getSimpleName();
 
@@ -48,8 +48,6 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
 
     private static final int STATE_LOADING = 0;
     private static final int STATE_LOAD_FINISH = 1;
-
-    private InitContactListTask mInitListTask = null;
 
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
@@ -101,7 +99,10 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         mListView.setOnChildClickListener(this);
         mListView.setOnGroupClickListener(this);
         mListView.setOnCreateContextMenuListener(this);
-        initContactList();
+
+
+        setState(STATE_LOADING);
+        UserManager.getInstance().loadContactGroup(this);
     }
 
     @Override
@@ -128,13 +129,6 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         ToastUtil.showToastLong("收到添加好友请求" + contactInfo.getBareJid());
     }
 
-    private void initContactList() {
-        if (null == mInitListTask) {
-            mInitListTask = new InitContactListTask();
-            mInitListTask.execute();
-        }
-    }
-
     private void updateRecentList() {
 //        MeetDatabase dataManager = MeetDatabase.getInstance();
 //        List<ContactInfo> recentContactList = dataManager
@@ -146,7 +140,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
 //            } else {
 //                contactInfo = mRosterManager.ensureContactInformation(mLoginUserName,
 //                        contactInfo);
-//                contactInfo.setGroups(GroupHolder.GROUP_RECENTLY);
+//                contactInfo.setGroups(ContactGroup.GROUP_RECENTLY);
 //                dataManager.updateRecentContact(contactInfo, false);
 //            }
 //        }
@@ -155,12 +149,6 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     private void updateFriendList() {
     }
 
-
-    private void fillData(List<GroupHolder> groups) {
-        mFriendsAdapter = new ContactsAdapter(getActivity(), groups);
-        mListView.setAdapter(mFriendsAdapter);
-        mListView.expandGroup(0);
-    }
 
     private void setState(int state) {
         if (state == STATE_LOADING) {
@@ -264,24 +252,15 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     private void removeRecentlyContact(ContactInfo contactInfo) {
     }
 
-    private class InitContactListTask extends AsyncTask<Void, Void, List<GroupHolder>> {
-
-        @Override
-        protected void onPreExecute() {
-            setState(STATE_LOADING);
-        }
-
-        @Override
-        protected List<GroupHolder> doInBackground(Void... params) {
-            return MeetDatabase.getInstance().getGroupList(mLoginUserName);
-        }
-
-        @Override
-        protected void onPostExecute(List<GroupHolder> groups) {
-            fillData(groups);
-            setState(STATE_LOAD_FINISH);
-        }
-
+    @Override
+    public void onLoad(List<ContactGroup> list) {
+        fillData(list);
+        setState(STATE_LOAD_FINISH);
     }
 
+    private void fillData(List<ContactGroup> groups) {
+        mFriendsAdapter = new ContactsAdapter(getActivity(), groups);
+        mListView.setAdapter(mFriendsAdapter);
+        mListView.expandGroup(0);
+    }
 }

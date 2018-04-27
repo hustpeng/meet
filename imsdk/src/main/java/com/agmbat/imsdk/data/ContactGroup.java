@@ -6,18 +6,29 @@ import java.util.List;
 /**
  * A holder for a group name and is principal state. It is an helper class to manage the state of the tabs.
  */
-public class GroupHolder {
+public class ContactGroup {
 
+    /**
+     * 组名
+     */
     private final String mGroupName;
+
+    /**
+     * 用于UI显示,是否展开
+     */
     private boolean mIsExpanded;
+
+    /**
+     * 分组列表
+     */
     private List<ContactInfo> mContacts = new ArrayList<ContactInfo>();
 
     /**
-     * Create a {@link GroupHolder}.
+     * Create a {@link ContactGroup}.
      *
      * @param group the group name
      */
-    public GroupHolder(String group) {
+    public ContactGroup(String group) {
         mGroupName = group;
     }
 

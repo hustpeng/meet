@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.agmbat.imsdk.data.GroupHolder;
+import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.meetyou.R;
 
 public class ContactsGroupView extends LinearLayout {
@@ -21,7 +21,7 @@ public class ContactsGroupView extends LinearLayout {
         mGroupIndicatorView = (ImageView) findViewById(R.id.group_indicator);
     }
 
-    public void update(GroupHolder groupHolder) {
+    public void update(ContactGroup groupHolder) {
         if (groupHolder.isExpanded()) {
             mGroupIndicatorView.setImageResource(R.drawable.group_expanded);
         } else {

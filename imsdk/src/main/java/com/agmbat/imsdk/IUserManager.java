@@ -1,6 +1,7 @@
 package com.agmbat.imsdk;
 
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.user.OnLoadContactGroupListener;
 
 import java.util.List;
 
@@ -27,4 +28,19 @@ public interface IUserManager {
      * @param contactInfo
      */
     public void acceptFriend(ContactInfo contactInfo);
+
+    /**
+     * 申请添加对方为好友
+     *
+     * @param contactInfo
+     * @return
+     */
+    boolean requestAddContactToFriend(ContactInfo contactInfo);
+
+    /**
+     * 加载所有好友分组
+     *
+     * @param l
+     */
+    void loadContactGroup(OnLoadContactGroupListener l);
 }

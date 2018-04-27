@@ -854,6 +854,17 @@ public class Roster {
     }
 
     /**
+     * Fires roster presence changed event to roster listeners.
+     *
+     * @param presence
+     */
+    private void fireRosterPresenceSubscribed(Presence presence) {
+        for (RosterListener listener : rosterListeners) {
+            listener.presenceSubscribed(presence);
+        }
+    }
+
+    /**
      * An enumeration for the subscription mode options.
      */
     public enum SubscriptionMode {
@@ -967,12 +978,10 @@ public class Roster {
             } else if (presence.getType() == Presence.Type.subscribe) {
                 // 收到好友申请
                 // TODO 如果已经发送过好友申请，接收到对方的好友申请，说明对方同意，直接回复同意
-                //如果没发送过，需要其他界面来判断是否同意
+                // 如果没发送过，需要其他界面来判断是否同意
                 if (subscriptionMode == SubscriptionMode.accept_all) {
                     // Accept all subscription requests.
-                    Presence response = new Presence(Presence.Type.subscribed);
-                    response.setTo(presence.getFrom());
-                    connection.sendPacket(response);
+                    sendSubscribed(presence.getFrom());
                 } else if (subscriptionMode == SubscriptionMode.reject_all) {
                     // Reject all subscription requests.
                     Presence response = new Presence(Presence.Type.unsubscribed);
@@ -998,6 +1007,8 @@ public class Roster {
                 //加对方为好友
                 //存入数据库（好友表+分组表）
                 //存入集合
+                // 收到对方同意加我为好友
+                fireRosterPresenceSubscribed(presence);
             } else if (presence.getType() == Presence.Type.unsubscribed) {
                 //拒绝添加好友
                 //发通知告诉用户对方拒绝添加好友========================
@@ -1036,6 +1047,19 @@ public class Roster {
                 }
             }
         }
+    }
+
+
+    /**
+     * 同意对方申请加自己好友
+     *
+     * @param toJid
+     */
+    public void sendSubscribed(String toJid) {
+        // Accept  subscription requests.
+        Presence response = new Presence(Presence.Type.subscribed);
+        response.setTo(toJid);
+        connection.sendPacket(response);
     }
 
     /**

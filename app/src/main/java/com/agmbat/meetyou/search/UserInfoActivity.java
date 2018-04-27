@@ -5,13 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.agmbat.android.utils.ToastUtil;
-import com.agmbat.imsdk.IM;
-import com.agmbat.imsdk.asmack.RosterManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
-
-import org.jivesoftware.smackx.vcard.VCardObject;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -21,14 +18,11 @@ import butterknife.OnClick;
  */
 public class UserInfoActivity extends Activity {
 
-    private RosterManager mRosterManager;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
         ButterKnife.bind(this);
-        mRosterManager = XMPPManager.getInstance().getRosterManager();
     }
 
     @Override
@@ -58,7 +52,7 @@ public class UserInfoActivity extends Activity {
             contactInfo.setBareJid("13437122759@yuan520.com/Android");
             contactInfo.setNickname("好名");
         }
-        boolean result = mRosterManager.addContactToFriend(contactInfo);
+        boolean result = UserManager.getInstance().requestAddContactToFriend(contactInfo);
         if (result) {
             ToastUtil.showToastLong("已发送");
         } else {

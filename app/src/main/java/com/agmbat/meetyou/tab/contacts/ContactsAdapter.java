@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.data.GroupHolder;
+import com.agmbat.imsdk.data.ContactGroup;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ public class ContactsAdapter extends BaseExpandableListAdapter {
     public static final int GROUP_INDEX_BLOCK = 2;
 
     private final Context mContext;
-    private final List<GroupHolder> mGroupList;
+    private final List<ContactGroup> mGroupList;
 
-    public ContactsAdapter(Context context, List<GroupHolder> groups) {
+    public ContactsAdapter(Context context, List<ContactGroup> groups) {
         mContext = context;
         mGroupList = groups;
     }
@@ -38,7 +38,7 @@ public class ContactsAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public GroupHolder getGroup(int groupPosition) {
+    public ContactGroup getGroup(int groupPosition) {
         return mGroupList.get(groupPosition);
     }
 
@@ -79,13 +79,13 @@ public class ContactsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public void onGroupExpanded(int groupPosition) {
-        GroupHolder groupHolder = getGroup(groupPosition);
+        ContactGroup groupHolder = getGroup(groupPosition);
         groupHolder.setExpanded(true);
     }
 
     @Override
     public void onGroupCollapsed(int groupPosition) {
-        GroupHolder groupHolder = getGroup(groupPosition);
+        ContactGroup groupHolder = getGroup(groupPosition);
         groupHolder.setExpanded(false);
     }
 
@@ -122,11 +122,11 @@ public class ContactsAdapter extends BaseExpandableListAdapter {
     }
 
 
-    public void updateGroup(GroupHolder group) {
+    public void updateGroup(ContactGroup group) {
         if (null != group) {
             int size = getGroupCount();
             for (int i = 0; i < size; i++) {
-                GroupHolder currentGroup = mGroupList.get(i);
+                ContactGroup currentGroup = mGroupList.get(i);
                 if (currentGroup.getGroupName().equalsIgnoreCase(group.getGroupName())) {
                     mGroupList.set(i, group);
                     break;
