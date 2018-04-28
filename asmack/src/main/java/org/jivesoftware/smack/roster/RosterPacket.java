@@ -97,6 +97,4 @@ public class RosterPacket extends IQ {
         buf.append("</query>");
         return buf.toString();
     }
-
-
 }

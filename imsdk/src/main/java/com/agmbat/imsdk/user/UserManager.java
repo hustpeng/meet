@@ -1,5 +1,7 @@
 package com.agmbat.imsdk.user;
 
+import android.util.Log;
+
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.imsdk.IUserManager;
@@ -7,8 +9,16 @@ import com.agmbat.imsdk.asmack.RosterManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.db.ContactGroupBelong;
+import com.agmbat.imsdk.db.ContactGroupBelongTableManager;
+import com.agmbat.imsdk.db.ContactGroupTableManager;
+import com.agmbat.imsdk.db.ContactTableManager;
 import com.agmbat.imsdk.db.MeetDatabase;
 
+import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.roster.RosterGroup;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,19 +29,31 @@ public class UserManager implements IUserManager {
 
     private RosterManager mRosterManager;
 
-    private UserManager() {
-        mRosterManager = XMPPManager.getInstance().getRosterManager();
-    }
-
     /**
      * 好友申请列表
      */
     private List<ContactInfo> mFriendRequestList;
 
+    /**
+     * 所有的好友
+     */
+    private List<ContactInfo> mContactList;
+
+    /**
+     * 所有好友分组列表
+     */
+    private List<ContactGroup> mGroupList;
+
     private static final UserManager INSTANCE = new UserManager();
 
     public static UserManager getInstance() {
         return INSTANCE;
+    }
+
+    private UserManager() {
+        mRosterManager = XMPPManager.getInstance().getRosterManager();
+        mContactList = new ArrayList<>();
+        mGroupList = new ArrayList<>();
     }
 
     /**
@@ -40,6 +62,7 @@ public class UserManager implements IUserManager {
      * @param willToAdd
      */
     public void addFriendRequest(ContactInfo willToAdd) {
+        MeetDatabase.getInstance().saveFriendRequest(willToAdd);
         ContactInfo exist = getFriendRequest(willToAdd.getBareJid());
         if (exist == null) {
             mFriendRequestList.add(willToAdd);
@@ -106,18 +129,96 @@ public class UserManager implements IUserManager {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, List<ContactGroup>>() {
             @Override
             protected List<ContactGroup> doInBackground(Void... voids) {
-                List<ContactInfo> list2=  mRosterManager.getContactList();
                 return MeetDatabase.getInstance().getGroupList("");
             }
 
             @Override
             protected void onPostExecute(List<ContactGroup> result) {
                 super.onPostExecute(result);
+                mergeGroupList(result);
                 if (l != null) {
-                    l.onLoad(result);
+                    l.onLoad(mGroupList);
                 }
             }
         });
     }
 
+    /**
+     * 合并处理用户分组列表
+     *
+     * @param result
+     */
+    private void mergeGroupList(List<ContactGroup> result) {
+        mGroupList.addAll(result);
+    }
+
+    /**
+     * @param contactInfo
+     */
+    public void saveOrUpdateContact(ContactInfo contactInfo) {
+        ContactTableManager.saveOrUpdateContact(contactInfo);
+        ContactInfo exist = findExistContactInfo(contactInfo.getBareJid());
+        if (exist != null) {
+            exist.apply(contactInfo);
+        } else {
+            mContactList.add(contactInfo);
+        }
+    }
+
+    /**
+     * 更新组信息
+     */
+    public void updateGroupList() {
+        List<RosterGroup> list = mRosterManager.getGroupList();
+        for (RosterGroup rosterGroup : list) {
+            ContactGroup exist = findExitContactGroup(rosterGroup.getName());
+            if (exist == null) {
+                ContactGroup item = new ContactGroup(rosterGroup.getName());
+                ContactGroupTableManager.save(item);
+                for (RosterEntry entry : rosterGroup.getEntries()) {
+                    ContactInfo contactInfo = findExistContactInfo(entry.getUser());
+                    if (contactInfo == null) {
+                        Log.e("updateGroupList", "updateGroupList error");
+                    } else {
+                        ContactGroupBelong belong = new ContactGroupBelong();
+                        belong.mGroupId = item.getGroupId();
+                        belong.mUserJid = contactInfo.getBareJid();
+                        ContactGroupBelongTableManager.save(belong);
+
+                        // 更新list
+                        item.addContact(contactInfo);
+                    }
+                }
+                mGroupList.add(item);
+            } else {
+                // 更新组信息
+                // TODO
+
+            }
+        }
+    }
+
+    private ContactGroup findExitContactGroup(String groupName) {
+        for (ContactGroup exist : mGroupList) {
+            if (exist.getGroupName().equals(groupName)) {
+                return exist;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 查找已存在的联系人
+     *
+     * @param jid
+     * @return
+     */
+    private ContactInfo findExistContactInfo(String jid) {
+        for (ContactInfo exist : mContactList) {
+            if (exist.getBareJid().equals(jid)) {
+                return exist;
+            }
+        }
+        return null;
+    }
 }

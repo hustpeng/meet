@@ -54,6 +54,14 @@ public class MeetDatabase {
     private MeetDatabase() {
     }
 
+    /**
+     * 获取数据库
+     *
+     * @return
+     */
+    public DbManager getDatabase() {
+        return DbManagerFactory.getInstance(sConfig);
+    }
 
     /**
      * 保存好友申请列表
@@ -240,4 +248,6 @@ public class MeetDatabase {
         list.add(message);
         return list;
     }
+
+
 }

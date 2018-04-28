@@ -356,58 +356,14 @@ public class PacketParserUtils {
         boolean done = false;
         RosterPacketItem item = null;
         while (!done) {
-            if (parser.getEventType() == XmlPullParser.START_TAG &&
-                    parser.getName().equals("query")) {
+            if (parser.getEventType() == XmlPullParser.START_TAG && parser.getName().equals("query")) {
                 String version = parser.getAttributeValue(null, "ver");
                 roster.setVersion(version);
             }
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("item")) {
-                    String jid = parser.getAttributeValue("", "jid");
-                    String nickName = parser.getAttributeValue("", "nickname");//我给好友取的备注
-                    String name = parser.getAttributeValue("", "name");//好友自己取的昵称
-
-                    String avatarId = parser.getAttributeValue("", "avatarId");
-                    String personalMsg = parser.getAttributeValue("", "personalMsg");
-
-                    double latitude = 0;
-                    double longitude = 0;
-                    String latText = parser.getAttributeValue("", "lat");
-                    if (!TextUtils.isEmpty(latText)) {
-                        latitude = Double.parseDouble(latText);
-                    }
-                    String lonText = parser.getAttributeValue("", "lon");
-                    if (!TextUtils.isEmpty(lonText)) {
-                        longitude = Double.parseDouble(lonText);
-                    }
-
-                    boolean isRobot = false;
-                    String robotValue = parser.getAttributeValue("", "robot");
-                    if (!TextUtils.isEmpty(robotValue) && (Boolean.FALSE.toString().equalsIgnoreCase(robotValue) || Boolean.TRUE.toString().equalsIgnoreCase(robotValue))) {
-                        isRobot = Boolean.parseBoolean(robotValue);
-                    }
-
-                    // Create packet.
-                    name = XmppStringUtils.unescapeNode(name);
-                    nickName = XmppStringUtils.unescapeNode(nickName);
-                    Log.d(TAG, "Parse roster : jid=" + jid + ",nickName=" + nickName + ",name=" + name);
-                    personalMsg = XmppStringUtils.unescapeNode(personalMsg);
-                    item = new RosterPacketItem(jid, name);
-                    item.setNickName(nickName);
-                    item.setAvatarId(avatarId);
-                    item.setPersonalMsg(personalMsg);
-                    item.setLatitude(latitude);
-                    item.setLongitude(longitude);
-                    item.setRobot(isRobot);
-                    // Set status.
-                    String ask = parser.getAttributeValue("", "ask");
-                    RosterPacketItemStatus status = RosterPacketItemStatus.fromString(ask);
-                    item.setItemStatus(status);
-                    // Set type.
-                    String subscription = parser.getAttributeValue("", "subscription");
-                    RosterPacketItemType type = RosterPacketItemType.valueOf(subscription != null ? subscription : "none");
-                    item.setItemType(type);
+                    item = parseRosterPacketItem(parser);
                 }
                 if (parser.getName().equals("group") && item != null) {
                     final String groupName = parser.nextText();
@@ -849,5 +805,62 @@ public class PacketParserUtils {
             return Class.forName(value);
         }
         return null;
+    }
+
+    /**
+     * 解析 RosterPacketItem
+     *
+     * @param parser
+     * @return
+     */
+    private static RosterPacketItem parseRosterPacketItem(XmlPullParser parser) {
+        String jid = parser.getAttributeValue("", "jid");
+        // 我给好友取的备注
+        String nickName = parser.getAttributeValue("", "nickname");
+        // 好友自己取的昵称
+        String name = parser.getAttributeValue("", "name");
+
+        String avatarId = parser.getAttributeValue("", "avatarId");
+        String personalMsg = parser.getAttributeValue("", "personalMsg");
+
+        double latitude = 0;
+        double longitude = 0;
+        String latText = parser.getAttributeValue("", "lat");
+        if (!TextUtils.isEmpty(latText)) {
+            latitude = Double.parseDouble(latText);
+        }
+        String lonText = parser.getAttributeValue("", "lon");
+        if (!TextUtils.isEmpty(lonText)) {
+            longitude = Double.parseDouble(lonText);
+        }
+
+        boolean isRobot = false;
+        String robotValue = parser.getAttributeValue("", "robot");
+        if (!TextUtils.isEmpty(robotValue) && (Boolean.FALSE.toString().equalsIgnoreCase(robotValue)
+                || Boolean.TRUE.toString().equalsIgnoreCase(robotValue))) {
+            isRobot = Boolean.parseBoolean(robotValue);
+        }
+
+        // Create packet.
+        name = XmppStringUtils.unescapeNode(name);
+        nickName = XmppStringUtils.unescapeNode(nickName);
+        Log.d(TAG, "Parse roster : jid=" + jid + ",nickName=" + nickName + ",name=" + name);
+        personalMsg = XmppStringUtils.unescapeNode(personalMsg);
+        RosterPacketItem item = new RosterPacketItem(jid, name);
+        item.setNickName(nickName);
+        item.setAvatarId(avatarId);
+        item.setPersonalMsg(personalMsg);
+        item.setLatitude(latitude);
+        item.setLongitude(longitude);
+        item.setRobot(isRobot);
+        // Set status.
+        String ask = parser.getAttributeValue("", "ask");
+        RosterPacketItemStatus status = RosterPacketItemStatus.fromString(ask);
+        item.setItemStatus(status);
+        // Set type.
+        String subscription = parser.getAttributeValue("", "subscription");
+        RosterPacketItemType type = RosterPacketItemType.valueOf(subscription != null ? subscription : "none");
+        item.setItemType(type);
+        return item;
     }
 }

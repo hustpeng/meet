@@ -13,7 +13,6 @@ import org.jivesoftware.smack.roster.Roster.SubscriptionMode;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
 import org.jivesoftware.smack.roster.RosterListener;
-import org.jivesoftware.smack.util.XmppStringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -161,6 +160,17 @@ public class RosterManager {
         return contactList;
     }
 
+    /**
+     * 获取所有分组
+     *
+     * @return
+     */
+    public List<RosterGroup> getGroupList() {
+        List<RosterGroup> list = new ArrayList<>();
+        list.addAll(mRoster.getGroups());
+        return list;
+    }
+
     public List<String> getGroupsNames() {
         Collection<RosterGroup> groups = mRoster.getGroups();
         List<String> result = new ArrayList<String>(groups.size());
@@ -249,8 +259,9 @@ public class RosterManager {
 //        contact.setAccount(mLoginUserName);
         return contact;
     }
-//
-//    private void insertContactTable(ContactInfo friend) {
+
+    //
+    private void insertContactTable(ContactInfo friend) {
 //        if (null != friend) {
 //            MeetDatabase dataManager = MeetDatabase.getInstance();
 //            if (!dataManager.isFriendExist(mLoginUserName, friend.getUserName())) {
@@ -270,7 +281,7 @@ public class RosterManager {
 //            }
 //
 //        }
-//    }
+    }
 //
 //    private void updateContactPresence(ContactInfo contact) {
 //        if (null != contact) {
@@ -304,26 +315,6 @@ public class RosterManager {
 
         @Override
         public void entriesAdded(Collection<String> addresses) {
-//            MeetDatabase dataManager = MeetDatabase.getInstance();
-            for (String address : addresses) {
-                Log.d(TAG, "==>onEntriesAdded(Thread): [address=" + address);
-
-                String bareAddress = XmppStringUtils.parseBareAddress(address);
-//                String userName = XmppStringUtils.parseName(address);
-//                if (!dataManager.isBlockUserExist(mLoginUserName, userName)) {
-//                    ContactInfo contact = getContact(bareAddress);
-//                    if (null != contact) {
-//                        Log.d(TAG,
-//                                "==>onEntriesAdded(Thread): [UserName=" + contact.getUserName()
-//                                        + ",PersonalMsg=" + contact.getPersonalMsg() + ",Name="
-//                                        + contact.getName() + ",NickName=" + contact.getNickName()
-//                                        + ",AvatarId=" + contact.getAvatarId() + ",Lat="
-//                                        + contact.getLatitude() + ",Lon=" + contact.getLongitude()
-//                                        + ",isRobot=" + contact.isRobot() + "]");
-//                        insertContactTable(contact);
-//                    }
-//                }
-            }
             List<String> tab = new ArrayList<String>(addresses);
             for (IRosterListener l : mRemoteRosListeners) {
                 l.onEntriesAdded(tab);
@@ -383,7 +374,7 @@ public class RosterManager {
             final String from = presence.getFrom();
             ContactInfo contactInfo = getContact(from);
             if (contactInfo == null) {
-                new XMPPApi().fetchContactInfo(from, new OnFetchContactListener() {
+                XMPPApi.fetchContactInfo(from, new OnFetchContactListener() {
                     @Override
                     public void onFetchContactInfo(ContactInfo contactInfo) {
                         for (IRosterListener l : mRemoteRosListeners) {

@@ -10,7 +10,13 @@ public class XMPPApi {
 
     private static final ExecutorService SINGLE_THREAD_EXECUTOR = Executors.newSingleThreadExecutor();
 
-    public void fetchContactInfo(final String contactJid, OnFetchContactListener listener) {
+    /**
+     * 获取联系人信息
+     *
+     * @param contactJid
+     * @param listener
+     */
+    public static void fetchContactInfo(final String contactJid, OnFetchContactListener listener) {
         Runnable runnable = new FetchContactInfoRunnable(contactJid, listener);
         SINGLE_THREAD_EXECUTOR.execute(runnable);
     }

@@ -90,7 +90,7 @@ public class RosterEntry {
     /**
      * Change the name and upload the change to server
      *
-     * @param name the name.
+     * @param nickName the name.
      */
     public void changeNickName(String nickName) {
         // Do nothing if the name hasn't changed.

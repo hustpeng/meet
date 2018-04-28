@@ -1,35 +1,50 @@
 package com.agmbat.imsdk.data;
 
+import com.agmbat.db.annotation.Column;
+import com.agmbat.db.annotation.Table;
+
 import org.jivesoftware.smack.util.XmppStringUtils;
 
 /**
  * 联系人
  */
+@Table(name = "contact")
 public class ContactInfo {
+
+    /**
+     * 此id为数据库存储id值
+     */
+    @Column(name = "id", isId = true)
+    private long mId;
 
     /**
      * 联系人id标识
      */
+    @Column(name = "jid")
     private String mBareJid = "";
 
     /**
      * 联系人昵称
      */
+    @Column(name = "nickname")
     private String mNickname;
 
     /**
      * 用户给好友的备注
      */
+    @Column(name = "remark")
     private String mRemark;
 
     /**
      * 用户头像url
      */
+    @Column(name = "avatar")
     private String mAvatar;
 
     /**
      * 性别
      */
+    @Column(name = "gender")
     private int mGender;
 
     public void setNickname(String nickname) {
@@ -83,5 +98,27 @@ public class ContactInfo {
      */
     public String getUserName() {
         return XmppStringUtils.parseName(mBareJid);
+    }
+
+    public long getId() {
+        return mId;
+    }
+
+    public void setId(long id) {
+        mId = id;
+    }
+
+    /**
+     * 更新联想人信息
+     *
+     * @param contactInfo
+     */
+    public void apply(ContactInfo contactInfo) {
+        mId = contactInfo.mId;
+        mBareJid = contactInfo.mBareJid;
+        mNickname = contactInfo.mNickname;
+        mRemark = contactInfo.mRemark;
+        mAvatar = contactInfo.mAvatar;
+        mGender = contactInfo.mGender;
     }
 }

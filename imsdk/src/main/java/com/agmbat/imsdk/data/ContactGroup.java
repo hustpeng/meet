@@ -1,17 +1,26 @@
 package com.agmbat.imsdk.data;
 
+import com.agmbat.db.annotation.Column;
+import com.agmbat.db.annotation.Table;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 当前用户的好友分组
  * A holder for a group name and is principal state. It is an helper class to manage the state of the tabs.
  */
+@Table(name = "contact_group")
 public class ContactGroup {
+
+    @Column(name = "id", isId = true)
+    private long mGroupId;
 
     /**
      * 组名
      */
-    private final String mGroupName;
+    @Column(name = "name")
+    private String mGroupName;
 
     /**
      * 用于UI显示,是否展开
@@ -22,6 +31,12 @@ public class ContactGroup {
      * 分组列表
      */
     private List<ContactInfo> mContacts = new ArrayList<ContactInfo>();
+
+    /**
+     * 提供无参构造函数, 用于数据库访问
+     */
+    public ContactGroup() {
+    }
 
     /**
      * Create a {@link ContactGroup}.
@@ -91,4 +106,11 @@ public class ContactGroup {
         return String.format("%s(%d)", mGroupName, getContactCount());
     }
 
+    public long getGroupId() {
+        return mGroupId;
+    }
+
+    public void setGroupId(long groupId) {
+        mGroupId = groupId;
+    }
 }
