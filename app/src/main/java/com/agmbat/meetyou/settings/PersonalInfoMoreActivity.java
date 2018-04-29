@@ -10,6 +10,8 @@ import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
+import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.NumberPicker;
 import com.agmbat.picker.OptionPicker;
@@ -108,11 +110,6 @@ public class PersonalInfoMoreActivity extends Activity {
     @BindView(R.id.career)
     TextView mCareerView;
 
-    /**
-     * 用户信息
-     */
-    private VCardExtendObject mVCardExtendObject;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,7 +117,7 @@ public class PersonalInfoMoreActivity extends Activity {
         setContentView(R.layout.activity_personal_more_info);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        IM.get().fetchMyVCardExtend();
+        update(UserManager.getInstance().getLoginUser());
     }
 
     @Override
@@ -148,52 +145,10 @@ public class PersonalInfoMoreActivity extends Activity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LoginUserUpdateEvent event) {
-        mVCardExtendObject = event.mVCardExtendObject;
-        mHeightView.setText(String.valueOf(mVCardExtendObject.getHeight()) + "cm");
-        mWeightView.setText(String.valueOf(mVCardExtendObject.getWeight()) + "kg");
-        WageItem wageItem = WageItem.valueOf(mVCardExtendObject.getWage());
-        mWageView.setText(wageItem == null ? "" : wageItem.mName);
-        EducationItem educationItem = EducationItem.valueOf(mVCardExtendObject.getEducation());
-        mEducationView.setText(educationItem == null ? "" : educationItem.mName);
-
-        MarriageItem marriageItem = MarriageItem.valueOf(mVCardExtendObject.getMarriage());
-        mMarriageView.setText(marriageItem == null ? "" : marriageItem.mName);
-
-        mSignatureView.setText(mVCardExtendObject.getStatus());
-        mDemandView.setText(mVCardExtendObject.getDemand());
-        mHobbyView.setText(mVCardExtendObject.getHobby());
-        mIndustryView.setText(mVCardExtendObject.getIndustry());
-        mCareerView.setText(mVCardExtendObject.getCareer());
-
-        mIntroduceView.setText(mVCardExtendObject.getIntroduce());
-
-        CarItem carItem = CarItem.valueOf(mVCardExtendObject.getCar());
-        mCarView.setText(carItem == null ? "" : carItem.mName);
-
-        HouseItem houseItem = HouseItem.valueOf(mVCardExtendObject.getHouse());
-        mHouseView.setText(houseItem == null ? "" : houseItem.mName);
-
-        Address workarea = Address.fromProvinceCityText(mVCardExtendObject.getWorkarea());
-        if (workarea != null) {
-            mWorkareaView.setText(workarea.getDisplayName());
-        } else {
-            mWorkareaView.setText("");
-        }
-
-        Address birthplace = Address.fromProvinceCityText(mVCardExtendObject.getBirthplace());
-        if (birthplace != null) {
-            mBirthplaceView.setText(birthplace.getDisplayName());
-        } else {
-            mBirthplaceView.setText("");
-        }
-
-        Address residence = Address.fromProvinceCityText(mVCardExtendObject.getResidence());
-        if (residence != null) {
-            mResidenceView.setText(residence.getDisplayName());
-        } else {
-            mResidenceView.setText("");
-        }
+        LoginUser user = event.getLoginUser();
+        update(user);
     }
+
 
     /**
      * 点击返回键
@@ -205,13 +160,13 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_height)
     void onClickHeight() {
-        int selected = mVCardExtendObject.getHeight();
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        int selected = user.getHeight();
         NumberPicker.OnNumberPickListener l = new NumberPicker.OnNumberPickListener() {
             @Override
             public void onNumberPicked(int index, Number item) {
-                mVCardExtendObject.setHeight(item.intValue());
-                EventBus.getDefault().post(mVCardExtendObject);
-                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+                user.setHeight(item.intValue());
+                UserManager.getInstance().saveLoginUser(user);
             }
         };
         PickerHelper.showHeightPicker(this, selected, l);
@@ -219,13 +174,13 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_weight)
     void onClickWeight() {
-        int selected = mVCardExtendObject.getWeight();
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        int selected = user.getWeight();
         NumberPicker.OnNumberPickListener l = new NumberPicker.OnNumberPickListener() {
             @Override
             public void onNumberPicked(int index, Number item) {
-                mVCardExtendObject.setWeight(item.intValue());
-                EventBus.getDefault().post(mVCardExtendObject);
-                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+                user.setWeight(item.intValue());
+                UserManager.getInstance().saveLoginUser(user);
             }
         };
         PickerHelper.showWeightPicker(this, selected, l);
@@ -233,13 +188,13 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_wage)
     void onClickWage() {
-        int value = mVCardExtendObject.getWage();
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        int value = user.getWage();
         SinglePicker.OnItemPickListener<WageItem> l = new SinglePicker.OnItemPickListener<WageItem>() {
             @Override
             public void onItemPicked(int index, WageItem item) {
-                mVCardExtendObject.setWage(item.mValue);
-                EventBus.getDefault().post(mVCardExtendObject);
-                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+                user.setWage(item.mValue);
+                UserManager.getInstance().saveLoginUser(user);
             }
         };
         WageItem item = WageItem.valueOf(value);
@@ -248,14 +203,14 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_education)
     void onClickEducation() {
-        int value = mVCardExtendObject.getEducation();
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        int value = user.getEducation();
         EducationItem item = EducationItem.valueOf(value);
         SinglePicker.OnItemPickListener<EducationItem> l = new SinglePicker.OnItemPickListener<EducationItem>() {
             @Override
             public void onItemPicked(int index, EducationItem item) {
-                mVCardExtendObject.setEducation(item.mValue);
-                EventBus.getDefault().post(mVCardExtendObject);
-                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+                user.setEducation(item.mValue);
+                UserManager.getInstance().saveLoginUser(user);
             }
         };
         PickerHelper.showEducationPicker(this, item, l);
@@ -263,14 +218,14 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_marriage)
     void onClickMarriage() {
-        int selected = mVCardExtendObject.getMarriage();
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        int selected = user.getMarriage();
         MarriageItem item = MarriageItem.valueOf(selected);
         SinglePicker.OnItemPickListener<MarriageItem> l = new SinglePicker.OnItemPickListener<MarriageItem>() {
             @Override
             public void onItemPicked(int index, MarriageItem item) {
-                mVCardExtendObject.setMarriage(item.mValue);
-                EventBus.getDefault().post(mVCardExtendObject);
-                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+                user.setMarriage(item.mValue);
+                UserManager.getInstance().saveLoginUser(user);
             }
         };
         PickerHelper.showMarriagePicker(this, item, l);
@@ -278,14 +233,14 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_car)
     void onClickCar() {
-        int selected = mVCardExtendObject.getCar();
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        int selected = user.getCar();
         CarItem item = CarItem.valueOf(selected);
         SinglePicker.OnItemPickListener<CarItem> l = new SinglePicker.OnItemPickListener<CarItem>() {
             @Override
             public void onItemPicked(int index, CarItem item) {
-                mVCardExtendObject.setCar(item.mValue);
-                EventBus.getDefault().post(mVCardExtendObject);
-                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+                user.setCar(item.mValue);
+                UserManager.getInstance().saveLoginUser(user);
             }
         };
         PickerHelper.showCarPicker(this, item, l);
@@ -293,14 +248,14 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_house)
     void onClickHouse() {
-        int selected = mVCardExtendObject.getHouse();
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        int selected = user.getHouse();
         HouseItem item = HouseItem.valueOf(selected);
         SinglePicker.OnItemPickListener<HouseItem> l = new SinglePicker.OnItemPickListener<HouseItem>() {
             @Override
             public void onItemPicked(int index, HouseItem item) {
-                mVCardExtendObject.setHouse(item.mValue);
-                EventBus.getDefault().post(mVCardExtendObject);
-                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+                user.setHouse(item.mValue);
+                UserManager.getInstance().saveLoginUser(user);
             }
         };
         PickerHelper.showHousePicker(this, item, l);
@@ -308,13 +263,13 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_career)
     void onClickCareer() {
-        String selected = mVCardExtendObject.getCareer();
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        String selected = user.getCareer();
         OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {
-                mVCardExtendObject.setCareer(item);
-                EventBus.getDefault().post(mVCardExtendObject);
-                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+                user.setCareer(item);
+                UserManager.getInstance().saveLoginUser(user);
             }
         };
         PickerHelper.showCareerPicker(this, selected, l);
@@ -323,13 +278,13 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_industry)
     void onClickIndustry() {
-        String selected = mVCardExtendObject.getIndustry();
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        String selected = user.getIndustry();
         OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {
-                mVCardExtendObject.setIndustry(item);
-                EventBus.getDefault().post(mVCardExtendObject);
-                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+                user.setIndustry(item);
+                UserManager.getInstance().saveLoginUser(user);
             }
         };
         PickerHelper.showIndustryPicker(this, selected, l);
@@ -362,26 +317,26 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_workarea)
     void onClickWorkarea() {
-        Address address = Address.fromProvinceCityText(mVCardExtendObject.getWorkarea());
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        Address address = Address.fromProvinceCityText(user.getWorkarea());
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {
-                mVCardExtendObject.setWorkarea(address.toProvinceCityText());
-                EventBus.getDefault().post(mVCardExtendObject);
-                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+                user.setWorkarea(address.toProvinceCityText());
+                UserManager.getInstance().saveLoginUser(user);
             }
         });
     }
 
     @OnClick(R.id.btn_birthplace)
     void onClickBirthplace() {
-        Address address = Address.fromProvinceCityText(mVCardExtendObject.getBirthplace());
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        Address address = Address.fromProvinceCityText(user.getBirthplace());
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {
-                mVCardExtendObject.setBirthplace(address.toProvinceCityText());
-                EventBus.getDefault().post(mVCardExtendObject);
-                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+                user.setBirthplace(address.toProvinceCityText());
+                UserManager.getInstance().saveLoginUser(user);
             }
 
         });
@@ -389,16 +344,63 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_residence)
     void onClickResidence() {
-        Address address = Address.fromProvinceCityText(mVCardExtendObject.getResidence());
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        Address address = Address.fromProvinceCityText(user.getResidence());
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {
-                mVCardExtendObject.setResidence(address.toProvinceCityText());
-                EventBus.getDefault().post(mVCardExtendObject);
-                XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardExtendObject);
+                user.setResidence(address.toProvinceCityText());
+                UserManager.getInstance().saveLoginUser(user);
             }
 
         });
+    }
+
+    private void update(LoginUser user) {
+        mHeightView.setText(String.valueOf(user.getHeight()) + "cm");
+        mWeightView.setText(String.valueOf(user.getWeight()) + "kg");
+        WageItem wageItem = WageItem.valueOf(user.getWage());
+        mWageView.setText(wageItem == null ? "" : wageItem.mName);
+        EducationItem educationItem = EducationItem.valueOf(user.getEducation());
+        mEducationView.setText(educationItem == null ? "" : educationItem.mName);
+
+        MarriageItem marriageItem = MarriageItem.valueOf(user.getMarriage());
+        mMarriageView.setText(marriageItem == null ? "" : marriageItem.mName);
+
+        mSignatureView.setText(user.getStatus());
+        mDemandView.setText(user.getDemand());
+        mHobbyView.setText(user.getHobby());
+        mIndustryView.setText(user.getIndustry());
+        mCareerView.setText(user.getCareer());
+
+        mIntroduceView.setText(user.getIntroduce());
+
+        CarItem carItem = CarItem.valueOf(user.getCar());
+        mCarView.setText(carItem == null ? "" : carItem.mName);
+
+        HouseItem houseItem = HouseItem.valueOf(user.getHouse());
+        mHouseView.setText(houseItem == null ? "" : houseItem.mName);
+
+        Address workarea = Address.fromProvinceCityText(user.getWorkarea());
+        if (workarea != null) {
+            mWorkareaView.setText(workarea.getDisplayName());
+        } else {
+            mWorkareaView.setText("");
+        }
+
+        Address birthplace = Address.fromProvinceCityText(user.getBirthplace());
+        if (birthplace != null) {
+            mBirthplaceView.setText(birthplace.getDisplayName());
+        } else {
+            mBirthplaceView.setText("");
+        }
+
+        Address residence = Address.fromProvinceCityText(user.getResidence());
+        if (residence != null) {
+            mResidenceView.setText(residence.getDisplayName());
+        } else {
+            mResidenceView.setText("");
+        }
     }
 
 }

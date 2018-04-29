@@ -71,8 +71,11 @@ public class ContactInfo {
     @SerializedName("last_login")
     private long last_login;
 
+    /**
+     * 用户年龄
+     */
     @SerializedName("age")
-    private int age;
+    private int mAge;
 
     @SerializedName("dist")
     private double dist;
@@ -161,5 +164,14 @@ public class ContactInfo {
      */
     public double getDist() {
         return dist;
+    }
+
+    /**
+     * 返回当前用户年龄
+     *
+     * @return
+     */
+    public int getAge() {
+        return mAge;
     }
 }

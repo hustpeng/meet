@@ -2,6 +2,7 @@ package com.agmbat.imsdk.asmack.api;
 
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.user.UserHelper;
 
 import org.jivesoftware.smackx.vcard.VCardListener;
 import org.jivesoftware.smackx.vcard.VCardManager;
@@ -29,7 +30,7 @@ public class FetchContactInfoRunnable implements Runnable {
             @Override
             public void notifyFetchVCardResult(String jid, VCardObject vcard) {
                 if (contactJid.equals(jid)) {
-                    fillInfo(contactInfo, vcard);
+                    UserHelper.applyVCardObject(contactInfo, vcard);
                     vCardManager.removeListener(this);
                     synchronized (contactInfo) {
                         try {
@@ -56,19 +57,12 @@ public class FetchContactInfoRunnable implements Runnable {
                 }
             }
         } else {
-            fillInfo(contactInfo, vCardObject);
+            UserHelper.applyVCardObject(contactInfo, vCardObject);
         }
         if (listener != null) {
             listener.onFetchContactInfo(contactInfo);
         }
     }
 
-    private static void fillInfo(ContactInfo contactInfo, VCardObject vCardObject) {
-        if (vCardObject != null) {
-            contactInfo.setBareJid(vCardObject.getJid());
-            contactInfo.setNickname(vCardObject.getNickname());
-            contactInfo.setAvatar(vCardObject.getAvatar());
-            contactInfo.setGender(vCardObject.getGender());
-        }
-    }
+
 }

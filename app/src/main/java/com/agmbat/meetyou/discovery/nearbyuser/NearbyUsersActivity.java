@@ -60,7 +60,6 @@ public class NearbyUsersActivity extends Activity {
 
         @Override
         protected ArrayAdapter<ContactInfo> createListAdapter(Context context, PageData<ContactInfo> data) {
-            NearbyUsersApiResult apiResult = (NearbyUsersApiResult) data;
             return new ContactInfoAdapter(context, data.getDataList());
         }
 

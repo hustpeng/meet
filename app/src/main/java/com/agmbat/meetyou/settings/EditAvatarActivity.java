@@ -20,6 +20,8 @@ import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
+import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.isdialog.ISActionSheetDialog;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
@@ -52,11 +54,6 @@ public class EditAvatarActivity extends Activity {
     @BindView(R.id.avatar)
     PhotoView mPhotoView;
 
-    /**
-     * 当前用户信息
-     */
-    private VCardObject mVCardObject;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +61,9 @@ public class EditAvatarActivity extends Activity {
         setContentView(R.layout.activity_edit_avatar);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        IM.get().fetchMyVCard();
+
+        LoginUser user = UserManager.getInstance().getLoginUser();
+        update(user);
     }
 
     @Override
@@ -81,8 +80,8 @@ public class EditAvatarActivity extends Activity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LoginUserUpdateEvent event) {
-        mVCardObject = event.mVCardObject;
-        ImageManager.displayImage(mVCardObject.getAvatar(), mPhotoView);
+        LoginUser user = event.getLoginUser();
+        update(user);
     }
 
     /**
@@ -159,7 +158,8 @@ public class EditAvatarActivity extends Activity {
      * 保存图片
      */
     private void savePicture() {
-        File imageFile = ImageManager.getDiskCacheFile(mVCardObject.getAvatar());
+        LoginUser user = UserManager.getInstance().getLoginUser();
+        File imageFile = ImageManager.getDiskCacheFile(user.getAvatar());
         File headFile = new File(Environment.getExternalStorageDirectory(), "head_" + System.currentTimeMillis() + ".jpg");
         FileUtils.copyFileNio(imageFile, headFile);
         // TODO 发送广播让系统将文件扫描到系统数据库中
@@ -198,5 +198,9 @@ public class EditAvatarActivity extends Activity {
                 dialog.dismiss();
             }
         });
+    }
+
+    private void update(LoginUser user) {
+
     }
 }

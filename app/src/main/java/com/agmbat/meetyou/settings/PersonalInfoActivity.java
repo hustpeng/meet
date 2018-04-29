@@ -9,9 +9,9 @@ import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.IM;
-import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
+import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.GenderHelper;
 import com.agmbat.picker.NumberPicker;
@@ -20,7 +20,6 @@ import com.agmbat.picker.helper.PickerHelper;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smackx.vcard.VCardObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,11 +45,6 @@ public class PersonalInfoActivity extends Activity {
     @BindView(R.id.birth_year)
     TextView mBirthYearView;
 
-    /**
-     * 用户信息
-     */
-    private VCardObject mVCardObject;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +52,7 @@ public class PersonalInfoActivity extends Activity {
         setContentView(R.layout.activity_personal_info);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        updateView();
-        IM.get().fetchMyVCard();
+        update(UserManager.getInstance().getLoginUser());
     }
 
     @Override
@@ -87,8 +80,8 @@ public class PersonalInfoActivity extends Activity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LoginUserUpdateEvent event) {
-        mVCardObject = event.mVCardObject;
-        updateView();
+        LoginUser user = event.getLoginUser();
+        update(user);
     }
 
     /**
@@ -104,9 +97,6 @@ public class PersonalInfoActivity extends Activity {
      */
     @OnClick(R.id.btn_head)
     void onClickHead() {
-        if (mVCardObject == null) {
-            return;
-        }
         Intent intent = new Intent(this, EditAvatarActivity.class);
         startActivity(intent);
     }
@@ -143,13 +133,13 @@ public class PersonalInfoActivity extends Activity {
      */
     @OnClick(R.id.btn_birth_year)
     void onClickBirthYear() {
-        int year = mVCardObject.getBirthYear();
+        final LoginUser user = UserManager.getInstance().getLoginUser();
+        int year = user.getBirthYear();
         NumberPicker.OnNumberPickListener l = new NumberPicker.OnNumberPickListener() {
             @Override
             public void onNumberPicked(int index, Number item) {
-                mVCardObject.setBirthYear(item.intValue());
-                EventBus.getDefault().post(mVCardObject);
-                XMPPManager.getInstance().getvCardManager().setMyVCard(mVCardObject);
+                user.setBirthYear(item.intValue());
+                UserManager.getInstance().saveLoginUser(user);
             }
         };
         PickerHelper.showYearPicker(this, year, l);
@@ -167,14 +157,11 @@ public class PersonalInfoActivity extends Activity {
     /**
      * 更新UI显示
      */
-    private void updateView() {
-        if (mVCardObject == null) {
-            return;
-        }
-        ImageManager.displayImage(mVCardObject.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
-        mNickNameView.setText(mVCardObject.getNickname());
-        mGenderView.setText(GenderHelper.getName(mVCardObject.getGender()));
-        mBirthYearView.setText(String.valueOf(mVCardObject.getBirthYear()));
+    private void update(LoginUser user) {
+        ImageManager.displayImage(user.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+        mNickNameView.setText(user.getNickname());
+        mGenderView.setText(GenderHelper.getName(user.getGender()));
+        mBirthYearView.setText(String.valueOf(user.getBirthYear()));
     }
 
 }

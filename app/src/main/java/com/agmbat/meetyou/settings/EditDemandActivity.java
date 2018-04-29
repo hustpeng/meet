@@ -10,15 +10,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.IM;
-import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
+import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smackx.vcardextend.VCardExtendObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,11 +42,6 @@ public class EditDemandActivity extends Activity {
      */
     @BindView(R.id.btn_save)
     Button mSaveButton;
-
-    /**
-     * 用户信息
-     */
-    private VCardExtendObject mVCardObject;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,7 +68,7 @@ public class EditDemandActivity extends Activity {
                 mTipsView.setText(String.valueOf(remainder));
             }
         });
-        IM.get().fetchMyVCardExtend();
+        update(UserManager.getInstance().getLoginUser());
     }
 
     @Override
@@ -96,9 +90,8 @@ public class EditDemandActivity extends Activity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LoginUserUpdateEvent event) {
-        mVCardObject = event.mVCardExtendObject;
-        mEditText.setText(mVCardObject.getDemand());
-        mEditText.setSelection(mEditText.getText().toString().trim().length());
+        LoginUser user = event.getLoginUser();
+        update(user);
     }
 
     /**
@@ -115,15 +108,20 @@ public class EditDemandActivity extends Activity {
     @OnClick(R.id.btn_save)
     void onClickSave() {
         String text = mEditText.getText().toString();
-        if (text.equals(mVCardObject.getDemand())) {
+        LoginUser user = UserManager.getInstance().getLoginUser();
+        if (text.equals(user.getDemand())) {
             // 未修改
             finish();
         } else {
             // TODO 需要添加loading框
-            mVCardObject.setDemand(text);
-            EventBus.getDefault().post(mVCardObject);
-            XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardObject);
+            user.setDemand(text);
+            UserManager.getInstance().saveLoginUser(user);
             finish();
         }
+    }
+
+    private void update(LoginUser user) {
+        mEditText.setText(user.getDemand());
+        mEditText.setSelection(mEditText.getText().toString().trim().length());
     }
 }

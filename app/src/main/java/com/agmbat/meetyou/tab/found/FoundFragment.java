@@ -12,6 +12,7 @@ import android.widget.ListView;
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.discovery.lover.LoverActivity;
 import com.agmbat.meetyou.discovery.nearbyuser.NearbyUsersActivity;
 import com.agmbat.meetyou.tab.found.card.CardInfo;
 import com.agmbat.meetyou.tab.found.card.HeaderCard;
@@ -91,13 +92,18 @@ public class FoundFragment extends Fragment {
     }
 
 
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
     private CardInfo nearby() {
         CardInfo info = new CardInfo(AppResources.getString(R.string.nearby_users));
         info.mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), NearbyUsersActivity.class));
-                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         };
         return info;
@@ -108,8 +114,8 @@ public class FoundFragment extends Fragment {
         info.mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), NearbyUsersActivity.class));
-                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                startActivity(new Intent(getActivity(), LoverActivity.class));
+
             }
         };
         return info;

@@ -35,59 +35,7 @@ public class IM {
         return INSTANCE;
     }
 
-    private VCardListener mVCardListener = (new VCardListener() {
 
-        @Override
-        public void notifySetMyVCardResult(boolean success) {
-            if (success) {
-                VCardObject vcard = XMPPManager.getInstance().getvCardManager().fetchMyVCard();
-                if (vcard != null) {
-                    LoginUserUpdateEvent event = new LoginUserUpdateEvent();
-                    event.mVCardObject = vcard;
-                    EventBus.getDefault().post(event);
-                }
-            }
-        }
-
-        @Override
-        public void notifyFetchVCardResult(String jid, VCardObject vcard) {
-            if (vcard != null) {
-                String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
-                if (loginUser.equals(jid)) {
-                    LoginUserUpdateEvent event = new LoginUserUpdateEvent();
-                    event.mVCardObject = vcard;
-                    EventBus.getDefault().post(event);
-                }
-            }
-        }
-    });
-
-    private VCardExtendListener mVCardExtendListener = new VCardExtendListener() {
-
-        @Override
-        public void notifySetMyVCardExtendResult(boolean success) {
-            if (success) {
-                VCardExtendObject vcard = XMPPManager.getInstance().getvCardExtendManager().fetchMyVCardExtend();
-                if (vcard != null) {
-                    LoginUserUpdateEvent event = new LoginUserUpdateEvent();
-                    event.mVCardExtendObject = vcard;
-                    EventBus.getDefault().post(event);
-                }
-            }
-        }
-
-        @Override
-        public void notifyFetchVCardExtendResult(String jid, VCardExtendObject vcardExtend) {
-            if (vcardExtend != null) {
-                String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
-                if (loginUser.equals(jid)) {
-                    LoginUserUpdateEvent event = new LoginUserUpdateEvent();
-                    event.mVCardExtendObject = vcardExtend;
-                    EventBus.getDefault().post(event);
-                }
-            }
-        }
-    };
 
     private static final String TAG = "IM";
 
@@ -144,33 +92,10 @@ public class IM {
     };
 
     public void init() {
-        XMPPManager.getInstance().getvCardManager().addListener(mVCardListener);
-        XMPPManager.getInstance().getvCardExtendManager().addListener(mVCardExtendListener);
         XMPPManager.getInstance().getRosterManager().addRosterListener(mIRosterListener);
+        // 初始化
+        UserManager.getInstance();
     }
 
-    /**
-     * 获取登陆后的用户信息
-     */
-    public void fetchMyVCard() {
-        VCardObject vCardObject = XMPPManager.getInstance().getvCardManager().fetchMyVCard();
-        if (vCardObject != null) {
-            LoginUserUpdateEvent event = new LoginUserUpdateEvent();
-            event.mVCardObject = vCardObject;
-            EventBus.getDefault().post(event);
-        }
-    }
-
-    /**
-     * 获取登陆后的用户信息
-     */
-    public void fetchMyVCardExtend() {
-        VCardExtendObject vCardObject = XMPPManager.getInstance().getvCardExtendManager().fetchMyVCardExtend();
-        if (vCardObject != null) {
-            LoginUserUpdateEvent event = new LoginUserUpdateEvent();
-            event.mVCardExtendObject = vCardObject;
-            EventBus.getDefault().post(event);
-        }
-    }
 
 }

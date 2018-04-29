@@ -10,6 +10,8 @@ import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
+import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.tag.CategoryTag;
 import com.agmbat.picker.tag.CategoryTagPickerView;
@@ -44,11 +46,6 @@ public class EditHobbyActivity extends Activity {
     @BindView(R.id.btn_save)
     Button mSaveButton;
 
-    /**
-     * 用户信息
-     */
-    private VCardExtendObject mVCardObject;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +53,7 @@ public class EditHobbyActivity extends Activity {
         setContentView(R.layout.activity_edit_hobby);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        IM.get().fetchMyVCardExtend();
+        update(UserManager.getInstance().getLoginUser());
     }
 
     @Override
@@ -78,13 +75,16 @@ public class EditHobbyActivity extends Activity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LoginUserUpdateEvent event) {
-        mVCardObject = event.mVCardExtendObject;
+        LoginUser user = UserManager.getInstance().getLoginUser();
+        update(user);
+    }
 
+    private void update(LoginUser user) {
         String text = AppResources.readAssetFile("wheelpicker/hobby_category.json");
         Type jsonType = new TypeToken<List<CategoryTag>>() {
         }.getType();
         List<CategoryTag> list = GsonHelper.fromJson(text, jsonType);
-        List<String> checkedList = TagText.parseTagList(mVCardObject.getHobby());
+        List<String> checkedList = TagText.parseTagList(user.getHobby());
         cleanCheckedList(list, checkedList);
         mPickerView.setCategoryTagList(list);
         mPickerView.setMaxSelectCount(5);
@@ -132,14 +132,14 @@ public class EditHobbyActivity extends Activity {
     void onClickSave() {
         List<String> tagList = mPickerView.getCheckedList();
         String text = TagText.toTagText(tagList);
-        if (text.equals(mVCardObject.getHobby())) {
+        LoginUser user = UserManager.getInstance().getLoginUser();
+        if (text.equals(user.getHobby())) {
             // 未修改
             finish();
         } else {
             // TODO 需要添加loading框
-            mVCardObject.setHobby(text);
-            EventBus.getDefault().post(mVCardObject);
-            XMPPManager.getInstance().getvCardExtendManager().setMyVCardExtend(mVCardObject);
+            user.setHobby(text);
+            UserManager.getInstance().saveLoginUser(user);
             finish();
         }
     }

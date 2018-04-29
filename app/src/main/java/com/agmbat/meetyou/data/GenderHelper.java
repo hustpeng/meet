@@ -19,17 +19,6 @@ public class GenderHelper {
     public static final int GENDER_MALE = 1;
 
     /**
-     * 2表示未设置,暂时保留
-     */
-    public static final int GENDER_UNKNOWN = 2;
-
-
-    /**
-     * 3表示保密, 暂时保留
-     */
-    public static final int GENDER_SECRET = 3;
-
-    /**
      * 男性
      *
      * @return
@@ -54,14 +43,10 @@ public class GenderHelper {
      * @return
      */
     public static String getName(int gender) {
-        if (gender == GENDER_UNKNOWN) {
-            return "未设置";
-        } else if (gender == GENDER_MALE) {
+        if (gender == GENDER_MALE) {
             return male();
         } else if (gender == GENDER_FEMALE) {
             return female();
-        } else if (gender == GENDER_SECRET) {
-            return "保密";
         }
         return "";
     }

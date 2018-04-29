@@ -1,10 +1,14 @@
 package com.agmbat.imsdk;
 
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.imsdk.user.OnLoadContactGroupListener;
 
 import java.util.List;
 
+/**
+ * 提供给UI层接口
+ */
 public interface IUserManager {
 
     /**
@@ -51,5 +55,17 @@ public interface IUserManager {
      */
     void loadContactGroup(OnLoadContactGroupListener l);
 
+    /**
+     * 获取登陆用户信息
+     *
+     * @return
+     */
+    public LoginUser getLoginUser();
 
+    /**
+     * 保存登陆用户信息
+     *
+     * @param user
+     */
+    void saveLoginUser(LoginUser user);
 }

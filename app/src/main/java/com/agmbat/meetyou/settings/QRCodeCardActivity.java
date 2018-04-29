@@ -12,6 +12,8 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
+import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.GenderHelper;
 import com.google.zxing.client.android.encode.QRCodeEncoder;
@@ -45,11 +47,6 @@ public class QRCodeCardActivity extends Activity {
     @BindView(R.id.gender)
     ImageView mGenderView;
 
-    /**
-     * 用户信息
-     */
-    private VCardObject mVCardObject;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +54,7 @@ public class QRCodeCardActivity extends Activity {
         setContentView(R.layout.activity_qr_code_card);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        IM.get().fetchMyVCard();
+        update(UserManager.getInstance().getLoginUser());
     }
 
     @Override
@@ -79,14 +76,8 @@ public class QRCodeCardActivity extends Activity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LoginUserUpdateEvent event) {
-        mVCardObject = event.mVCardObject;
-        String text = mVCardObject.getUserName();
-        int dimension = (int) AppResources.dipToPixel(250);
-        Bitmap bitmap = QRCodeEncoder.encode(text, dimension);
-        mQrCodeView.setImageBitmap(bitmap);
-        mNickNameView.setText(mVCardObject.getNickname());
-        ImageManager.displayImage(mVCardObject.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
-        mGenderView.setImageResource(GenderHelper.getIconRes(mVCardObject.getGender()));
+        LoginUser user = event.getLoginUser();
+        update(user);
     }
 
     /**
@@ -97,5 +88,14 @@ public class QRCodeCardActivity extends Activity {
         finish();
     }
 
+    private void update(LoginUser user) {
+        String text = user.getUserName();
+        int dimension = (int) AppResources.dipToPixel(250);
+        Bitmap bitmap = QRCodeEncoder.encode(text, dimension);
+        mQrCodeView.setImageBitmap(bitmap);
+        mNickNameView.setText(user.getNickname());
+        ImageManager.displayImage(user.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+        mGenderView.setImageResource(GenderHelper.getIconRes(user.getGender()));
+    }
 
 }

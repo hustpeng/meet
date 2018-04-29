@@ -13,6 +13,8 @@ import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
+import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.data.GenderHelper;
 
@@ -47,10 +49,6 @@ public class EditGenderActivity extends Activity {
     @BindView(R.id.btn_save)
     Button mSaveButton;
 
-    /**
-     * 用户信息
-     */
-    private VCardObject mVCardObject;
 
     private int mGender;
 
@@ -61,7 +59,7 @@ public class EditGenderActivity extends Activity {
         setContentView(R.layout.activity_edit_gender);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        IM.get().fetchMyVCard();
+        updateGenderSelected(UserManager.getInstance().getLoginUser().getGender());
     }
 
     @Override
@@ -83,8 +81,8 @@ public class EditGenderActivity extends Activity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LoginUserUpdateEvent event) {
-        mVCardObject = event.mVCardObject;
-        updateGenderSelected(mVCardObject.getGender());
+        LoginUser user = event.getLoginUser();
+        updateGenderSelected(user.getGender());
     }
 
     /**
@@ -118,15 +116,15 @@ public class EditGenderActivity extends Activity {
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
-        if (mGender == mVCardObject.getGender()) {
+        LoginUser user = UserManager.getInstance().getLoginUser();
+        if (mGender == user.getGender()) {
             // 未修改
             finish();
         } else {
             // TODO 需要添加loading框
             // 修改性别
-            mVCardObject.setGender(mGender);
-            EventBus.getDefault().post(mVCardObject);
-            XMPPManager.getInstance().getvCardManager().setMyVCard(mVCardObject);
+            user.setGender(mGender);
+            UserManager.getInstance().saveLoginUser(user);
             finish();
         }
     }

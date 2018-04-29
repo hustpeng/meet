@@ -109,4 +109,81 @@ public class NearbyUserApi {
         return apiResult;
     }
 
+    /**
+     * GET
+     * https://{DOMAIN}/egret/v1/discovery/nearby.api?uid=<phone>&ticket=<ticket>&center=<latitude,longtitude>&gender=<>&age=<start,end>&pageindex=<>&sign=<>
+     * <p>
+     * 参数名	Required?	格式	意义
+     * uid	Yes	String	phone
+     * ticket	YES	String	The auth ticket
+     * center	Yes	String	搜索的中心点，一般是当前用户的地理位置，格式为<纬度,经度>，例如”30.5,111.2”
+     * gender	Yes	Integer	搜索filter：用户性别过滤。按需求文档，若用户本身为男性，则要搜索女性，即传gender=0，反之则传gender=1
+     * 0：只搜索女性
+     * 1：只搜索男性
+     * age	Yes	Integer	搜索年龄范围,例如27,35 按需求文档要求，若用户本身为男，年龄25岁，则搜索比他小的女性，即传age=18,25; 反之若用户本身为女，年龄25岁，则搜索比她大的男性，即传age=25,80
+     * pageindex	No	Integer	分页获取，第几页。第一页是0，第二页是1，…
+     * 如果不提供，默认为0。
+     * sign	Yes	String	API调用签名
+     * <p>
+     * 返回内容如下：
+     * <p>
+     * {
+     * "result":true, //true  API调用成功，否则调用失败，下面有错误原因
+     * "error_reason":"……",//错误码
+     * "count":150, //总共有多少匹配结果。注意，这是总数，也即所有的分页结果加起来，不是当页的结果数
+     * "pages":15, //总共有多少页
+     * "resp"://接下来是搜索结果
+     * [
+     * {
+     * creation: 1523202953000,
+     * auth_status: 0, //实名认证状态，1 已认证，0未认证，2 认证未通过
+     * avatar_url: "http://p6bt95t1n.bkt.clouddn.com/9974f25e1f43ff01fa3a95dc02032d2179963.jpg",
+     * geo: "30.700001,111.300003",
+     * nickname: "好名",
+     * last_logout: 1524715815000,
+     * age: 26,
+     * gender: 1,
+     * jid: "13437122759@yuan520.com",
+     * last_login: 1524712937000,
+     * dist: 24.21131081069728
+     * <p>
+     * },
+     * {
+     * },
+     * ……
+     * ]
+     * }
+     *
+     * @param uid
+     * @param ticket
+     * @param pageIndex
+     * @return
+     */
+    public static NearbyUsersApiResult getLover(String uid, String ticket, int gender, String age, int pageIndex) {
+        String apiName = "nearby";
+        String url = Api.getBaseDiscoveryUrl(apiName);
+        HttpRequester.Builder builder = new HttpRequester.Builder();
+        builder.baseUrl(url);
+        builder.urlParam("uid", uid);
+        builder.urlParam("ticket", ticket);
+        builder.urlParam("center", "30.5,111.2");
+        builder.urlParam("gender", String.valueOf(gender));
+        builder.urlParam("age", age);
+        builder.urlParam("pageindex", String.valueOf(pageIndex));
+        builder.urlParam("sign", Api.getSign(apiName, uid));
+        HttpRequester requester = builder.build();
+        String text = requester.requestAsString();
+        if (ENABLE_MOCK) {
+            text = AppResources.readAssetFile("apimock/nearby.api.json");
+        }
+        if (StringUtils.isEmpty(text)) {
+            return null;
+        }
+        Type jsonType = new TypeToken<NearbyUsersApiResult>() {
+        }.getType();
+        NearbyUsersApiResult apiResult = GsonHelper.fromJson(text, jsonType);
+        apiResult.mPageNum = pageIndex;
+        return apiResult;
+    }
+
 }

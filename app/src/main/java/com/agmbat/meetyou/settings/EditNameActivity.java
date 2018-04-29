@@ -13,6 +13,8 @@ import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
+import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 
 import org.greenrobot.eventbus.EventBus;
@@ -41,11 +43,6 @@ public class EditNameActivity extends Activity {
     @BindView(R.id.btn_save)
     Button mSaveButton;
 
-    /**
-     * 用户信息
-     */
-    private VCardObject mVCardObject;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +68,7 @@ public class EditNameActivity extends Activity {
             public void afterTextChanged(Editable s) {
             }
         });
-        IM.get().fetchMyVCard();
+        update(UserManager.getInstance().getLoginUser());
     }
 
     @Override
@@ -93,9 +90,8 @@ public class EditNameActivity extends Activity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LoginUserUpdateEvent event) {
-        mVCardObject = event.mVCardObject;
-        mNameEditText.setText(mVCardObject.getNickname());
-        mNameEditText.setSelection(mNameEditText.getText().toString().trim().length());
+        LoginUser user = event.getLoginUser();
+        update(user);
     }
 
     /**
@@ -114,20 +110,25 @@ public class EditNameActivity extends Activity {
         changeNickName();
     }
 
+    private void update(LoginUser user) {
+        mNameEditText.setText(user.getNickname());
+        mNameEditText.setSelection(mNameEditText.getText().toString().trim().length());
+    }
+
     /**
      * 修改昵称
      */
     private void changeNickName() {
+        LoginUser user = UserManager.getInstance().getLoginUser();
         String nickName = mNameEditText.getText().toString();
-        if (nickName.equals(mVCardObject.getNickname())) {
+        if (nickName.equals(user.getNickname())) {
             // 未修改
             finish();
         } else {
             // TODO 需要添加loading框
             // 修改昵称的逻辑
-            mVCardObject.setNickname(nickName);
-            EventBus.getDefault().post(mVCardObject);
-            XMPPManager.getInstance().getvCardManager().setMyVCard(mVCardObject);
+            user.setNickname(nickName);
+            UserManager.getInstance().saveLoginUser(user);
             finish();
         }
     }

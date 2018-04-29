@@ -5,9 +5,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.nearbyuser.ContactInfoAdapter;
 import com.agmbat.meetyou.discovery.nearbyuser.NearbyUsersApiResult;
@@ -15,6 +17,7 @@ import com.agmbat.meetyou.discovery.nearbyuser.NearbyUsersManager;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -23,7 +26,8 @@ import butterknife.OnClick;
  */
 public class LoverActivity extends Activity {
 
-    private NearbyUsersLoader mPageLoader;
+    @BindView(R.id.title)
+    TextView mTitleView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,7 +35,8 @@ public class LoverActivity extends Activity {
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_nearby_users);
         ButterKnife.bind(this);
-        mPageLoader = new NearbyUsersLoader(this);
+        mTitleView.setText(R.string.lover);
+        NearbyUsersLoader mPageLoader = new NearbyUsersLoader(this);
         mPageLoader.setupViews(findViewById(android.R.id.content));
         mPageLoader.loadData();
     }
@@ -58,12 +63,11 @@ public class LoverActivity extends Activity {
 
         @Override
         public NearbyUsersApiResult onLoadData(int page) {
-            return NearbyUsersManager.request(page);
+            return NearbyUsersManager.requestLover(UserManager.getInstance().getLoginUser(), page);
         }
 
         @Override
         protected ArrayAdapter<ContactInfo> createListAdapter(Context context, PageData<ContactInfo> data) {
-            NearbyUsersApiResult apiResult = (NearbyUsersApiResult) data;
             return new ContactInfoAdapter(context, data.getDataList());
         }
 

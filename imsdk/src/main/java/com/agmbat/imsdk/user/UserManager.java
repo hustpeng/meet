@@ -7,6 +7,9 @@ import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.imsdk.IUserManager;
 import com.agmbat.imsdk.asmack.RosterManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.asmack.api.OnFetchLoginUserListener;
+import com.agmbat.imsdk.asmack.api.OnSaveUserInfoListener;
+import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.db.ContactGroupBelong;
@@ -14,7 +17,12 @@ import com.agmbat.imsdk.db.ContactGroupBelongTableManager;
 import com.agmbat.imsdk.db.ContactGroupTableManager;
 import com.agmbat.imsdk.db.ContactTableManager;
 import com.agmbat.imsdk.db.MeetDatabase;
+import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 
+import org.greenrobot.eventbus.EventBus;
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
 
@@ -28,6 +36,11 @@ import java.util.List;
 public class UserManager implements IUserManager {
 
     private RosterManager mRosterManager;
+
+    /**
+     * 当前登陆用户
+     */
+    private LoginUser mLoginUser;
 
     /**
      * 好友申请列表
@@ -54,6 +67,45 @@ public class UserManager implements IUserManager {
         mRosterManager = XMPPManager.getInstance().getRosterManager();
         mContactList = new ArrayList<>();
         mGroupList = new ArrayList<>();
+
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(new ConnectionListener() {
+                    @Override
+                    public void loginSuccessful() {
+                        // 登陆成功后刷新登陆用户信息
+                        refreshLoginUserInfo();
+                    }
+
+                    @Override
+                    public void connectionClosed() {
+
+                    }
+
+                    @Override
+                    public void connectionClosedOnError(Exception e) {
+
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * 刷新登陆用户信息
+     */
+    private void refreshLoginUserInfo() {
+        String loginUserJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        XMPPApi.fetchLoginUser(loginUserJid, new OnFetchLoginUserListener() {
+            @Override
+            public void onFetchLoginUser(LoginUser user) {
+                mLoginUser = user;
+                EventBus.getDefault().post(new LoginUserUpdateEvent(mLoginUser));
+            }
+
+        });
     }
 
     /**
@@ -143,6 +195,7 @@ public class UserManager implements IUserManager {
         });
     }
 
+
     /**
      * 合并处理用户分组列表
      *
@@ -220,5 +273,24 @@ public class UserManager implements IUserManager {
             }
         }
         return null;
+    }
+
+
+    @Override
+    public LoginUser getLoginUser() {
+        return mLoginUser;
+    }
+
+
+    @Override
+    public void saveLoginUser(LoginUser user) {
+        // 先通知UI变化
+        EventBus.getDefault().post(new LoginUserUpdateEvent(user));
+        XMPPApi.saveUserInfo(user, new OnSaveUserInfoListener() {
+            @Override
+            public void onSaveUserInfo(LoginUser user) {
+                EventBus.getDefault().post(new LoginUserUpdateEvent(user));
+            }
+        });
     }
 }

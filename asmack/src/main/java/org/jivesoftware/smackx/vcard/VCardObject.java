@@ -120,7 +120,6 @@ public class VCardObject implements ICacheStoreObject {
         this.jid = jid;
     }
 
-
     public Date getUpdate_date() {
         return update_date;
     }

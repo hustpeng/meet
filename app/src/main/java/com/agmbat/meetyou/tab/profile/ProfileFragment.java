@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
+import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
 import com.agmbat.meetyou.coins.CoinsActivity;
@@ -57,11 +59,6 @@ public class ProfileFragment extends Fragment {
     @BindView(R.id.gender)
     ImageView mGenderView;
 
-    /**
-     * 用户信息
-     */
-    private VCardObject mVCardObject;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,8 +75,7 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        updateView();
-        IM.get().fetchMyVCard();
+        updateView(UserManager.getInstance().getLoginUser());
     }
 
     @Override
@@ -96,10 +92,8 @@ public class ProfileFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LoginUserUpdateEvent event) {
-        if (event.mVCardObject != null) {
-            mVCardObject = event.mVCardObject;
-            updateView();
-        }
+        LoginUser user = event.getLoginUser();
+        updateView(user);
     }
 
     @OnClick(R.id.view_user)
@@ -117,14 +111,11 @@ public class ProfileFragment extends Fragment {
         startActivity(new Intent(getActivity(), CoinsActivity.class));
     }
 
-    private void updateView() {
-        if (mVCardObject == null) {
-            return;
-        }
-        mNickNameView.setText(mVCardObject.getNickname());
-        ImageManager.displayImage(mVCardObject.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
-        mUserNameView.setText(getString(R.string.id_name_format) + " " + mVCardObject.getUserName());
-        mGenderView.setImageResource(GenderHelper.getIconRes(mVCardObject.getGender()));
+    private void updateView(LoginUser user) {
+        mNickNameView.setText(user.getNickname());
+        ImageManager.displayImage(user.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+        mUserNameView.setText(getString(R.string.id_name_format) + " " + user.getUserName());
+        mGenderView.setImageResource(GenderHelper.getIconRes(user.getGender()));
     }
 
 }
