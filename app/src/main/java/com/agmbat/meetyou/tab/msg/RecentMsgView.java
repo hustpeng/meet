@@ -14,26 +14,34 @@ import com.agmbat.time.TimeUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.CircleBitmapDisplayer;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RecentMsgView extends LinearLayout {
 
-    private ImageView mAvatarView;
-    private TextView mNameView;
-    private TextView mMessageView;
-    private TextView mUnreadCountView;
-    private TextView mLastMsgTimeView;
+    @BindView(R.id.avatar)
+    ImageView mAvatarView;
+
+    @BindView(R.id.nickname)
+    TextView mNickNameView;
+
+    @BindView(R.id.last_message)
+    TextView mMessageView;
+
+    @BindView(R.id.last_msg_time)
+    TextView mUnreadCountView;
+
+    @BindView(R.id.unread_count)
+    TextView mLastMsgTimeView;
 
     public RecentMsgView(Context context) {
         super(context);
         View.inflate(context, R.layout.recent_chat_item, this);
-        mAvatarView = (ImageView) findViewById(R.id.avatar);
-        mNameView = (TextView) findViewById(R.id.name);
-        mMessageView = (TextView) findViewById(R.id.last_message);
-        mLastMsgTimeView = (TextView) findViewById(R.id.last_msg_time);
-        mUnreadCountView = (TextView) findViewById(R.id.unread_count);
+        ButterKnife.bind(this, this);
     }
 
     public void update(RecentChat recentChat) {
-        mNameView.setText(recentChat.getContact().getNickName());
+        mNickNameView.setText(recentChat.getContact().getNickName());
         ChatMessage msg = recentChat.getLastChatMessage();
         if (msg != null) {
             mMessageView.setVisibility(View.VISIBLE);
