@@ -12,12 +12,18 @@ import com.agmbat.meetyou.R;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * 我的缘币
  */
 public class CoinsActivity extends Activity {
 
-    private TextView mCoinsView;
+    @BindView(R.id.my_coins)
+    TextView mCoinsView;
+
     private CoinsLoader mPageLoader;
 
     @Override
@@ -25,13 +31,7 @@ public class CoinsActivity extends Activity {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_coins);
-        mCoinsView = (TextView) findViewById(R.id.my_coins);
-        findViewById(R.id.title_btn_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        ButterKnife.bind(this);
         mPageLoader = new CoinsLoader(this);
         mPageLoader.setupViews(findViewById(android.R.id.content));
         mPageLoader.loadData();
@@ -43,6 +43,13 @@ public class CoinsActivity extends Activity {
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
+    /**
+     * 点击返回键
+     */
+    @OnClick(R.id.title_btn_back)
+    void onClickBack() {
+        finish();
+    }
 
     public class CoinsLoader extends PageDataLoader<CoinsRecords> {
 

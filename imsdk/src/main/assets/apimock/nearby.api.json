@@ -1,0 +1,59 @@
+{
+  "result": true,
+  "count": 4,
+  "pages": 1,
+  "resp": [
+    {
+      "creation": 1523811613000,
+      "auth_status": 0,
+      "avatar_url": "http://p6bt95t1n.bkt.clouddn.com/0d252ea965248e8eaffd37b63fb33d2243520.jpg",
+      "geo": "30.700001,111.300003",
+      "nickname": "接电弧",
+      "last_logout": 1524817815000,
+      "age": 28,
+      "gender": 0,
+      "jid": "15002752759@yuan520.com",
+      "last_login": 1524815658000,
+      "dist": 24.21131081069728
+    },
+    {
+      "creation": 1524584201000,
+      "auth_status": 0,
+      "avatar_url": "",
+      "geo": "30.700001,111.300003",
+      "nickname": "abdc",
+      "last_logout": 1524590187000,
+      "age": 28,
+      "gender": 1,
+      "jid": "abdc@yuan520.com",
+      "last_login": 1524584205000,
+      "dist": 24.21131081069728
+    },
+    {
+      "creation": 1524463197000,
+      "auth_status": 0,
+      "avatar_url": "http://p6bt95t1n.bkt.clouddn.com/16b3913ebe60280152be0addd560aa8896687.jpg",
+      "geo": "30.700001,111.300003",
+      "nickname": "Jack",
+      "last_logout": 1524465615000,
+      "age": 30,
+      "gender": 1,
+      "jid": "15571767415@yuan520.com",
+      "last_login": 1524463197000,
+      "dist": 24.21131081069728
+    },
+    {
+      "creation": 1523174279000,
+      "auth_status": 0,
+      "avatar_url": "http://p6bt95t1n.bkt.clouddn.com/8a07818749bca038fd06f9a271ec2f1215915.jpg",
+      "geo": "30.700001,111.300003",
+      "nickname": "KenChen",
+      "last_logout": 1524324391000,
+      "age": 38,
+      "gender": 1,
+      "jid": "16671001488@yuan520.com",
+      "last_login": 1524319402000,
+      "dist": 24.21131081069728
+    }
+  ]
+}

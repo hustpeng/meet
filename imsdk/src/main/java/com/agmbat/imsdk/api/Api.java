@@ -37,6 +37,17 @@ public class Api {
     }
 
     /**
+     * 附近的人
+     *
+     * @param apiName
+     * @return
+     */
+    public static String getBaseDiscoveryUrl(String apiName) {
+        return DOMAIN + "/" + APP_CODE + "/v1/discovery/" + apiName + ".api";
+
+    }
+
+    /**
      * 获取签名
      *
      * @param apiName

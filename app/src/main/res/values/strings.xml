@@ -104,13 +104,17 @@
     <string name="send_message">发消息</string>
     <string name="add_to_contact">添加到通讯录</string>
 
+    <string name="search">搜索</string>
+    <string name="group_chat">群聊</string>
+    <string name="new_friend">新的朋友</string>
+
+    <!-- 发现页面 -->
+    <string name="nearby_users">附近的人</string>
+
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
 
-    <string name="search">搜索</string>
-    <string name="group_chat">群聊</string>
-    <string name="new_friend">新的朋友</string>
 
 </resources>

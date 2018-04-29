@@ -1,8 +1,8 @@
-package com.agmbat.meetyou.coins;
+package com.agmbat.meetyou.nearbyuser;
 
 import com.agmbat.imsdk.asmack.XMPPManager;
 
-public class CoinsManager {
+public class NearbyUsersManager {
 
     /**
      * 请求数据
@@ -10,10 +10,10 @@ public class CoinsManager {
      * @param pageIndex
      * @return
      */
-    public static CoinsApiResult request(int pageIndex) {
+    public static NearbyUsersApiResult request(int pageIndex) {
         String phone = XMPPManager.getInstance().getConnectionUserName();
         String token = XMPPManager.getInstance().getTokenManager().getTokenRetry();
-        return CoinsApi.getCoins(phone, token, pageIndex);
+        return NearbyUserApi.getNearbyUsers(phone, token, pageIndex);
     }
 
 }

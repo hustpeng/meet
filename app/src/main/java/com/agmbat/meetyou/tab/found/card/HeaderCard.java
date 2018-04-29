@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.tab.found;
+package com.agmbat.meetyou.tab.found.card;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.tab.found.card.CardInfo;
 
 import java.util.List;
 
@@ -17,49 +18,47 @@ import java.util.List;
  */
 public class HeaderCard extends FrameLayout {
 
-    public static class HeaderItemInfo {
-        private String mTitle;
-        private Drawable mIcon;
-        private OnClickListener mOnClickListener;
 
-        public HeaderItemInfo(String title) {
-            mTitle = title;
-        }
-    }
 
     /**
      * 卡片item列表
      */
-    private List<HeaderItemInfo> mList;
+    private List<CardInfo> mList;
 
     public HeaderCard(@NonNull Context context) {
         super(context);
         View.inflate(context, R.layout.found_list_header, this);
     }
 
-    public void setHeaderItemList(List<HeaderItemInfo> list) {
+    public void setHeaderItemList(List<CardInfo> list) {
         mList = list;
         if (mList != null) {
             View header1 = findViewById(R.id.header1);
             TextView textView = header1.findViewById(R.id.name);
-            textView.setText(mList.get(0).mTitle);
+            updateHeaderItem(textView, mList.get(0));
             textView = header1.findViewById(R.id.name2);
-            textView.setText(mList.get(1).mTitle);
+            updateHeaderItem(textView, mList.get(1));
             textView = header1.findViewById(R.id.name3);
-            textView.setText(mList.get(2).mTitle);
+            updateHeaderItem(textView, mList.get(2));
             textView = header1.findViewById(R.id.name4);
-            textView.setText(mList.get(3).mTitle);
+            updateHeaderItem(textView, mList.get(3));
+
 
             View header2 = findViewById(R.id.header2);
             textView = header2.findViewById(R.id.name);
-            textView.setText(mList.get(4).mTitle);
+            updateHeaderItem(textView, mList.get(4));
             textView = header2.findViewById(R.id.name2);
-            textView.setText(mList.get(5).mTitle);
+            updateHeaderItem(textView, mList.get(5));
             textView = header2.findViewById(R.id.name3);
-            textView.setText(mList.get(6).mTitle);
+            updateHeaderItem(textView, mList.get(6));
             textView = header2.findViewById(R.id.name4);
-            textView.setText(mList.get(7).mTitle);
+            updateHeaderItem(textView, mList.get(7));
         }
+    }
+
+    private void updateHeaderItem(TextView tv, CardInfo item) {
+        tv.setText(item.mTitle);
+        tv.setOnClickListener(item.mOnClickListener);
     }
 
 }

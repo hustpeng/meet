@@ -23,6 +23,7 @@ import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.user.OnLoadContactGroupListener;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.search.NewFriendActivity;
 import com.agmbat.meetyou.search.SearchUserActivity;
 
@@ -180,14 +181,8 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
                                 int childPosition, long id) {
-//        ContactInfo contactInfo = mFriendsAdapter.getChild(groupPosition, childPosition);
-//        boolean isBlockUser = MeetDatabase.getInstance().isBlockUserExist(mLoginUserName,
-//                contactInfo.getUserName());
-//        if (isBlockUser) {
-//            GlobalToast.showToast(R.string.tips_could_not_char_with_block_user);
-//        } else {
-//            ChatActivity.openChat(getActivity(), contactInfo);
-//        }
+        ContactInfo contactInfo = mFriendsAdapter.getChild(groupPosition, childPosition);
+        ChatActivity.openChat(getActivity(), contactInfo);
         return false;
     }
 

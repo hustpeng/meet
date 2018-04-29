@@ -17,7 +17,6 @@ import com.agmbat.pulltorefresh.view.PullToRefreshListView;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /***
  * 消息聊天界面
  */

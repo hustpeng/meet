@@ -2,6 +2,7 @@ package com.agmbat.imsdk.data;
 
 import com.agmbat.db.annotation.Column;
 import com.agmbat.db.annotation.Table;
+import com.google.gson.annotations.SerializedName;
 
 import org.jivesoftware.smack.util.XmppStringUtils;
 
@@ -10,6 +11,7 @@ import org.jivesoftware.smack.util.XmppStringUtils;
  */
 @Table(name = "contact")
 public class ContactInfo {
+
 
     /**
      * 此id为数据库存储id值
@@ -21,12 +23,14 @@ public class ContactInfo {
      * 联系人id标识
      */
     @Column(name = "jid")
+    @SerializedName("jid")
     private String mBareJid = "";
 
     /**
      * 联系人昵称
      */
     @Column(name = "nickname")
+    @SerializedName("nickname")
     private String mNickname;
 
     /**
@@ -39,13 +43,41 @@ public class ContactInfo {
      * 用户头像url
      */
     @Column(name = "avatar")
+    @SerializedName("avatar_url")
     private String mAvatar;
 
     /**
      * 性别
      */
     @Column(name = "gender")
+    @SerializedName("gender")
     private int mGender;
+
+
+    /****** 附近的人需要的字段 start **************/
+
+    @SerializedName("creation")
+    private long creation;
+
+    @SerializedName("auth_status")
+    private int auth_status;
+
+    @SerializedName("geo")
+    private String geo;
+
+    @SerializedName("last_logout")
+    private long last_logout;
+
+    @SerializedName("last_login")
+    private long last_login;
+
+    @SerializedName("age")
+    private int age;
+
+    @SerializedName("dist")
+    private double dist;
+
+    /****** 附近的人需要的字段 end   **************/
 
     public void setNickname(String nickname) {
         mNickname = nickname;
@@ -120,5 +152,14 @@ public class ContactInfo {
         mRemark = contactInfo.mRemark;
         mAvatar = contactInfo.mAvatar;
         mGender = contactInfo.mGender;
+    }
+
+    /**
+     * 获取距离
+     *
+     * @return
+     */
+    public double getDist() {
+        return dist;
     }
 }
