@@ -9,21 +9,27 @@ import android.widget.TextView;
 import com.agmbat.meetyou.R;
 import com.agmbat.time.TimeUtils;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * 积分记录item
  */
 public class CoinsView extends FrameLayout {
 
-    private TextView mNameView;
-    private TextView mDateView;
-    private TextView mCoinsView;
+    @BindView(R.id.name)
+    TextView mNameView;
+
+    @BindView(R.id.date)
+    TextView mDateView;
+
+    @BindView(R.id.coins)
+    TextView mCoinsView;
 
     public CoinsView(@NonNull Context context) {
         super(context);
         View.inflate(context, R.layout.coins_list_item, this);
-        mNameView = findViewById(R.id.name);
-        mDateView = findViewById(R.id.date);
-        mCoinsView = findViewById(R.id.coins);
+        ButterKnife.bind(this, this);
     }
 
     public void update(CoinsRecords item) {

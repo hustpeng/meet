@@ -88,28 +88,33 @@ public class ProfileFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LoginUserUpdateEvent event) {
-        mVCardObject = event.mVCardObject;
-        updateView();
+        if (event.mVCardObject != null) {
+            mVCardObject = event.mVCardObject;
+            updateView();
+        }
     }
 
     @OnClick(R.id.view_user)
     void onClickUser() {
         startActivity(new Intent(getActivity(), PersonalInfoActivity.class));
-        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
-
 
     @OnClick(R.id.btn_change_password)
     void onClickChangePassword() {
         startActivity(new Intent(getActivity(), ChangePasswordActivity.class));
-        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
+    @OnClick(R.id.btn_credits)
     void onClickCredits() {
         startActivity(new Intent(getActivity(), CoinsActivity.class));
-        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     private void updateView() {
@@ -121,6 +126,5 @@ public class ProfileFragment extends Fragment {
         mUserNameView.setText(getString(R.string.id_name_format) + " " + mVCardObject.getUserName());
         mGenderView.setImageResource(GenderHelper.getIconRes(mVCardObject.getGender()));
     }
-
 
 }
