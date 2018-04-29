@@ -28,10 +28,10 @@ public class RecentMsgView extends LinearLayout {
     @BindView(R.id.last_message)
     TextView mMessageView;
 
-    @BindView(R.id.last_msg_time)
+    @BindView(R.id.unread_count)
     TextView mUnreadCountView;
 
-    @BindView(R.id.unread_count)
+    @BindView(R.id.last_msg_time)
     TextView mLastMsgTimeView;
 
     public RecentMsgView(Context context) {

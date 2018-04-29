@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.nearbyuser;
+package com.agmbat.meetyou.discovery.nearbyuser;
 
 import android.content.Context;
 import android.view.View;

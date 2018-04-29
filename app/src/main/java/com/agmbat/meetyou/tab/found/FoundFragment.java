@@ -12,7 +12,7 @@ import android.widget.ListView;
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.nearbyuser.NearbyUsersActivity;
+import com.agmbat.meetyou.discovery.nearbyuser.NearbyUsersActivity;
 import com.agmbat.meetyou.tab.found.card.CardInfo;
 import com.agmbat.meetyou.tab.found.card.HeaderCard;
 
@@ -37,7 +37,7 @@ public class FoundFragment extends Fragment {
         List<CardInfo> list = new ArrayList<>();
         list.add(new CardInfo("在线会员"));
         list.add(nearby());
-        list.add(new CardInfo("找恋人"));
+        list.add(lover());
         list.add(new CardInfo("找玩伴"));
 
         list.add(new CardInfo("找同行"));
@@ -62,7 +62,7 @@ public class FoundFragment extends Fragment {
         dataList.add(group);
 
         group = new FoundGroup();
-        group.setTitle("找恋人");
+        group.setTitle(AppResources.getString(R.string.lover));
         group.setUserList(userList);
         dataList.add(group);
 
@@ -93,6 +93,18 @@ public class FoundFragment extends Fragment {
 
     private CardInfo nearby() {
         CardInfo info = new CardInfo(AppResources.getString(R.string.nearby_users));
+        info.mOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), NearbyUsersActivity.class));
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+            }
+        };
+        return info;
+    }
+
+    private CardInfo lover() {
+        CardInfo info = new CardInfo(AppResources.getString(R.string.lover));
         info.mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {

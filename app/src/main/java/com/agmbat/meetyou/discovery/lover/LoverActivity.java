@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.nearbyuser;
+package com.agmbat.meetyou.discovery.lover;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,15 +9,19 @@ import android.widget.ArrayAdapter;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.discovery.nearbyuser.ContactInfoAdapter;
+import com.agmbat.meetyou.discovery.nearbyuser.NearbyUsersApiResult;
+import com.agmbat.meetyou.discovery.nearbyuser.NearbyUsersManager;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * 附近的人,联系人列表
  */
-public class NearbyUsersActivity extends Activity {
+public class LoverActivity extends Activity {
 
     private NearbyUsersLoader mPageLoader;
 
@@ -26,6 +30,7 @@ public class NearbyUsersActivity extends Activity {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_nearby_users);
+        ButterKnife.bind(this);
         mPageLoader = new NearbyUsersLoader(this);
         mPageLoader.setupViews(findViewById(android.R.id.content));
         mPageLoader.loadData();

@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.nearbyuser;
+package com.agmbat.meetyou.discovery.nearbyuser;
 
 import com.agmbat.imsdk.asmack.XMPPManager;
 

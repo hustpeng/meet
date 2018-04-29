@@ -111,7 +111,11 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.agmbat.meetyou.nearbyuser.NearbyUsersActivity"
+            android:name="com.agmbat.meetyou.discovery.nearbyuser.NearbyUsersActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.discovery.lover.LoverActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
     </application>

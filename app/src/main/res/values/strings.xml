@@ -110,6 +110,7 @@
 
     <!-- 发现页面 -->
     <string name="nearby_users">附近的人</string>
+    <string name="lover">找恋人</string>
 
 
     <string name="contacts_recently">最近</string>
