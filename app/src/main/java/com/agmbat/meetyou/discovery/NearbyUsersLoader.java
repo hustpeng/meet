@@ -1,6 +1,7 @@
 package com.agmbat.meetyou.discovery;
 
 import com.agmbat.android.AppResources;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
 
 /**
@@ -15,6 +16,8 @@ public class NearbyUsersLoader implements DiscoveryLoader {
 
     @Override
     public DiscoveryApiResult load(int page) {
-        return DiscoveryManager.requestNearbyUsers(page);
+        String phone = XMPPManager.getInstance().getConnectionUserName();
+        String token = XMPPManager.getInstance().getTokenManager().getTokenRetry();
+        return DiscoveryApi.getNearbyUsers(phone, token, page);
     }
 }

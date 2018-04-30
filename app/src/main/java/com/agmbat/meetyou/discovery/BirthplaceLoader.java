@@ -9,33 +9,33 @@ import com.agmbat.meetyou.R;
 /**
  * 找玩伴
  */
-public class HobbyLoader implements DiscoveryLoader {
+public class BirthplaceLoader implements DiscoveryLoader {
 
     @Override
     public String getName() {
-        return AppResources.getString(R.string.discovery_hobby);
+        return AppResources.getString(R.string.discovery_birthplace);
     }
 
     @Override
     public DiscoveryApiResult load(int page) {
-        return requestHobby(UserManager.getInstance().getLoginUser(), page);
+        return requestBirthplace(UserManager.getInstance().getLoginUser(), page);
     }
 
+
     /**
-     * 找玩伴
+     * 找老乡
      *
      * @param current   当前用户信息
      * @param pageIndex
      * @return
      */
-    public static DiscoveryApiResult requestHobby(LoginUser current, int pageIndex) {
+    public static DiscoveryApiResult requestBirthplace(LoginUser current, int pageIndex) {
         if (current == null) {
             return null;
         }
         String phone = XMPPManager.getInstance().getConnectionUserName();
         String token = XMPPManager.getInstance().getTokenManager().getTokenRetry();
-        String hobby = current.getHobby();
-        return DiscoveryApi.getHobby(phone, token, hobby, pageIndex);
+        String birthplace = current.getBirthplace();
+        return DiscoveryApi.getBirthplace(phone, token, birthplace, pageIndex);
     }
-
 }

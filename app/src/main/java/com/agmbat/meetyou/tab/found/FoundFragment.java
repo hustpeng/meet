@@ -41,7 +41,7 @@ public class FoundFragment extends Fragment {
         list.add(hobby());
 
         list.add(new CardInfo("找同行"));
-        list.add(new CardInfo("找老乡"));
+        list.add(birthplace());
         list.add(new CardInfo("找群组"));
         list.add(new CardInfo("创建群组"));
         headerCard.setHeaderItemList(list);
@@ -77,7 +77,7 @@ public class FoundFragment extends Fragment {
         dataList.add(group);
 
         group = new FoundGroup();
-        group.setTitle("找老乡");
+        group.setTitle(AppResources.getString(R.string.discovery_birthplace));
         group.setUserList(userList);
         dataList.add(group);
 
@@ -88,13 +88,6 @@ public class FoundFragment extends Fragment {
 
         FoundAdapter adapter = new FoundAdapter(getActivity(), dataList);
         mListView.setAdapter(adapter);
-    }
-
-
-    @Override
-    public void startActivity(Intent intent) {
-        super.startActivity(intent);
-        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     private CardInfo nearby() {
@@ -125,6 +118,17 @@ public class FoundFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 DiscoveryHelper.openHobby(getActivity());
+            }
+        };
+        return info;
+    }
+
+    private CardInfo birthplace() {
+        CardInfo info = new CardInfo(AppResources.getString(R.string.discovery_birthplace));
+        info.mOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DiscoveryHelper.openBirthplace(getActivity());
             }
         };
         return info;
