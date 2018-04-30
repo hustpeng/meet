@@ -7,6 +7,7 @@ public class DiscoveryHelper {
 
     private static final int DISCOVER_TYPE_NEAR_BY_USERS = 1;
     private static final int DISCOVER_TYPE_LOVER = 2;
+    private static final int DISCOVER_TYPE_HOBBY = 3;
     private static final String TYPE = "type";
 
     public static DiscoveryLoader getLoader(Intent intent) {
@@ -15,6 +16,8 @@ public class DiscoveryHelper {
             return new NearbyUsersLoader();
         } else if (type == DISCOVER_TYPE_LOVER) {
             return new LoversLoader();
+        } else if (type == DISCOVER_TYPE_HOBBY) {
+            return new HobbyLoader();
         }
         return null;
     }
@@ -39,6 +42,18 @@ public class DiscoveryHelper {
     public static void openLover(Context context) {
         Intent intent = new Intent(context, DiscoveryActivity.class);
         intent.putExtra(TYPE, DISCOVER_TYPE_LOVER);
+        context.startActivity(intent);
+    }
+
+
+    /**
+     * 打开找玩伴界面
+     *
+     * @param context
+     */
+    public static void openHobby(Context context) {
+        Intent intent = new Intent(context, DiscoveryActivity.class);
+        intent.putExtra(TYPE, DISCOVER_TYPE_HOBBY);
         context.startActivity(intent);
     }
 }

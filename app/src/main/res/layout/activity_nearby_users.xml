@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/nearby_users"
+            android:text="@string/discovery_nearby_users"
             android:textColor="#ffffffff"
             android:textSize="20sp" />
 

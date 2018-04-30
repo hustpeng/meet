@@ -10,11 +10,11 @@ public class NearbyUsersLoader implements DiscoveryLoader {
 
     @Override
     public String getName() {
-        return AppResources.getString(R.string.nearby_users);
+        return AppResources.getString(R.string.discovery_nearby_users);
     }
 
     @Override
     public DiscoveryApiResult load(int page) {
-        return DiscoveryManager.request(page);
+        return DiscoveryManager.requestNearbyUsers(page);
     }
 }

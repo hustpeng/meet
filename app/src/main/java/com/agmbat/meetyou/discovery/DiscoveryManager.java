@@ -12,7 +12,7 @@ public class DiscoveryManager {
      * @param pageIndex
      * @return
      */
-    public static DiscoveryApiResult request(int pageIndex) {
+    public static DiscoveryApiResult requestNearbyUsers(int pageIndex) {
         String phone = XMPPManager.getInstance().getConnectionUserName();
         String token = XMPPManager.getInstance().getTokenManager().getTokenRetry();
         return DiscoveryApi.getNearbyUsers(phone, token, pageIndex);
@@ -54,4 +54,22 @@ public class DiscoveryManager {
         }
         return DiscoveryApi.getLover(phone, token, searchGender, searchAge, pageIndex);
     }
+
+    /**
+     * 找玩伴
+     *
+     * @param current   当前用户信息
+     * @param pageIndex
+     * @return
+     */
+    public static DiscoveryApiResult requestHobby(LoginUser current, int pageIndex) {
+        if (current == null) {
+            return null;
+        }
+        String phone = XMPPManager.getInstance().getConnectionUserName();
+        String token = XMPPManager.getInstance().getTokenManager().getTokenRetry();
+        String hobby = current.getHobby();
+        return DiscoveryApi.getHobby(phone, token, hobby, pageIndex);
+    }
+
 }

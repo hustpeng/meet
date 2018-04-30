@@ -38,7 +38,7 @@ public class FoundFragment extends Fragment {
         list.add(new CardInfo("在线会员"));
         list.add(nearby());
         list.add(lover());
-        list.add(new CardInfo("找玩伴"));
+        list.add(hobby());
 
         list.add(new CardInfo("找同行"));
         list.add(new CardInfo("找老乡"));
@@ -57,17 +57,17 @@ public class FoundFragment extends Fragment {
 
         List<FoundGroup> dataList = new ArrayList<>();
         FoundGroup group = new FoundGroup();
-        group.setTitle(AppResources.getString(R.string.nearby_users));
+        group.setTitle(AppResources.getString(R.string.discovery_nearby_users));
         group.setUserList(userList);
         dataList.add(group);
 
         group = new FoundGroup();
-        group.setTitle(AppResources.getString(R.string.lover));
+        group.setTitle(AppResources.getString(R.string.discovery_lover));
         group.setUserList(userList);
         dataList.add(group);
 
         group = new FoundGroup();
-        group.setTitle("找玩伴");
+        group.setTitle(AppResources.getString(R.string.discovery_hobby));
         group.setUserList(userList);
         dataList.add(group);
 
@@ -98,7 +98,7 @@ public class FoundFragment extends Fragment {
     }
 
     private CardInfo nearby() {
-        CardInfo info = new CardInfo(AppResources.getString(R.string.nearby_users));
+        CardInfo info = new CardInfo(AppResources.getString(R.string.discovery_nearby_users));
         info.mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,11 +109,22 @@ public class FoundFragment extends Fragment {
     }
 
     private CardInfo lover() {
-        CardInfo info = new CardInfo(AppResources.getString(R.string.lover));
+        CardInfo info = new CardInfo(AppResources.getString(R.string.discovery_lover));
         info.mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DiscoveryHelper.openLover(getActivity());
+            }
+        };
+        return info;
+    }
+
+    private CardInfo hobby() {
+        CardInfo info = new CardInfo(AppResources.getString(R.string.discovery_hobby));
+        info.mOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DiscoveryHelper.openHobby(getActivity());
             }
         };
         return info;

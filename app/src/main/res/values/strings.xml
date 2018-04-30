@@ -109,8 +109,9 @@
     <string name="new_friend">新的朋友</string>
 
     <!-- 发现页面 -->
-    <string name="nearby_users">附近的人</string>
-    <string name="lover">找恋人</string>
+    <string name="discovery_nearby_users">附近的人</string>
+    <string name="discovery_lover">找恋人</string>
+    <string name="discovery_hobby">找玩伴</string>
 
 
     <string name="contacts_recently">最近</string>
