@@ -10,18 +10,16 @@ import android.widget.TextView;
 import com.agmbat.android.AppResources;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.data.GenderHelper;
+import com.agmbat.meetyou.helper.GenderHelper;
 import com.google.zxing.client.android.encode.QRCodeEncoder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smackx.vcard.VCardObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

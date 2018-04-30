@@ -16,14 +16,23 @@ import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.meetyou.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * 修改密码界面
  */
 public class ChangePasswordActivity extends Activity {
 
-    private EditText mInputCurrentPwd;
-    private EditText mInputNewPwd;
-    private EditText mInputConfirmPwd;
+    @BindView(R.id.input_old_pwd)
+    EditText mInputCurrentPwd;
+
+    @BindView(R.id.input_new_pwd)
+    EditText mInputNewPwd;
+
+    @BindView(R.id.input_confirm_pwd)
+    EditText mInputConfirmPwd;
 
     private ImAccountManager mLoginManager;
     private ProgressDialog mProgressDialog;
@@ -33,26 +42,10 @@ public class ChangePasswordActivity extends Activity {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_change_password);
-        findViewById(R.id.title_btn_back).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        findViewById(R.id.btn_done).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleDone();
-            }
-        });
-
+        ButterKnife.bind(this);
         mLoginManager = new ImAccountManager(this);
         TextView tv = (TextView) findViewById(R.id.username);
         tv.setText(mLoginManager.getConnectionUserName());
-        mInputCurrentPwd = (EditText) findViewById(R.id.input_old_pwd);
-        mInputNewPwd = (EditText) findViewById(R.id.input_new_pwd);
-        mInputConfirmPwd = (EditText) findViewById(R.id.input_confirm_pwd);
         mInputCurrentPwd.requestFocus();
     }
 
@@ -62,7 +55,13 @@ public class ChangePasswordActivity extends Activity {
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
-    private void handleDone() {
+    @OnClick(R.id.title_btn_back)
+    void onClickBack() {
+        finish();
+    }
+
+    @OnClick(R.id.btn_done)
+    void onClickDone() {
         ViewUtils.hideInputMethod(mInputConfirmPwd);
 
         String currentPwd = mInputCurrentPwd.getText().toString().trim();

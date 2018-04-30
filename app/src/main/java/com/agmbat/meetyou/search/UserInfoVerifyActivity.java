@@ -11,7 +11,7 @@ import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.data.GenderHelper;
+import com.agmbat.meetyou.helper.GenderHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

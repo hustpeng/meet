@@ -11,21 +11,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
-import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
 import com.agmbat.meetyou.coins.CoinsActivity;
-import com.agmbat.meetyou.data.GenderHelper;
+import com.agmbat.meetyou.helper.GenderHelper;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.settings.PersonalInfoActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smackx.vcard.VCardObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

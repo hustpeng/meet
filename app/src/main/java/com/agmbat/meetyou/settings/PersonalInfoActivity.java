@@ -13,7 +13,7 @@ import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.data.GenderHelper;
+import com.agmbat.meetyou.helper.GenderHelper;
 import com.agmbat.picker.NumberPicker;
 import com.agmbat.picker.helper.PickerHelper;
 

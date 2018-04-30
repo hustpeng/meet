@@ -6,7 +6,7 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.data.GenderHelper;
+import com.agmbat.meetyou.helper.GenderHelper;
 
 public class LoversLoader implements DiscoveryLoader {
 

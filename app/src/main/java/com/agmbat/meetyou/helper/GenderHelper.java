@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.data;
+package com.agmbat.meetyou.helper;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.meetyou.R;

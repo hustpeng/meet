@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.data.GenderHelper;
+import com.agmbat.meetyou.helper.GenderHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
