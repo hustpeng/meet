@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.discovery.nearbyuser;
+package com.agmbat.meetyou.discovery;
 
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.data.ContactInfo;
@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class NearbyUsersApiResult extends ApiResult<List<ContactInfo>> implements PageData<ContactInfo> {
+public class DiscoveryApiResult extends ApiResult<List<ContactInfo>> implements PageData<ContactInfo> {
 
     /**
      * 每页数据20

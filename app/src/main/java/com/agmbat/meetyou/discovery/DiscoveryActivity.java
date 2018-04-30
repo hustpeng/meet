@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.discovery.lover;
+package com.agmbat.meetyou.discovery;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,11 +9,7 @@ import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.discovery.nearbyuser.ContactInfoAdapter;
-import com.agmbat.meetyou.discovery.nearbyuser.NearbyUsersApiResult;
-import com.agmbat.meetyou.discovery.nearbyuser.NearbyUsersManager;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 
@@ -24,10 +20,12 @@ import butterknife.OnClick;
 /**
  * 附近的人,联系人列表
  */
-public class LoverActivity extends Activity {
+public class DiscoveryActivity extends Activity {
 
     @BindView(R.id.title)
     TextView mTitleView;
+
+    private DiscoveryLoader mLoader;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,7 +33,8 @@ public class LoverActivity extends Activity {
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_nearby_users);
         ButterKnife.bind(this);
-        mTitleView.setText(R.string.lover);
+        mLoader = DiscoveryHelper.getLoader(getIntent());
+        mTitleView.setText(mLoader.getName());
         NearbyUsersLoader mPageLoader = new NearbyUsersLoader(this);
         mPageLoader.setupViews(findViewById(android.R.id.content));
         mPageLoader.loadData();
@@ -62,8 +61,8 @@ public class LoverActivity extends Activity {
         }
 
         @Override
-        public NearbyUsersApiResult onLoadData(int page) {
-            return NearbyUsersManager.requestLover(UserManager.getInstance().getLoginUser(), page);
+        public DiscoveryApiResult onLoadData(int page) {
+            return mLoader.load(page);
         }
 
         @Override

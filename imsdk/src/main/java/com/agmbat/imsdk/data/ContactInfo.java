@@ -59,8 +59,11 @@ public class ContactInfo {
     @SerializedName("creation")
     private long creation;
 
+    /**
+     * 实名认证状态，1 已认证，0未认证，2 认证未通过
+     */
     @SerializedName("auth_status")
-    private int auth_status;
+    private int mAuthStatus;
 
     @SerializedName("geo")
     private String geo;

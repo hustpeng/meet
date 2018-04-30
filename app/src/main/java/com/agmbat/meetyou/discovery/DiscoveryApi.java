@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.discovery.nearbyuser;
+package com.agmbat.meetyou.discovery;
 
 
 import com.agmbat.android.AppResources;
@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
 /**
  * 缘币api
  */
-public class NearbyUserApi {
+public class DiscoveryApi {
 
     private static final boolean ENABLE_MOCK = false;
 
@@ -82,7 +82,7 @@ public class NearbyUserApi {
      * @param pageIndex 分页获取，第几页。第一页是1，第二页是2，…如果不提供，默认为0
      * @return
      */
-    public static NearbyUsersApiResult getNearbyUsers(String uid, String ticket, int pageIndex) {
+    public static DiscoveryApiResult getNearbyUsers(String uid, String ticket, int pageIndex) {
         String apiName = "nearby";
         String url = Api.getBaseDiscoveryUrl(apiName);
         HttpRequester.Builder builder = new HttpRequester.Builder();
@@ -102,9 +102,9 @@ public class NearbyUserApi {
         if (StringUtils.isEmpty(text)) {
             return null;
         }
-        Type jsonType = new TypeToken<NearbyUsersApiResult>() {
+        Type jsonType = new TypeToken<DiscoveryApiResult>() {
         }.getType();
-        NearbyUsersApiResult apiResult = GsonHelper.fromJson(text, jsonType);
+        DiscoveryApiResult apiResult = GsonHelper.fromJson(text, jsonType);
         apiResult.mPageNum = pageIndex;
         return apiResult;
     }
@@ -159,7 +159,7 @@ public class NearbyUserApi {
      * @param pageIndex
      * @return
      */
-    public static NearbyUsersApiResult getLover(String uid, String ticket, int gender, String age, int pageIndex) {
+    public static DiscoveryApiResult getLover(String uid, String ticket, int gender, String age, int pageIndex) {
         String apiName = "nearby";
         String url = Api.getBaseDiscoveryUrl(apiName);
         HttpRequester.Builder builder = new HttpRequester.Builder();
@@ -179,9 +179,9 @@ public class NearbyUserApi {
         if (StringUtils.isEmpty(text)) {
             return null;
         }
-        Type jsonType = new TypeToken<NearbyUsersApiResult>() {
+        Type jsonType = new TypeToken<DiscoveryApiResult>() {
         }.getType();
-        NearbyUsersApiResult apiResult = GsonHelper.fromJson(text, jsonType);
+        DiscoveryApiResult apiResult = GsonHelper.fromJson(text, jsonType);
         apiResult.mPageNum = pageIndex;
         return apiResult;
     }

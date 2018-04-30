@@ -1,11 +1,10 @@
-package com.agmbat.meetyou.discovery.nearbyuser;
+package com.agmbat.meetyou.discovery;
 
 import com.agmbat.imsdk.asmack.XMPPManager;
-import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.meetyou.data.GenderHelper;
 
-public class NearbyUsersManager {
+public class DiscoveryManager {
 
     /**
      * 请求数据
@@ -13,10 +12,10 @@ public class NearbyUsersManager {
      * @param pageIndex
      * @return
      */
-    public static NearbyUsersApiResult request(int pageIndex) {
+    public static DiscoveryApiResult request(int pageIndex) {
         String phone = XMPPManager.getInstance().getConnectionUserName();
         String token = XMPPManager.getInstance().getTokenManager().getTokenRetry();
-        return NearbyUserApi.getNearbyUsers(phone, token, pageIndex);
+        return DiscoveryApi.getNearbyUsers(phone, token, pageIndex);
     }
 
     /**
@@ -33,7 +32,7 @@ public class NearbyUsersManager {
      * @param pageIndex
      * @return
      */
-    public static NearbyUsersApiResult requestLover(LoginUser current, int pageIndex) {
+    public static DiscoveryApiResult requestLover(LoginUser current, int pageIndex) {
         if (current == null) {
             return null;
         }
@@ -53,6 +52,6 @@ public class NearbyUsersManager {
             searchAge = userAge + ",80";
             searchGender = GenderHelper.GENDER_MALE;
         }
-        return NearbyUserApi.getLover(phone, token, searchGender, searchAge, pageIndex);
+        return DiscoveryApi.getLover(phone, token, searchGender, searchAge, pageIndex);
     }
 }

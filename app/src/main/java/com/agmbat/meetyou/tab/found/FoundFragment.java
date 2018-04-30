@@ -12,8 +12,7 @@ import android.widget.ListView;
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.discovery.lover.LoverActivity;
-import com.agmbat.meetyou.discovery.nearbyuser.NearbyUsersActivity;
+import com.agmbat.meetyou.discovery.DiscoveryHelper;
 import com.agmbat.meetyou.tab.found.card.CardInfo;
 import com.agmbat.meetyou.tab.found.card.HeaderCard;
 
@@ -103,7 +102,7 @@ public class FoundFragment extends Fragment {
         info.mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), NearbyUsersActivity.class));
+                DiscoveryHelper.openNearByUsers(getActivity());
             }
         };
         return info;
@@ -114,8 +113,7 @@ public class FoundFragment extends Fragment {
         info.mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), LoverActivity.class));
-
+                DiscoveryHelper.openLover(getActivity());
             }
         };
         return info;
