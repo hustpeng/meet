@@ -11,6 +11,7 @@ import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
 
 import butterknife.BindView;
@@ -49,7 +50,7 @@ public class UserInfoVerifyActivity extends Activity {
         mContactInfo = UserManager.getInstance().getFriendRequest(jid);
         mNickNameView.setText(mContactInfo.getNickName());
         mGenderView.setImageResource(GenderHelper.getIconRes(mContactInfo.getGender()));
-        ImageManager.displayImage(mContactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+        ImageManager.displayImage(mContactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
         mUserNameView.setText(getString(R.string.id_name_format) + " " + mContactInfo.getUserName());
 
     }

@@ -76,6 +76,12 @@ public class SearchUserActivity extends Activity {
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
     /**
      * 点击返回键
      */
@@ -93,13 +99,12 @@ public class SearchUserActivity extends Activity {
         }
         // TODO 显示loading框
         ContactInfo contactInfo = new ContactInfo();
+        contactInfo.setBareJid("123");
         if (contactInfo == null) {
             mNoResultTipView.setVisibility(View.VISIBLE);
             mSearchButton.setVisibility(View.GONE);
         } else {
-            Intent intent = new Intent(this, UserInfoActivity.class);
-            intent.putExtra("userInfo", contactInfo.getBareJid());
-            startActivity(intent);
+            UserInfoActivity.viewUserInfo(this, contactInfo);
         }
     }
 }

@@ -27,7 +27,9 @@ import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 提供给UI层, 用于用户信息管理
@@ -292,5 +294,27 @@ public class UserManager implements IUserManager {
                 EventBus.getDefault().post(new LoginUserUpdateEvent(user));
             }
         });
+    }
+
+
+    private Map<String, ContactInfo> mContactCache = new HashMap<>();
+
+    /**
+     * 获取联系人
+     *
+     * @param jid
+     * @return
+     */
+    public ContactInfo getContactFromCache(String jid) {
+        return mContactCache.get(jid);
+    }
+
+    /**
+     * 添加到缓存中
+     *
+     * @param contactInfo
+     */
+    public void addContactToCache(ContactInfo contactInfo) {
+        mContactCache.put(contactInfo.getBareJid(), contactInfo);
     }
 }

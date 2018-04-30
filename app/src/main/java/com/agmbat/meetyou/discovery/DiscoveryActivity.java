@@ -2,14 +2,18 @@ package com.agmbat.meetyou.discovery;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.search.UserInfoActivity;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 
@@ -46,6 +50,12 @@ public class DiscoveryActivity extends Activity {
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
     /**
      * 点击返回键
      */
@@ -74,5 +84,11 @@ public class DiscoveryActivity extends Activity {
         protected void onLoadingError(PageData data) {
         }
 
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            super.onItemClick(parent, view, position, id);
+            ContactInfo contactInfo = (ContactInfo) parent.getItemAtPosition(position);
+            UserInfoActivity.viewUserInfo(DiscoveryActivity.this, contactInfo);
+        }
     }
 }

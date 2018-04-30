@@ -1,15 +1,23 @@
 package com.agmbat.meetyou.search;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
-import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.helper.AvatarHelper;
+import com.agmbat.meetyou.helper.GenderHelper;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -18,11 +26,60 @@ import butterknife.OnClick;
  */
 public class UserInfoActivity extends Activity {
 
+    @BindView(R.id.avatar)
+    ImageView mAvatarView;
+
+    @BindView(R.id.nickname)
+    TextView mNickNameView;
+
+    @BindView(R.id.gender)
+    ImageView mGenderView;
+
+    @BindView(R.id.username)
+    TextView mUserNameView;
+
+    private ContactInfo mContactInfo;
+
+    /**
+     * 查看用户详细信息
+     *
+     * @param context
+     * @param contactInfo
+     */
+    public static void viewUserInfo(Context context, ContactInfo contactInfo) {
+        UserManager.getInstance().addContactToCache(contactInfo);
+        Intent intent = new Intent(context, UserInfoActivity.class);
+        intent.putExtra("userInfo", contactInfo.getBareJid());
+        context.startActivity(intent);
+    }
+
+    /**
+     * 通过intent获取用户信息
+     *
+     * @param intent
+     * @return
+     */
+    private static ContactInfo getContactInfo(Intent intent) {
+        String jid = intent.getStringExtra("userInfo");
+        return UserManager.getInstance().getContactFromCache(jid);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_user_info);
         ButterKnife.bind(this);
+        mContactInfo = getContactInfo(getIntent());
+        if (mContactInfo == null) {
+            ToastUtil.showToastLong("获取联系人信息失败");
+            finish();
+            return;
+        }
+        ImageManager.displayImage(mContactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
+        mNickNameView.setText(mContactInfo.getNickName());
+        mGenderView.setImageResource(GenderHelper.getIconRes(mContactInfo.getGender()));
+        mUserNameView.setText(getString(R.string.id_name_format) + " " + mContactInfo.getUserName());
     }
 
     @Override
@@ -41,18 +98,7 @@ public class UserInfoActivity extends Activity {
      */
     @OnClick(R.id.btn_add_to_contact)
     void onClickAddToContact() {
-        ContactInfo contactInfo = null;
-        String loginUser = XMPPManager.getInstance().getConnectionUserName();
-        if (loginUser.equals("13437122759")) {
-            contactInfo = new ContactInfo();
-            contactInfo.setBareJid("15002752759@yuan520.com");
-            contactInfo.setNickname("接电弧");
-        } else {
-            contactInfo = new ContactInfo();
-            contactInfo.setBareJid("13437122759@yuan520.com");
-            contactInfo.setNickname("好名");
-        }
-        boolean result = UserManager.getInstance().requestAddContactToFriend(contactInfo);
+        boolean result = UserManager.getInstance().requestAddContactToFriend(mContactInfo);
         if (result) {
             ToastUtil.showToastLong("已发送");
         } else {
@@ -65,10 +111,7 @@ public class UserInfoActivity extends Activity {
 //    @Bind(R.id.ibToolbarMore)
 //    ImageButton mIbToolbarMore;
 //
-//    @Bind(R.id.tvName)
-//    TextView mTvName;
-//    @Bind(R.id.ivGender)
-//    ImageView mIvGender;
+
 //    @Bind(R.id.tvAccount)
 //    TextView mTvAccount;
 //    @Bind(R.id.tvNickName)

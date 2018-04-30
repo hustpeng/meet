@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.WindowUtils;
