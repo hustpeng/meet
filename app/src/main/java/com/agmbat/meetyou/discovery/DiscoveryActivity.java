@@ -35,9 +35,9 @@ public class DiscoveryActivity extends Activity {
         ButterKnife.bind(this);
         mLoader = DiscoveryHelper.getLoader(getIntent());
         mTitleView.setText(mLoader.getName());
-        NearbyUsersLoader mPageLoader = new NearbyUsersLoader(this);
-        mPageLoader.setupViews(findViewById(android.R.id.content));
-        mPageLoader.loadData();
+        DiscoveryPageLoader pageLoader = new DiscoveryPageLoader(this);
+        pageLoader.setupViews(findViewById(android.R.id.content));
+        pageLoader.loadData();
     }
 
     @Override
@@ -54,9 +54,9 @@ public class DiscoveryActivity extends Activity {
         finish();
     }
 
-    public class NearbyUsersLoader extends PageDataLoader<ContactInfo> {
+    public class DiscoveryPageLoader extends PageDataLoader<ContactInfo> {
 
-        public NearbyUsersLoader(Context context) {
+        public DiscoveryPageLoader(Context context) {
             super(context);
         }
 
