@@ -47,6 +47,7 @@ public class LoversLoader implements DiscoveryLoader {
             searchAge = userAge + ",80";
             searchGender = GenderHelper.GENDER_MALE;
         }
-        return DiscoveryApi.getLover(phone, token, searchGender, searchAge, pageIndex);
+        String center = "30.5,111.2";
+        return DiscoveryApi.getLover(phone, token, center, searchGender, searchAge, pageIndex);
     }
 }

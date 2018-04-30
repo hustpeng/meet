@@ -35,7 +35,8 @@ public class HobbyLoader implements DiscoveryLoader {
         String phone = XMPPManager.getInstance().getConnectionUserName();
         String token = XMPPManager.getInstance().getTokenManager().getTokenRetry();
         String hobby = current.getHobby();
-        return DiscoveryApi.getHobby(phone, token, hobby, pageIndex);
+        String center = "30.5,111.2";
+        return DiscoveryApi.getHobby(phone, token, center, hobby, pageIndex);
     }
 
 }

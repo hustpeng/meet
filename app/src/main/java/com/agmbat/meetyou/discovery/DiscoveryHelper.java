@@ -12,6 +12,12 @@ public class DiscoveryHelper {
 
     private static final String TYPE = "type";
 
+    /**
+     * 创建数据加载器
+     *
+     * @param intent
+     * @return
+     */
     public static DiscoveryLoader getLoader(Intent intent) {
         int type = intent.getIntExtra(TYPE, DISCOVER_TYPE_NEAR_BY_USERS);
         if (type == DISCOVER_TYPE_NEAR_BY_USERS) {

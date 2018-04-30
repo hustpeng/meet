@@ -36,6 +36,7 @@ public class BirthplaceLoader implements DiscoveryLoader {
         String phone = XMPPManager.getInstance().getConnectionUserName();
         String token = XMPPManager.getInstance().getTokenManager().getTokenRetry();
         String birthplace = current.getBirthplace();
-        return DiscoveryApi.getBirthplace(phone, token, birthplace, pageIndex);
+        String center = "30.5,111.2";
+        return DiscoveryApi.getBirthplace(phone, token, center, birthplace, pageIndex);
     }
 }
