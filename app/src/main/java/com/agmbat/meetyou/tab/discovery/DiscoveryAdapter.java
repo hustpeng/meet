@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.tab.found;
+package com.agmbat.meetyou.tab.discovery;
 
 import android.content.Context;
 import android.view.View;
@@ -8,19 +8,19 @@ import android.widget.ArrayAdapter;
 
 import java.util.List;
 
-public class FoundAdapter extends ArrayAdapter<FoundGroup> {
+public class DiscoveryAdapter extends ArrayAdapter<DiscoveryGroup> {
 
-    public FoundAdapter(Context context, List<FoundGroup> contactList) {
+    public DiscoveryAdapter(Context context, List<DiscoveryGroup> contactList) {
         super(context, 0, contactList);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (null == convertView) {
-            convertView = new FoundView(getContext());
+            convertView = new DiscoveryView(getContext());
         }
-        FoundView view = (FoundView) convertView;
-        FoundGroup group = getItem(position);
+        DiscoveryView view = (DiscoveryView) convertView;
+        DiscoveryGroup group = getItem(position);
         view.update(group);
         return convertView;
     }

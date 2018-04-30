@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.tab.found;
+package com.agmbat.meetyou.tab.discovery;
 
 
 import com.agmbat.imsdk.data.ContactInfo;
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * 发现item
  */
-public class FoundGroup {
+public class DiscoveryGroup {
 
     /**
      * 标题

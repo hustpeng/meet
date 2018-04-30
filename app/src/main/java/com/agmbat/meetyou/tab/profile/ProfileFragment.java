@@ -19,6 +19,7 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
 import com.agmbat.meetyou.coins.CoinsActivity;
 import com.agmbat.meetyou.data.GenderHelper;
+import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.settings.PersonalInfoActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -113,7 +114,7 @@ public class ProfileFragment extends Fragment {
 
     private void updateView(LoginUser user) {
         mNickNameView.setText(user.getNickname());
-        ImageManager.displayImage(user.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+        ImageManager.displayImage(user.getAvatar(), mAvatarView, AvatarHelper.getOptions());
         mUserNameView.setText(getString(R.string.id_name_format) + " " + user.getUserName());
         mGenderView.setImageResource(GenderHelper.getIconRes(user.getGender()));
     }

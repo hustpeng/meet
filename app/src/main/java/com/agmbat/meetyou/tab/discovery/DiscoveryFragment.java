@@ -1,6 +1,5 @@
-package com.agmbat.meetyou.tab.found;
+package com.agmbat.meetyou.tab.discovery;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,15 +12,22 @@ import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.DiscoveryHelper;
-import com.agmbat.meetyou.tab.found.card.CardInfo;
-import com.agmbat.meetyou.tab.found.card.HeaderCard;
+import com.agmbat.meetyou.tab.discovery.card.CardInfo;
+import com.agmbat.meetyou.tab.discovery.card.HeaderCard;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoundFragment extends Fragment {
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    private ListView mListView;
+/**
+ * 发现tab
+ */
+public class DiscoveryFragment extends Fragment {
+
+    @BindView(android.R.id.list)
+    ListView mListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -32,7 +38,8 @@ public class FoundFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mListView = (ListView) view.findViewById(R.id.list);
+        ButterKnife.bind(this, view);
+
         HeaderCard headerCard = new HeaderCard(getActivity());
         List<CardInfo> list = new ArrayList<>();
         list.add(new CardInfo("在线会员"));
@@ -55,38 +62,38 @@ public class FoundFragment extends Fragment {
         userList.add(contactInfo);
         userList.add(contactInfo);
 
-        List<FoundGroup> dataList = new ArrayList<>();
-        FoundGroup group = new FoundGroup();
+        List<DiscoveryGroup> dataList = new ArrayList<>();
+        DiscoveryGroup group = new DiscoveryGroup();
         group.setTitle(AppResources.getString(R.string.discovery_nearby_users));
         group.setUserList(userList);
         dataList.add(group);
 
-        group = new FoundGroup();
+        group = new DiscoveryGroup();
         group.setTitle(AppResources.getString(R.string.discovery_lover));
         group.setUserList(userList);
         dataList.add(group);
 
-        group = new FoundGroup();
+        group = new DiscoveryGroup();
         group.setTitle(AppResources.getString(R.string.discovery_hobby));
         group.setUserList(userList);
         dataList.add(group);
 
-        group = new FoundGroup();
+        group = new DiscoveryGroup();
         group.setTitle("找同行");
         group.setUserList(userList);
         dataList.add(group);
 
-        group = new FoundGroup();
+        group = new DiscoveryGroup();
         group.setTitle(AppResources.getString(R.string.discovery_birthplace));
         group.setUserList(userList);
         dataList.add(group);
 
-        group = new FoundGroup();
+        group = new DiscoveryGroup();
         group.setTitle("找群组");
         group.setUserList(userList);
         dataList.add(group);
 
-        FoundAdapter adapter = new FoundAdapter(getActivity(), dataList);
+        DiscoveryAdapter adapter = new DiscoveryAdapter(getActivity(), dataList);
         mListView.setAdapter(adapter);
     }
 

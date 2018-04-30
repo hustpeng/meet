@@ -1,14 +1,12 @@
-package com.agmbat.meetyou.tab.found.card;
+package com.agmbat.meetyou.tab.discovery.card;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.tab.found.card.CardInfo;
 
 import java.util.List;
 
@@ -17,8 +15,6 @@ import java.util.List;
  * Header 卡片
  */
 public class HeaderCard extends FrameLayout {
-
-
 
     /**
      * 卡片item列表

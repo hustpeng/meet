@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.tab.found.card;
+package com.agmbat.meetyou.tab.discovery.card;
 
 import android.graphics.drawable.Drawable;
 import android.view.View;
