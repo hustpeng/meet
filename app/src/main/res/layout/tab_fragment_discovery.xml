@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="48.0dip"
+        android:layout_gravity="center"
+        android:background="#ff232325"
+        android:gravity="center"
+        android:text="@string/tab_found"
+        android:textColor="#ffffffff"
+        android:textSize="20sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:id="@+id/btn_discovery_nearby_users"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="@string/discovery_nearby_users"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:id="@+id/btn_discovery_lover"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="@string/discovery_lover"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:id="@+id/btn_discovery_hobby"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="@string/discovery_hobby"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:id="@+id/btn_discovery_birthplace"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="@string/discovery_birthplace"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="综合搜索会员"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+            <TextView
+                android:id="@+id/btn_new_msg"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="找群组"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
+
+            <TextView
+                android:id="@+id/btn_privacy"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/im_setting_item"
+                android:drawableRight="@drawable/im_ic_right"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="聚会活动"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

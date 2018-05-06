@@ -23,7 +23,6 @@ import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.user.OnLoadContactGroupListener;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.search.NewFriendActivity;
 import com.agmbat.meetyou.search.SearchUserActivity;
 import com.agmbat.meetyou.search.UserInfoActivity;
