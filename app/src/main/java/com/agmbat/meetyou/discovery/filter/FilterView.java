@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.SinglePicker;
+import com.agmbat.picker.helper.filter.EducationFilterItem;
 import com.agmbat.picker.helper.filter.FilterHelper;
 import com.agmbat.picker.helper.filter.GenderFilterItem;
+import com.agmbat.picker.helper.filter.MarriageFilterItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +38,12 @@ public class FilterView extends FrameLayout {
     @BindView(R.id.input_gender)
     TextView mGenderView;
 
+    @BindView(R.id.input_marriage)
+    TextView mMarriageView;
+
+    @BindView(R.id.input_education)
+    TextView mEducationView;
+
     public FilterView(@NonNull Context context) {
         super(context);
         init(context);
@@ -55,6 +63,8 @@ public class FilterView extends FrameLayout {
         ButterKnife.bind(this, this);
         mFilterInfo = new FilterInfo();
         mGenderView.setText(GenderFilterItem.valueOf(mFilterInfo.getGender()).mName);
+        mMarriageView.setText(MarriageFilterItem.valueOf(mFilterInfo.getMarriage()).mName);
+        mEducationView.setText(EducationFilterItem.valueOf(mFilterInfo.getEducation()).mName);
     }
 
     public FilterInfo getFilterInfo() {
@@ -74,6 +84,39 @@ public class FilterView extends FrameLayout {
                     public void onItemPicked(int index, GenderFilterItem item) {
                         mGenderView.setText(item.mName);
                         mFilterInfo.setGender(item.mValue);
+                    }
+
+                });
+    }
+
+    /**
+     * 选择婚况
+     */
+    @OnClick(R.id.btn_marriage)
+    void onClickMarriage() {
+        int value = mFilterInfo.getMarriage();
+        MarriageFilterItem item = MarriageFilterItem.valueOf(value);
+        FilterHelper.showMarriageFilterItemPicker(getContext(), item,
+                new SinglePicker.OnItemPickListener<MarriageFilterItem>() {
+                    @Override
+                    public void onItemPicked(int index, MarriageFilterItem item) {
+                        mMarriageView.setText(item.mName);
+                        mFilterInfo.setMarriage(item.mValue);
+                    }
+
+                });
+    }
+
+    @OnClick(R.id.btn_education)
+    void onClickEducation() {
+        int value = mFilterInfo.getEducation();
+        EducationFilterItem item = EducationFilterItem.valueOf(value);
+        FilterHelper.showEducationPicker(getContext(), item,
+                new SinglePicker.OnItemPickListener<EducationFilterItem>() {
+                    @Override
+                    public void onItemPicked(int index, EducationFilterItem item) {
+                        mEducationView.setText(item.mName);
+                        mFilterInfo.setEducation(item.mValue);
                     }
 
                 });

@@ -6,6 +6,8 @@ package com.agmbat.meetyou.discovery.filter;
 public class FilterInfo {
 
     private int mGender = -1;
+    private int mMarriage = -1;
+    private int mEducation = -1;
 
     public int getGender() {
         return mGender;
@@ -32,7 +34,11 @@ public class FilterInfo {
     }
 
     public int getMarriage() {
-        return 0;
+        return mMarriage;
+    }
+
+    public void setMarriage(int marriage) {
+        mMarriage = marriage;
     }
 
     public String getBirthplace() {
@@ -44,7 +50,11 @@ public class FilterInfo {
     }
 
     public int getEducation() {
-        return 0;
+        return mEducation;
+    }
+
+    public void setEducation(int education) {
+        mEducation = education;
     }
 
     public String getCareer() {
