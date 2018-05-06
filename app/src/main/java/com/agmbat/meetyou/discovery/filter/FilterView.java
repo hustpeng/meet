@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.agmbat.meetyou.R;
+import com.agmbat.picker.OptionPicker;
 import com.agmbat.picker.SinglePicker;
 import com.agmbat.picker.helper.filter.CarFilterItem;
 import com.agmbat.picker.helper.filter.EducationFilterItem;
@@ -16,6 +17,7 @@ import com.agmbat.picker.helper.filter.FilterHelper;
 import com.agmbat.picker.helper.filter.GenderFilterItem;
 import com.agmbat.picker.helper.filter.HouseFilterItem;
 import com.agmbat.picker.helper.filter.MarriageFilterItem;
+import com.agmbat.picker.helper.filter.WageFilterItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +47,12 @@ public class FilterView extends FrameLayout {
     @BindView(R.id.input_education)
     TextView mEducationView;
 
+    @BindView(R.id.input_wage)
+    TextView mWageView;
+
+    @BindView(R.id.input_career)
+    TextView mCareerView;
+
     @BindView(R.id.input_house)
     TextView mHouseView;
 
@@ -72,6 +80,8 @@ public class FilterView extends FrameLayout {
         mGenderView.setText(GenderFilterItem.valueOf(mFilterInfo.getGender()).mName);
         mMarriageView.setText(MarriageFilterItem.valueOf(mFilterInfo.getMarriage()).mName);
         mEducationView.setText(EducationFilterItem.valueOf(mFilterInfo.getEducation()).mName);
+        mCareerView.setText(mFilterInfo.getCareer());
+        mWageView.setText(WageFilterItem.valueOf(mFilterInfo.getWage()).mName);
         mHouseView.setText(HouseFilterItem.valueOf(mFilterInfo.getHouse()).mName);
         mCarView.setText(CarFilterItem.valueOf(mFilterInfo.getCar()).mName);
     }
@@ -126,6 +136,35 @@ public class FilterView extends FrameLayout {
                     public void onItemPicked(int index, EducationFilterItem item) {
                         mEducationView.setText(item.mName);
                         mFilterInfo.setEducation(item.mValue);
+                    }
+
+                });
+    }
+
+    @OnClick(R.id.btn_career)
+    void onClickCareer() {
+        String value = mFilterInfo.getCareer();
+        FilterHelper.showCareerFilterPicker(getContext(), value,
+                new OptionPicker.OnOptionPickListener() {
+                    @Override
+                    public void onOptionPicked(int index, String item) {
+                        mCareerView.setText(item);
+                        mFilterInfo.setCareer(item);
+                    }
+
+                });
+    }
+
+    @OnClick(R.id.btn_wage)
+    void onClickWage() {
+        int value = mFilterInfo.getWage();
+        WageFilterItem item = WageFilterItem.valueOf(value);
+        FilterHelper.showWageFilterPicker(getContext(), item,
+                new SinglePicker.OnItemPickListener<WageFilterItem>() {
+                    @Override
+                    public void onItemPicked(int index, WageFilterItem item) {
+                        mWageView.setText(item.mName);
+                        mFilterInfo.setWage(item.mValue);
                     }
 
                 });

@@ -325,7 +325,7 @@ public class DiscoveryApi {
      * @param birthplace 籍贯，为空或”””””表示不限
      * @param workarea   工作地区，为空或””,””表示不限
      * @param education  学历，传对应索引值，-1表示不限
-     * @param career     职业，为空或”””””表示不限
+     * @param career     职业，为空或””,””表示不限
      * @param wage       薪水，表示XXX以上
      * @param house      住房，无自住房0，有自住房1，-1表示不限
      * @param car        购车，无车0，有车1，-1表示不限

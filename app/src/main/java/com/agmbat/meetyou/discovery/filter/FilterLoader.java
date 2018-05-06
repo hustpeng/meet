@@ -40,6 +40,9 @@ public class FilterLoader implements DiscoveryLoader {
         String workarea = mFilterInfo.getWorkarea();
         int education = mFilterInfo.getEducation();
         String career = mFilterInfo.getCareer();
+        if ("不限".equals(career)) {
+            career = "";
+        }
         int wage = mFilterInfo.getWage();
         int house = mFilterInfo.getHouse();
         int car = mFilterInfo.getCar();

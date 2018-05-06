@@ -8,6 +8,8 @@ public class FilterInfo {
     private int mGender = -1;
     private int mMarriage = -1;
     private int mEducation = -1;
+    private String mCareer = "不限";
+    private int mWage = -1;
     private int mHouse = -1;
     private int mCar = -1;
 
@@ -60,11 +62,20 @@ public class FilterInfo {
     }
 
     public String getCareer() {
-        return "";
+        return mCareer;
+    }
+
+
+    public void setCareer(String career) {
+        mCareer = career;
     }
 
     public int getWage() {
-        return 0;
+        return mWage;
+    }
+
+    public void setWage(int wage) {
+        mWage = wage;
     }
 
     public int getHouse() {
@@ -82,4 +93,6 @@ public class FilterInfo {
     public void setCar(int car) {
         mCar = car;
     }
+
+
 }
