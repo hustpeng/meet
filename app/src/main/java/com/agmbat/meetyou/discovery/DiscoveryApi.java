@@ -1,6 +1,5 @@
 package com.agmbat.meetyou.discovery;
 
-
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.api.Api;
 import com.agmbat.net.HttpRequester;
@@ -311,10 +310,7 @@ public class DiscoveryApi {
      * jid: "13437122759@yuan520.com",
      * last_login: 1524712937000,
      * dist: 24.21131081069728
-     * },
-     * {
-     * },
-     * ……
+     * }
      * ]
      * }
      * 综合搜索会员

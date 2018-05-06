@@ -35,7 +35,7 @@ public class DiscoveryActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
-        setContentView(R.layout.activity_nearby_users);
+        setContentView(R.layout.activity_discovery_users);
         ButterKnife.bind(this);
         mLoader = DiscoveryHelper.getLoader(getIntent());
         mTitleView.setText(mLoader.getName());

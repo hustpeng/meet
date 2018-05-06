@@ -9,6 +9,7 @@ public class DiscoveryHelper {
     private static final int DISCOVER_TYPE_LOVER = 2;
     private static final int DISCOVER_TYPE_HOBBY = 3;
     private static final int DISCOVER_TYPE_BIRTHPLACE = 4;
+    private static final int DISCOVER_TYPE_FILTER = 5;
 
     private static final String TYPE = "type";
 
@@ -28,6 +29,8 @@ public class DiscoveryHelper {
             return new HobbyLoader();
         } else if (type == DISCOVER_TYPE_BIRTHPLACE) {
             return new BirthplaceLoader();
+        } else if (type == DISCOVER_TYPE_FILTER) {
+            return new FilterLoader();
         }
         return null;
     }
@@ -75,6 +78,17 @@ public class DiscoveryHelper {
     public static void openBirthplace(Context context) {
         Intent intent = new Intent(context, DiscoveryActivity.class);
         intent.putExtra(TYPE, DISCOVER_TYPE_BIRTHPLACE);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 打开搜索界面
+     *
+     * @param context
+     */
+    public static void openFilter(Context context) {
+        Intent intent = new Intent(context, DiscoveryActivity.class);
+        intent.putExtra(TYPE, DISCOVER_TYPE_FILTER);
         context.startActivity(intent);
     }
 }

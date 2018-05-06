@@ -7,7 +7,7 @@ import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 
 /**
- * 找玩伴
+ * 找老乡
  */
 public class BirthplaceLoader implements DiscoveryLoader {
 
@@ -21,7 +21,6 @@ public class BirthplaceLoader implements DiscoveryLoader {
         return requestBirthplace(UserManager.getInstance().getLoginUser(), page);
     }
 
-
     /**
      * 找老乡
      *
@@ -29,7 +28,7 @@ public class BirthplaceLoader implements DiscoveryLoader {
      * @param pageIndex
      * @return
      */
-    public static DiscoveryApiResult requestBirthplace(LoginUser current, int pageIndex) {
+    private static DiscoveryApiResult requestBirthplace(LoginUser current, int pageIndex) {
         if (current == null) {
             return null;
         }

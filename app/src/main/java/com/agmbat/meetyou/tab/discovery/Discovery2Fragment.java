@@ -56,4 +56,9 @@ public class Discovery2Fragment extends Fragment {
         DiscoveryHelper.openBirthplace(getActivity());
     }
 
+    @OnClick(R.id.btn_discovery_search_user)
+    void onClickSearchUser() {
+        DiscoveryHelper.openFilter(getActivity());
+    }
+
 }

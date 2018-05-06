@@ -113,12 +113,13 @@
     <string name="discovery_lover">找恋人</string>
     <string name="discovery_hobby">找玩伴</string>
     <string name="discovery_birthplace">找老乡</string>
-
+    <string name="discovery_search_user">综合搜索会员</string>
 
 
     <string name="contacts_recently">最近</string>
     <string name="contacts_hotlist">好友</string>
     <string name="contacts_block">黑名单</string>
+
 
 
 </resources>
