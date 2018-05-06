@@ -3,6 +3,8 @@ package com.agmbat.meetyou.discovery;
 import android.content.Context;
 import android.content.Intent;
 
+import com.agmbat.meetyou.discovery.filter.FilterLoader;
+
 public class DiscoveryHelper {
 
     private static final int DISCOVER_TYPE_NEAR_BY_USERS = 1;

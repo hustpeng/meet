@@ -1,5 +1,7 @@
 package com.agmbat.meetyou.discovery;
 
+import android.view.View;
+
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
@@ -21,5 +23,10 @@ public class NearbyUsersLoader implements DiscoveryLoader {
         String center = "30.5,111.2";
         int gender = -1;
         return DiscoveryApi.getNearbyUsers(phone, token, center, gender, page);
+    }
+
+    @Override
+    public void setupViews(View view) {
+
     }
 }

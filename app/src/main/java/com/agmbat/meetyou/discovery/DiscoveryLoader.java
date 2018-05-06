@@ -1,5 +1,7 @@
 package com.agmbat.meetyou.discovery;
 
+import android.view.View;
+
 public interface DiscoveryLoader {
 
     /**
@@ -17,4 +19,10 @@ public interface DiscoveryLoader {
      */
     public DiscoveryApiResult load(int page);
 
+    /**
+     * 配置控件
+     *
+     * @param view
+     */
+    void setupViews(View view);
 }

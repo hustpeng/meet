@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.discovery.filter.FilterView;
 import com.agmbat.meetyou.search.UserInfoActivity;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
@@ -29,7 +30,12 @@ public class DiscoveryActivity extends Activity {
     @BindView(R.id.title)
     TextView mTitleView;
 
+    @BindView(R.id.filter_view)
+    FilterView mFilterView;
+
     private DiscoveryLoader mLoader;
+
+    private PageDataLoader mPageDataLoader;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,10 +45,11 @@ public class DiscoveryActivity extends Activity {
         ButterKnife.bind(this);
         mLoader = DiscoveryHelper.getLoader(getIntent());
         mTitleView.setText(mLoader.getName());
-        DiscoveryPageLoader pageLoader = new DiscoveryPageLoader(this);
-        pageLoader.setupViews(findViewById(android.R.id.content));
-        pageLoader.loadData();
+        mPageDataLoader = new DiscoveryPageLoader(this);
+        mPageDataLoader.setupViews(findViewById(android.R.id.content));
+        mPageDataLoader.loadData();
     }
+
 
     @Override
     public void finish() {
@@ -64,10 +71,31 @@ public class DiscoveryActivity extends Activity {
         finish();
     }
 
+    @OnClick(R.id.btn_confirm)
+    void onClickConfirm() {
+        mFilterView.setVisibility(View.INVISIBLE);
+        mPageDataLoader.loadData();
+    }
+
+    @OnClick(R.id.btn_filter)
+    void onClickFilter(){
+        if (mFilterView.getVisibility() == View.VISIBLE) {
+            mFilterView.setVisibility(View.INVISIBLE);
+        } else {
+            mFilterView.setVisibility(View.VISIBLE);
+        }
+    }
+
     public class DiscoveryPageLoader extends PageDataLoader<ContactInfo> {
 
         public DiscoveryPageLoader(Context context) {
             super(context);
+        }
+
+        @Override
+        public void setupViews(View view) {
+            super.setupViews(view);
+            mLoader.setupViews(view);
         }
 
         @Override

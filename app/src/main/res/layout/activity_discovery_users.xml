@@ -26,8 +26,29 @@
             android:textColor="#ffffffff"
             android:textSize="20sp" />
 
+        <ImageView
+            android:id="@+id/btn_filter"
+            android:layout_width="45dip"
+            android:layout_height="45dip"
+            android:layout_gravity="end|center_vertical"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:scaleType="center"
+            android:src="@drawable/ic_user_filter"
+            android:visibility="gone" />
     </FrameLayout>
 
-    <include layout="@layout/page_data_loader" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/page_data_loader" />
+
+        <com.agmbat.meetyou.discovery.filter.FilterView
+            android:id="@+id/filter_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
+    </FrameLayout>
 
 </LinearLayout>
