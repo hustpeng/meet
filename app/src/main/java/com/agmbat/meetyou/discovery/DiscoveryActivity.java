@@ -30,11 +30,20 @@ public class DiscoveryActivity extends Activity {
     @BindView(R.id.title)
     TextView mTitleView;
 
+    /**
+     * 过虑器view, 只用于综合搜索会员
+     */
     @BindView(R.id.filter_view)
     FilterView mFilterView;
 
+    /**
+     * 对应发现页各功能搜索
+     */
     private DiscoveryLoader mLoader;
 
+    /**
+     * 分页数据加载器
+     */
     private PageDataLoader mPageDataLoader;
 
     @Override
@@ -49,7 +58,6 @@ public class DiscoveryActivity extends Activity {
         mPageDataLoader.setupViews(findViewById(android.R.id.content));
         mPageDataLoader.loadData();
     }
-
 
     @Override
     public void finish() {
@@ -71,14 +79,20 @@ public class DiscoveryActivity extends Activity {
         finish();
     }
 
+    /**
+     * 点击过虑器中搜索
+     */
     @OnClick(R.id.btn_confirm)
     void onClickConfirm() {
         mFilterView.setVisibility(View.INVISIBLE);
         mPageDataLoader.loadData();
     }
 
+    /**
+     * 点击标题栏中过虑器
+     */
     @OnClick(R.id.btn_filter)
-    void onClickFilter(){
+    void onClickFilter() {
         if (mFilterView.getVisibility() == View.VISIBLE) {
             mFilterView.setVisibility(View.INVISIBLE);
         } else {
