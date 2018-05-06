@@ -10,9 +10,11 @@ import android.widget.TextView;
 
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.SinglePicker;
+import com.agmbat.picker.helper.filter.CarFilterItem;
 import com.agmbat.picker.helper.filter.EducationFilterItem;
 import com.agmbat.picker.helper.filter.FilterHelper;
 import com.agmbat.picker.helper.filter.GenderFilterItem;
+import com.agmbat.picker.helper.filter.HouseFilterItem;
 import com.agmbat.picker.helper.filter.MarriageFilterItem;
 
 import butterknife.BindView;
@@ -31,7 +33,6 @@ public class FilterView extends FrameLayout {
 
     private FilterInfo mFilterInfo;
 
-
     /**
      * 性别
      */
@@ -43,6 +44,12 @@ public class FilterView extends FrameLayout {
 
     @BindView(R.id.input_education)
     TextView mEducationView;
+
+    @BindView(R.id.input_house)
+    TextView mHouseView;
+
+    @BindView(R.id.input_car)
+    TextView mCarView;
 
     public FilterView(@NonNull Context context) {
         super(context);
@@ -65,6 +72,8 @@ public class FilterView extends FrameLayout {
         mGenderView.setText(GenderFilterItem.valueOf(mFilterInfo.getGender()).mName);
         mMarriageView.setText(MarriageFilterItem.valueOf(mFilterInfo.getMarriage()).mName);
         mEducationView.setText(EducationFilterItem.valueOf(mFilterInfo.getEducation()).mName);
+        mHouseView.setText(HouseFilterItem.valueOf(mFilterInfo.getHouse()).mName);
+        mCarView.setText(CarFilterItem.valueOf(mFilterInfo.getCar()).mName);
     }
 
     public FilterInfo getFilterInfo() {
@@ -96,7 +105,7 @@ public class FilterView extends FrameLayout {
     void onClickMarriage() {
         int value = mFilterInfo.getMarriage();
         MarriageFilterItem item = MarriageFilterItem.valueOf(value);
-        FilterHelper.showMarriageFilterItemPicker(getContext(), item,
+        FilterHelper.showMarriageFilterPicker(getContext(), item,
                 new SinglePicker.OnItemPickListener<MarriageFilterItem>() {
                     @Override
                     public void onItemPicked(int index, MarriageFilterItem item) {
@@ -111,12 +120,42 @@ public class FilterView extends FrameLayout {
     void onClickEducation() {
         int value = mFilterInfo.getEducation();
         EducationFilterItem item = EducationFilterItem.valueOf(value);
-        FilterHelper.showEducationPicker(getContext(), item,
+        FilterHelper.showEducationFilterPicker(getContext(), item,
                 new SinglePicker.OnItemPickListener<EducationFilterItem>() {
                     @Override
                     public void onItemPicked(int index, EducationFilterItem item) {
                         mEducationView.setText(item.mName);
                         mFilterInfo.setEducation(item.mValue);
+                    }
+
+                });
+    }
+
+    @OnClick(R.id.btn_house)
+    void onClickHouse() {
+        int value = mFilterInfo.getHouse();
+        HouseFilterItem item = HouseFilterItem.valueOf(value);
+        FilterHelper.showHouseFilterPicker(getContext(), item,
+                new SinglePicker.OnItemPickListener<HouseFilterItem>() {
+                    @Override
+                    public void onItemPicked(int index, HouseFilterItem item) {
+                        mHouseView.setText(item.mName);
+                        mFilterInfo.setHouse(item.mValue);
+                    }
+
+                });
+    }
+
+    @OnClick(R.id.btn_car)
+    void onClickCar() {
+        int value = mFilterInfo.getCar();
+        CarFilterItem item = CarFilterItem.valueOf(value);
+        FilterHelper.showCarFilterPicker(getContext(), item,
+                new SinglePicker.OnItemPickListener<CarFilterItem>() {
+                    @Override
+                    public void onItemPicked(int index, CarFilterItem item) {
+                        mCarView.setText(item.mName);
+                        mFilterInfo.setCar(item.mValue);
                     }
 
                 });

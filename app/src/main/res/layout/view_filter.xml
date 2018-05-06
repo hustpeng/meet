@@ -114,141 +114,73 @@
                 android:background="#dbdbdb" />
         </FrameLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dip"
-            android:textColor="#ff202020"
-            android:textSize="14sp" />
-
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/btn_house"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="7dip"
-            android:paddingLeft="5dip"
-            android:paddingRight="5dip"
-            android:paddingTop="8dip">
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="12dp"
+            android:layout_weight="1"
+            android:background="@drawable/ic_login_spinner">
 
-            <FrameLayout
-                android:id="@+id/order_unlimited"
-                android:layout_width="0dip"
-                android:layout_height="26dip"
-                android:layout_marginLeft="5dip"
-                android:layout_marginRight="5dip"
-                android:layout_weight="1.0">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="17dp"
+                android:text="@string/personal_house"
+                android:textColor="#353535"
+                android:textSize="16sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:duplicateParentState="true"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-            </FrameLayout>
+            <TextView
+                android:id="@+id/input_house"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="10dp"
+                android:textColor="#45c01a"
+                android:textSize="16sp" />
 
-            <FrameLayout
-                android:id="@+id/order_willconfirm"
-                android:layout_width="0dip"
-                android:layout_height="26dip"
-                android:layout_marginLeft="5dip"
-                android:layout_marginRight="5dip"
-                android:layout_weight="1.0">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:background="#dbdbdb" />
+        </FrameLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:duplicateParentState="true"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/order_willsend"
-                android:layout_width="0dip"
-                android:layout_height="26dip"
-                android:layout_marginLeft="5dip"
-                android:layout_marginRight="5dip"
-                android:layout_weight="1.0">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:duplicateParentState="true"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-            </FrameLayout>
-        </LinearLayout>
-
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/btn_car"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="7dip"
-            android:paddingLeft="5dip"
-            android:paddingRight="5dip"
-            android:paddingTop="8dip">
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="12dp"
+            android:layout_weight="1"
+            android:background="@drawable/ic_login_spinner">
 
-            <FrameLayout
-                android:id="@+id/order_willpay"
-                android:layout_width="0dip"
-                android:layout_height="26dip"
-                android:layout_marginLeft="5dip"
-                android:layout_marginRight="5dip"
-                android:layout_weight="1.0">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="17dp"
+                android:text="@string/personal_car"
+                android:textColor="#353535"
+                android:textSize="16sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:duplicateParentState="true"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-            </FrameLayout>
+            <TextView
+                android:id="@+id/input_car"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="10dp"
+                android:textColor="#45c01a"
+                android:textSize="16sp" />
 
-            <FrameLayout
-                android:id="@+id/order_send"
-                android:layout_width="0dip"
-                android:layout_height="26dip"
-                android:layout_marginLeft="5dip"
-                android:layout_marginRight="5dip"
-                android:layout_weight="1.0">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:duplicateParentState="true"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/order_take"
-                android:layout_width="0dip"
-                android:layout_height="26dip"
-                android:layout_marginLeft="5dip"
-                android:layout_marginRight="5dip"
-                android:layout_weight="1.0">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:duplicateParentState="true"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-            </FrameLayout>
-        </LinearLayout>
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:background="#dbdbdb" />
+        </FrameLayout>
 
         <View
             android:layout_width="match_parent"
@@ -262,70 +194,6 @@
             android:padding="10dip"
             android:textColor="#ff202020"
             android:textSize="14sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="7dip"
-            android:paddingLeft="5dip"
-            android:paddingRight="5dip"
-            android:paddingTop="8dip">
-
-            <FrameLayout
-                android:id="@+id/order_payment_unlimited"
-                android:layout_width="0dip"
-                android:layout_height="26dip"
-                android:layout_marginLeft="5dip"
-                android:layout_marginRight="5dip"
-                android:layout_weight="1.0">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:duplicateParentState="true"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/online_payment"
-                android:layout_width="0dip"
-                android:layout_height="26dip"
-                android:layout_marginLeft="5dip"
-                android:layout_marginRight="5dip"
-                android:layout_weight="1.0">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:duplicateParentState="true"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/cash_on_delivery"
-                android:layout_width="0dip"
-                android:layout_height="26dip"
-                android:layout_marginLeft="5dip"
-                android:layout_marginRight="5dip"
-                android:layout_weight="1.0">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:duplicateParentState="true"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-            </FrameLayout>
-        </LinearLayout>
 
         <View
             android:layout_width="match_parent"

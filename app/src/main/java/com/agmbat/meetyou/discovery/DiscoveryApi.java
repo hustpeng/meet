@@ -10,7 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
 /**
- * 缘币api
+ * 发现相关api
  */
 public class DiscoveryApi {
 

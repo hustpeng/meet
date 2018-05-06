@@ -8,6 +8,8 @@ public class FilterInfo {
     private int mGender = -1;
     private int mMarriage = -1;
     private int mEducation = -1;
+    private int mHouse = -1;
+    private int mCar = -1;
 
     public int getGender() {
         return mGender;
@@ -66,12 +68,18 @@ public class FilterInfo {
     }
 
     public int getHouse() {
-        return 0;
+        return mHouse;
+    }
+
+    public void setHouse(int house) {
+        mHouse = house;
     }
 
     public int getCar() {
-        return 0;
+        return mCar;
     }
 
-
+    public void setCar(int car) {
+        mCar = car;
+    }
 }
