@@ -1,17 +1,18 @@
 package com.agmbat.meetyou.discovery.filter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 过虑信息
  */
 public class FilterInfo {
 
-    private Map<String, Object> map = new HashMap<>();
+    private int mGender = -1;
 
     public int getGender() {
-        return -1;
+        return mGender;
+    }
+
+    public void setGender(int gender) {
+        mGender = gender;
     }
 
     public int getStartAge() {
@@ -61,4 +62,6 @@ public class FilterInfo {
     public int getCar() {
         return 0;
     }
+
+
 }
