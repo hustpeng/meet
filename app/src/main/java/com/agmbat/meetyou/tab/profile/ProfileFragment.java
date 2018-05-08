@@ -14,6 +14,7 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.imsdk.user.UserManager;
+import com.agmbat.meetyou.AboutActivity;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
 import com.agmbat.meetyou.coins.CoinsActivity;
@@ -108,6 +109,11 @@ public class ProfileFragment extends Fragment {
     @OnClick(R.id.btn_credits)
     void onClickCredits() {
         startActivity(new Intent(getActivity(), CoinsActivity.class));
+    }
+
+    @OnClick(R.id.btn_about)
+    void onClickAbout() {
+        startActivity(new Intent(getActivity(), AboutActivity.class));
     }
 
     private void updateView(LoginUser user) {

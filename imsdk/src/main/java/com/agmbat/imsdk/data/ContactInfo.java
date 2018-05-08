@@ -12,7 +12,6 @@ import org.jivesoftware.smack.util.XmppStringUtils;
 @Table(name = "contact")
 public class ContactInfo {
 
-
     /**
      * 此id为数据库存储id值
      */
@@ -147,7 +146,7 @@ public class ContactInfo {
     }
 
     /**
-     * 更新联想人信息
+     * 更新联系人信息
      *
      * @param contactInfo
      */
