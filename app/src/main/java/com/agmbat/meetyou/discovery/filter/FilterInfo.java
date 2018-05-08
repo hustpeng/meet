@@ -15,11 +15,11 @@ public class FilterInfo {
     private int mHouse = -1;
     private int mCar = -1;
 
-    private int mAgeStart;
-    private int mAgeEnd;
+    private int mAgeStart = 18;
+    private int mAgeEnd = 150;
 
-    private int mHeightStart;
-    private int mHeightEnd;
+    private int mHeightStart = 138;
+    private int mHeightEnd = 230;
 
     /**
      * 配置项
@@ -27,8 +27,8 @@ public class FilterInfo {
     private int mMinAge = 18;
     private int mMaxAge = 150;
 
-    private int mMinHeight = 30;
-    private int mMaxHeight = 150;
+    private int mMinHeight = 138;
+    private int mMaxHeight = 230;
 
     private Address mBirthplace = Address.fromProvinceCityText("不限,不限");
 
