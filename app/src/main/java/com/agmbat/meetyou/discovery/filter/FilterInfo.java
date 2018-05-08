@@ -15,9 +15,34 @@ public class FilterInfo {
     private int mHouse = -1;
     private int mCar = -1;
 
+    private int mAgeStart;
+    private int mAgeEnd;
+
+    private int mHeightStart;
+    private int mHeightEnd;
+
+    /**
+     * 配置项
+     */
+    private int mMinAge = 18;
+    private int mMaxAge = 150;
+
+    private int mMinHeight = 30;
+    private int mMaxHeight = 150;
+
     private Address mBirthplace = Address.fromProvinceCityText("不限,不限");
 
     private Address mWorkarea = Address.fromProvinceCityText("不限,不限");
+
+    public void setAgeRange(int min, int max) {
+        mMinAge = min;
+        mMaxAge = max;
+    }
+
+    public void setHeightRange(int min, int max) {
+        mMinHeight = min;
+        mMaxHeight = max;
+    }
 
     public int getGender() {
         return mGender;
@@ -28,19 +53,35 @@ public class FilterInfo {
     }
 
     public int getStartAge() {
-        return 0;
+        return mAgeStart;
+    }
+
+    public void setStartAge(int age) {
+        mAgeStart = age;
     }
 
     public int getEndAge() {
-        return 0;
+        return mAgeEnd;
+    }
+
+    public void setEndAge(int age) {
+        mAgeEnd = age;
     }
 
     public int getStartHeight() {
-        return 0;
+        return mHeightStart;
+    }
+
+    public void setStartHeight(int height) {
+        mHeightStart = height;
     }
 
     public int getEndHeight() {
-        return 0;
+        return mHeightEnd;
+    }
+
+    public void setEndHeight(int height) {
+        mHeightEnd = height;
     }
 
     public int getMarriage() {
@@ -121,5 +162,21 @@ public class FilterInfo {
             text = "不限";
         }
         return text;
+    }
+
+    public int getMinAge() {
+        return mMinAge;
+    }
+
+    public int getMaxAge() {
+        return mMaxAge;
+    }
+
+    public int getMaxHeight() {
+        return mMaxHeight;
+    }
+
+    public int getMinHeight() {
+        return mMinHeight;
     }
 }

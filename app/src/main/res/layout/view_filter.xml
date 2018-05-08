@@ -46,6 +46,161 @@
                 android:background="#dbdbdb" />
         </FrameLayout>
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="12dp"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/btn_age_start"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/ic_login_spinner">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="17dp"
+                    android:text="年龄: 开始"
+                    android:textColor="#353535"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/input_age_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#45c01a"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:background="#dbdbdb" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/btn_age_end"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/ic_login_spinner">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:text="结束"
+                    android:textColor="#353535"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/input_age_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="10dp"
+                    android:text="1990"
+                    android:textColor="#45c01a"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:background="#dbdbdb" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="12dp"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/btn_height_start"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/ic_login_spinner">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="17dp"
+                    android:text="身高: 开始"
+                    android:textColor="#353535"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/input_height_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#45c01a"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:background="#dbdbdb" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/btn_height_end"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/ic_login_spinner">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:text="结束"
+                    android:textColor="#353535"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/input_height_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="10dp"
+                    android:text="1990"
+                    android:textColor="#45c01a"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:background="#dbdbdb" />
+            </FrameLayout>
+
+        </LinearLayout>
+
         <FrameLayout
             android:id="@+id/btn_marriage"
             android:layout_width="match_parent"

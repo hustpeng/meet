@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.agmbat.meetyou.R;
+import com.agmbat.picker.NumberPicker;
 import com.agmbat.picker.OptionPicker;
 import com.agmbat.picker.SinglePicker;
 import com.agmbat.picker.address.Address;
@@ -42,6 +43,18 @@ public class FilterView extends FrameLayout {
      */
     @BindView(R.id.input_gender)
     TextView mGenderView;
+
+    @BindView(R.id.input_age_start)
+    TextView mAgeStartView;
+
+    @BindView(R.id.input_age_end)
+    TextView mAgeEndView;
+
+    @BindView(R.id.input_height_start)
+    TextView mHeightStartView;
+
+    @BindView(R.id.input_height_end)
+    TextView mHeightEndView;
 
     @BindView(R.id.input_marriage)
     TextView mMarriageView;
@@ -95,6 +108,10 @@ public class FilterView extends FrameLayout {
         mWageView.setText(WageFilterItem.valueOf(mFilterInfo.getWage()).mName);
         mHouseView.setText(HouseFilterItem.valueOf(mFilterInfo.getHouse()).mName);
         mCarView.setText(CarFilterItem.valueOf(mFilterInfo.getCar()).mName);
+        mAgeStartView.setText(String.valueOf(mFilterInfo.getStartAge()));
+        mAgeEndView.setText(String.valueOf(mFilterInfo.getEndAge()));
+        mHeightStartView.setText(String.valueOf(mFilterInfo.getStartHeight()));
+        mHeightEndView.setText(String.valueOf(mFilterInfo.getEndHeight()));
     }
 
     public FilterInfo getFilterInfo() {
@@ -237,5 +254,73 @@ public class FilterView extends FrameLayout {
                     }
 
                 });
+    }
+
+
+    @OnClick(R.id.btn_age_start)
+    void onClickAgeStart() {
+        showNumberPicker(getContext(), mFilterInfo.getStartAge(), mFilterInfo.getMinAge(), mFilterInfo.getMaxAge(),
+                new NumberPicker.OnNumberPickListener() {
+                    @Override
+                    public void onNumberPicked(int i, Number number) {
+                        mFilterInfo.setStartAge(number.intValue());
+                        mAgeStartView.setText(String.valueOf(mFilterInfo.getStartAge()));
+                    }
+                });
+    }
+
+    @OnClick(R.id.btn_age_end)
+    void onClickAgeEnd() {
+        showNumberPicker(getContext(), mFilterInfo.getEndAge(), mFilterInfo.getMinAge(), mFilterInfo.getMaxAge(),
+                new NumberPicker.OnNumberPickListener() {
+                    @Override
+                    public void onNumberPicked(int i, Number number) {
+                        mAgeEndView.setText(String.valueOf(number));
+                        mFilterInfo.setEndAge(number.intValue());
+                    }
+                });
+    }
+
+    @OnClick(R.id.btn_height_start)
+    void onClickHeightStart() {
+        showNumberPicker(getContext(), mFilterInfo.getStartHeight(), mFilterInfo.getMinHeight(), mFilterInfo.getMaxHeight(),
+                new NumberPicker.OnNumberPickListener() {
+                    @Override
+                    public void onNumberPicked(int i, Number number) {
+                        mHeightStartView.setText(String.valueOf(number));
+                        mFilterInfo.setStartHeight(number.intValue());
+                    }
+                });
+    }
+
+    @OnClick(R.id.btn_height_end)
+    void onClickHeightEnd() {
+        showNumberPicker(getContext(), mFilterInfo.getEndHeight(), mFilterInfo.getMinHeight(), mFilterInfo.getMaxHeight(),
+                new NumberPicker.OnNumberPickListener() {
+                    @Override
+                    public void onNumberPicked(int i, Number number) {
+                        mHeightEndView.setText(String.valueOf(number));
+                        mFilterInfo.setEndHeight(number.intValue());
+                    }
+                });
+    }
+
+    public static void showNumberPicker(Context context, int selected, int start, int end,
+                                        NumberPicker.OnNumberPickListener l) {
+        if (selected < start) {
+            selected = start;
+        } else if (selected > end) {
+            selected = end;
+        }
+        NumberPicker picker = new NumberPicker(context);
+        picker.setCanceledOnTouchOutside(false);
+        picker.setOffset(3);
+        picker.setCycleDisable(true);
+        picker.setDividerRatio(0.0F);
+        picker.setRange(start, end, 1);
+        picker.setSelectedItem(selected);
+        picker.setOnNumberPickListener(l);
+        picker.setAnimationStyle(com.agmbat.picker.R.style.PickerPopupAnimation);
+        picker.show();
     }
 }
