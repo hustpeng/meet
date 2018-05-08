@@ -1,5 +1,7 @@
 package com.agmbat.meetyou.discovery.filter;
 
+import com.agmbat.picker.address.Address;
+
 /**
  * 过虑信息
  */
@@ -12,6 +14,10 @@ public class FilterInfo {
     private int mWage = -1;
     private int mHouse = -1;
     private int mCar = -1;
+
+    private Address mBirthplace = Address.fromProvinceCityText("不限,不限");
+
+    private Address mWorkarea = Address.fromProvinceCityText("不限,不限");
 
     public int getGender() {
         return mGender;
@@ -45,12 +51,20 @@ public class FilterInfo {
         mMarriage = marriage;
     }
 
-    public String getBirthplace() {
-        return "";
+    public Address getBirthplace() {
+        return mBirthplace;
     }
 
-    public String getWorkarea() {
-        return "";
+    public void setBirthplace(Address birthplace) {
+        mBirthplace = birthplace;
+    }
+
+    public Address getWorkarea() {
+        return mWorkarea;
+    }
+
+    public void setWorkarea(Address workarea) {
+        mWorkarea = workarea;
     }
 
     public int getEducation() {
@@ -64,7 +78,6 @@ public class FilterInfo {
     public String getCareer() {
         return mCareer;
     }
-
 
     public void setCareer(String career) {
         mCareer = career;
@@ -94,5 +107,19 @@ public class FilterInfo {
         mCar = car;
     }
 
+    public String getBirthplaceText() {
+        String text = mBirthplace.getProvince() + mBirthplace.getCity();
+        if ("不限不限".equals(text)) {
+            text = "不限";
+        }
+        return text;
+    }
 
+    public String getWorkareaText() {
+        String text = mWorkarea.getProvince() + mWorkarea.getCity();
+        if ("不限不限".equals(text)) {
+            text = "不限";
+        }
+        return text;
+    }
 }

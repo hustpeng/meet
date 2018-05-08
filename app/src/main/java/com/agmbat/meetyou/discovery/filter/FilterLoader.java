@@ -36,8 +36,14 @@ public class FilterLoader implements DiscoveryLoader {
         String age = mFilterInfo.getStartAge() + "," + mFilterInfo.getEndAge();
         String height = mFilterInfo.getStartHeight() + "," + mFilterInfo.getEndHeight();
         int marriage = mFilterInfo.getMarriage();
-        String birthplace = mFilterInfo.getBirthplace();
-        String workarea = mFilterInfo.getWorkarea();
+        String birthplace = mFilterInfo.getBirthplaceText();
+        if ("不限".equals(birthplace)) {
+            birthplace = "";
+        }
+        String workarea = mFilterInfo.getWorkareaText();
+        if ("不限".equals(workarea)) {
+            workarea = "";
+        }
         int education = mFilterInfo.getEducation();
         String career = mFilterInfo.getCareer();
         if ("不限".equals(career)) {

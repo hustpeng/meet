@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.OptionPicker;
 import com.agmbat.picker.SinglePicker;
+import com.agmbat.picker.address.Address;
+import com.agmbat.picker.address.AddressPicker;
 import com.agmbat.picker.helper.filter.CarFilterItem;
 import com.agmbat.picker.helper.filter.EducationFilterItem;
 import com.agmbat.picker.helper.filter.FilterHelper;
@@ -44,6 +46,12 @@ public class FilterView extends FrameLayout {
     @BindView(R.id.input_marriage)
     TextView mMarriageView;
 
+    @BindView(R.id.input_birthplace)
+    TextView mBirthplaceView;
+
+    @BindView(R.id.input_workarea)
+    TextView mWorkareaView;
+
     @BindView(R.id.input_education)
     TextView mEducationView;
 
@@ -58,6 +66,7 @@ public class FilterView extends FrameLayout {
 
     @BindView(R.id.input_car)
     TextView mCarView;
+
 
     public FilterView(@NonNull Context context) {
         super(context);
@@ -80,6 +89,8 @@ public class FilterView extends FrameLayout {
         mGenderView.setText(GenderFilterItem.valueOf(mFilterInfo.getGender()).mName);
         mMarriageView.setText(MarriageFilterItem.valueOf(mFilterInfo.getMarriage()).mName);
         mEducationView.setText(EducationFilterItem.valueOf(mFilterInfo.getEducation()).mName);
+        mBirthplaceView.setText(mFilterInfo.getBirthplaceText());
+        mWorkareaView.setText(mFilterInfo.getWorkareaText());
         mCareerView.setText(mFilterInfo.getCareer());
         mWageView.setText(WageFilterItem.valueOf(mFilterInfo.getWage()).mName);
         mHouseView.setText(HouseFilterItem.valueOf(mFilterInfo.getHouse()).mName);
@@ -121,6 +132,34 @@ public class FilterView extends FrameLayout {
                     public void onItemPicked(int index, MarriageFilterItem item) {
                         mMarriageView.setText(item.mName);
                         mFilterInfo.setMarriage(item.mValue);
+                    }
+
+                });
+    }
+
+    @OnClick(R.id.btn_birthplace)
+    void onClickBirthplace() {
+        Address address = mFilterInfo.getBirthplace();
+        FilterHelper.showProvinceCityFilterPicker(getContext(), address,
+                new AddressPicker.OnAddressPickListener() {
+                    @Override
+                    public void onAddressPicked(Address address) {
+                        mFilterInfo.setBirthplace(address);
+                        mBirthplaceView.setText(mFilterInfo.getBirthplaceText());
+                    }
+
+                });
+    }
+
+    @OnClick(R.id.btn_workarea)
+    void onClickWorkarea() {
+        Address address = mFilterInfo.getWorkarea();
+        FilterHelper.showProvinceCityFilterPicker(getContext(), address,
+                new AddressPicker.OnAddressPickListener() {
+                    @Override
+                    public void onAddressPicked(Address address) {
+                        mFilterInfo.setWorkarea(address);
+                        mWorkareaView.setText(mFilterInfo.getWorkareaText());
                     }
 
                 });

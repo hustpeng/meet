@@ -81,6 +81,78 @@
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/btn_birthplace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="12dp"
+            android:layout_weight="1"
+            android:background="@drawable/ic_login_spinner">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="17dp"
+                android:text="@string/personal_birthplace"
+                android:textColor="#353535"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/input_birthplace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="10dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="#45c01a"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:background="#dbdbdb" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/btn_workarea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="12dp"
+            android:layout_weight="1"
+            android:background="@drawable/ic_login_spinner">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="17dp"
+                android:text="@string/personal_workarea"
+                android:textColor="#353535"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/input_workarea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="10dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="#45c01a"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:background="#dbdbdb" />
+        </FrameLayout>
+
+        <FrameLayout
             android:id="@+id/btn_education"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -113,6 +185,7 @@
                 android:layout_gravity="bottom"
                 android:background="#dbdbdb" />
         </FrameLayout>
+
         <FrameLayout
             android:id="@+id/btn_career"
             android:layout_width="match_parent"
@@ -146,6 +219,7 @@
                 android:layout_gravity="bottom"
                 android:background="#dbdbdb" />
         </FrameLayout>
+
         <FrameLayout
             android:id="@+id/btn_wage"
             android:layout_width="match_parent"
@@ -247,33 +321,6 @@
                 android:layout_gravity="bottom"
                 android:background="#dbdbdb" />
         </FrameLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginTop="5dip"
-            android:background="#ffdfdfdf" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dip"
-            android:textColor="#ff202020"
-            android:textSize="14sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginTop="5dip"
-            android:background="#ffdfdfdf" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dip"
-            android:textColor="#ff202020"
-            android:textSize="14sp" />
-
 
         <View
             android:layout_width="match_parent"
