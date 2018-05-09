@@ -51,6 +51,8 @@
     <string name="im_settings_logout">退出登录</string>
     <string name="my_coins">我的缘币</string>
     <string name="coins_detail">缘币明细</string>
+    <string name="invite_friend">邀请好友</string>
+    <string name="invite_friend_msg">给大家推荐一款实名制免费相亲交友APP, 实时与TA聊天交流、真实直接，输入邀请码XXXX免费注册可获赠100缘币，马上下载注册吧！</string>
 
     <!--我的个人信息-->
     <string name="im_personal_info">个人信息</string>
@@ -126,5 +128,7 @@
     <string name="complaint">用户反馈</string>
     <string name="check_update">检查更新</string>
     <string name="terms_of_use_and_privacy_policy">使用条款和隐私政策</string>
+
+
 
 </resources>

@@ -1,7 +1,10 @@
 package com.agmbat.meetyou.tab.profile;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.agmbat.android.AppResources;
+import com.agmbat.android.image.BitmapUtils;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
@@ -18,13 +23,19 @@ import com.agmbat.meetyou.AboutActivity;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
 import com.agmbat.meetyou.coins.CoinsActivity;
-import com.agmbat.meetyou.helper.GenderHelper;
 import com.agmbat.meetyou.helper.AvatarHelper;
+import com.agmbat.meetyou.helper.GenderHelper;
 import com.agmbat.meetyou.settings.PersonalInfoActivity;
+import com.agmbat.wxshare.ShareContent;
+import com.agmbat.wxshare.WXShare;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -109,6 +120,21 @@ public class ProfileFragment extends Fragment {
     @OnClick(R.id.btn_credits)
     void onClickCredits() {
         startActivity(new Intent(getActivity(), CoinsActivity.class));
+    }
+
+    @OnClick(R.id.btn_invite_friend)
+    void onClickInviteFriend() {
+        File file = new File(Environment.getExternalStorageDirectory(), "yuyuan.jpg");
+        if (!file.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            BitmapUtils.compressToFile(bitmap, file.getAbsolutePath());
+        }
+        ShareContent content = new ShareContent();
+        content.mDescription = AppResources.getString(R.string.invite_friend_msg);
+        List<File> fileList = new ArrayList<>();
+        fileList.add(file);
+        content.mImageFileList = fileList;
+        WXShare.share(getActivity(), content);
     }
 
     @OnClick(R.id.btn_about)
