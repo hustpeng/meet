@@ -14,7 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * 积分记录item
+ * 聚会活动item
  */
 public class MeetingItemView extends FrameLayout {
 

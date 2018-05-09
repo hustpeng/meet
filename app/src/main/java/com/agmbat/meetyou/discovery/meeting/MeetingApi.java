@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
  */
 public class MeetingApi {
 
-    private static final boolean ENABLE_MOCK = true;
+    private static final boolean ENABLE_MOCK = false;
 
     /**
      * 每页数据20
@@ -51,7 +51,7 @@ public class MeetingApi {
      * @return
      */
     public static MeetingApiResult getMeetingList(String uid, String ticket, String city, int pageIndex) {
-        String apiName = "list";
+        String apiName = "eventslist";
         String url = Api.getBaseDiscoveryUrl(apiName);
         HttpRequester.Builder builder = new HttpRequester.Builder();
         builder.baseUrl(url);
