@@ -47,7 +47,7 @@ public class MeetingApi {
      * @param uid       用户11位手机号码，不含区号
      * @param ticket    The auth ticket
      * @param city      指定城市或全部城市
-     * @param pageIndex 分页获取，第几页。第一页是1，第二页是2，…如果不提供，默认为1
+     * @param pageIndex 分页获取，第几页。第一页是0，第二页是1，…如果不提供，默认为0
      * @return
      */
     public static MeetingApiResult getMeetingList(String uid, String ticket, String city, int pageIndex) {
@@ -58,9 +58,7 @@ public class MeetingApi {
         builder.urlParam("uid", uid);
         builder.urlParam("ticket", ticket);
         builder.urlParam("city", city);
-        // server api是从1开始
-        int apiPageIndex = pageIndex + 1;
-        builder.urlParam("pageIndex", String.valueOf(apiPageIndex));
+        builder.urlParam("pageIndex", String.valueOf(pageIndex));
         builder.urlParam("sign", Api.getSign(apiName, uid));  // API调用签名
         HttpRequester requester = builder.build();
         String text = requester.requestAsString();

@@ -1,6 +1,5 @@
 package com.agmbat.meetyou.coins;
 
-
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.api.Api;
 import com.agmbat.net.HttpRequester;
@@ -51,7 +50,7 @@ public class CoinsApi {
      *
      * @param uid       用户11位手机号码，不含区号
      * @param ticket    The auth ticket
-     * @param pageIndex 分页获取，第几页。第一页是1，第二页是2，…如果不提供，默认为1
+     * @param pageIndex 分页获取，第几页。第一页是0，第二页是1，…如果不提供，默认为0
      * @return
      */
     public static CoinsApiResult getCoins(String uid, String ticket, int pageIndex) {
@@ -62,8 +61,7 @@ public class CoinsApi {
         builder.urlParam("uid", uid);
         builder.urlParam("ticket", ticket);
         // server api是从1开始
-        int apiPageIndex = pageIndex + 1;
-        builder.urlParam("pageIndex", String.valueOf(apiPageIndex));
+        builder.urlParam("pageIndex", String.valueOf(pageIndex));
         builder.urlParam("sign", Api.getSign(apiName, uid));
         HttpRequester requester = builder.build();
         String text = requester.requestAsString();
