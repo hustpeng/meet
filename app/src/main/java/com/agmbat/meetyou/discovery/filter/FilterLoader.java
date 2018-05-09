@@ -7,9 +7,9 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.discovery.DiscoveryApi;
-import com.agmbat.meetyou.discovery.DiscoveryApiResult;
-import com.agmbat.meetyou.discovery.DiscoveryLoader;
+import com.agmbat.meetyou.discovery.search.DiscoveryApi;
+import com.agmbat.meetyou.discovery.search.DiscoveryApiResult;
+import com.agmbat.meetyou.discovery.search.DiscoveryLoader;
 
 /**
  * 综合搜索

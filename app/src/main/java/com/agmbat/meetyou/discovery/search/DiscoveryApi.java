@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.discovery;
+package com.agmbat.meetyou.discovery.search;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.api.Api;

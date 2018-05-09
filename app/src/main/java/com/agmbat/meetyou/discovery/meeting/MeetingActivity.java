@@ -1,38 +1,34 @@
-package com.agmbat.meetyou.coins;
+package com.agmbat.meetyou.discovery.meeting;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.support.annotation.Nullable;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.meetyou.R;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * 我的缘币
+ * 聚会活动
  */
-public class CoinsActivity extends Activity {
+public class MeetingActivity extends Activity {
 
-    @BindView(R.id.my_coins)
-    TextView mCoinsView;
-
-    private CoinsLoader mPageLoader;
+    private MeetingLoader mPageLoader;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
-        setContentView(R.layout.activity_coins);
+        setContentView(R.layout.activity_discovery_meeting);
         ButterKnife.bind(this);
-        mPageLoader = new CoinsLoader(this);
+        mPageLoader = new MeetingLoader(this);
         mPageLoader.setupViews(findViewById(android.R.id.content));
         mPageLoader.loadData();
     }
@@ -43,6 +39,12 @@ public class CoinsActivity extends Activity {
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
     /**
      * 点击返回键
      */
@@ -51,23 +53,20 @@ public class CoinsActivity extends Activity {
         finish();
     }
 
-    private class CoinsLoader extends PageDataLoader<CoinsRecords> {
+    private class MeetingLoader extends PageDataLoader<MeetingItem> {
 
-        public CoinsLoader(Context context) {
+        public MeetingLoader(Context context) {
             super(context);
         }
 
         @Override
-        public CoinsApiResult onLoadData(int page) {
-            return CoinsManager.request(page);
+        public MeetingApiResult onLoadData(int page) {
+            return MeetingManager.request(page);
         }
 
         @Override
-        protected ArrayAdapter<CoinsRecords> createListAdapter(Context context, PageData<CoinsRecords> data) {
-            CoinsApiResult apiResult = (CoinsApiResult) data;
-            mCoinsView.setVisibility(View.VISIBLE);
-            mCoinsView.setText(String.valueOf(apiResult.mBalance));
-            return new CoinsListAdapter(context, data.getDataList());
+        protected ArrayAdapter<MeetingItem> createListAdapter(Context context, PageData<MeetingItem> data) {
+            return new MeetingListAdapter(context, data.getDataList());
         }
 
         @Override

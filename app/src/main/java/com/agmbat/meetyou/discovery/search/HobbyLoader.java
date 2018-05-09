@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.discovery;
+package com.agmbat.meetyou.discovery.search;
 
 import android.view.View;
 

@@ -1,5 +1,6 @@
 package com.agmbat.meetyou.tab.discovery;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.discovery.DiscoveryHelper;
+import com.agmbat.meetyou.discovery.search.DiscoveryHelper;
+import com.agmbat.meetyou.discovery.meeting.MeetingActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -61,4 +63,11 @@ public class Discovery2Fragment extends Fragment {
         DiscoveryHelper.openFilter(getActivity());
     }
 
+    /**
+     * 点击聚会活动
+     */
+    @OnClick(R.id.btn_discovery_meeting)
+    void onClickMeeting() {
+        getActivity().startActivity(new Intent(getActivity(), MeetingActivity.class));
+    }
 }

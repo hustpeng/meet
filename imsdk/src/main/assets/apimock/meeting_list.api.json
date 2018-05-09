@@ -1,0 +1,20 @@
+{
+  "result": true,
+  "records": 2,
+  "resp": [
+    {
+      "city": "东莞;深圳",
+      "enable_signup": false,
+      "id": 4,
+      "title": "6.6 莞深单身教师相亲会",
+      "url": "http://www.dglove.com/console/public-events-detail.jsp?id=4"
+    },
+    {
+      "city": "东莞;深圳",
+      "enable_signup": false,
+      "id": 5,
+      "title": "6.6 莞深单身教师相亲会",
+      "url": "http://www.dglove.com/console/public-events-detail.jsp?id=4"
+    }
+  ]
+}
