@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
@@ -98,7 +99,7 @@ public class UserInfoActivity extends Activity {
      */
     @OnClick(R.id.btn_add_to_contact)
     void onClickAddToContact() {
-        boolean result = UserManager.getInstance().requestAddContactToFriend(mContactInfo);
+        boolean result = XMPPManager.getInstance().getRosterManager().addContactToFriend(mContactInfo);
         if (result) {
             ToastUtil.showToastLong("已发送");
         } else {

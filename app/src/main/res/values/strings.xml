@@ -105,6 +105,7 @@
     <string name="set_alias_and_tag">设置备注和标签</string>
     <string name="send_message">发消息</string>
     <string name="add_to_contact">添加到通讯录</string>
+    <string name="pass_validation">通过验证</string>
 
     <string name="search">搜索</string>
     <string name="group_chat">群聊</string>

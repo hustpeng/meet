@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
@@ -43,7 +44,7 @@ public class UserInfoVerifyActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_info);
+        setContentView(R.layout.activity_user_info_verify);
         WindowUtils.setStatusBarColor(this, 0xff232325);
         ButterKnife.bind(this);
         String jid = getIntent().getStringExtra("userInfo");
@@ -72,11 +73,11 @@ public class UserInfoVerifyActivity extends Activity {
     }
 
     /**
-     * 点击添加联系人, 接受用户申请加为好友
+     * 同意添加为好友
      */
-    @OnClick(R.id.btn_add_to_contact)
-    void onClickAddToContact() {
-        UserManager.getInstance().acceptFriend(mContactInfo);
+    @OnClick(R.id.btn_pass_validation)
+    void onClickPassValidation() {
+        XMPPManager.getInstance().getRosterManager().acceptFriend(mContactInfo);
     }
 
 

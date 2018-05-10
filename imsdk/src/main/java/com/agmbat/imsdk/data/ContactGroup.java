@@ -47,6 +47,10 @@ public class ContactGroup {
         mGroupName = group;
     }
 
+    public void setGroupName(String name) {
+        mGroupName = name;
+    }
+
     public String getGroupName() {
         return mGroupName;
     }

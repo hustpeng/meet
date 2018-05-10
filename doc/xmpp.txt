@@ -176,3 +176,17 @@ RCV  (30541195):
 <status/><priority>10</priority>
 <c node="http://www.ag-software.de/miniclient/caps" hash="sha-1" xmlns="http://jabber.org/protocol/caps" ver="8RovUdtOmiAjzj+xI7SK5BCw3A8="/></presence>
 04-28 00:13:41.786 1044-1088/com.agmbat.meetyou D/SMACK:  SENT (144631400)
+
+1. 默认创建组[我的好友]
+2. 所有的好友都必须在分组里面
+3. 好友列表加载逻辑，当用户登陆后，必须进行同步
+    1. 用户登录, 拉取服务器用户列表
+    2. 加载本地数据列表到内存中, 本地数据库只用于缓存, 方便没网络时显示用户列表
+    3. 同步本地数据库
+
+
+添加好友逻辑
+1. A 申请添加 X 为好友
+2. X 收到 A 申请好友的信息
+3. X 查看 A 信息, X 确认添加 A 好友， 将 A 加入到好友列表中
+4. A 收到X 确认信息, 将 X 加入到好友列表中

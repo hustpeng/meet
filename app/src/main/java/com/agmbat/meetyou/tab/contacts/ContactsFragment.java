@@ -17,6 +17,7 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
 
 import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
@@ -103,7 +104,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
 
 
         setState(STATE_LOADING);
-        UserManager.getInstance().loadContactGroup(this);
+        XMPPManager.getInstance().getRosterManager().loadContactGroup(this);
     }
 
     @Override
