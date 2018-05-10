@@ -20,6 +20,7 @@ import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.user.OnLoadContactGroupListener;
 import com.agmbat.imsdk.user.UserManager;
@@ -32,6 +33,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -43,11 +45,6 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
 
     private static final String TAG = ContactsFragment.class.getSimpleName();
 
-    private static final int MENU_INDEX_ADD_BLOCK_USER = 1;
-    private static final int MENU_INDEX_REMOVE_BLOCK_USER = 2;
-    private static final int MENU_INDEX_REMOVE_FRIENDS = 3;
-    private static final int MENU_INDEX_REMOVE_RECENTLY = 4;
-
     private static final int STATE_LOADING = 0;
     private static final int STATE_LOAD_FINISH = 1;
 
@@ -58,8 +55,6 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     ExpandableListView mListView;
 
     private ContactsAdapter mFriendsAdapter;
-
-    private String mLoginUserName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,7 +96,8 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         mListView.setOnChildClickListener(this);
         mListView.setOnGroupClickListener(this);
         mListView.setOnCreateContextMenuListener(this);
-
+        mFriendsAdapter = new ContactsAdapter(getActivity(), new ArrayList<ContactGroup>());
+        mListView.setAdapter(mFriendsAdapter);
 
         setState(STATE_LOADING);
         XMPPManager.getInstance().getRosterManager().loadContactGroup(this);
@@ -129,6 +125,19 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         ContactInfo contactInfo = event.getContactInfo();
         ToastUtil.showToastLong("收到添加好友请求" + contactInfo.getBareJid());
     }
+
+    /**
+     * 收到更新人列表更新
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ContactListUpdateEvent event) {
+        mFriendsAdapter.clear();
+        mFriendsAdapter.addAll(event.getList());
+        mFriendsAdapter.notifyDataSetChanged();
+    }
+
 
     private void updateRecentList() {
 //        MeetDatabase dataManager = MeetDatabase.getInstance();
@@ -254,8 +263,9 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     }
 
     private void fillData(List<ContactGroup> groups) {
-        mFriendsAdapter = new ContactsAdapter(getActivity(), groups);
-        mListView.setAdapter(mFriendsAdapter);
+        mFriendsAdapter.clear();
+        mFriendsAdapter.addAll(groups);
+        mFriendsAdapter.notifyDataSetChanged();
         if (groups.size() > 0) {
             mListView.expandGroup(0);
         }

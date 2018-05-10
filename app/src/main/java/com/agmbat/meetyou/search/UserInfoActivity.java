@@ -99,7 +99,7 @@ public class UserInfoActivity extends Activity {
      */
     @OnClick(R.id.btn_add_to_contact)
     void onClickAddToContact() {
-        boolean result = XMPPManager.getInstance().getRosterManager().addContactToFriend(mContactInfo);
+        boolean result = XMPPManager.getInstance().getRosterManager().requestAddContactToFriend(mContactInfo);
         if (result) {
             ToastUtil.showToastLong("已发送");
         } else {

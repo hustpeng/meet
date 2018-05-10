@@ -122,6 +122,22 @@ public class ContactsAdapter extends BaseExpandableListAdapter {
     }
 
 
+    /**
+     * 清空一次数据
+     */
+    public void clear() {
+        mGroupList.clear();
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param list
+     */
+    public void addAll(List<ContactGroup> list) {
+        mGroupList.addAll(list);
+    }
+
     public void updateGroup(ContactGroup group) {
         if (null != group) {
             int size = getGroupCount();
@@ -135,6 +151,5 @@ public class ContactsAdapter extends BaseExpandableListAdapter {
         }
         notifyDataSetChanged();
     }
-
 
 }

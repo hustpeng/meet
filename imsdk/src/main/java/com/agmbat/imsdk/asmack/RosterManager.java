@@ -12,8 +12,10 @@ import com.agmbat.imsdk.db.ContactGroupBelongTableManager;
 import com.agmbat.imsdk.db.ContactGroupTableManager;
 import com.agmbat.imsdk.db.ContactTableManager;
 import com.agmbat.imsdk.db.MeetDatabase;
+import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.ContactUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
+import com.agmbat.imsdk.imevent.PresenceSubscribedEvent;
 import com.agmbat.imsdk.user.OnLoadContactGroupListener;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.log.Log;
@@ -30,6 +32,7 @@ import org.jivesoftware.smack.roster.RosterGroup;
 import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smack.util.XmppStringUtils;
 
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,19 +41,29 @@ import java.util.List;
  * 管理好友列表
  */
 public class RosterManager {
+
+    private static final String TAG = RosterManager.class.getSimpleName();
+
     /**
      * 好友分组
      */
     private static final String GROUP_FRIENDS = "Hotlist";
+    private static final String GROUP_RECENTLY = "Recently";
+    private static final String GROUP_BLOCK = "Block";
+
+    public static final int MAX_CONTACT_COUNT = 20;
+    public static final int MAX_BLOCK_COUNT = 20;
+    public static final int MAX_RECENTLY_COUNT = 20;
 
     /**
      * 管理好友列表
      */
     private final Roster mRoster;
+    private final RosterListenerAdapter mRosterListener = new RosterListenerAdapter();
+
 
     private final String mLoginUserName;
     private final Connection mConnection;
-
 
     /**
      * 所有的好友
@@ -78,39 +91,43 @@ public class RosterManager {
         mFriendGroup = new ContactGroup();
         mFriendGroup.setGroupName(GROUP_FRIENDS);
 
-        addRosterListener(mIRosterListener);
-
-
         mContactList = new ArrayList<>();
         mGroupList = new ArrayList<>();
         mGroupList.add(mFriendGroup);
     }
 
-
-    public static final String GROUP_RECENTLY = "Recently";
-
-
-    public static final String GROUP_BLOCK = "Block";
-
-    private static final String TAG = RosterManager.class.getSimpleName();
-
-
-    private final List<IRosterListener> mRemoteRosListeners = new ArrayList<IRosterListener>();
-    private final RosterListenerAdapter mRosterListener = new RosterListenerAdapter();
-
-    public static final int MAX_CONTACT_COUNT = 20;
-    public static final int MAX_BLOCK_COUNT = 20;
-    public static final int MAX_RECENTLY_COUNT = 20;
-
-
-    public void addRosterListener(IRosterListener listen) {
-        if (listen != null) {
-            mRemoteRosListeners.add(listen);
-        }
+    /**
+     * 获取联系人列表
+     *
+     * @return
+     */
+    public List<ContactGroup> getContactGroupList() {
+        return mGroupList;
     }
 
     /**
-     * 请求添加好友, requestAddContactToFriend
+     * 获取所有分组
+     *
+     * @return
+     */
+    private List<RosterGroup> getGroupList() {
+        List<RosterGroup> list = new ArrayList<>();
+        list.addAll(mRoster.getGroups());
+        return list;
+    }
+
+    /**
+     * 请求添加好友
+     *
+     * @param contact
+     * @return
+     */
+    public boolean requestAddContactToFriend(ContactInfo contact) {
+        mRoster.sendSubscribe(contact.getBareJid());
+        return true;
+    }
+
+    /**
      * 添加好友到朋友分组中
      *
      * @param contact
@@ -132,7 +149,7 @@ public class RosterManager {
     public boolean addContact(ContactInfo contact, String group) {
         try {
             createGroup(group);
-            mRoster.createEntry(contact.getBareJid(), contact.getNickName(),
+            mRoster.addContact(contact.getBareJid(), contact.getNickName(),
                     contact.getRemark(), "", "", 0,
                     0, false, new String[]{group});
             return true;
@@ -178,18 +195,6 @@ public class RosterManager {
         }
     }
 
-    /**
-     * 获取联系人信息
-     *
-     * @param jid
-     * @return
-     */
-    private ContactInfo getContact(String jid) {
-        if (mRoster.contains(jid)) {
-            return getContactFromRosterEntry(mRoster.getEntry(jid));
-        }
-        return null;
-    }
 
     public List<ContactInfo> getContactList() {
         Collection<RosterEntry> list = mRoster.getEntries();
@@ -200,16 +205,6 @@ public class RosterManager {
         return contactList;
     }
 
-    /**
-     * 获取所有分组
-     *
-     * @return
-     */
-    public List<RosterGroup> getGroupList() {
-        List<RosterGroup> list = new ArrayList<>();
-        list.addAll(mRoster.getGroups());
-        return list;
-    }
 
     public List<String> getGroupsNames() {
         Collection<RosterGroup> groups = mRoster.getGroups();
@@ -218,12 +213,6 @@ public class RosterManager {
             result.add(rosterGroup.getName());
         }
         return result;
-    }
-
-    public void removeRosterListener(IRosterListener listen) {
-        if (listen != null) {
-            mRemoteRosListeners.remove(listen);
-        }
     }
 
     /**
@@ -264,41 +253,6 @@ public class RosterManager {
         }
     }
 
-    public Roster getRoster() {
-        return mRoster;
-    }
-
-    /**
-     * Get a contact from a RosterEntry.
-     *
-     * @param entry a roster entry containing information for the contact.
-     * @return a contact for this entry.
-     */
-    private ContactInfo getContactFromRosterEntry(RosterEntry entry) {
-        String user = entry.getUser();
-        ContactInfo contact = new ContactInfo();
-        contact.setBareJid(user);
-        Presence presence = mRoster.getPresence(user);
-//        contact.setStatus(presence);
-//        contact.setGroups(entry.getGroups());
-//        Iterator<Presence> iPres = mRoster.getPresences(user);
-//        while (iPres.hasNext()) {
-//            presence = iPres.next();
-//            if (!presence.getType().equals(Presence.Type.unavailable)) {
-//                contact.addResource(XmppStringUtils.parseResource(presence.getFrom()));
-//            }
-//        }
-        contact.setNickname(entry.getName());
-        contact.setRemark(entry.getNickName());
-        contact.setAvatar(entry.getAvatarId());
-
-//        contact.setPersonalMsg(entry.getPersonalMsg());
-//        contact.setLatitude(entry.getLatitude());
-//        contact.setLongitude(entry.getLongitude());
-//        contact.setRobot(entry.isRobot());
-//        contact.setAccount(mLoginUserName);
-        return contact;
-    }
 
     //
     private void insertContactTable(ContactInfo friend) {
@@ -346,95 +300,6 @@ public class RosterManager {
 //        }
 //    }
 //
-
-    /**
-     * Listener for the roster events. It will call the remote listeners
-     * registered.
-     */
-    private class RosterListenerAdapter implements RosterListener {
-
-        @Override
-        public void entriesAdded(Collection<String> addresses) {
-            List<String> tab = new ArrayList<String>(addresses);
-            for (IRosterListener l : mRemoteRosListeners) {
-                l.onEntriesAdded(tab);
-            }
-        }
-
-        @Override
-        public void entriesDeleted(Collection<String> addresses) {
-//            for (String address : addresses) {
-//                Log.d(TAG, "==>onEntriesDeleted(Thread):" + address);
-//                deleteContactFromTable(XmppStringUtils.parseName(address));
-//            }
-            List<String> tab = new ArrayList<String>(addresses);
-            for (IRosterListener l : mRemoteRosListeners) {
-                l.onEntriesDeleted(tab);
-            }
-        }
-
-        @Override
-        public void entriesUpdated(Collection<String> addresses) {
-//            for (String address : addresses) {
-//                ContactInfo contact = getContact(address);
-//                if (null != contact) {
-//                    Log.d(TAG,
-//                            "==>onEntriesUpdated(Thread): [UserName=" + contact.getUserName()
-//                                    + ",PersonalMsg=" + contact.getPersonalMsg() + ",Name="
-//                                    + contact.getName() + ",NickName=" + contact.getNickName()
-//                                    + ",AvatarId=" + contact.getAvatarId() + ",Lat="
-//                                    + contact.getLatitude() + ",Lon=" + contact.getLongitude()
-//                                    + ",isRobot=" + contact.isRobot() + "]");
-//                }
-//            }
-            List<String> tab = new ArrayList<String>(addresses);
-            for (IRosterListener l : mRemoteRosListeners) {
-                l.onEntriesUpdated(tab);
-            }
-        }
-
-        @Override
-        public void presenceChanged(Presence presence) {
-//            PresenceAdapter presenceAdapter = new PresenceAdapter(presence);
-//            ContactInfo contactInfo = getContact(XmppStringUtils.parseBareAddress(presenceAdapter
-//                    .getFrom()));
-//            Log.i(TAG, "==>onPresenceChanged(Thread):" + contactInfo.getBareJid() + " ==> status="
-//                    + contactInfo.getStatus() + ";personalMsg=" + contactInfo.getPersonalMsg()
-//                    + ";name=" + contactInfo.getName() + ";avatarId=" + contactInfo.getAvatarId());
-//            if (null != contactInfo) {
-//                updateContactPresence(contactInfo);
-//            }
-//            for (IRosterListener l : mRemoteRosListeners) {
-//                l.onPresenceChanged(presenceAdapter);
-//            }
-        }
-
-        @Override
-        public void presenceSubscribe(Presence presence) {
-            final String from = presence.getFrom();
-            ContactInfo contactInfo = getContact(from);
-            if (contactInfo == null) {
-                XMPPApi.fetchContactInfo(from, new OnFetchContactListener() {
-                    @Override
-                    public void onFetchContactInfo(ContactInfo contactInfo) {
-                        for (IRosterListener l : mRemoteRosListeners) {
-                            l.presenceSubscribe(contactInfo);
-                        }
-                    }
-                });
-            } else {
-                for (IRosterListener l : mRemoteRosListeners) {
-                    l.presenceSubscribe(contactInfo);
-                }
-            }
-
-        }
-
-        @Override
-        public void presenceSubscribed(Presence presence) {
-            Log.d(TAG, "presenceSubscribed:" + presence);
-        }
-    }
 
 
 //
@@ -537,61 +402,11 @@ public class RosterManager {
         mRoster.sendSubscribed(contactInfo.getBareJid());
     }
 
-
-    private IRosterListener mIRosterListener = new IRosterListener() {
-        @Override
-        public void onEntriesAdded(List<String> addresses) {
-            final String last = ArrayUtils.selectedLast(addresses);
-            if (last == null) {
-                return;
-            }
-            for (final String address : addresses) {
-                com.agmbat.log.Log.d(TAG, "==>onEntriesAdded(Thread): [address=" + address);
-                String bareAddress = XmppStringUtils.parseBareAddress(address);
-                String userName = XmppStringUtils.parseName(address);
-                XMPPApi.fetchContactInfo(address, new OnFetchContactListener() {
-                    @Override
-                    public void onFetchContactInfo(ContactInfo contactInfo) {
-                        if (contactInfo != null) {
-                            com.agmbat.log.Log.d("contact:" + contactInfo.toString());
-                            saveOrUpdateContact(contactInfo);
-                        }
-                        if (last.equals(address)) {
-                            // 最后一个需要发送消息到UI
-                            updateGroupList();
-                            EventBus.getDefault().post(new ContactUpdateEvent());
-                        }
-                    }
-                });
-            }
-
-        }
-
-        @Override
-        public void onEntriesUpdated(List<String> addresses) {
-
-        }
-
-        @Override
-        public void onEntriesDeleted(List<String> addresses) {
-
-        }
-
-        @Override
-        public void presenceSubscribe(final ContactInfo contactInfo) {
-            // 需要用本地数据库存为列表
-            UiUtils.runOnUIThread(new Runnable() {
-                @Override
-                public void run() {
-                    UserManager.getInstance().addFriendRequest(contactInfo);
-                    EventBus.getDefault().post(new PresenceSubscribeEvent(contactInfo));
-                }
-            });
-        }
-    };
-
-
-    /////
+    /**
+     * 加载缓存中联系人列表
+     *
+     * @param l
+     */
     public void loadContactGroup(final OnLoadContactGroupListener l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, List<ContactGroup>>() {
             @Override
@@ -602,22 +417,12 @@ public class RosterManager {
             @Override
             protected void onPostExecute(List<ContactGroup> result) {
                 super.onPostExecute(result);
-                mergeGroupList(result);
                 if (l != null) {
-                    l.onLoad(mGroupList);
+                    l.onLoad(result);
                 }
+
             }
         });
-    }
-
-
-    /**
-     * 合并处理用户分组列表
-     *
-     * @param result
-     */
-    private void mergeGroupList(List<ContactGroup> result) {
-        mGroupList.addAll(result);
     }
 
     /**
@@ -690,4 +495,190 @@ public class RosterManager {
         return null;
     }
 
+
+    /**
+     * Listener for the roster events. It will call the remote listeners
+     * registered.
+     */
+    private class RosterListenerAdapter implements RosterListener {
+
+        @Override
+        public void entriesAdded(Collection<String> addresses) {
+            List<String> tab = new ArrayList<String>(addresses);
+
+            final String last = ArrayUtils.selectedLast(tab);
+            if (last == null) {
+                return;
+            }
+            for (final String address : addresses) {
+                com.agmbat.log.Log.d(TAG, "==>onEntriesAdded(Thread): [address=" + address);
+                String bareAddress = XmppStringUtils.parseBareAddress(address);
+                String userName = XmppStringUtils.parseName(address);
+                XMPPApi.fetchContactInfo(address, new OnFetchContactListener() {
+                    @Override
+                    public void onFetchContactInfo(ContactInfo contactInfo) {
+                        if (contactInfo != null) {
+                            com.agmbat.log.Log.d("contact:" + contactInfo.toString());
+                            saveOrUpdateContact(contactInfo);
+                        }
+                        if (last.equals(address)) {
+                            // 最后一个需要发送消息到UI
+                            updateGroupList();
+                            EventBus.getDefault().post(new ContactUpdateEvent());
+                        }
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void entriesDeleted(Collection<String> addresses) {
+//            for (String address : addresses) {
+//                Log.d(TAG, "==>onEntriesDeleted(Thread):" + address);
+//                deleteContactFromTable(XmppStringUtils.parseName(address));
+//            }
+            List<String> tab = new ArrayList<String>(addresses);
+        }
+
+        @Override
+        public void entriesUpdated(Collection<String> addresses) {
+//            for (String address : addresses) {
+//                ContactInfo contact = getContact(address);
+//                if (null != contact) {
+//                    Log.d(TAG,
+//                            "==>onEntriesUpdated(Thread): [UserName=" + contact.getUserName()
+//                                    + ",PersonalMsg=" + contact.getPersonalMsg() + ",Name="
+//                                    + contact.getName() + ",NickName=" + contact.getNickName()
+//                                    + ",AvatarId=" + contact.getAvatarId() + ",Lat="
+//                                    + contact.getLatitude() + ",Lon=" + contact.getLongitude()
+//                                    + ",isRobot=" + contact.isRobot() + "]");
+//                }
+//            }
+            List<String> tab = new ArrayList<String>(addresses);
+        }
+
+        @Override
+        public void presenceChanged(Presence presence) {
+//            PresenceAdapter presenceAdapter = new PresenceAdapter(presence);
+//            ContactInfo contactInfo = getContact(XmppStringUtils.parseBareAddress(presenceAdapter
+//                    .getFrom()));
+//            Log.i(TAG, "==>onPresenceChanged(Thread):" + contactInfo.getBareJid() + " ==> status="
+//                    + contactInfo.getStatus() + ";personalMsg=" + contactInfo.getPersonalMsg()
+//                    + ";name=" + contactInfo.getName() + ";avatarId=" + contactInfo.getAvatarId());
+//            if (null != contactInfo) {
+//                updateContactPresence(contactInfo);
+//            }
+//            for (IRosterListener l : mRemoteRosListeners) {
+//                l.onPresenceChanged(presenceAdapter);
+//            }
+        }
+
+        @Override
+        public void presenceSubscribe(Presence presence) {
+            // 收到添加好友请求
+            OnFetchContactListener listener = new OnFetchContactListener() {
+                @Override
+                public void onFetchContactInfo(final ContactInfo contactInfo) {
+
+                    // 需要用本地数据库存为列表
+                    UiUtils.runOnUIThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            UserManager.getInstance().addFriendRequest(contactInfo);
+                            EventBus.getDefault().post(new PresenceSubscribeEvent(contactInfo));
+                        }
+                    });
+
+                }
+            };
+            loadContactFromPresence(presence, listener);
+        }
+
+        @Override
+        public void presenceSubscribed(Presence presence) {
+            Log.d(TAG, "presenceSubscribed:" + presence);
+            // 收到对方同意加我为好友
+            OnFetchContactListener listener = new OnFetchContactListener() {
+                @Override
+                public void onFetchContactInfo(final ContactInfo contactInfo) {
+                    // 需要用本地数据库存为列表
+                    UiUtils.runOnUIThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 添加对方为好友
+                            boolean success = addContactToFriend(contactInfo);
+                            if (success) {
+                                mFriendGroup.addContact(contactInfo);
+                                // TODO 保存到数据库缓存中 将mGroupList保存一次
+                                EventBus.getDefault().post(new PresenceSubscribedEvent(contactInfo));
+                                EventBus.getDefault().post(new ContactListUpdateEvent(mGroupList));
+                            }
+                        }
+                    });
+
+                }
+            };
+            loadContactFromPresence(presence, listener);
+        }
+    }
+
+
+    private void loadContactFromPresence(Presence presence, OnFetchContactListener l) {
+        final String from = presence.getFrom();
+        final ContactInfo contactInfo = getContact(from);
+        // 这里基本上都为空,
+        if (contactInfo == null) {
+            XMPPApi.fetchContactInfo(from, l);
+        } else {
+            if (l != null) {
+                l.onFetchContactInfo(contactInfo);
+            }
+        }
+    }
+
+    /**
+     * 获取联系人信息，基本上信息为空
+     *
+     * @param jid
+     * @return
+     */
+    private ContactInfo getContact(String jid) {
+        if (mRoster.contains(jid)) {
+            return getContactFromRosterEntry(mRoster.getEntry(jid));
+        }
+        return null;
+    }
+
+    /**
+     * Get a contact from a RosterEntry.
+     *
+     * @param entry a roster entry containing information for the contact.
+     * @return a contact for this entry.
+     */
+    private ContactInfo getContactFromRosterEntry(RosterEntry entry) {
+        String user = entry.getUser();
+        ContactInfo contact = new ContactInfo();
+        contact.setBareJid(user);
+        Presence presence = mRoster.getPresence(user);
+//        contact.setStatus(presence);
+//        contact.setGroups(entry.getGroups());
+//        Iterator<Presence> iPres = mRoster.getPresences(user);
+//        while (iPres.hasNext()) {
+//            presence = iPres.next();
+//            if (!presence.getType().equals(Presence.Type.unavailable)) {
+//                contact.addResource(XmppStringUtils.parseResource(presence.getFrom()));
+//            }
+//        }
+        contact.setNickname(entry.getName());
+        contact.setRemark(entry.getNickName());
+        contact.setAvatar(entry.getAvatarId());
+
+//        contact.setPersonalMsg(entry.getPersonalMsg());
+//        contact.setLatitude(entry.getLatitude());
+//        contact.setLongitude(entry.getLongitude());
+//        contact.setRobot(entry.isRobot());
+//        contact.setAccount(mLoginUserName);
+        return contact;
+    }
 }
+

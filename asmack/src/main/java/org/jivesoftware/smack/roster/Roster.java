@@ -289,7 +289,18 @@ public class Roster {
      * @throws XMPPException         if an XMPP exception occurs.
      * @throws IllegalStateException if connection is not logged in or logged in anonymously
      */
-    public void createEntry(String userJid, String name, String nickName, String avatarId, String personalMsg, double latitude, double longitude, boolean isRobot, String[] groups) throws XMPPException {
+    public void createEntry(String userJid, String name, String nickName, String avatarId, String personalMsg,
+                            double latitude, double longitude, boolean isRobot, String[] groups) throws XMPPException {
+        addContact(userJid, name, nickName, avatarId, personalMsg, latitude, longitude, isRobot, groups);
+        sendSubscribe(userJid);
+    }
+
+    /**
+     * 添加好友
+     * Creates a new roster entry
+     */
+    public void addContact(String userJid, String name, String nickName, String avatarId, String personalMsg,
+                           double latitude, double longitude, boolean isRobot, String[] groups) throws XMPPException {
         if (!connection.isAuthenticated()) {
             throw new IllegalStateException("Not logged in to server.");
         }
@@ -334,10 +345,6 @@ public class Roster {
             throw new XMPPException(response.getError());
         }
 
-        // Create a presence subscription packet and send.
-        Presence presencePacket = new Presence(Presence.Type.subscribe);
-        presencePacket.setTo(userJid);
-        connection.sendPacket(presencePacket);
     }
 
     private void insertRosterItems(List<RosterPacketItem> items) {
@@ -1049,6 +1056,23 @@ public class Roster {
         }
     }
 
+    /**
+     * 申请添加指定的用户为好友
+     *
+     * @param userJid
+     */
+    public void sendSubscribe(String userJid) {
+        if (!connection.isAuthenticated()) {
+            throw new IllegalStateException("Not logged in to server.");
+        }
+        if (connection.isAnonymous()) {
+            throw new IllegalStateException("Anonymous users can't have a roster.");
+        }
+        // Create a presence subscription packet and send.
+        Presence presencePacket = new Presence(Presence.Type.subscribe);
+        presencePacket.setTo(userJid);
+        connection.sendPacket(presencePacket);
+    }
 
     /**
      * 同意对方申请加自己好友
@@ -1056,6 +1080,12 @@ public class Roster {
      * @param toJid
      */
     public void sendSubscribed(String toJid) {
+        if (!connection.isAuthenticated()) {
+            throw new IllegalStateException("Not logged in to server.");
+        }
+        if (connection.isAnonymous()) {
+            throw new IllegalStateException("Anonymous users can't have a roster.");
+        }
         // Accept  subscription requests.
         Presence response = new Presence(Presence.Type.subscribed);
         response.setTo(toJid);
