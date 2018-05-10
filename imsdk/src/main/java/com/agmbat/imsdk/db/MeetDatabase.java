@@ -146,74 +146,8 @@ public class MeetDatabase {
         return list;
     }
 
-    public List<ContactGroup> getGroupList(String mLoginUserName) {
-        List<ContactGroup> groups = new ArrayList<ContactGroup>();
 
-        ContactGroup group1 = new ContactGroup("同事");
-        List<ContactInfo> friends = queryFriends(mLoginUserName);
-        group1.setContactList(friends);
 
-        ContactGroup group2 = new ContactGroup("恋人");
-        List<ContactInfo> recentContacts = queryRecentContacts(mLoginUserName);
-        group2.setContactList(recentContacts);
-
-        ContactGroup group3 = new ContactGroup("亲人");
-        List<ContactInfo> blockContacts = queryAllBlockUsers(mLoginUserName);
-        group3.setContactList(blockContacts);
-
-        ContactGroup group4 = new ContactGroup("朋友");
-        List<ContactInfo> blockContacts1 = queryAllBlockUsers(mLoginUserName);
-        group4.setContactList(blockContacts1);
-
-//        friendGroup.sort();
-        // recentlyGroup.sort();
-//        blockGroup.sort();
-
-//        groups.add(group1);
-//        groups.add(group2);
-//        groups.add(group3);
-//        groups.add(group4);
-        return groups;
-    }
-
-    private RecentChat queryRecentChatFor(ContactInfo contactInfo) {
-        RecentChat recentChat = new RecentChat();
-        recentChat.setContact(contactInfo);
-        ChatMessage lastChatMessage = new ChatMessage();
-        recentChat.setUnreadCount(5);
-        recentChat.setLastChatMessage(lastChatMessage);
-        return recentChat;
-    }
-
-    public List<ContactInfo> queryFriends(String mLoginUserName) {
-        List<ContactInfo> list = new ArrayList<ContactInfo>();
-        for (int i = 0; i < 10; i++) {
-            ContactInfo contactInfo = new ContactInfo();
-            contactInfo.setNickname("Friends" + i);
-            list.add(contactInfo);
-        }
-        return list;
-    }
-
-    public List<ContactInfo> queryRecentContacts(String mLoginUserName) {
-        List<ContactInfo> list = new ArrayList<ContactInfo>();
-        for (int i = 0; i < 10; i++) {
-            ContactInfo contactInfo = new ContactInfo();
-            contactInfo.setNickname("Friends" + i);
-            list.add(contactInfo);
-        }
-        return list;
-    }
-
-    public List<ContactInfo> queryAllBlockUsers(String mLoginUserName) {
-        List<ContactInfo> list = new ArrayList<ContactInfo>();
-        for (int i = 0; i < 10; i++) {
-            ContactInfo contactInfo = new ContactInfo();
-            contactInfo.setNickname("Friends" + i);
-            list.add(contactInfo);
-        }
-        return list;
-    }
 
     /**
      * 通过jid查找联系人

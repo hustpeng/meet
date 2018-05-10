@@ -7,19 +7,14 @@ import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.db.ContactGroupBelong;
-import com.agmbat.imsdk.db.ContactGroupBelongTableManager;
-import com.agmbat.imsdk.db.ContactGroupTableManager;
 import com.agmbat.imsdk.db.ContactTableManager;
 import com.agmbat.imsdk.db.MeetDatabase;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
-import com.agmbat.imsdk.imevent.ContactUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribedEvent;
 import com.agmbat.imsdk.user.OnLoadContactGroupListener;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.log.Log;
-import com.agmbat.utils.ArrayUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jivesoftware.smack.Connection;
@@ -30,9 +25,7 @@ import org.jivesoftware.smack.roster.Roster.SubscriptionMode;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
 import org.jivesoftware.smack.roster.RosterListener;
-import org.jivesoftware.smack.util.XmppStringUtils;
 
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -66,11 +59,6 @@ public class RosterManager {
     private final Connection mConnection;
 
     /**
-     * 所有的好友
-     */
-    private List<ContactInfo> mContactList;
-
-    /**
      * 所有好友分组列表
      */
     private List<ContactGroup> mGroupList;
@@ -91,7 +79,6 @@ public class RosterManager {
         mFriendGroup = new ContactGroup();
         mFriendGroup.setGroupName(GROUP_FRIENDS);
 
-        mContactList = new ArrayList<>();
         mGroupList = new ArrayList<>();
         mGroupList.add(mFriendGroup);
     }
@@ -411,7 +398,7 @@ public class RosterManager {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, List<ContactGroup>>() {
             @Override
             protected List<ContactGroup> doInBackground(Void... voids) {
-                return MeetDatabase.getInstance().getGroupList("");
+                return ContactTableManager.getGroupList();
             }
 
             @Override
@@ -425,75 +412,75 @@ public class RosterManager {
         });
     }
 
-    /**
-     * @param contactInfo
-     */
-    public void saveOrUpdateContact(ContactInfo contactInfo) {
-        ContactTableManager.saveOrUpdateContact(contactInfo);
-        ContactInfo exist = findExistContactInfo(contactInfo.getBareJid());
-        if (exist != null) {
-            exist.apply(contactInfo);
-        } else {
-            mContactList.add(contactInfo);
-        }
-    }
+//    /**
+//     * @param contactInfo
+//     */
+//    public void saveOrUpdateContact(ContactInfo contactInfo) {
+//        ContactTableManager.saveOrUpdateContact(contactInfo);
+//        ContactInfo exist = findExistContactInfo(contactInfo.getBareJid());
+//        if (exist != null) {
+//            exist.apply(contactInfo);
+//        } else {
+//            mContactList.add(contactInfo);
+//        }
+//    }
 
-    /**
-     * 更新组信息
-     */
-    public void updateGroupList() {
-        List<RosterGroup> list = getGroupList();
-        for (RosterGroup rosterGroup : list) {
-            ContactGroup exist = findExitContactGroup(rosterGroup.getName());
-            if (exist == null) {
-                ContactGroup item = new ContactGroup(rosterGroup.getName());
-                ContactGroupTableManager.save(item);
-                for (RosterEntry entry : rosterGroup.getEntries()) {
-                    ContactInfo contactInfo = findExistContactInfo(entry.getUser());
-                    if (contactInfo == null) {
-                        android.util.Log.e("updateGroupList", "updateGroupList error");
-                    } else {
-                        ContactGroupBelong belong = new ContactGroupBelong();
-                        belong.mGroupId = item.getGroupId();
-                        belong.mUserJid = contactInfo.getBareJid();
-                        ContactGroupBelongTableManager.save(belong);
+//    /**
+//     * 更新组信息
+//     */
+//    public void updateGroupList() {
+//        List<RosterGroup> list = getGroupList();
+//        for (RosterGroup rosterGroup : list) {
+//            ContactGroup exist = findExitContactGroup(rosterGroup.getName());
+//            if (exist == null) {
+//                ContactGroup item = new ContactGroup(rosterGroup.getName());
+//                ContactGroupTableManager.save(item);
+//                for (RosterEntry entry : rosterGroup.getEntries()) {
+//                    ContactInfo contactInfo = findExistContactInfo(entry.getUser());
+//                    if (contactInfo == null) {
+//                        android.util.Log.e("updateGroupList", "updateGroupList error");
+//                    } else {
+//                        ContactGroupBelong belong = new ContactGroupBelong();
+//                        belong.mGroupId = item.getGroupId();
+//                        belong.mUserJid = contactInfo.getBareJid();
+//                        ContactGroupBelongTableManager.save(belong);
+//
+//                        // 更新list
+//                        item.addContact(contactInfo);
+//                    }
+//                }
+//                mGroupList.add(item);
+//            } else {
+//                // 更新组信息
+//                // TODO
+//
+//            }
+//        }
+//    }
 
-                        // 更新list
-                        item.addContact(contactInfo);
-                    }
-                }
-                mGroupList.add(item);
-            } else {
-                // 更新组信息
-                // TODO
+//    private ContactGroup findExitContactGroup(String groupName) {
+//        for (ContactGroup exist : mGroupList) {
+//            if (exist.getGroupName().equals(groupName)) {
+//                return exist;
+//            }
+//        }
+//        return null;
+//    }
 
-            }
-        }
-    }
-
-    private ContactGroup findExitContactGroup(String groupName) {
-        for (ContactGroup exist : mGroupList) {
-            if (exist.getGroupName().equals(groupName)) {
-                return exist;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 查找已存在的联系人
-     *
-     * @param jid
-     * @return
-     */
-    private ContactInfo findExistContactInfo(String jid) {
-        for (ContactInfo exist : mContactList) {
-            if (exist.getBareJid().equals(jid)) {
-                return exist;
-            }
-        }
-        return null;
-    }
+//    /**
+//     * 查找已存在的联系人
+//     *
+//     * @param jid
+//     * @return
+//     */
+//    private ContactInfo findExistContactInfo(String jid) {
+//        for (ContactInfo exist : mContactList) {
+//            if (exist.getBareJid().equals(jid)) {
+//                return exist;
+//            }
+//        }
+//        return null;
+//    }
 
 
     /**
@@ -504,31 +491,31 @@ public class RosterManager {
 
         @Override
         public void entriesAdded(Collection<String> addresses) {
-            List<String> tab = new ArrayList<String>(addresses);
-
-            final String last = ArrayUtils.selectedLast(tab);
-            if (last == null) {
-                return;
-            }
-            for (final String address : addresses) {
-                com.agmbat.log.Log.d(TAG, "==>onEntriesAdded(Thread): [address=" + address);
-                String bareAddress = XmppStringUtils.parseBareAddress(address);
-                String userName = XmppStringUtils.parseName(address);
-                XMPPApi.fetchContactInfo(address, new OnFetchContactListener() {
-                    @Override
-                    public void onFetchContactInfo(ContactInfo contactInfo) {
-                        if (contactInfo != null) {
-                            com.agmbat.log.Log.d("contact:" + contactInfo.toString());
-                            saveOrUpdateContact(contactInfo);
-                        }
-                        if (last.equals(address)) {
-                            // 最后一个需要发送消息到UI
-                            updateGroupList();
-                            EventBus.getDefault().post(new ContactUpdateEvent());
-                        }
-                    }
-                });
-            }
+//            List<String> tab = new ArrayList<String>(addresses);
+//
+//            final String last = ArrayUtils.selectedLast(tab);
+//            if (last == null) {
+//                return;
+//            }
+//            for (final String address : addresses) {
+//                com.agmbat.log.Log.d(TAG, "==>onEntriesAdded(Thread): [address=" + address);
+//                String bareAddress = XmppStringUtils.parseBareAddress(address);
+//                String userName = XmppStringUtils.parseName(address);
+//                XMPPApi.fetchContactInfo(address, new OnFetchContactListener() {
+//                    @Override
+//                    public void onFetchContactInfo(ContactInfo contactInfo) {
+//                        if (contactInfo != null) {
+//                            com.agmbat.log.Log.d("contact:" + contactInfo.toString());
+//                            saveOrUpdateContact(contactInfo);
+//                        }
+//                        if (last.equals(address)) {
+//                            // 最后一个需要发送消息到UI
+//                            updateGroupList();
+//                            EventBus.getDefault().post(new ContactUpdateEvent());
+//                        }
+//                    }
+//                });
+//            }
         }
 
         @Override
@@ -602,14 +589,19 @@ public class RosterManager {
                 @Override
                 public void onFetchContactInfo(final ContactInfo contactInfo) {
                     // 需要用本地数据库存为列表
+                    final boolean success = addContactToFriend(contactInfo);
+                    if (success) {
+                        // 保存到数据库缓存中
+                        contactInfo.setGroupName(mFriendGroup.getGroupName());
+                        ContactTableManager.saveOrUpdateContact(contactInfo);
+                    }
                     UiUtils.runOnUIThread(new Runnable() {
                         @Override
                         public void run() {
                             // 添加对方为好友
-                            boolean success = addContactToFriend(contactInfo);
                             if (success) {
                                 mFriendGroup.addContact(contactInfo);
-                                // TODO 保存到数据库缓存中 将mGroupList保存一次
+                                //   将mGroupList保存一次
                                 EventBus.getDefault().post(new PresenceSubscribedEvent(contactInfo));
                                 EventBus.getDefault().post(new ContactListUpdateEvent(mGroupList));
                             }
@@ -624,8 +616,9 @@ public class RosterManager {
 
 
     private void loadContactFromPresence(Presence presence, OnFetchContactListener l) {
-        final String from = presence.getFrom();
-        final ContactInfo contactInfo = getContact(from);
+        String from = presence.getFrom();
+        // 由于在缓存中获取的用户信息不全，需要重新拉到一次信息
+        ContactInfo contactInfo = null; // getContact(from);
         // 这里基本上都为空,
         if (contactInfo == null) {
             XMPPApi.fetchContactInfo(from, l);

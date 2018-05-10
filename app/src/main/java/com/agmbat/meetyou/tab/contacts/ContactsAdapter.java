@@ -1,4 +1,3 @@
-
 package com.agmbat.meetyou.tab.contacts;
 
 import android.content.Context;
@@ -14,10 +13,6 @@ import java.util.List;
 public class ContactsAdapter extends BaseExpandableListAdapter {
 
     private static final String TAG = ContactsAdapter.class.getSimpleName();
-
-    public static final int GROUP_INDEX_HOTLIST = 0;
-    public static final int GROUP_INDEX_RECENTLY = 1;
-    public static final int GROUP_INDEX_BLOCK = 2;
 
     private final Context mContext;
     private final List<ContactGroup> mGroupList;

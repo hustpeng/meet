@@ -19,6 +19,12 @@ public class ContactInfo {
     private long mId;
 
     /**
+     * 当前联系人属于哪个分组
+     */
+    @Column(name = "group_name")
+    private String mGroupName;
+
+    /**
      * 联系人id标识
      */
     @Column(name = "jid")
@@ -175,5 +181,13 @@ public class ContactInfo {
      */
     public int getAge() {
         return mAge;
+    }
+
+    public String getGroupName() {
+        return mGroupName;
+    }
+
+    public void setGroupName(String name) {
+        mGroupName = name;
     }
 }

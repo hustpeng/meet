@@ -138,28 +138,6 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         mFriendsAdapter.notifyDataSetChanged();
     }
 
-
-    private void updateRecentList() {
-//        MeetDatabase dataManager = MeetDatabase.getInstance();
-//        List<ContactInfo> recentContactList = dataManager
-//                .queryRecentContacts(mLoginUserName);
-//        for (ContactInfo contactInfo : recentContactList) {
-//            if (dataManager.isBlockUserExist(mLoginUserName, contactInfo.getUserName())) {
-//                dataManager
-//                        .deleteRecentContactByUserName(mLoginUserName, contactInfo.getUserName());
-//            } else {
-//                contactInfo = mRosterManager.ensureContactInformation(mLoginUserName,
-//                        contactInfo);
-//                contactInfo.setGroups(ContactGroup.GROUP_RECENTLY);
-//                dataManager.updateRecentContact(contactInfo, false);
-//            }
-//        }
-    }
-
-    private void updateFriendList() {
-    }
-
-
     private void setState(int state) {
         if (state == STATE_LOADING) {
             mProgressBar.setVisibility(View.VISIBLE);
