@@ -167,7 +167,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnCheat"
+        android:id="@+id/btn_chat"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="45dp"
@@ -191,6 +191,20 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/shape_user_info_add_to_contact"
         android:text="@string/add_to_contact"
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/btn_pass_validation"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/shape_user_info_add_to_contact"
+        android:text="@string/pass_validation"
         android:textColor="#ffffff"
         android:textSize="16sp" />
 </LinearLayout>

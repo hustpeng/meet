@@ -8,7 +8,6 @@ import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.db.ContactTableManager;
-import com.agmbat.imsdk.db.MeetDatabase;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribedEvent;

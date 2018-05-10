@@ -1,8 +1,6 @@
 package com.agmbat.meetyou.search;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
@@ -13,7 +11,6 @@ import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
@@ -41,29 +38,7 @@ public class UserInfoActivity extends Activity {
 
     private ContactInfo mContactInfo;
 
-    /**
-     * 查看用户详细信息
-     *
-     * @param context
-     * @param contactInfo
-     */
-    public static void viewUserInfo(Context context, ContactInfo contactInfo) {
-        UserManager.getInstance().addContactToCache(contactInfo);
-        Intent intent = new Intent(context, UserInfoActivity.class);
-        intent.putExtra("userInfo", contactInfo.getBareJid());
-        context.startActivity(intent);
-    }
-
-    /**
-     * 通过intent获取用户信息
-     *
-     * @param intent
-     * @return
-     */
-    private static ContactInfo getContactInfo(Intent intent) {
-        String jid = intent.getStringExtra("userInfo");
-        return UserManager.getInstance().getContactFromCache(jid);
-    }
+    private BusinessHandler mBusinessHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,7 +46,9 @@ public class UserInfoActivity extends Activity {
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_user_info);
         ButterKnife.bind(this);
-        mContactInfo = getContactInfo(getIntent());
+        mBusinessHandler = ViewUserHelper.getBusinessHandler(getIntent());
+        mBusinessHandler.setupViews(findViewById(android.R.id.content));
+        mContactInfo = mBusinessHandler.getContactInfo();
         if (mContactInfo == null) {
             ToastUtil.showToastLong("获取联系人信息失败");
             finish();
@@ -106,6 +83,15 @@ public class UserInfoActivity extends Activity {
             ToastUtil.showToastLong("添加好友失败");
         }
     }
+
+    /**
+     * 同意添加为好友
+     */
+    @OnClick(R.id.btn_pass_validation)
+    void onClickPassValidation() {
+        XMPPManager.getInstance().getRosterManager().acceptFriend(mContactInfo);
+    }
+
 
     //    UserInfo mUserInfo;
 //

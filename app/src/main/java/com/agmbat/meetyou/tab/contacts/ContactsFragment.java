@@ -28,6 +28,7 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.search.NewFriendActivity;
 import com.agmbat.meetyou.search.SearchUserActivity;
 import com.agmbat.meetyou.search.UserInfoActivity;
+import com.agmbat.meetyou.search.ViewUserHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -169,7 +170,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
                                 int childPosition, long id) {
         ContactInfo contactInfo = mFriendsAdapter.getChild(groupPosition, childPosition);
-        UserInfoActivity.viewUserInfo(getActivity(), contactInfo);
+        ViewUserHelper.openContactDetail(getActivity(), contactInfo);
         return false;
     }
 

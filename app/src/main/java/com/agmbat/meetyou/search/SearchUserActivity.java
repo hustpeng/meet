@@ -104,7 +104,7 @@ public class SearchUserActivity extends Activity {
             mNoResultTipView.setVisibility(View.VISIBLE);
             mSearchButton.setVisibility(View.GONE);
         } else {
-            UserInfoActivity.viewUserInfo(this, contactInfo);
+            ViewUserHelper.openStrangerDetail(this, contactInfo);
         }
     }
 }

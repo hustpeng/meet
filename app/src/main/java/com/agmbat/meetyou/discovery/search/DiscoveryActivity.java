@@ -15,6 +15,7 @@ import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.filter.FilterView;
 import com.agmbat.meetyou.search.UserInfoActivity;
+import com.agmbat.meetyou.search.ViewUserHelper;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 
@@ -130,7 +131,7 @@ public class DiscoveryActivity extends Activity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             super.onItemClick(parent, view, position, id);
             ContactInfo contactInfo = (ContactInfo) parent.getItemAtPosition(position);
-            UserInfoActivity.viewUserInfo(DiscoveryActivity.this, contactInfo);
+            ViewUserHelper.openStrangerDetail(DiscoveryActivity.this, contactInfo);
         }
     }
 }
