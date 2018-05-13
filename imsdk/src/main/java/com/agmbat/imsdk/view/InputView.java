@@ -36,6 +36,9 @@ import com.agmbat.imsdk.data.body.TextBody;
 
 import java.io.File;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class InputView extends LinearLayout {
 
     private ImageButton mInputSwitcher;
@@ -84,6 +87,18 @@ public class InputView extends LinearLayout {
         }
     };
 
+    private OnClickListener mClickSendListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mOnSendMessageListener != null) {
+                String message = mChatInput.getText().toString();
+                Body body = new TextBody(message);
+                mOnSendMessageListener.onSendMessage(body);
+                mChatInput.setText("");
+            }
+        }
+    };
+
     private OnClickListener mOnClickListener = new OnClickListener() {
 
         @Override
@@ -103,16 +118,6 @@ public class InputView extends LinearLayout {
                     }
                 });
                 dialog.show();
-            } else if (id == R.id.chatting_send_btn) {
-                // TODO
-//                if (ConnectionHelper.checkServerConnection()) {
-                if (mOnSendMessageListener != null) {
-                    String message = mChatInput.getText().toString();
-                    Body body = new TextBody(message);
-                    mOnSendMessageListener.onSendMessage(body);
-                    mChatInput.setText("");
-                }
-//                    }
             } else if (id == R.id.btn_input_switcher) {
                 mInputTextMode = !mInputTextMode;
                 updateChatMode();
@@ -170,10 +175,6 @@ public class InputView extends LinearLayout {
         }
     };
 
-    public interface OnSendMessageListener {
-        public void onSendMessage(Body message);
-    }
-
     public InputView(Context context) {
         super(context);
         init(context);
@@ -191,6 +192,8 @@ public class InputView extends LinearLayout {
 
     private void init(Context context) {
         View.inflate(context, R.layout.view_input, this);
+        ButterKnife.bind(this);
+
         mInputTextMode = true;
         mRecorder = new Recorder();
         mRecorder.setOnStateChangedListener(mOnStateChangedListener);
@@ -206,10 +209,11 @@ public class InputView extends LinearLayout {
         mRecordButton.setOnTouchListener(mRecordTouchListener);
         mAttachBtn = (ImageButton) findViewById(R.id.chatting_attach_btn);
         mSendBtn = (Button) findViewById(R.id.chatting_send_btn);
-        mSendBtn.setOnClickListener(mOnClickListener);
+        mSendBtn.setOnClickListener(mClickSendListener);
         mScreenSize = PhoneUtils.getScreenSize();
         updateChatMode();
     }
+
 
     public void setOnSendMessageListener(OnSendMessageListener l) {
         mOnSendMessageListener = l;

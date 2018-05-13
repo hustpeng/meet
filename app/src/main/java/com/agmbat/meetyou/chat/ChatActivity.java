@@ -5,17 +5,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ChatMessage;
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.data.body.Body;
+import com.agmbat.imsdk.data.body.TextBody;
 import com.agmbat.imsdk.db.MeetDatabase;
+import com.agmbat.imsdk.user.UserManager;
+import com.agmbat.imsdk.view.InputView;
+import com.agmbat.imsdk.view.OnSendMessageListener;
 import com.agmbat.meetyou.R;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /***
  * 消息聊天界面
@@ -30,12 +41,18 @@ public class ChatActivity extends Activity {
     /**
      * 显示名称的控件
      */
-    private TextView mNameView;
+    @BindView(R.id.nickname)
+    TextView mNicknameView;
+
+
+    @BindView(R.id.chating_footer)
+    InputView mInputView;
 
     /**
      * 消息列表
      */
-    private PullToRefreshListView mListView;
+    @BindView(R.id.message_list)
+    PullToRefreshListView mListView;
 
     /**
      * 填充消息列表的adapter
@@ -48,6 +65,7 @@ public class ChatActivity extends Activity {
     private ContactInfo mParticipant;
 
     public static void openChat(Context context, ContactInfo contactInfo) {
+        UserManager.getInstance().addContactToCache(contactInfo);
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(KEY_CONTACT, contactInfo.getBareJid());
         context.startActivity(intent);
@@ -57,25 +75,44 @@ public class ChatActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        ButterKnife.bind(this);
         String jid = getIntent().getStringExtra(KEY_CONTACT);
-        mParticipant = MeetDatabase.getInstance().findParticipant(jid);
+        mParticipant = UserManager.getInstance().getContactFromCache(jid);
         setupViews();
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+    }
+
+    @OnClick(R.id.title_btn_back)
+    void onClickBack() {
+        finish();
+    }
+
     private void setupViews() {
-        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
+        mNicknameView.setText(mParticipant.getNickName());
+        mInputView.setOnSendMessageListener(new OnSendMessageListener() {
             @Override
-            public void onClick(View v) {
-                finish();
+            public void onSendMessage(Body message) {
+                sendTextMsg(message);
             }
         });
-        mNameView = (TextView) findViewById(R.id.name);
-        mNameView.setText(mParticipant.getNickName());
-
-        mListView = (PullToRefreshListView) findViewById(R.id.message_list);
         List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
         chatMessages = MeetDatabase.getInstance().getMessage(mParticipant);
         mAdapter = new MessageListAdapter(this, chatMessages);
         mListView.setAdapter(mAdapter);
     }
+
+    private void sendTextMsg(Body message) {
+        TextBody textBody = (TextBody) message;
+        String text = textBody.getContent();
+        if (!TextUtils.isEmpty(text)) {
+            XMPPManager.getInstance().getMessageManager()
+                    .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), text);
+        }
+    }
+
 }

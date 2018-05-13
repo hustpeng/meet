@@ -12,6 +12,7 @@ import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
 
@@ -92,6 +93,13 @@ public class UserInfoActivity extends Activity {
         XMPPManager.getInstance().getRosterManager().acceptFriend(mContactInfo);
     }
 
+    /**
+     * 点击发送消息
+     */
+    @OnClick(R.id.btn_chat)
+    void onClickChat() {
+        ChatActivity.openChat(this, mContactInfo);
+    }
 
     //    UserInfo mUserInfo;
 //

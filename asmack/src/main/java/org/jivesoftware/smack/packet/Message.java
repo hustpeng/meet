@@ -27,7 +27,7 @@ import java.util.Date;
 public class Message extends Packet {
 
     private Type type = Type.normal;
-    private SubType subType;
+    private MessageSubType subType;
     private String senderNickName = null;
     private boolean isOffline = false;
     private String body = null;
@@ -37,7 +37,6 @@ public class Message extends Packet {
      * Creates a new, "normal" message.
      */
     public Message() {
-
     }
 
     /**
@@ -127,11 +126,11 @@ public class Message extends Packet {
         return buf.toString();
     }
 
-    public SubType getSubType() {
+    public MessageSubType getSubType() {
         return subType;
     }
 
-    public void setSubType(SubType subType) {
+    public void setSubType(MessageSubType subType) {
         this.subType = subType;
     }
 
@@ -207,30 +206,5 @@ public class Message extends Packet {
 
     }
 
-    public enum SubType {
-        text,
-        image,
-        geoloc;
 
-        public static SubType fromString(String name) {
-            try {
-                return SubType.valueOf(name);
-            } catch (Exception e) {
-                return text;
-            }
-        }
-
-        public static SubType of(int subType) {
-            switch (subType) {
-                case 0:
-                    return text;
-                case 1:
-                    return image;
-                case 2:
-                    return geoloc;
-                default:
-                    return text;
-            }
-        }
-    }
 }

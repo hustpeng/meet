@@ -2,15 +2,15 @@
  * $RCSfile$
  * $Revision$
  * $Date$
- *
+ * <p>
  * Copyright 2003-2007 Jive Software.
- *
+ * <p>
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,14 +20,15 @@
 
 package org.jivesoftware.smackx.message;
 
-import org.jivesoftware.smack.packet.Message.SubType;
-
 import android.text.TextUtils;
+
+import org.jivesoftware.smack.packet.MessageSubType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MessageObject{
+public class MessageObject {
+
     public enum Msg_Status {
         READ,
         UNREAD,
@@ -41,8 +42,7 @@ public class MessageObject{
         public static Msg_Status fromString(String name) {
             try {
                 return Msg_Status.valueOf(name);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return MSG_HIDDEN;
             }
         }
@@ -54,7 +54,7 @@ public class MessageObject{
     private String body;
     private boolean outgoing;
     private String msg_id;
-    private SubType msg_type;
+    private MessageSubType msg_type;
     private Msg_Status msg_status;
     private Long date;
     private String html;
@@ -78,11 +78,11 @@ public class MessageObject{
         this.msg_id = msg_id;
     }
 
-    public SubType getMsg_type() {
+    public MessageSubType getMsg_type() {
         return msg_type;
     }
 
-    public void setMsg_type(SubType msg_type) {
+    public void setMsg_type(MessageSubType msg_type) {
         this.msg_type = msg_type;
     }
 
@@ -102,8 +102,7 @@ public class MessageObject{
         this.date = date;
     }
 
-    public static String getXmlNode(MessageObject object)
-    {
+    public static String getXmlNode(MessageObject object) {
         if (object == null) {
             return null;
         }
@@ -160,15 +159,15 @@ public class MessageObject{
     }
 
     private static final Pattern IMAGE_THUMB_PATTERN = Pattern.compile("thumb=\"(.*?)\"");
-    public String getImageThumbUrl()
-    {
+
+    public String getImageThumbUrl() {
         if (imageThumbUrl != null) {
             return imageThumbUrl;
         }
 
         if (!TextUtils.isEmpty(html)) {
             Matcher matcher = IMAGE_THUMB_PATTERN.matcher(html);
-            if(matcher.find()){
+            if (matcher.find()) {
                 imageThumbUrl = matcher.group(1);
                 return imageThumbUrl;
             }
@@ -178,20 +177,18 @@ public class MessageObject{
     }
 
     private static final Pattern IMAGE_SRC_PATTERN = Pattern.compile("src=\"(.*?)\"");
-    public String getImageSrcUrl()
-    {
+
+    public String getImageSrcUrl() {
         if (imageSrcUrl != null) {
             return imageSrcUrl;
         }
-
         if (!TextUtils.isEmpty(html)) {
             Matcher matcher = IMAGE_SRC_PATTERN.matcher(html);
-            if(matcher.find()){
+            if (matcher.find()) {
                 imageSrcUrl = matcher.group(1);
                 return imageSrcUrl;
             }
         }
-
         return null;
     }
 }

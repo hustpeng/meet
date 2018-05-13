@@ -20,7 +20,7 @@
 
 package org.jivesoftware.smackx.message;
 
-import org.jivesoftware.smack.packet.Message.SubType;
+import org.jivesoftware.smack.packet.MessageSubType;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
@@ -50,7 +50,7 @@ public class MessageHtmlProvider implements PacketExtensionProvider {
                     String src = parser.getAttributeValue("", "src");
                     String thumb = parser.getAttributeValue("", "thumb");
 
-                    return new MessageHtmlExtension(SubType.image, src, thumb);
+                    return new MessageHtmlExtension(MessageSubType.image, src, thumb);
                 } else if (parser.getName().equals("geoloc")) {
                     String latString = parser.getAttributeValue("", "lat");
                     String lonString = parser.getAttributeValue("", "lon");
@@ -64,7 +64,7 @@ public class MessageHtmlProvider implements PacketExtensionProvider {
                         // TODO: handle exception
                     }
 
-                    return new MessageHtmlExtension(SubType.geoloc, lat, lon);
+                    return new MessageHtmlExtension(MessageSubType.geoloc, lat, lon);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("html")) {

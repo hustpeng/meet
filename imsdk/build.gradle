@@ -34,4 +34,11 @@ dependencies {
     compile project(':asmack')
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.greenrobot:eventbus:3.0.0'
+
+    // butterknife库, 去掉其依赖库
+    compile('com.jakewharton:butterknife:8.8.1') {
+        exclude group: 'com.android.support', module: 'support-compat'
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }

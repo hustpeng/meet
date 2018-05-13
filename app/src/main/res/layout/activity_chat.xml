@@ -12,14 +12,14 @@
         android:paddingLeft="6dip">
 
         <ImageView
-            android:id="@+id/back"
+            android:id="@+id/title_btn_back"
             android:layout_width="40dp"
             android:layout_height="22dp"
             android:scaleType="center"
             android:src="@drawable/ic_title_back" />
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/nickname"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"

@@ -8,8 +8,8 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Message.SubType;
 import org.jivesoftware.smack.packet.Message.Type;
+import org.jivesoftware.smack.packet.MessageSubType;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmppStringUtils;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MessageManager extends Xepmodule {
+
     private final List<MessageListener> listeners;
 
     private MessageStorage messageStorage;
@@ -35,9 +36,7 @@ public class MessageManager extends Xepmodule {
             }
         });
         listeners = new CopyOnWriteArrayList<MessageListener>();
-
         messageStorage = new MessageStorage();
-
         correctMessagesStatus();
     }
 
@@ -210,8 +209,8 @@ public class MessageManager extends Xepmodule {
         }
         messageObject.setSenderNickName(message.getSenderNickName());
 
-        if (messageObject.getMsg_type() == SubType.image
-                || messageObject.getMsg_type() == SubType.geoloc) {
+        if (messageObject.getMsg_type() == MessageSubType.image
+                || messageObject.getMsg_type() == MessageSubType.geoloc) {
             PacketExtension extension = message.getExtension(MessageHtmlProvider.elementName(),
                     MessageHtmlProvider.namespace());
             if (extension != null) {
@@ -230,25 +229,28 @@ public class MessageManager extends Xepmodule {
         return messageObject;
     }
 
+    /**
+     * 发送文本消息
+     *
+     * @param toJidString
+     * @param fromNickName
+     * @param text
+     */
     public void sendTextMessage(String toJidString, String fromNickName, String text) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             return;
         }
-
         if (TextUtils.isEmpty(text) || TextUtils.isEmpty(toJidString)) {
             return;
         }
-
         Message message = new Message();
         message.setType(Type.chat);
         message.setBody(text);
-        message.setSubType(SubType.text);
+        message.setSubType(MessageSubType.text);
         message.setTo(toJidString);
         message.setSenderNickName(fromNickName);
         message.setFrom(xmppConnection.getUser());
-
         xmppConnection.sendPacket(message);
-
         MessageObject messageObject = phareMessageFromPacket(message);
         if (messageObject != null) {
             messageStorage.insertMsg(messageObject);
@@ -269,21 +271,18 @@ public class MessageManager extends Xepmodule {
         }
     }
 
-    public String insertEmptyMsg(SubType type, String toJidString, String fromNickName) {
+    public String insertEmptyMsg(MessageSubType type, String toJidString, String fromNickName) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             return null;
         }
-
         if (TextUtils.isEmpty(toJidString)) {
             return null;
         }
-
         String msgid = Packet.nextID();
-
         Msg_Status status;
-        if (type == SubType.geoloc) {
+        if (type == MessageSubType.geoloc) {
             status = Msg_Status.LOCATING;
-        } else if (type == SubType.image) {
+        } else if (type == MessageSubType.image) {
             status = Msg_Status.UPLOADING;
         } else {
             status = Msg_Status.SENDING;
@@ -314,14 +313,14 @@ public class MessageManager extends Xepmodule {
         MessageObject messageObject = new MessageObject();
         messageObject.setDate(System.currentTimeMillis());
         messageObject.setMsg_id(msgid);
-        messageObject.setMsg_type(SubType.image);
+        messageObject.setMsg_type(MessageSubType.image);
         messageObject.setMsg_status(Msg_Status.UPLOADING);
         messageObject.setReceiverJid(toJidString);
         messageObject.setSenderJid(xmppConnection.getBareJid());
         messageObject.setSenderNickName(fromNickName);
         messageObject.setOutgoing(true);
 
-        MessageHtmlExtension imageExtension = new MessageHtmlExtension(SubType.image, src, thumb);
+        MessageHtmlExtension imageExtension = new MessageHtmlExtension(MessageSubType.image, src, thumb);
 
         messageObject.setBody(thumb);
         messageObject.setHtml(imageExtension.toString());
@@ -340,7 +339,7 @@ public class MessageManager extends Xepmodule {
 
         MessageObject messageObject = messageStorage.getMsg(msgId);
         if (messageObject != null) {
-            MessageHtmlExtension imageExtension = new MessageHtmlExtension(SubType.image, src, thumb);
+            MessageHtmlExtension imageExtension = new MessageHtmlExtension(MessageSubType.image, src, thumb);
             messageObject.setBody(thumb);
             messageObject.setHtml(imageExtension.toString());
             messageStorage.updateMsg(messageObject);
@@ -376,7 +375,7 @@ public class MessageManager extends Xepmodule {
         message.setSenderNickName(messageObject.getSenderNickName());
         message.setFrom(xmppConnection.getUser());
 
-        MessageHtmlExtension locationExtension = new MessageHtmlExtension(SubType.geoloc, lat, lon);
+        MessageHtmlExtension locationExtension = new MessageHtmlExtension(MessageSubType.geoloc, lat, lon);
         message.addExtension(locationExtension);
 
         xmppConnection.sendPacket(message);
@@ -402,7 +401,7 @@ public class MessageManager extends Xepmodule {
         message.setSenderNickName(messageObject.getSenderNickName());
         message.setFrom(xmppConnection.getUser());
 
-        MessageHtmlExtension imageExtension = new MessageHtmlExtension(SubType.image, src, thumb);
+        MessageHtmlExtension imageExtension = new MessageHtmlExtension(MessageSubType.image, src, thumb);
         message.addExtension(imageExtension);
 
         xmppConnection.sendPacket(message);

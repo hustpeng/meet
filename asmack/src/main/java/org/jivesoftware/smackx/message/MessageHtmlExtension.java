@@ -2,15 +2,15 @@
  * $RCSfile$
  * $Revision$
  * $Date$
- *
+ * <p>
  * Copyright 2003-2007 Jive Software.
- *
+ * <p>
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,25 +20,23 @@
 
 package org.jivesoftware.smackx.message;
 
-import org.jivesoftware.smack.packet.Message.SubType;
+import org.jivesoftware.smack.packet.MessageSubType;
 import org.jivesoftware.smack.packet.PacketExtension;
 
-public class MessageHtmlExtension implements PacketExtension{
-    private SubType messageType;
+public class MessageHtmlExtension implements PacketExtension {
+    private MessageSubType messageType;
     private double latDouble;
     private double lonDouble;
     private String imageSrcString;
     private String imageThumbString;
 
-    public MessageHtmlExtension(SubType type, double lat, double lon)
-    {
+    public MessageHtmlExtension(MessageSubType type, double lat, double lon) {
         messageType = type;
         latDouble = lat;
         lonDouble = lon;
     }
 
-    public MessageHtmlExtension(SubType type, String src, String thumb)
-    {
+    public MessageHtmlExtension(MessageSubType type, String src, String thumb) {
         messageType = type;
         imageSrcString = src;
         imageThumbString = thumb;
@@ -56,7 +54,7 @@ public class MessageHtmlExtension implements PacketExtension{
 
     @Override
     public String toXML() {
-        if (messageType == SubType.geoloc) {
+        if (messageType == MessageSubType.geoloc) {
             StringBuilder buf = new StringBuilder();
             buf.append("<");
             buf.append(MessageHtmlProvider.elementName());
@@ -69,7 +67,7 @@ public class MessageHtmlExtension implements PacketExtension{
             buf.append(MessageHtmlProvider.elementName());
             buf.append(">");
             return buf.toString();
-        } else if (messageType == SubType.image) {
+        } else if (messageType == MessageSubType.image) {
             StringBuilder buf = new StringBuilder();
             buf.append("<");
             buf.append(MessageHtmlProvider.elementName());

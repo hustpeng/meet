@@ -26,6 +26,7 @@ import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.DefaultPacketExtension;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageSubType;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
@@ -89,7 +90,7 @@ public class PacketParserUtils {
         message.setTo(parser.getAttributeValue("", "to"));
         message.setFrom(parser.getAttributeValue("", "from"));
         message.setType(Message.Type.fromString(parser.getAttributeValue("", "type")));
-        message.setSubType(Message.SubType.fromString(parser.getAttributeValue("", "subType")));
+        message.setSubType(MessageSubType.fromString(parser.getAttributeValue("", "subType")));
 
         // Parse sub-elements. We include extra logic to make sure the values
         // are only read once. This is because it's possible for the names to appear

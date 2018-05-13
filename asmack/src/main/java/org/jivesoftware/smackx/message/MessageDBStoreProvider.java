@@ -1,10 +1,5 @@
 package org.jivesoftware.smackx.message;
 
-import org.jivesoftware.smack.packet.Message.SubType;
-import org.jivesoftware.smackx.db.DataContentProvider;
-import org.jivesoftware.smackx.favoritedme.FavoritedMeDBStoreProvider;
-import org.jivesoftware.smackx.message.MessageObject.Msg_Status;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -15,9 +10,11 @@ import com.agmbat.sql.DataType;
 import com.agmbat.sql.Param;
 import com.agmbat.sql.TableSqlBuilder;
 
+import org.jivesoftware.smack.packet.MessageSubType;
+import org.jivesoftware.smackx.db.DataContentProvider;
+import org.jivesoftware.smackx.message.MessageObject.Msg_Status;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MessageDBStoreProvider {
 
@@ -134,7 +131,7 @@ public class MessageDBStoreProvider {
                     obj.setOutgoing(false);
                 }
                 obj.setMsg_id(cursor.getString(msgIdIndex));
-                obj.setMsg_type(SubType.values()[cursor.getInt(msgTypeIndex)]);
+                obj.setMsg_type(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
                 obj.setMsg_status(Msg_Status.values()[cursor.getInt(msgStatusIndex)]);
                 obj.setDate(cursor.getLong(dateIndex));
                 array.add(obj);
