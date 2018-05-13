@@ -17,5 +17,6 @@ public class ContactsBusinessHandler extends BusinessHandler {
     @Override
     public void setupViews(View view) {
         view.findViewById(R.id.btn_add_to_contact).setVisibility(View.GONE);
+        view.findViewById(R.id.btn_pass_validation).setVisibility(View.GONE);
     }
 }

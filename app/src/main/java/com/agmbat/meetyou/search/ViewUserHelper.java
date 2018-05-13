@@ -50,6 +50,16 @@ public class ViewUserHelper {
         openDetail(context, contactInfo, TYPE_STRANGER);
     }
 
+    /**
+     * 打开验证用户界面
+     *
+     * @param context
+     * @param contactInfo
+     */
+    public static void openVerifyDetail(Context context, ContactInfo contactInfo) {
+        openDetail(context, contactInfo, TYPE_VERIFY);
+    }
+
     private static void openDetail(Context context, ContactInfo contactInfo, int type) {
         UserManager.getInstance().addContactToCache(contactInfo);
         Intent intent = new Intent(context, UserInfoActivity.class);

@@ -104,9 +104,7 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ContactInfo info = (ContactInfo) parent.getItemAtPosition(position);
-        Intent intent = new Intent(this, UserInfoVerifyActivity.class);
-        intent.putExtra("userInfo", info.getBareJid());
-        startActivity(intent);
+        ViewUserHelper.openVerifyDetail(this, info);
     }
 
     /**
