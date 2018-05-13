@@ -13,7 +13,6 @@ import org.jivesoftware.smack.packet.MessageSubType;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmppStringUtils;
-import org.jivesoftware.smackx.message.MessageObject.Msg_Status;
 import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import java.util.Date;
@@ -95,6 +94,8 @@ public class MessageManager extends Xepmodule {
     };
 
     private PacketListener messagePacketListener = new PacketListener() {
+
+        @Override
         public void processPacket(Packet packet) {
             Message message = (Message) packet;
             if (("http://jabber.org/protocol/muc#verify".equals(message.getXmlns()))
@@ -115,33 +116,30 @@ public class MessageManager extends Xepmodule {
                             MessageObject targetMessage = messageStorage.getMsg(messageObject
                                     .getMsg_id());
                             if (targetMessage != null) {
-                                targetMessage.setMsg_status(Msg_Status.UNREAD);
+                                targetMessage.setMsg_status(MessageObjectStatus.UNREAD);
                                 messageStorage.updateMsg(targetMessage);
                             }
                         } else if ("read".equals(elementName)) {
                             MessageObject targetMessage = messageStorage.getMsg(messageObject
                                     .getMsg_id());
                             if (targetMessage != null) {
-                                targetMessage.setMsg_status(Msg_Status.READ);
+                                targetMessage.setMsg_status(MessageObjectStatus.READ);
                                 messageStorage.updateMsg(targetMessage);
                             }
                         } else if ("composing".equals(elementName)) {
 
                         }
                     }
-
                     return;
                 }
 
                 String sendMsgState = "delivered";
                 if (willInsertReceivedMsg(messageObject)) {
-                    messageObject.setMsg_status(Msg_Status.READ);
+                    messageObject.setMsg_status(MessageObjectStatus.READ);
                     sendMsgState = "read";
                 }
-
                 messageStorage.insertMsg(messageObject);
-                sendChatStates(messageObject.getMsg_id(), sendMsgState,
-                        messageObject.getSenderJid());
+                sendChatStates(messageObject.getMsg_id(), sendMsgState, messageObject.getSenderJid());
             }
         }
     };
@@ -220,10 +218,10 @@ public class MessageManager extends Xepmodule {
 
         if (xmppConnection.getBareJid().equals(messageObject.getSenderJid())) {
             messageObject.setOutgoing(true);
-            messageObject.setMsg_status(Msg_Status.SEND);
+            messageObject.setMsg_status(MessageObjectStatus.SEND);
         } else {
             messageObject.setOutgoing(false);
-            messageObject.setMsg_status(Msg_Status.UNREAD);
+            messageObject.setMsg_status(MessageObjectStatus.UNREAD);
         }
 
         return messageObject;
@@ -263,8 +261,8 @@ public class MessageManager extends Xepmodule {
         }
 
         MessageObject targetMessage = messageStorage.getMsg(msg_id);
-        if ((targetMessage != null) && (targetMessage.getMsg_status() != Msg_Status.READ)) {
-            targetMessage.setMsg_status(Msg_Status.READ);
+        if ((targetMessage != null) && (targetMessage.getMsg_status() != MessageObjectStatus.READ)) {
+            targetMessage.setMsg_status(MessageObjectStatus.READ);
             messageStorage.updateMsg(targetMessage);
 
             sendChatStates(targetMessage.getMsg_id(), "read", targetMessage.getSenderJid());
@@ -279,13 +277,13 @@ public class MessageManager extends Xepmodule {
             return null;
         }
         String msgid = Packet.nextID();
-        Msg_Status status;
+        MessageObjectStatus status;
         if (type == MessageSubType.geoloc) {
-            status = Msg_Status.LOCATING;
+            status = MessageObjectStatus.LOCATING;
         } else if (type == MessageSubType.image) {
-            status = Msg_Status.UPLOADING;
+            status = MessageObjectStatus.UPLOADING;
         } else {
-            status = Msg_Status.SENDING;
+            status = MessageObjectStatus.SENDING;
         }
 
         MessageObject messageObject = new MessageObject();
@@ -314,7 +312,7 @@ public class MessageManager extends Xepmodule {
         messageObject.setDate(System.currentTimeMillis());
         messageObject.setMsg_id(msgid);
         messageObject.setMsg_type(MessageSubType.image);
-        messageObject.setMsg_status(Msg_Status.UPLOADING);
+        messageObject.setMsg_status(MessageObjectStatus.UPLOADING);
         messageObject.setReceiverJid(toJidString);
         messageObject.setSenderJid(xmppConnection.getBareJid());
         messageObject.setSenderNickName(fromNickName);
@@ -346,7 +344,7 @@ public class MessageManager extends Xepmodule {
         }
     }
 
-    public void updateMsgStatus(String msgId, Msg_Status status) {
+    public void updateMsgStatus(String msgId, MessageObjectStatus status) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             return;
         }
@@ -381,7 +379,7 @@ public class MessageManager extends Xepmodule {
         xmppConnection.sendPacket(message);
 
         messageObject.setBody(lat + "," + lon);
-        messageObject.setMsg_status(Msg_Status.SEND);
+        messageObject.setMsg_status(MessageObjectStatus.SEND);
         messageObject.setHtml(locationExtension.toString());
         messageObject.setDate(System.currentTimeMillis());
         messageStorage.updateMsg(messageObject);
@@ -407,7 +405,7 @@ public class MessageManager extends Xepmodule {
         xmppConnection.sendPacket(message);
 
         messageObject.setBody(thumb);
-        messageObject.setMsg_status(Msg_Status.SEND);
+        messageObject.setMsg_status(MessageObjectStatus.SEND);
         messageObject.setHtml(imageExtension.toString());
         messageObject.setDate(System.currentTimeMillis());
         messageStorage.updateMsg(messageObject);

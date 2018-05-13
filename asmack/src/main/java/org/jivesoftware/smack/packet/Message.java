@@ -24,6 +24,9 @@ import org.jivesoftware.smack.util.XmppStringUtils;
 
 import java.util.Date;
 
+/**
+ * 聊天消息包, 用户数据传输
+ */
 public class Message extends Packet {
 
     private Type type = Type.normal;

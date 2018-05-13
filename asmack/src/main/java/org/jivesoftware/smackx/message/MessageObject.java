@@ -27,26 +27,12 @@ import org.jivesoftware.smack.packet.MessageSubType;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 表示一第消息, ui显示与数据库存储
+ */
 public class MessageObject {
 
-    public enum Msg_Status {
-        READ,
-        UNREAD,
-        SENDING,
-        SEND,
-        FAILED,
-        LOCATING,
-        UPLOADING,
-        MSG_HIDDEN;
 
-        public static Msg_Status fromString(String name) {
-            try {
-                return Msg_Status.valueOf(name);
-            } catch (Exception e) {
-                return MSG_HIDDEN;
-            }
-        }
-    }
 
     private String senderJid;
     private String senderNickName;
@@ -55,7 +41,7 @@ public class MessageObject {
     private boolean outgoing;
     private String msg_id;
     private MessageSubType msg_type;
-    private Msg_Status msg_status;
+    private MessageObjectStatus msg_status;
     private Long date;
     private String html;
 
@@ -86,11 +72,11 @@ public class MessageObject {
         this.msg_type = msg_type;
     }
 
-    public Msg_Status getMsg_status() {
+    public MessageObjectStatus getMsg_status() {
         return msg_status;
     }
 
-    public void setMsg_status(Msg_Status msg_status) {
+    public void setMsg_status(MessageObjectStatus msg_status) {
         this.msg_status = msg_status;
     }
 

@@ -322,12 +322,10 @@ class PacketReader {
         if (packet == null) {
             return;
         }
-
         // Loop through all collectors and notify the appropriate ones.
         for (PacketCollector collector : connection.getPacketCollectors()) {
             collector.processPacket(packet);
         }
-
         // Deliver the incoming packet to listeners.
         listenerExecutor.submit(new ListenerNotification(packet));
     }

@@ -7,6 +7,7 @@ import org.xmlpull.v1.XmlPullParser;
 import android.text.TextUtils;
 
 public class MessageRelationProvider implements PacketExtensionProvider {
+
     public MessageRelationProvider() {
     }
 
