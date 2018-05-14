@@ -36,6 +36,7 @@ import org.jivesoftware.smack.packet.MessageSubType;
 import org.jivesoftware.smackx.db.DatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MessageStorage {
 
@@ -279,4 +280,187 @@ public class MessageStorage {
         return values;
     }
 
+
+    ///
+    //////
+    // MessageFragment data
+    public List<MessageObject> getAllMessage(String myJid) {
+        List<MessageObject> sender_array = getSenderMessageObjects(myJid);
+        List<MessageObject> receiver_array = getReceiverMessageObjects(myJid);
+        List<MessageObject> resultArray = mergeMessage(sender_array, receiver_array);
+        return resultArray;
+    }
+
+    private List<MessageObject> getReceiverMessageObjects(String myJid) {
+        List<MessageObject> messages = new ArrayList<MessageObject>();
+        Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null,
+                Columns.MSG_RECEIVER_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=0)"
+                        + " group by " + " ( " + Columns.MSG_SENDER_JID, new String[]{
+                        myJid
+                }, null, null, MessageStorage.Columns.MSG_DATE + " DESC");
+
+        if (cursor != null) {
+            int senderJidIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_SENDER_JID);
+            int receiverJidIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_RECEIVER_JID);
+            int senderNameIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_SENDER_NAME);
+            int bodyIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_BODY);
+            int msgIdIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_ID);
+            int msgTypeIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_TYPE);
+            int msgStatusIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_STATUS);
+            int dateIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_DATE);
+
+            while (cursor.moveToNext()) {
+                MessageObject obj = new MessageObject();
+                obj.setSenderJid(cursor.getString(senderJidIndex));
+                obj.setReceiverJid(cursor.getString(receiverJidIndex));
+                obj.setSenderNickName(cursor.getString(senderNameIndex));
+                obj.setBody(cursor.getString(bodyIndex));
+                obj.setMsg_id(cursor.getString(msgIdIndex));
+                obj.setMsg_type(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
+                obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(msgStatusIndex)]);
+                obj.setDate(cursor.getLong(dateIndex));
+                obj.setOutgoing(false);
+                messages.add(obj);
+            }
+            cursor.close();
+        }
+        return messages;
+    }
+
+    private List<MessageObject> getSenderMessageObjects(String myJid) {
+        List<MessageObject> messages = new ArrayList<MessageObject>();
+        Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null,
+                Columns.MSG_SENDER_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=1)" + " group by "
+                        + " ( " + Columns.MSG_RECEIVER_JID, new String[]{
+                        myJid
+                }, null, null, Columns.MSG_DATE + " DESC");
+
+        if (cursor != null) {
+            int senderJidIndex = cursor.getColumnIndex(Columns.MSG_SENDER_JID);
+            int receiverJidIndex = cursor.getColumnIndex(Columns.MSG_RECEIVER_JID);
+            int senderNameIndex = cursor.getColumnIndex(Columns.MSG_SENDER_NAME);
+            int bodyIndex = cursor.getColumnIndex(Columns.MSG_BODY);
+            int msgIdIndex = cursor.getColumnIndex(Columns.MSG_ID);
+            int msgTypeIndex = cursor.getColumnIndex(Columns.MSG_TYPE);
+            int msgStatusIndex = cursor.getColumnIndex(Columns.MSG_STATUS);
+            int dateIndex = cursor.getColumnIndex(Columns.MSG_DATE);
+
+            while (cursor.moveToNext()) {
+                MessageObject obj = new MessageObject();
+                obj.setSenderJid(cursor.getString(senderJidIndex));
+                obj.setReceiverJid(cursor.getString(receiverJidIndex));
+                obj.setSenderNickName(cursor.getString(senderNameIndex));
+                obj.setBody(cursor.getString(bodyIndex));
+                obj.setMsg_id(cursor.getString(msgIdIndex));
+                obj.setMsg_type(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
+                obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(msgStatusIndex)]);
+                obj.setDate(cursor.getLong(dateIndex));
+                obj.setOutgoing(true);
+                messages.add(obj);
+            }
+            cursor.close();
+        }
+        return messages;
+    }
+
+    private static List<MessageObject> mergeMessage(List<MessageObject> sender_array,
+                                                    List<MessageObject> receiver_array) {
+        List<MessageObject> resultArray = null;
+        boolean duplicateFlag = false;
+        if (sender_array.size() > 0 && receiver_array.size() > 0) {
+            for (MessageObject senderMessageObject : sender_array) {
+                for (MessageObject receiverMessageObject : receiver_array) {
+                    if (senderMessageObject.getSenderJid().equals(
+                            receiverMessageObject.getReceiverJid())) {
+                        if (senderMessageObject.getDate() > receiverMessageObject.getDate()) {
+                            receiver_array.remove(receiverMessageObject);
+                            receiver_array.add(senderMessageObject);
+                        }
+                        duplicateFlag = true;
+                        break;
+                    }
+                }
+
+                if (!duplicateFlag) {
+                    receiver_array.add(senderMessageObject);
+                }
+            }
+            resultArray = receiver_array;
+        } else if (sender_array.size() > 0) {
+            resultArray = sender_array;
+        } else {
+            resultArray = receiver_array;
+        }
+        return resultArray;
+    }
+
+    // ChatFragment data
+    public List<MessageObject> getMessages(String myJid, String chatJid) {
+        List<MessageObject> resultArray = new ArrayList<MessageObject>();
+
+        Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null, "("
+                        + Columns.MSG_SENDER_JID + "=? And " + Columns.MSG_RECEIVER_JID + "=?) Or ("
+                        + Columns.MSG_SENDER_JID + "=? And " + Columns.MSG_RECEIVER_JID + "=?)",
+                new String[]{
+                        myJid, chatJid,
+                        chatJid, myJid
+                }, null, null, Columns.MSG_DATE + " ASC");
+        if (cursor != null) {
+            int senderJidIndex = cursor.getColumnIndex(Columns.MSG_SENDER_JID);
+            int receiverJidIndex = cursor.getColumnIndex(Columns.MSG_RECEIVER_JID);
+            int senderNameIndex = cursor.getColumnIndex(Columns.MSG_SENDER_NAME);
+            int bodyIndex = cursor.getColumnIndex(Columns.MSG_BODY);
+            int htmlIndex = cursor.getColumnIndex(Columns.MSG_HTML);
+            int msgIdIndex = cursor.getColumnIndex(Columns.MSG_ID);
+            int msgTypeIndex = cursor.getColumnIndex(Columns.MSG_TYPE);
+            int msgStatusIndex = cursor.getColumnIndex(Columns.MSG_STATUS);
+            int outgoingIndex = cursor.getColumnIndex(Columns.MSG_IS_OUTGOING);
+            int dateIndex = cursor.getColumnIndex(Columns.MSG_DATE);
+
+            while (cursor.moveToNext()) {
+                MessageObject obj = new MessageObject();
+                obj.setSenderJid(cursor.getString(senderJidIndex));
+                obj.setReceiverJid(cursor.getString(receiverJidIndex));
+                obj.setSenderNickName(cursor.getString(senderNameIndex));
+                obj.setHtml(cursor.getString(htmlIndex));
+                obj.setBody(cursor.getString(bodyIndex));
+                obj.setMsg_id(cursor.getString(msgIdIndex));
+                obj.setMsg_type(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
+                obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(msgStatusIndex)]);
+                obj.setDate(cursor.getLong(dateIndex));
+                if (cursor.getInt(outgoingIndex) != 0) {
+                    obj.setOutgoing(true);
+                } else {
+                    obj.setOutgoing(false);
+                }
+                resultArray.add(obj);
+            }
+            cursor.close();
+        }
+        return resultArray;
+    }
+
+    public int getUnReadMsgCount(String jid) {
+        int count = 0;
+//        if (!XMPPManager.getInstance().isLogin()) {
+//            return 0;
+//        }
+//        String jid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        if (TextUtils.isEmpty(jid)) {
+            return 0;
+        }
+        Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), new String[]{
+                        MessageStorage.Columns.MSG_STATUS
+                }, MessageStorage.Columns.MSG_RECEIVER_JID + "=? and " + MessageStorage.Columns.MSG_STATUS + "=? and "
+                        + MessageStorage.Columns.MSG_IS_OUTGOING + "=?",
+                new String[]{
+                        jid, String.valueOf(MessageObjectStatus.UNREAD.ordinal()), String.valueOf(0)
+                }, null, null, null);
+        if (cursor != null) {
+            count = cursor.getCount();
+            cursor.close();
+        }
+        return count;
+    }
+    ////
 }
