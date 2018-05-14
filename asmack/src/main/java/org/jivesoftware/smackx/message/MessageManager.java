@@ -1,5 +1,7 @@
 package org.jivesoftware.smackx.message;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
 import android.text.TextUtils;
 
 import org.jivesoftware.smack.Connection;
@@ -15,6 +17,7 @@ import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -74,7 +77,6 @@ public class MessageManager extends Xepmodule {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -144,35 +146,6 @@ public class MessageManager extends Xepmodule {
         }
     };
 
-    private class ChatStateExtension implements PacketExtension {
-        private String elementName;
-
-        public ChatStateExtension(String aElementName) {
-            elementName = aElementName;
-        }
-
-        @Override
-        public String getElementName() {
-            return elementName;
-        }
-
-        @Override
-        public String getNamespace() {
-            return "http://jabber.org/protocol/chatstates";
-        }
-
-        @Override
-        public String toXML() {
-            return new StringBuffer().append("<").append(getElementName()).append(" xmlns=\"")
-                    .append(getNamespace()).append("\"/>").toString();
-        }
-
-        @Override
-        public String toString() {
-            return toXML();
-        }
-    }
-
     private void sendChatStates(String msgId, String state, String toJid) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             return;
@@ -206,7 +179,6 @@ public class MessageManager extends Xepmodule {
             messageObject.setDate(date.getTime());
         }
         messageObject.setSenderNickName(message.getSenderNickName());
-
         if (messageObject.getMsg_type() == MessageSubType.image
                 || messageObject.getMsg_type() == MessageSubType.geoloc) {
             PacketExtension extension = message.getExtension(MessageHtmlProvider.elementName(),
@@ -215,7 +187,6 @@ public class MessageManager extends Xepmodule {
                 messageObject.setHtml(extension.toXML());
             }
         }
-
         if (xmppConnection.getBareJid().equals(messageObject.getSenderJid())) {
             messageObject.setOutgoing(true);
             messageObject.setMsg_status(MessageObjectStatus.SEND);
@@ -223,7 +194,6 @@ public class MessageManager extends Xepmodule {
             messageObject.setOutgoing(false);
             messageObject.setMsg_status(MessageObjectStatus.UNREAD);
         }
-
         return messageObject;
     }
 
@@ -259,12 +229,10 @@ public class MessageManager extends Xepmodule {
         if (TextUtils.isEmpty(msg_id)) {
             return;
         }
-
         MessageObject targetMessage = messageStorage.getMsg(msg_id);
         if ((targetMessage != null) && (targetMessage.getMsg_status() != MessageObjectStatus.READ)) {
             targetMessage.setMsg_status(MessageObjectStatus.READ);
             messageStorage.updateMsg(targetMessage);
-
             sendChatStates(targetMessage.getMsg_id(), "read", targetMessage.getSenderJid());
         }
     }
@@ -432,4 +400,199 @@ public class MessageManager extends Xepmodule {
     public void correctMessagesStatus() {
         messageStorage.correctMessagesStatus();
     }
+
+
+    //////
+    // MessageFragment data
+    public static List<MessageObject> getAllMessage(ContentResolver cr) {
+        List<MessageObject> sender_array = getSenderMessageObjects(cr);
+        List<MessageObject> receiver_array = getReceiverMessageObjects(cr);
+        List<MessageObject> resultArray = mergeMessage(sender_array, receiver_array);
+        return resultArray;
+    }
+
+    private static List<MessageObject> getReceiverMessageObjects(ContentResolver cr) {
+        List<MessageObject> messages = new ArrayList<MessageObject>();
+        Cursor cursor = cr.query(MessageDBStoreProvider.getContentUri(), null,
+                Columns.MSG_RECEIVER_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=0)"
+                        + " group by " + " ( " + Columns.MSG_SENDER_JID, new String[]{
+                        XMPPManager.getInstance().getXmppConnection().getBareJid()
+                }, MessageStorage.Columns.MSG_DATE + " DESC");
+
+        if (cursor != null) {
+            int senderJidIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_SENDER_JID);
+            int receiverJidIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_RECEIVER_JID);
+            int senderNameIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_SENDER_NAME);
+            int bodyIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_BODY);
+            int msgIdIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_ID);
+            int msgTypeIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_TYPE);
+            int msgStatusIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_STATUS);
+            int dateIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_DATE);
+
+            while (cursor.moveToNext()) {
+                MessageObject obj = new MessageObject();
+                obj.setSenderJid(cursor.getString(senderJidIndex));
+                obj.setReceiverJid(cursor.getString(receiverJidIndex));
+                obj.setSenderNickName(cursor.getString(senderNameIndex));
+                obj.setBody(cursor.getString(bodyIndex));
+                obj.setMsg_id(cursor.getString(msgIdIndex));
+                obj.setMsg_type(SubType.values()[cursor.getInt(msgTypeIndex)]);
+                obj.setMsg_status(Msg_Status.values()[cursor.getInt(msgStatusIndex)]);
+                obj.setDate(cursor.getLong(dateIndex));
+                obj.setOutgoing(false);
+                messages.add(obj);
+            }
+            cursor.close();
+        }
+        return messages;
+    }
+
+    private static List<MessageObject> getSenderMessageObjects(ContentResolver cr) {
+        List<MessageObject> messages = new ArrayList<MessageObject>();
+        Cursor cursor = cr.query(MessageDBStoreProvider.getContentUri(), null,
+                Columns.MSG_SENDER_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=1)" + " group by "
+                        + " ( " + Columns.MSG_RECEIVER_JID, new String[]{
+                        XMPPManager.getInstance().getXmppConnection().getBareJid()
+                }, Columns.MSG_DATE + " DESC");
+
+        if (cursor != null) {
+            int senderJidIndex = cursor.getColumnIndex(Columns.MSG_SENDER_JID);
+            int receiverJidIndex = cursor.getColumnIndex(Columns.MSG_RECEIVER_JID);
+            int senderNameIndex = cursor.getColumnIndex(Columns.MSG_SENDER_NAME);
+            int bodyIndex = cursor.getColumnIndex(Columns.MSG_BODY);
+            int msgIdIndex = cursor.getColumnIndex(Columns.MSG_ID);
+            int msgTypeIndex = cursor.getColumnIndex(Columns.MSG_TYPE);
+            int msgStatusIndex = cursor.getColumnIndex(Columns.MSG_STATUS);
+            int dateIndex = cursor.getColumnIndex(Columns.MSG_DATE);
+
+            while (cursor.moveToNext()) {
+                MessageObject obj = new MessageObject();
+                obj.setSenderJid(cursor.getString(senderJidIndex));
+                obj.setReceiverJid(cursor.getString(receiverJidIndex));
+                obj.setSenderNickName(cursor.getString(senderNameIndex));
+                obj.setBody(cursor.getString(bodyIndex));
+                obj.setMsg_id(cursor.getString(msgIdIndex));
+                obj.setMsg_type(SubType.values()[cursor.getInt(msgTypeIndex)]);
+                obj.setMsg_status(Msg_Status.values()[cursor.getInt(msgStatusIndex)]);
+                obj.setDate(cursor.getLong(dateIndex));
+                obj.setOutgoing(true);
+                messages.add(obj);
+            }
+            cursor.close();
+        }
+        return messages;
+    }
+
+    private static List<MessageObject> mergeMessage(List<MessageObject> sender_array,
+                                                    List<MessageObject> receiver_array) {
+        List<MessageObject> resultArray = null;
+        boolean duplicateFlag = false;
+        if (sender_array.size() > 0 && receiver_array.size() > 0) {
+            for (MessageObject senderMessageObject : sender_array) {
+                for (MessageObject receiverMessageObject : receiver_array) {
+                    if (senderMessageObject.getSenderJid().equals(
+                            receiverMessageObject.getReceiverJid())) {
+                        if (senderMessageObject.getDate() > receiverMessageObject.getDate()) {
+                            receiver_array.remove(receiverMessageObject);
+                            receiver_array.add(senderMessageObject);
+                        }
+                        duplicateFlag = true;
+                        break;
+                    }
+                }
+
+                if (!duplicateFlag) {
+                    receiver_array.add(senderMessageObject);
+                }
+            }
+            resultArray = receiver_array;
+        } else if (sender_array.size() > 0) {
+            resultArray = sender_array;
+        } else {
+            resultArray = receiver_array;
+        }
+        return resultArray;
+    }
+
+    // ChatFragment data
+    public static List<MessageObject> getMessages(ContentResolver cr, String chatJid) {
+        List<MessageObject> resultArray = new ArrayList<MessageObject>();
+
+        Cursor cursor = null;
+        try {
+            cursor = cr.query(MessageDBStoreProvider.getContentUri(), null, "("
+                            + Columns.MSG_SENDER_JID + "=? And " + Columns.MSG_RECEIVER_JID + "=?) Or ("
+                            + Columns.MSG_SENDER_JID + "=? And " + Columns.MSG_RECEIVER_JID + "=?)",
+                    new String[]{
+                            XMPPManager.getInstance().getXmppConnection().getBareJid(), chatJid,
+                            chatJid, XMPPManager.getInstance().getXmppConnection().getBareJid()
+                    }, Columns.MSG_DATE + " ASC");
+
+            int senderJidIndex = cursor.getColumnIndex(Columns.MSG_SENDER_JID);
+            int receiverJidIndex = cursor.getColumnIndex(Columns.MSG_RECEIVER_JID);
+            int senderNameIndex = cursor.getColumnIndex(Columns.MSG_SENDER_NAME);
+            int bodyIndex = cursor.getColumnIndex(Columns.MSG_BODY);
+            int htmlIndex = cursor.getColumnIndex(Columns.MSG_HTML);
+            int msgIdIndex = cursor.getColumnIndex(Columns.MSG_ID);
+            int msgTypeIndex = cursor.getColumnIndex(Columns.MSG_TYPE);
+            int msgStatusIndex = cursor.getColumnIndex(Columns.MSG_STATUS);
+            int outgoingIndex = cursor.getColumnIndex(Columns.MSG_IS_OUTGOING);
+            int dateIndex = cursor.getColumnIndex(Columns.MSG_DATE);
+
+            while (cursor.moveToNext()) {
+                MessageObject obj = new MessageObject();
+                obj.setSenderJid(cursor.getString(senderJidIndex));
+                obj.setReceiverJid(cursor.getString(receiverJidIndex));
+                obj.setSenderNickName(cursor.getString(senderNameIndex));
+                obj.setHtml(cursor.getString(htmlIndex));
+                obj.setBody(cursor.getString(bodyIndex));
+                obj.setMsg_id(cursor.getString(msgIdIndex));
+                obj.setMsg_type(SubType.values()[cursor.getInt(msgTypeIndex)]);
+                obj.setMsg_status(Msg_Status.values()[cursor.getInt(msgStatusIndex)]);
+                obj.setDate(cursor.getLong(dateIndex));
+                if (cursor.getInt(outgoingIndex) != 0) {
+                    obj.setOutgoing(true);
+                } else {
+                    obj.setOutgoing(false);
+                }
+                resultArray.add(obj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return resultArray;
+    }
+
+    public static int getUnReadMsgCount(ContentResolver cr) {
+        int count = 0;
+        Cursor cursor = null;
+        if (!XMPPManager.getInstance().isLogin()) {
+            return 0;
+        }
+        String jid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        if (TextUtils.isEmpty(jid)) {
+            return 0;
+        }
+        try {
+            cursor = cr.query(MessageDBStoreProvider.getContentUri(), new String[]{
+                            Columns.MSG_STATUS
+                    }, Columns.MSG_RECEIVER_JID + "=? and " + Columns.MSG_STATUS + "=? and "
+                            + Columns.MSG_IS_OUTGOING + "=?",
+
+                    new String[]{
+
+                            jid, String.valueOf(Msg_Status.UNREAD.ordinal()), String.valueOf(0)
+                    }, null);
+            if (null != cursor) {
+                count = cursor.getCount();
+            }
+        } catch (Exception e) {
+        }
+        return count;
+    }
+    ////
 }
