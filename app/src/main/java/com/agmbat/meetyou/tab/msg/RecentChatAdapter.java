@@ -7,11 +7,13 @@ import android.widget.ArrayAdapter;
 
 import com.agmbat.imsdk.data.RecentChat;
 
+import org.jivesoftware.smackx.message.MessageObject;
+
 import java.util.List;
 
-public class RecentChatAdapter extends ArrayAdapter<RecentChat> {
+public class RecentChatAdapter extends ArrayAdapter<MessageObject> {
 
-    public RecentChatAdapter(Context context, List<RecentChat> contactList) {
+    public RecentChatAdapter(Context context, List<MessageObject> contactList) {
         super(context, 0, contactList);
     }
 
@@ -20,49 +22,49 @@ public class RecentChatAdapter extends ArrayAdapter<RecentChat> {
         if (null == convertView) {
             convertView = new RecentMsgView(getContext());
         }
-        RecentChat recentChat = getItem(position);
+        MessageObject recentChat = getItem(position);
         RecentMsgView view = (RecentMsgView) convertView;
         view.update(recentChat);
         return convertView;
     }
 
-    public void updateRecentChat(RecentChat recentChat) {
-        int count = getCount();
-        for (int i = 0; i < count; i++) {
-            RecentChat current = getItem(i);
-            if (current.getContact().equals(recentChat.getContact())) {
-                current.setContact(recentChat.getContact());
-                current.setLastChatMessage(recentChat.getLastChatMessage());
-                current.setUnreadCount(recentChat.getUnreadCount());
-                break;
-            }
-        }
-        notifyDataSetChanged();
-        notifyDataSetInvalidated();
-    }
+//    public void updateRecentChat(MessageObject recentChat) {
+//        int count = getCount();
+//        for (int i = 0; i < count; i++) {
+//            RecentChat current = getItem(i);
+//            if (current.getContact().equals(recentChat.getContact())) {
+//                current.setContact(recentChat.getContact());
+//                current.setLastChatMessage(recentChat.getLastChatMessage());
+//                current.setUnreadCount(recentChat.getUnreadCount());
+//                break;
+//            }
+//        }
+//        notifyDataSetChanged();
+//        notifyDataSetInvalidated();
+//    }
 
-    public boolean isRecentChatExist(RecentChat recentChat) {
-        boolean exist = false;
-        int count = getCount();
-        for (int i = 0; i < count; i++) {
-            RecentChat current = getItem(i);
-            if (current.getContact().equals(recentChat.getContact())) {
-                exist = true;
-                break;
-            }
-        }
-        return exist;
-    }
+//    public boolean isRecentChatExist(RecentChat recentChat) {
+//        boolean exist = false;
+//        int count = getCount();
+//        for (int i = 0; i < count; i++) {
+//            RecentChat current = getItem(i);
+//            if (current.getContact().equals(recentChat.getContact())) {
+//                exist = true;
+//                break;
+//            }
+//        }
+//        return exist;
+//    }
 
-    public void addRecentChat(RecentChat recentChat) {
+    public void addRecentChat(MessageObject recentChat) {
         add(recentChat);
         notifyDataSetChanged();
     }
 
-    public void sort() {
-        super.sort(new RecentChat.RecentChatComparator());
-        notifyDataSetChanged();
-    }
+//    public void sort() {
+//        super.sort(new RecentChat.RecentChatComparator());
+//        notifyDataSetChanged();
+//    }
 
 
 }

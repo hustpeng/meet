@@ -294,10 +294,10 @@ public class MessageStorage {
     private List<MessageObject> getReceiverMessageObjects(String myJid) {
         List<MessageObject> messages = new ArrayList<MessageObject>();
         Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null,
-                Columns.MSG_RECEIVER_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=0)"
-                        + " group by " + " ( " + Columns.MSG_SENDER_JID, new String[]{
+                "(" + Columns.MSG_RECEIVER_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=0)"
+                , new String[]{
                         myJid
-                }, null, null, MessageStorage.Columns.MSG_DATE + " DESC");
+                }, Columns.MSG_SENDER_JID, null, MessageStorage.Columns.MSG_DATE + " DESC");
 
         if (cursor != null) {
             int senderJidIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_SENDER_JID);
@@ -330,10 +330,10 @@ public class MessageStorage {
     private List<MessageObject> getSenderMessageObjects(String myJid) {
         List<MessageObject> messages = new ArrayList<MessageObject>();
         Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null,
-                Columns.MSG_SENDER_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=1)" + " group by "
-                        + " ( " + Columns.MSG_RECEIVER_JID, new String[]{
+                "(" + Columns.MSG_SENDER_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=1)"
+                , new String[]{
                         myJid
-                }, null, null, Columns.MSG_DATE + " DESC");
+                }, Columns.MSG_RECEIVER_JID, null, Columns.MSG_DATE + " DESC");
 
         if (cursor != null) {
             int senderJidIndex = cursor.getColumnIndex(Columns.MSG_SENDER_JID);

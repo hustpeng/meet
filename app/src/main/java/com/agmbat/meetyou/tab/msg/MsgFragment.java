@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.agmbat.android.AppResources;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.data.RecentChat;
 import com.agmbat.imsdk.db.MeetDatabase;
@@ -29,6 +30,9 @@ import com.agmbat.swipemenulist.SwipeMenu;
 import com.agmbat.swipemenulist.SwipeMenuCreator;
 import com.agmbat.swipemenulist.SwipeMenuItem;
 import com.agmbat.swipemenulist.SwipeMenuListView;
+
+import org.jivesoftware.smack.util.XmppStringUtils;
+import org.jivesoftware.smackx.message.MessageObject;
 
 import java.util.List;
 
@@ -146,9 +150,9 @@ public class MsgFragment extends Fragment {
 
     @OnItemClick(R.id.recent_chat_list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        RecentChat recentChat = mRecentChatAdapter.getItem(position);
-        ContactInfo contactInfo = recentChat.getContact();
-        ChatActivity.openChat(getActivity(), contactInfo);
+        MessageObject recentChat = mRecentChatAdapter.getItem(position);
+//        ContactInfo contactInfo = recentChat.getContact();
+//        ChatActivity.openChat(getActivity(), contactInfo);
     }
 
     @OnClick(R.id.title_btn_add)
@@ -212,13 +216,13 @@ public class MsgFragment extends Fragment {
     }
 
 
-    private void fillListView(List<RecentChat> recentChatList) {
+    private void fillListView(List<MessageObject> recentChatList) {
         mRecentChatAdapter = new RecentChatAdapter(getActivity(), recentChatList);
         mListView.setAdapter(mRecentChatAdapter);
-        mRecentChatAdapter.sort();
+//        mRecentChatAdapter.sort();
     }
 
-    private class InitRecentChatTask extends AsyncTask<Void, Void, List<RecentChat>> {
+    private class InitRecentChatTask extends AsyncTask<Void, Void, List<MessageObject>> {
 
         @Override
         protected void onPreExecute() {
@@ -228,12 +232,13 @@ public class MsgFragment extends Fragment {
         }
 
         @Override
-        protected List<RecentChat> doInBackground(Void... params) {
-            return MeetDatabase.getInstance().getRecentChatList();
+        protected List<MessageObject> doInBackground(Void... params) {
+            String user = XMPPManager.getInstance().getXmppConnection().getBareJid();
+            return XMPPManager.getInstance().getMessageManager().getAllMessage(user);
         }
 
         @Override
-        protected void onPostExecute(List<RecentChat> recentChatList) {
+        protected void onPostExecute(List<MessageObject> recentChatList) {
             fillListView(recentChatList);
             if (recentChatList.size() > 0) {
                 setState(STATE_SUCCESS);

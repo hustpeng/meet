@@ -14,6 +14,8 @@ import com.agmbat.time.TimeUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.CircleBitmapDisplayer;
 
+import org.jivesoftware.smackx.message.MessageObject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -40,27 +42,26 @@ public class RecentMsgView extends LinearLayout {
         ButterKnife.bind(this, this);
     }
 
-    public void update(RecentChat recentChat) {
-        mNickNameView.setText(recentChat.getContact().getNickName());
-        ChatMessage msg = recentChat.getLastChatMessage();
-        if (msg != null) {
-            mMessageView.setVisibility(View.VISIBLE);
-            setLastMessageBody(msg);
-            mLastMsgTimeView.setVisibility(View.VISIBLE);
-            mLastMsgTimeView.setText(TimeUtils.formatTime(msg.getTimestamp()));
-        } else {
-            mMessageView.setVisibility(View.GONE);
-            mLastMsgTimeView.setVisibility(View.GONE);
-        }
+    public void update(MessageObject recentChat) {
+//        mNickNameView.setText(recentChat.getReceiverJid().getNickName());
+//        ChatMessage msg = recentChat.getLastChatMessage();
+//        if (msg != null) {
+        mMessageView.setVisibility(View.VISIBLE);
+        setLastMessageBody(recentChat);
+        mLastMsgTimeView.setVisibility(View.VISIBLE);
+//        mLastMsgTimeView.setText(TimeUtils.formatTime(msg.getTimestamp()));
+//        } else {
+//            mMessageView.setVisibility(View.GONE);
+//            mLastMsgTimeView.setVisibility(View.GONE);
+//        }
 
-        int unreadCount = recentChat.getUnreadCount();
-        if (unreadCount > 0) {
-            mUnreadCountView.setVisibility(View.VISIBLE);
-            mUnreadCountView.setText(String.valueOf(unreadCount));
-        } else {
-            mUnreadCountView.setVisibility(View.GONE);
-        }
-
+//        int unreadCount = recentChat.getUnreadCount();
+//        if (unreadCount > 0) {
+//            mUnreadCountView.setVisibility(View.VISIBLE);
+//            mUnreadCountView.setText(String.valueOf(unreadCount));
+//        } else {
+//            mUnreadCountView.setVisibility(View.GONE);
+//        }
 //        String uri = Scheme.wrapUri("avatar", recentChat.getContact().getAvatarId());
 //        String uri = "http://img1.imgtn.bdimg.com/it/u=1669956509,228298322&fm=27&gp=0.jpg";
         String uri = "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3109469113,4179252995&fm=27&gp=0.jpg";
@@ -77,8 +78,8 @@ public class RecentMsgView extends LinearLayout {
     }
 
 
-    private void setLastMessageBody(ChatMessage msg) {
-        mMessageView.setText(msg.getContent());
+    private void setLastMessageBody(MessageObject msg) {
+        mMessageView.setText(msg.getBody());
 //        Body body = msg.getBody();
 //        if (body instanceof TextBody) {
 //            TextBody textBody = (TextBody) body;
