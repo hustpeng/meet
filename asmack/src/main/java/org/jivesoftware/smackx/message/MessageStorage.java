@@ -155,7 +155,7 @@ public class MessageStorage {
                     obj.setOutgoing(false);
                 }
                 obj.setMsg_id(cursor.getString(msgIdIndex));
-                obj.setMsg_type(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
+                obj.setMsgType(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
                 obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(msgStatusIndex)]);
                 obj.setDate(cursor.getLong(dateIndex));
                 array.add(obj);
@@ -274,7 +274,7 @@ public class MessageStorage {
         values.put(Columns.MSG_HTML, obj.getHtml());
         values.put(Columns.MSG_IS_OUTGOING, obj.isOutgoing());
         values.put(Columns.MSG_ID, obj.getMsg_id());
-        values.put(Columns.MSG_TYPE, obj.getMsg_type().ordinal());
+        values.put(Columns.MSG_TYPE, obj.getMsgType().ordinal());
         values.put(Columns.MSG_STATUS, obj.getMsg_status().ordinal());
         values.put(Columns.MSG_DATE, obj.getDate());
         return values;
@@ -316,7 +316,7 @@ public class MessageStorage {
                 obj.setSenderNickName(cursor.getString(senderNameIndex));
                 obj.setBody(cursor.getString(bodyIndex));
                 obj.setMsg_id(cursor.getString(msgIdIndex));
-                obj.setMsg_type(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
+                obj.setMsgType(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
                 obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(msgStatusIndex)]);
                 obj.setDate(cursor.getLong(dateIndex));
                 obj.setOutgoing(false);
@@ -352,7 +352,7 @@ public class MessageStorage {
                 obj.setSenderNickName(cursor.getString(senderNameIndex));
                 obj.setBody(cursor.getString(bodyIndex));
                 obj.setMsg_id(cursor.getString(msgIdIndex));
-                obj.setMsg_type(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
+                obj.setMsgType(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
                 obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(msgStatusIndex)]);
                 obj.setDate(cursor.getLong(dateIndex));
                 obj.setOutgoing(true);
@@ -394,7 +394,13 @@ public class MessageStorage {
         return resultArray;
     }
 
-    // ChatFragment data
+    /**
+     * 查询两个人的消息记录
+     *
+     * @param myJid
+     * @param chatJid
+     * @return
+     */
     public List<MessageObject> getMessages(String myJid, String chatJid) {
         List<MessageObject> resultArray = new ArrayList<MessageObject>();
 
@@ -425,7 +431,7 @@ public class MessageStorage {
                 obj.setHtml(cursor.getString(htmlIndex));
                 obj.setBody(cursor.getString(bodyIndex));
                 obj.setMsg_id(cursor.getString(msgIdIndex));
-                obj.setMsg_type(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
+                obj.setMsgType(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
                 obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(msgStatusIndex)]);
                 obj.setDate(cursor.getLong(dateIndex));
                 if (cursor.getInt(outgoingIndex) != 0) {

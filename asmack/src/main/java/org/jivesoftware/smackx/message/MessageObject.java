@@ -28,11 +28,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 表示一第消息, ui显示与数据库存储
+ * 表示一条消息, ui显示与数据库存储
  */
 public class MessageObject {
-
-
 
     private String senderJid;
     private String senderNickName;
@@ -64,11 +62,11 @@ public class MessageObject {
         this.msg_id = msg_id;
     }
 
-    public MessageSubType getMsg_type() {
+    public MessageSubType getMsgType() {
         return msg_type;
     }
 
-    public void setMsg_type(MessageSubType msg_type) {
+    public void setMsgType(MessageSubType msg_type) {
         this.msg_type = msg_type;
     }
 
@@ -150,7 +148,6 @@ public class MessageObject {
         if (imageThumbUrl != null) {
             return imageThumbUrl;
         }
-
         if (!TextUtils.isEmpty(html)) {
             Matcher matcher = IMAGE_THUMB_PATTERN.matcher(html);
             if (matcher.find()) {
@@ -158,7 +155,6 @@ public class MessageObject {
                 return imageThumbUrl;
             }
         }
-
         return null;
     }
 

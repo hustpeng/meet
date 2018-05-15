@@ -8,11 +8,13 @@ import android.widget.ArrayAdapter;
 
 import com.agmbat.imsdk.data.ChatMessage;
 
+import org.jivesoftware.smackx.message.MessageObject;
+
 import java.util.List;
 
-public class MessageListAdapter extends ArrayAdapter<ChatMessage> {
+public class MessageListAdapter extends ArrayAdapter<MessageObject> {
 
-    public MessageListAdapter(Context context, List<ChatMessage> messages) {
+    public MessageListAdapter(Context context, List<MessageObject> messages) {
         super(context, 0, messages);
     }
 
@@ -21,7 +23,7 @@ public class MessageListAdapter extends ArrayAdapter<ChatMessage> {
         if (convertView == null) {
             convertView = new MessageView(getContext());
         }
-        ChatMessage message = getItem(position);
+        MessageObject message = getItem(position);
         MessageView view = (MessageView) convertView;
         view.update(message);
         return convertView;

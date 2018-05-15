@@ -1,7 +1,6 @@
 package com.agmbat.meetyou.chat;
 
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.os.Environment;
 import android.view.View;
@@ -20,15 +19,16 @@ import com.agmbat.http.HttpUtils;
 import com.agmbat.imsdk.data.ChatMessage;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.data.body.AudioBody;
-import com.agmbat.imsdk.data.body.Body;
-import com.agmbat.imsdk.data.body.FireBody;
 import com.agmbat.imsdk.data.body.FriendBody;
 import com.agmbat.imsdk.data.body.ImageBody;
 import com.agmbat.imsdk.data.body.LocationBody;
 import com.agmbat.imsdk.data.body.TextBody;
+import com.agmbat.imsdk.emoji.Emotion;
 import com.agmbat.meetyou.R;
 import com.agmbat.time.DurationFormat;
-import com.nostra13.universalimageloader.core.download.Scheme;
+
+import org.jivesoftware.smack.packet.MessageSubType;
+import org.jivesoftware.smackx.message.MessageObject;
 
 import java.io.File;
 
@@ -56,42 +56,46 @@ public abstract class ItemView extends LinearLayout {
 
     protected abstract void setupViews();
 
-    public void update(ChatMessage msg) {
+    public void update(MessageObject msg) {
         setupViews();
         setAvatar(msg);
         setMessageBody(msg);
-        mTimeView.setText(msg.getShowTimeText());
+//        mTimeView.setText(msg.getShowTimeText());
     }
 
-    private void setAvatar(ChatMessage msg) {
-        ImageManager.displayImage(Scheme.wrapUri("avatar", msg.getAvatarBareAddress()), mChatAvatarView);
+    private void setAvatar(MessageObject msg) {
+//        ImageManager.displayImage(msg.getImageSrcUrl());
+//        ImageManager.displayImage(Scheme.wrapUri("avatar", msg.getAvatarBareAddress()), mChatAvatarView);
     }
 
-    private void setMessageBody(ChatMessage msg) {
-        Body body = msg.getBody();
-        if (body instanceof TextBody) {
-            TextBody textBody = (TextBody) body;
-            setTextBody(textBody);
-        } else if (body instanceof AudioBody) {
-            AudioBody audioBody = (AudioBody) body;
-            setAudioBody(mChatContentView, audioBody);
-        } else if (body instanceof FireBody) {
-            FireBody fireBody = (FireBody) body;
-            if (msg.getMsgDirection() == ChatMessage.DIRECTION_TO_OTHERS) {
-                setImageBody(msg, fireBody, false);
-            } else {
-                setImageBody(msg, fireBody, true);
-            }
-        } else if (body instanceof ImageBody) {
-            ImageBody imageBody = (ImageBody) body;
-            setImageBody(msg, imageBody, false);
-        } else if (body instanceof LocationBody) {
-            LocationBody locationBody = (LocationBody) body;
-            setLocationBody(locationBody);
-        } else if (body instanceof FriendBody) {
-            FriendBody friendBody = (FriendBody) body;
-            setFriendBody(friendBody);
+    private void setMessageBody(MessageObject msg) {
+        MessageSubType messageSubType = msg.getMsgType();
+        if (messageSubType == MessageSubType.text) {
+            mBodyImage.setVisibility(View.GONE);
+            ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
+            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            mChatContentView.setVisibility(View.VISIBLE);
+            mChatContentView.setText(Emotion.getEmojiText(msg.getBody()));
+            mChatContentView.setOnClickListener(null);
+            mChatContentView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
+//        Body body = msg.getBody();
+//        if (body instanceof TextBody) {
+//            TextBody textBody = (TextBody) body;
+//            setTextBody(textBody);
+//        } else if (body instanceof AudioBody) {
+//            AudioBody audioBody = (AudioBody) body;
+//            setAudioBody(mChatContentView, audioBody);
+//        } else if (body instanceof ImageBody) {
+//            ImageBody imageBody = (ImageBody) body;
+//            setImageBody(msg, imageBody, false);
+//        } else if (body instanceof LocationBody) {
+//            LocationBody locationBody = (LocationBody) body;
+//            setLocationBody(locationBody);
+//        } else if (body instanceof FriendBody) {
+//            FriendBody friendBody = (FriendBody) body;
+//            setFriendBody(friendBody);
+//        }
     }
 
     private void setFriendBody(final FriendBody friendBody) {

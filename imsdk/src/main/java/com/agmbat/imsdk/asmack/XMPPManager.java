@@ -31,7 +31,6 @@ import org.jivesoftware.smackx.findserver.FindServerProvider;
 import org.jivesoftware.smackx.location.LocateManager;
 import org.jivesoftware.smackx.location.LocateProvider;
 import org.jivesoftware.smackx.message.MessageHtmlProvider;
-import org.jivesoftware.smackx.message.MessageManager;
 import org.jivesoftware.smackx.message.MessageRelationProvider;
 import org.jivesoftware.smackx.paid.PaidAccountProvider;
 import org.jivesoftware.smackx.paid.PaidManager;

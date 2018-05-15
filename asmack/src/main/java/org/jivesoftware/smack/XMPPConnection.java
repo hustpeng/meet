@@ -192,6 +192,11 @@ public class XMPPConnection extends Connection {
         return user;
     }
 
+    /**
+     * 获取登录用户的BareJid
+     *
+     * @return
+     */
     public String getBareJid() {
         if (!isAuthenticated()) {
             return null;

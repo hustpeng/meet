@@ -1,7 +1,11 @@
-package org.jivesoftware.smackx.message;
+package com.agmbat.imsdk.asmack;
 
 import android.text.TextUtils;
 
+import com.agmbat.android.utils.UiUtils;
+import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
@@ -13,10 +17,19 @@ import org.jivesoftware.smack.packet.MessageSubType;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmppStringUtils;
+import org.jivesoftware.smackx.message.ChatStateExtension;
+import org.jivesoftware.smackx.message.MessageHtmlExtension;
+import org.jivesoftware.smackx.message.MessageHtmlProvider;
+import org.jivesoftware.smackx.message.MessageListener;
+import org.jivesoftware.smackx.message.MessageObject;
+import org.jivesoftware.smackx.message.MessageObjectStatus;
+import org.jivesoftware.smackx.message.MessageStorage;
 import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MessageManager extends Xepmodule {
@@ -86,9 +99,9 @@ public class MessageManager extends Xepmodule {
             Type messageType = ((Message) packet).getType();
             // the Type.normal msg is filter in VisitorManager.java
             return messageType == Type.chat/*
-                                                    * || messageType ==
-                                                    * Message.Type.normal
-                                                    */;
+             * || messageType ==
+             * Message.Type.normal
+             */;
         }
     };
 
@@ -104,42 +117,50 @@ public class MessageManager extends Xepmodule {
                 return;
             }
 
-            MessageObject messageObject = phareMessageFromPacket(message);
-            if (messageObject != null) {
-                if (TextUtils.isEmpty(messageObject.getBody())) {
-                    PacketExtension extension = message
-                            .getExtension("http://jabber.org/protocol/chatstates");
-                    if (extension != null) {
-                        String elementName = extension.getElementName();
-                        if ("delivered".equals(elementName)) {
-                            MessageObject targetMessage = messageStorage.getMsg(messageObject
-                                    .getMsg_id());
-                            if (targetMessage != null) {
-                                targetMessage.setMsg_status(MessageObjectStatus.UNREAD);
-                                messageStorage.updateMsg(targetMessage);
-                            }
-                        } else if ("read".equals(elementName)) {
-                            MessageObject targetMessage = messageStorage.getMsg(messageObject
-                                    .getMsg_id());
-                            if (targetMessage != null) {
-                                targetMessage.setMsg_status(MessageObjectStatus.READ);
-                                messageStorage.updateMsg(targetMessage);
-                            }
-                        } else if ("composing".equals(elementName)) {
-
-                        }
-                    }
-                    return;
-                }
-
-                String sendMsgState = "delivered";
-                if (willInsertReceivedMsg(messageObject)) {
-                    messageObject.setMsg_status(MessageObjectStatus.READ);
-                    sendMsgState = "read";
-                }
-                messageStorage.insertMsg(messageObject);
-                sendChatStates(messageObject.getMsg_id(), sendMsgState, messageObject.getSenderJid());
+            final MessageObject messageObject = phareMessageFromPacket(message);
+            if (messageObject == null) {
+                return;
             }
+            if (TextUtils.isEmpty(messageObject.getBody())) {
+                PacketExtension extension = message
+                        .getExtension("http://jabber.org/protocol/chatstates");
+                if (extension != null) {
+                    String elementName = extension.getElementName();
+                    if ("delivered".equals(elementName)) {
+                        MessageObject targetMessage = messageStorage.getMsg(messageObject
+                                .getMsg_id());
+                        if (targetMessage != null) {
+                            targetMessage.setMsg_status(MessageObjectStatus.UNREAD);
+                            messageStorage.updateMsg(targetMessage);
+                        }
+                    } else if ("read".equals(elementName)) {
+                        MessageObject targetMessage = messageStorage.getMsg(messageObject
+                                .getMsg_id());
+                        if (targetMessage != null) {
+                            targetMessage.setMsg_status(MessageObjectStatus.READ);
+                            messageStorage.updateMsg(targetMessage);
+                        }
+                    } else if ("composing".equals(elementName)) {
+
+                    }
+                }
+                return;
+            }
+
+            String sendMsgState = "delivered";
+            if (willInsertReceivedMsg(messageObject)) {
+                messageObject.setMsg_status(MessageObjectStatus.READ);
+                sendMsgState = "read";
+            }
+            messageStorage.insertMsg(messageObject);
+            UiUtils.post(new Runnable() {
+                @Override
+                public void run() {
+                    addMessage(messageObject.getSenderJid(), messageObject);
+                    EventBus.getDefault().post(new ReceiveMessageEvent(messageObject));
+                }
+            });
+            sendChatStates(messageObject.getMsg_id(), sendMsgState, messageObject.getSenderJid());
         }
     };
 
@@ -147,18 +168,14 @@ public class MessageManager extends Xepmodule {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             return;
         }
-
         if (TextUtils.isEmpty(msgId) || TextUtils.isEmpty(toJid)) {
             return;
         }
-
         Message message = new Message(toJid, Type.chat);
         message.setPacketID(msgId);
         message.setFrom(xmppConnection.getUser());
-
         ChatStateExtension chatStateExtension = new ChatStateExtension(state);
         message.addExtension(chatStateExtension);
-
         xmppConnection.sendPacket(message);
     }
 
@@ -167,7 +184,7 @@ public class MessageManager extends Xepmodule {
         messageObject.setMsg_id(message.getPacketID());
         messageObject.setSenderJid(XmppStringUtils.parseBareAddress(message.getFrom()));
         messageObject.setReceiverJid(XmppStringUtils.parseBareAddress(message.getTo()));
-        messageObject.setMsg_type(message.getSubType());
+        messageObject.setMsgType(message.getSubType());
         messageObject.setBody(message.getBody());
         Date date = message.getDate();
         if (date == null) {
@@ -176,8 +193,8 @@ public class MessageManager extends Xepmodule {
             messageObject.setDate(date.getTime());
         }
         messageObject.setSenderNickName(message.getSenderNickName());
-        if (messageObject.getMsg_type() == MessageSubType.image
-                || messageObject.getMsg_type() == MessageSubType.geoloc) {
+        if (messageObject.getMsgType() == MessageSubType.image
+                || messageObject.getMsgType() == MessageSubType.geoloc) {
             PacketExtension extension = message.getExtension(MessageHtmlProvider.elementName(),
                     MessageHtmlProvider.namespace());
             if (extension != null) {
@@ -217,9 +234,8 @@ public class MessageManager extends Xepmodule {
         message.setFrom(xmppConnection.getUser());
         xmppConnection.sendPacket(message);
         MessageObject messageObject = phareMessageFromPacket(message);
-        if (messageObject != null) {
-            messageStorage.insertMsg(messageObject);
-        }
+        messageStorage.insertMsg(messageObject);
+        addMessage(toJidString, messageObject);
     }
 
     public void setMessageRead(String msg_id) {
@@ -254,7 +270,7 @@ public class MessageManager extends Xepmodule {
         MessageObject messageObject = new MessageObject();
         messageObject.setDate(System.currentTimeMillis());
         messageObject.setMsg_id(msgid);
-        messageObject.setMsg_type(type);
+        messageObject.setMsgType(type);
         messageObject.setMsg_status(status);
         messageObject.setReceiverJid(toJidString);
         messageObject.setSenderJid(xmppConnection.getBareJid());
@@ -276,7 +292,7 @@ public class MessageManager extends Xepmodule {
         MessageObject messageObject = new MessageObject();
         messageObject.setDate(System.currentTimeMillis());
         messageObject.setMsg_id(msgid);
-        messageObject.setMsg_type(MessageSubType.image);
+        messageObject.setMsgType(MessageSubType.image);
         messageObject.setMsg_status(MessageObjectStatus.UPLOADING);
         messageObject.setReceiverJid(toJidString);
         messageObject.setSenderJid(xmppConnection.getBareJid());
@@ -299,7 +315,6 @@ public class MessageManager extends Xepmodule {
         if (TextUtils.isEmpty(msgId)) {
             return;
         }
-
         MessageObject messageObject = messageStorage.getMsg(msgId);
         if (messageObject != null) {
             MessageHtmlExtension imageExtension = new MessageHtmlExtension(MessageSubType.image, src, thumb);
@@ -333,7 +348,7 @@ public class MessageManager extends Xepmodule {
         Message message = new Message();
         message.setType(Type.chat);
         message.setBody(messageObject.getBody());
-        message.setSubType(messageObject.getMsg_type());
+        message.setSubType(messageObject.getMsgType());
         message.setTo(messageObject.getReceiverJid());
         message.setSenderNickName(messageObject.getSenderNickName());
         message.setFrom(xmppConnection.getUser());
@@ -359,7 +374,7 @@ public class MessageManager extends Xepmodule {
         Message message = new Message();
         message.setType(Type.chat);
         message.setBody(messageObject.getBody());
-        message.setSubType(messageObject.getMsg_type());
+        message.setSubType(messageObject.getMsgType());
         message.setTo(messageObject.getReceiverJid());
         message.setSenderNickName(messageObject.getSenderNickName());
         message.setFrom(xmppConnection.getUser());
@@ -397,5 +412,43 @@ public class MessageManager extends Xepmodule {
     public void correctMessagesStatus() {
         messageStorage.correctMessagesStatus();
     }
+
+    public List<MessageObject> getAllMessage(String jid) {
+        return messageStorage.getAllMessage(jid);
+    }
+
+    /**
+     * 查询与指定人对话的聊天记录
+     *
+     * @param jid
+     * @return
+     */
+    public List<MessageObject> getMessageList(String jid) {
+        List<MessageObject> list = mMessageMap.get(jid);
+        if (list == null) {
+            String user = XmppStringUtils.parseBareAddress(xmppConnection.getUser());
+            list = messageStorage.getMessages(user, jid);
+            mMessageMap.put(jid, list);
+        }
+        return list;
+    }
+
+    /**
+     * 添加消息
+     *
+     * @param jid
+     * @param messageObject
+     */
+    private void addMessage(String jid, MessageObject messageObject) {
+        List<MessageObject> list = mMessageMap.get(jid);
+        if (list == null) {
+            String user = XmppStringUtils.parseBareAddress(xmppConnection.getUser());
+            list = messageStorage.getMessages(user, jid);
+            mMessageMap.put(jid, list);
+        }
+        list.add(messageObject);
+    }
+
+    private Map<String, List<MessageObject>> mMessageMap = new HashMap<>();
 
 }

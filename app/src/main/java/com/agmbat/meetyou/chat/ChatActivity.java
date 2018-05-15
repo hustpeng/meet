@@ -6,21 +6,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.agmbat.imsdk.asmack.XMPPManager;
-import com.agmbat.imsdk.data.ChatMessage;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.data.body.Body;
 import com.agmbat.imsdk.data.body.TextBody;
-import com.agmbat.imsdk.db.MeetDatabase;
+import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.imsdk.view.InputView;
 import com.agmbat.imsdk.view.OnSendMessageListener;
 import com.agmbat.meetyou.R;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
 
-import java.util.ArrayList;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smackx.message.MessageObject;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,7 +55,7 @@ public class ChatActivity extends Activity {
      * 消息列表
      */
     @BindView(R.id.message_list)
-    PullToRefreshListView mListView;
+    PullToRefreshListView mPtrView;
 
     /**
      * 填充消息列表的adapter
@@ -78,6 +82,13 @@ public class ChatActivity extends Activity {
         String jid = getIntent().getStringExtra(KEY_CONTACT);
         mParticipant = UserManager.getInstance().getContactFromCache(jid);
         setupViews();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -91,6 +102,14 @@ public class ChatActivity extends Activity {
         finish();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ReceiveMessageEvent event) {
+        if (event.getMessageObject().getSenderJid().equals(mParticipant.getBareJid())) {
+            mAdapter.notifyDataSetChanged();
+            autoScrollToLast();
+        }
+    }
+
     private void setupViews() {
         mNicknameView.setText(mParticipant.getNickName());
         mInputView.setOnSendMessageListener(new OnSendMessageListener() {
@@ -99,10 +118,10 @@ public class ChatActivity extends Activity {
                 sendTextMsg(message);
             }
         });
-        List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
-        chatMessages = MeetDatabase.getInstance().getMessage(mParticipant);
+        List<MessageObject> chatMessages = XMPPManager.getInstance().getMessageManager().getMessageList(mParticipant.getBareJid());
         mAdapter = new MessageListAdapter(this, chatMessages);
-        mListView.setAdapter(mAdapter);
+        mPtrView.setAdapter(mAdapter);
+        autoScrollToLast();
     }
 
     private void sendTextMsg(Body message) {
@@ -111,7 +130,19 @@ public class ChatActivity extends Activity {
         if (!TextUtils.isEmpty(text)) {
             XMPPManager.getInstance().getMessageManager()
                     .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), text);
+            mAdapter.notifyDataSetChanged();
+            autoScrollToLast();
         }
+    }
+
+    private void autoScrollToLast() {
+        mPtrView.post(new Runnable() {
+            @Override
+            public void run() {
+                ListView lv = mPtrView.getRefreshableView();
+                lv.setSelection(lv.getAdapter().getCount() - 1);
+            }
+        });
     }
 
 }

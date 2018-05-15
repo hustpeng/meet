@@ -87,6 +87,10 @@ public class LoginUser {
         return mVCardObject.getUserName();
     }
 
+    public String getJid() {
+        return mVCardObject.getJid();
+    }
+
     public String getStatus() {
         return mVCardExtendObject.getStatus();
     }

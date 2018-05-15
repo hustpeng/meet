@@ -4,8 +4,11 @@ import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ChatMessage;
+import com.agmbat.imsdk.user.UserManager;
 
+import org.jivesoftware.smackx.message.MessageObject;
 
 public class MessageView extends FrameLayout {
 
@@ -20,16 +23,19 @@ public class MessageView extends FrameLayout {
         addView(mToView);
     }
 
-    public void update(ChatMessage msg) {
-        if (msg.getMsgDirection() == ChatMessage.DIRECTION_TO_OTHERS) {
+    public void update(MessageObject msg) {
+        if (isToOthers(msg)) {
             mFromView.setVisibility(View.GONE);
             mToView.setVisibility(View.VISIBLE);
             mToView.update(msg);
-        } else if (msg.getMsgDirection() == ChatMessage.DIRECTION_FROM_OTHERS) {
+        } else {
             mToView.setVisibility(View.GONE);
             mFromView.setVisibility(View.VISIBLE);
             mFromView.update(msg);
         }
     }
 
+    private static boolean isToOthers(MessageObject messageObject) {
+        return messageObject.getSenderJid().equals(UserManager.getInstance().getLoginUser().getJid());
+    }
 }
