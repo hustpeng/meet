@@ -56,10 +56,6 @@ public class RecentChatAdapter extends ArrayAdapter<MessageObject> {
 //        return exist;
 //    }
 
-    public void addRecentChat(MessageObject recentChat) {
-        add(recentChat);
-        notifyDataSetChanged();
-    }
 
 //    public void sort() {
 //        super.sort(new RecentChat.RecentChatComparator());

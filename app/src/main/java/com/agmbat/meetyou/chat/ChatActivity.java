@@ -15,6 +15,7 @@ import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.data.body.Body;
 import com.agmbat.imsdk.data.body.TextBody;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
+import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.imsdk.view.InputView;
 import com.agmbat.imsdk.view.OnSendMessageListener;
@@ -130,10 +131,13 @@ public class ChatActivity extends Activity {
         TextBody textBody = (TextBody) message;
         String text = textBody.getContent();
         if (!TextUtils.isEmpty(text)) {
-            XMPPManager.getInstance().getMessageManager()
+            MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
                     .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), text);
             mAdapter.notifyDataSetChanged();
             autoScrollToLast();
+            if (messageObject != null) {
+                EventBus.getDefault().post(new SendMessageEvent(messageObject));
+            }
         }
     }
 

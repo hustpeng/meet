@@ -18,8 +18,8 @@ import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.data.RecentChat;
-import com.agmbat.imsdk.db.MeetDatabase;
+import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
+import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
@@ -32,7 +32,9 @@ import com.agmbat.swipemenulist.SwipeMenuCreator;
 import com.agmbat.swipemenulist.SwipeMenuItem;
 import com.agmbat.swipemenulist.SwipeMenuListView;
 
-import org.jivesoftware.smack.util.XmppStringUtils;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smackx.message.MessageObject;
 
 import java.util.List;
@@ -62,7 +64,7 @@ public class MsgFragment extends Fragment {
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
 
-    private RecentChatAdapter mRecentChatAdapter;
+    private RecentChatAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,7 +75,7 @@ public class MsgFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-
+        EventBus.getDefault().register(this);
         // step 1. create a MenuCreator
         SwipeMenuCreator creator = new SwipeMenuCreator() {
 
@@ -147,11 +149,12 @@ public class MsgFragment extends Fragment {
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @OnItemClick(R.id.recent_chat_list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        MessageObject recentChat = mRecentChatAdapter.getItem(position);
+        MessageObject recentChat = mAdapter.getItem(position);
         ContactInfo contactInfo = MessageManager.getTalkContactInfo(recentChat);
         if (contactInfo != null) {
             ChatActivity.openChat(getActivity(), contactInfo);
@@ -201,6 +204,43 @@ public class MsgFragment extends Fragment {
         popupMenu.show(view);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ReceiveMessageEvent event) {
+        MessageObject messageObject = event.getMessageObject();
+        updateRecentMsgList(messageObject);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(SendMessageEvent event) {
+        MessageObject messageObject = event.getMessageObject();
+        updateRecentMsgList(messageObject);
+    }
+
+    private void updateRecentMsgList(MessageObject messageObject) {
+        MessageObject existTalkMessage = findTalkMessage(MessageManager.getTalkJid(messageObject));
+        if (existTalkMessage != null) {
+            mAdapter.remove(existTalkMessage);
+        }
+        mAdapter.insert(messageObject, 0);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 查找已存的最近对话
+     *
+     * @param jid
+     * @return
+     */
+    private MessageObject findTalkMessage(String jid) {
+        for (int i = 0; i < mAdapter.getCount(); i++) {
+            MessageObject exist = mAdapter.getItem(i);
+            if (jid.equals(MessageManager.getTalkJid(exist))) {
+                return exist;
+            }
+        }
+        return null;
+    }
+
     private void setState(int state) {
         if (state == STATE_LOADING) {
             mProgressBar.setVisibility(View.VISIBLE);
@@ -218,18 +258,17 @@ public class MsgFragment extends Fragment {
         }
     }
 
-
     private void fillListView(List<MessageObject> recentChatList) {
-        mRecentChatAdapter = new RecentChatAdapter(getActivity(), recentChatList);
-        mListView.setAdapter(mRecentChatAdapter);
-//        mRecentChatAdapter.sort();
+        mAdapter = new RecentChatAdapter(getActivity(), recentChatList);
+        mListView.setAdapter(mAdapter);
+//        mAdapter.sort();
     }
 
     private class InitRecentChatTask extends AsyncTask<Void, Void, List<MessageObject>> {
 
         @Override
         protected void onPreExecute() {
-            if (null == mRecentChatAdapter || mRecentChatAdapter.getCount() == 0) {
+            if (null == mAdapter || mAdapter.getCount() == 0) {
                 setState(STATE_LOADING);
             }
         }
@@ -249,7 +288,6 @@ public class MsgFragment extends Fragment {
                 setState(STATE_NO_DATA);
             }
         }
-
     }
 
 }

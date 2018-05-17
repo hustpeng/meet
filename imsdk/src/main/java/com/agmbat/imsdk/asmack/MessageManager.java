@@ -220,12 +220,12 @@ public class MessageManager extends Xepmodule {
      * @param fromNickName
      * @param text
      */
-    public void sendTextMessage(String toJidString, String fromNickName, String text) {
+    public MessageObject sendTextMessage(String toJidString, String fromNickName, String text) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
-            return;
+            return null;
         }
         if (TextUtils.isEmpty(text) || TextUtils.isEmpty(toJidString)) {
-            return;
+            return null;
         }
         Message message = new Message();
         message.setType(Type.chat);
@@ -238,6 +238,7 @@ public class MessageManager extends Xepmodule {
         MessageObject messageObject = phareMessageFromPacket(message);
         messageStorage.insertMsg(messageObject);
         addMessage(toJidString, messageObject);
+        return messageObject;
     }
 
     public void setMessageRead(String msg_id) {
@@ -471,13 +472,37 @@ public class MessageManager extends Xepmodule {
      * @return
      */
     public static ContactInfo getTalkContactInfo(MessageObject messageObject) {
-        ContactInfo contactInfo = null;
+        String jid = getTalkJid(messageObject);
+        return ContactManager.getContactInfo(jid);
+    }
+
+    /**
+     * 获取对话者的jid
+     *
+     * @param messageObject
+     * @return
+     */
+    public static String getTalkJid(MessageObject messageObject) {
         String jid = null;
         if (isToOthers(messageObject)) {
             jid = messageObject.getReceiverJid();
         } else {
             jid = messageObject.getSenderJid();
         }
-        return ContactManager.getContactInfo(jid);
+        return jid;
+    }
+
+
+    /**
+     * 判断两个消息是否为同一个对话者
+     *
+     * @param m1
+     * @param m2
+     * @return
+     */
+    public static boolean isSameTalk(MessageObject m1, MessageObject m2) {
+        String talk1 = getTalkJid(m1);
+        String talk2 = getTalkJid(m2);
+        return talk1.equals(talk2);
     }
 }
