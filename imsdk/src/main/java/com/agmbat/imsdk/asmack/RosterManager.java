@@ -7,7 +7,7 @@ import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.db.ContactTableManager;
+import com.agmbat.imsdk.db.ContactDBCache;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribedEvent;
@@ -388,34 +388,13 @@ public class RosterManager {
         mRoster.sendSubscribed(contactInfo.getBareJid());
     }
 
-    /**
-     * 加载缓存中联系人列表
-     *
-     * @param l
-     */
-    public void loadContactGroup(final OnLoadContactGroupListener l) {
-        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, List<ContactGroup>>() {
-            @Override
-            protected List<ContactGroup> doInBackground(Void... voids) {
-                return ContactTableManager.getGroupList();
-            }
 
-            @Override
-            protected void onPostExecute(List<ContactGroup> result) {
-                super.onPostExecute(result);
-                if (l != null) {
-                    l.onLoad(result);
-                }
-
-            }
-        });
-    }
 
 //    /**
 //     * @param contactInfo
 //     */
 //    public void saveOrUpdateContact(ContactInfo contactInfo) {
-//        ContactTableManager.saveOrUpdateContact(contactInfo);
+//        ContactDBCache.saveOrUpdateContact(contactInfo);
 //        ContactInfo exist = findExistContactInfo(contactInfo.getBareJid());
 //        if (exist != null) {
 //            exist.apply(contactInfo);
@@ -570,6 +549,8 @@ public class RosterManager {
                     UiUtils.runOnUIThread(new Runnable() {
                         @Override
                         public void run() {
+                            ContactManager.addContactInfo(contactInfo);
+
                             UserManager.getInstance().addFriendRequest(contactInfo);
                             EventBus.getDefault().post(new PresenceSubscribeEvent(contactInfo));
                         }
@@ -592,11 +573,14 @@ public class RosterManager {
                     if (success) {
                         // 保存到数据库缓存中
                         contactInfo.setGroupName(mFriendGroup.getGroupName());
-                        ContactTableManager.saveOrUpdateContact(contactInfo);
+                        ContactDBCache.saveOrUpdateContact(contactInfo);
                     }
                     UiUtils.runOnUIThread(new Runnable() {
                         @Override
                         public void run() {
+                            // 添加到内存中
+                            ContactManager.addContactInfo(contactInfo);
+
                             // 添加对方为好友
                             if (success) {
                                 mFriendGroup.addContact(contactInfo);
@@ -672,5 +656,7 @@ public class RosterManager {
 //        contact.setAccount(mLoginUserName);
         return contact;
     }
+
+
 }
 

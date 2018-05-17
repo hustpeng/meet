@@ -47,7 +47,6 @@ public class UserManager implements IUserManager {
     private UserManager() {
         XMPPManager.getInstance().getRosterManager();
 
-
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
 
             @Override

@@ -7,7 +7,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
+import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.data.ChatMessage;
+import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.data.RecentChat;
 import com.agmbat.meetyou.R;
 import com.agmbat.time.TimeUtils;
@@ -42,13 +44,20 @@ public class RecentMsgView extends LinearLayout {
         ButterKnife.bind(this, this);
     }
 
-    public void update(MessageObject recentChat) {
-//        mNickNameView.setText(recentChat.getReceiverJid().getNickName());
+    public void update(MessageObject messageObject) {
+        ContactInfo contactInfo = MessageManager.getTalkContactInfo(messageObject);
+        if (contactInfo != null) {
+            mNickNameView.setText(contactInfo.getNickName());
+            mMessageView.setVisibility(View.VISIBLE);
+            mLastMsgTimeView.setVisibility(View.VISIBLE);
+            ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+        }
+//
 //        ChatMessage msg = recentChat.getLastChatMessage();
 //        if (msg != null) {
-        mMessageView.setVisibility(View.VISIBLE);
-        setLastMessageBody(recentChat);
-        mLastMsgTimeView.setVisibility(View.VISIBLE);
+
+        setLastMessageBody(messageObject);
+
 //        mLastMsgTimeView.setText(TimeUtils.formatTime(msg.getTimestamp()));
 //        } else {
 //            mMessageView.setVisibility(View.GONE);
@@ -61,19 +70,6 @@ public class RecentMsgView extends LinearLayout {
 //            mUnreadCountView.setText(String.valueOf(unreadCount));
 //        } else {
 //            mUnreadCountView.setVisibility(View.GONE);
-//        }
-//        String uri = Scheme.wrapUri("avatar", recentChat.getContact().getAvatarId());
-//        String uri = "http://img1.imgtn.bdimg.com/it/u=1669956509,228298322&fm=27&gp=0.jpg";
-        String uri = "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3109469113,4179252995&fm=27&gp=0.jpg";
-        ImageManager.displayImage(uri, mAvatarView, ImageManager.getCircleOptions());
-
-//        if (ConnectionHelper.getAvatarManager().isAvatarCached(
-//                recentChat.getContact().getAvatarId())) {
-//            Bitmap avatar = ConnectionHelper.getAvatarManager().getAvatarBitmap(
-//                    recentChat.getContact().getAvatarId());
-//            mAvatarView.setImageBitmap(avatar);
-//        } else {
-//            mAvatarView.setImageResource(R.drawable.default_avatar);
 //        }
     }
 

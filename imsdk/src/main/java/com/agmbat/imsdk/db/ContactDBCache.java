@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * 联系人表管理
  */
-public class ContactTableManager {
+public class ContactDBCache {
 
     /**
      * 保存或更新联系人信息

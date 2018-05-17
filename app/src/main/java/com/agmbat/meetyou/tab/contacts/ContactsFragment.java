@@ -17,9 +17,11 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
 
 import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.imsdk.asmack.ContactManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.imevent.ContactGroupLoadEvent;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.user.OnLoadContactGroupListener;
@@ -42,7 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ContactsFragment extends Fragment implements OnGroupClickListener,
-        OnChildClickListener, OnCreateContextMenuListener, OnLoadContactGroupListener {
+        OnChildClickListener, OnCreateContextMenuListener {
 
     private static final String TAG = ContactsFragment.class.getSimpleName();
 
@@ -101,7 +103,8 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         mListView.setAdapter(mFriendsAdapter);
 
         setState(STATE_LOADING);
-        XMPPManager.getInstance().getRosterManager().loadContactGroup(this);
+
+        ContactManager.loadContactGroup();
     }
 
     @Override
@@ -125,6 +128,17 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     public void onEvent(PresenceSubscribeEvent event) {
         ContactInfo contactInfo = event.getContactInfo();
         ToastUtil.showToastLong("收到添加好友请求" + contactInfo.getBareJid());
+    }
+
+    /**
+     * 收到list group加载完成
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ContactGroupLoadEvent event) {
+        fillData(event.getDataList());
+        setState(STATE_LOAD_FINISH);
     }
 
     /**
@@ -235,11 +249,6 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     private void removeRecentlyContact(ContactInfo contactInfo) {
     }
 
-    @Override
-    public void onLoad(List<ContactGroup> list) {
-        fillData(list);
-        setState(STATE_LOAD_FINISH);
-    }
 
     private void fillData(List<ContactGroup> groups) {
         mFriendsAdapter.clear();

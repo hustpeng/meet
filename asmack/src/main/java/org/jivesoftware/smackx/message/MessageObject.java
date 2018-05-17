@@ -52,9 +52,9 @@ public class MessageObject {
      */
     private String body;
     private boolean outgoing;
-    private String msg_id;
-    private MessageSubType msg_type;
-    private MessageObjectStatus msg_status;
+    private String msgId;
+    private MessageSubType msgType;
+    private MessageObjectStatus msgStatus;
     private Long date;
     private String html;
 
@@ -69,28 +69,28 @@ public class MessageObject {
         this.senderJid = senderJid;
     }
 
-    public String getMsg_id() {
-        return msg_id;
+    public String getMsgId() {
+        return msgId;
     }
 
-    public void setMsg_id(String msg_id) {
-        this.msg_id = msg_id;
+    public void setMsgId(String msgId) {
+        this.msgId = msgId;
     }
 
     public MessageSubType getMsgType() {
-        return msg_type;
+        return msgType;
     }
 
     public void setMsgType(MessageSubType msg_type) {
-        this.msg_type = msg_type;
+        this.msgType = msg_type;
     }
 
-    public MessageObjectStatus getMsg_status() {
-        return msg_status;
+    public MessageObjectStatus getMsgStatus() {
+        return msgStatus;
     }
 
-    public void setMsg_status(MessageObjectStatus msg_status) {
-        this.msg_status = msg_status;
+    public void setMsgStatus(MessageObjectStatus msgStatus) {
+        this.msgStatus = msgStatus;
     }
 
     public long getDate() {
@@ -172,4 +172,6 @@ public class MessageObject {
         }
         return null;
     }
+
+
 }

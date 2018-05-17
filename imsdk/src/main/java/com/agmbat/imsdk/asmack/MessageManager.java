@@ -3,7 +3,9 @@ package com.agmbat.imsdk.asmack;
 import android.text.TextUtils;
 
 import com.agmbat.android.utils.UiUtils;
+import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
+import com.agmbat.imsdk.user.UserManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jivesoftware.smack.Connection;
@@ -128,16 +130,16 @@ public class MessageManager extends Xepmodule {
                     String elementName = extension.getElementName();
                     if ("delivered".equals(elementName)) {
                         MessageObject targetMessage = messageStorage.getMsg(messageObject
-                                .getMsg_id());
+                                .getMsgId());
                         if (targetMessage != null) {
-                            targetMessage.setMsg_status(MessageObjectStatus.UNREAD);
+                            targetMessage.setMsgStatus(MessageObjectStatus.UNREAD);
                             messageStorage.updateMsg(targetMessage);
                         }
                     } else if ("read".equals(elementName)) {
                         MessageObject targetMessage = messageStorage.getMsg(messageObject
-                                .getMsg_id());
+                                .getMsgId());
                         if (targetMessage != null) {
-                            targetMessage.setMsg_status(MessageObjectStatus.READ);
+                            targetMessage.setMsgStatus(MessageObjectStatus.READ);
                             messageStorage.updateMsg(targetMessage);
                         }
                     } else if ("composing".equals(elementName)) {
@@ -149,7 +151,7 @@ public class MessageManager extends Xepmodule {
 
             String sendMsgState = "delivered";
             if (willInsertReceivedMsg(messageObject)) {
-                messageObject.setMsg_status(MessageObjectStatus.READ);
+                messageObject.setMsgStatus(MessageObjectStatus.READ);
                 sendMsgState = "read";
             }
             messageStorage.insertMsg(messageObject);
@@ -160,7 +162,7 @@ public class MessageManager extends Xepmodule {
                     EventBus.getDefault().post(new ReceiveMessageEvent(messageObject));
                 }
             });
-            sendChatStates(messageObject.getMsg_id(), sendMsgState, messageObject.getSenderJid());
+            sendChatStates(messageObject.getMsgId(), sendMsgState, messageObject.getSenderJid());
         }
     };
 
@@ -181,7 +183,7 @@ public class MessageManager extends Xepmodule {
 
     private MessageObject phareMessageFromPacket(Message message) {
         MessageObject messageObject = new MessageObject();
-        messageObject.setMsg_id(message.getPacketID());
+        messageObject.setMsgId(message.getPacketID());
         messageObject.setSenderJid(XmppStringUtils.parseBareAddress(message.getFrom()));
         messageObject.setReceiverJid(XmppStringUtils.parseBareAddress(message.getTo()));
         messageObject.setMsgType(message.getSubType());
@@ -203,10 +205,10 @@ public class MessageManager extends Xepmodule {
         }
         if (xmppConnection.getBareJid().equals(messageObject.getSenderJid())) {
             messageObject.setOutgoing(true);
-            messageObject.setMsg_status(MessageObjectStatus.SEND);
+            messageObject.setMsgStatus(MessageObjectStatus.SEND);
         } else {
             messageObject.setOutgoing(false);
-            messageObject.setMsg_status(MessageObjectStatus.UNREAD);
+            messageObject.setMsgStatus(MessageObjectStatus.UNREAD);
         }
         return messageObject;
     }
@@ -243,10 +245,10 @@ public class MessageManager extends Xepmodule {
             return;
         }
         MessageObject targetMessage = messageStorage.getMsg(msg_id);
-        if ((targetMessage != null) && (targetMessage.getMsg_status() != MessageObjectStatus.READ)) {
-            targetMessage.setMsg_status(MessageObjectStatus.READ);
+        if ((targetMessage != null) && (targetMessage.getMsgStatus() != MessageObjectStatus.READ)) {
+            targetMessage.setMsgStatus(MessageObjectStatus.READ);
             messageStorage.updateMsg(targetMessage);
-            sendChatStates(targetMessage.getMsg_id(), "read", targetMessage.getSenderJid());
+            sendChatStates(targetMessage.getMsgId(), "read", targetMessage.getSenderJid());
         }
     }
 
@@ -269,9 +271,9 @@ public class MessageManager extends Xepmodule {
 
         MessageObject messageObject = new MessageObject();
         messageObject.setDate(System.currentTimeMillis());
-        messageObject.setMsg_id(msgid);
+        messageObject.setMsgId(msgid);
         messageObject.setMsgType(type);
-        messageObject.setMsg_status(status);
+        messageObject.setMsgStatus(status);
         messageObject.setReceiverJid(toJidString);
         messageObject.setSenderJid(xmppConnection.getBareJid());
         messageObject.setSenderNickName(fromNickName);
@@ -291,9 +293,9 @@ public class MessageManager extends Xepmodule {
         String msgid = Packet.nextID();
         MessageObject messageObject = new MessageObject();
         messageObject.setDate(System.currentTimeMillis());
-        messageObject.setMsg_id(msgid);
+        messageObject.setMsgId(msgid);
         messageObject.setMsgType(MessageSubType.image);
-        messageObject.setMsg_status(MessageObjectStatus.UPLOADING);
+        messageObject.setMsgStatus(MessageObjectStatus.UPLOADING);
         messageObject.setReceiverJid(toJidString);
         messageObject.setSenderJid(xmppConnection.getBareJid());
         messageObject.setSenderNickName(fromNickName);
@@ -334,7 +336,7 @@ public class MessageManager extends Xepmodule {
 
         MessageObject messageObject = messageStorage.getMsg(msgId);
         if (messageObject != null) {
-            messageObject.setMsg_status(status);
+            messageObject.setMsgStatus(status);
             messageStorage.updateMsg(messageObject);
         }
     }
@@ -359,7 +361,7 @@ public class MessageManager extends Xepmodule {
         xmppConnection.sendPacket(message);
 
         messageObject.setBody(lat + "," + lon);
-        messageObject.setMsg_status(MessageObjectStatus.SEND);
+        messageObject.setMsgStatus(MessageObjectStatus.SEND);
         messageObject.setHtml(locationExtension.toString());
         messageObject.setDate(System.currentTimeMillis());
         messageStorage.updateMsg(messageObject);
@@ -385,7 +387,7 @@ public class MessageManager extends Xepmodule {
         xmppConnection.sendPacket(message);
 
         messageObject.setBody(thumb);
-        messageObject.setMsg_status(MessageObjectStatus.SEND);
+        messageObject.setMsgStatus(MessageObjectStatus.SEND);
         messageObject.setHtml(imageExtension.toString());
         messageObject.setDate(System.currentTimeMillis());
         messageStorage.updateMsg(messageObject);
@@ -451,4 +453,31 @@ public class MessageManager extends Xepmodule {
 
     private Map<String, List<MessageObject>> mMessageMap = new HashMap<>();
 
+    /**
+     * 判断消息是否是当前用户发送的
+     *
+     * @param messageObject
+     * @return
+     */
+    public static boolean isToOthers(MessageObject messageObject) {
+        String loginUserJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        return messageObject.getSenderJid().equals(loginUserJid);
+    }
+
+    /**
+     * 获取对话的人
+     *
+     * @param messageObject
+     * @return
+     */
+    public static ContactInfo getTalkContactInfo(MessageObject messageObject) {
+        ContactInfo contactInfo = null;
+        String jid = null;
+        if (isToOthers(messageObject)) {
+            jid = messageObject.getReceiverJid();
+        } else {
+            jid = messageObject.getSenderJid();
+        }
+        return ContactManager.getContactInfo(jid);
+    }
 }

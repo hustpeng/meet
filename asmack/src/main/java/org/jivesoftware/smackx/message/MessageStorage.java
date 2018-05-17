@@ -92,7 +92,7 @@ public class MessageStorage {
         if (newMsg != null) {
             update(newMsg, Columns.MSG_ID + "=?",
                     new String[]{
-                            newMsg.getMsg_id()
+                            newMsg.getMsgId()
                     });
         }
     }
@@ -241,16 +241,13 @@ public class MessageStorage {
         values.put(Columns.MSG_BODY, obj.getBody());
         values.put(Columns.MSG_HTML, obj.getHtml());
         values.put(Columns.MSG_IS_OUTGOING, obj.isOutgoing());
-        values.put(Columns.MSG_ID, obj.getMsg_id());
+        values.put(Columns.MSG_ID, obj.getMsgId());
         values.put(Columns.MSG_TYPE, obj.getMsgType().ordinal());
-        values.put(Columns.MSG_STATUS, obj.getMsg_status().ordinal());
+        values.put(Columns.MSG_STATUS, obj.getMsgStatus().ordinal());
         values.put(Columns.MSG_DATE, obj.getDate());
         return values;
     }
 
-
-    ///
-    //////
     // MessageFragment data
     public List<MessageObject> getAllMessage(String myJid) {
         List<MessageObject> senderArray = getSenderMessageObjects(myJid);
@@ -353,7 +350,7 @@ public class MessageStorage {
                 }, null, null, Columns.MSG_DATE + " ASC");
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                MessageObject obj = new MessageObject();
+                MessageObject obj = cursorToMessage(cursor);
                 resultArray.add(obj);
             }
             cursor.close();
@@ -396,9 +393,9 @@ public class MessageStorage {
         obj.setReceiverJid(cursor.getString(sMessageIndex.receiverJidIndex));
         obj.setSenderNickName(cursor.getString(sMessageIndex.senderNameIndex));
         obj.setBody(cursor.getString(sMessageIndex.bodyIndex));
-        obj.setMsg_id(cursor.getString(sMessageIndex.msgIdIndex));
+        obj.setMsgId(cursor.getString(sMessageIndex.msgIdIndex));
         obj.setMsgType(MessageSubType.values()[cursor.getInt(sMessageIndex.msgTypeIndex)]);
-        obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(sMessageIndex.msgStatusIndex)]);
+        obj.setMsgStatus(MessageObjectStatus.values()[cursor.getInt(sMessageIndex.msgStatusIndex)]);
         obj.setDate(cursor.getLong(sMessageIndex.dateIndex));
         obj.setHtml(cursor.getString(sMessageIndex.htmlIndex));
         if (cursor.getInt(sMessageIndex.outgoingIndex) != 0) {
@@ -433,7 +430,6 @@ public class MessageStorage {
             msgStatusIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_STATUS);
             dateIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_DATE);
             outgoingIndex = cursor.getColumnIndex(Columns.MSG_IS_OUTGOING);
-
         }
 
     }

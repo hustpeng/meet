@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.data.body.Body;
@@ -77,6 +78,7 @@ public class ChatActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         String jid = getIntent().getStringExtra(KEY_CONTACT);

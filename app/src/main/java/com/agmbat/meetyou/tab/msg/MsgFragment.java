@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.agmbat.android.AppResources;
+import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.data.RecentChat;
@@ -151,8 +152,10 @@ public class MsgFragment extends Fragment {
     @OnItemClick(R.id.recent_chat_list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         MessageObject recentChat = mRecentChatAdapter.getItem(position);
-//        ContactInfo contactInfo = recentChat.getContact();
-//        ChatActivity.openChat(getActivity(), contactInfo);
+        ContactInfo contactInfo = MessageManager.getTalkContactInfo(recentChat);
+        if (contactInfo != null) {
+            ChatActivity.openChat(getActivity(), contactInfo);
+        }
     }
 
     @OnClick(R.id.title_btn_add)

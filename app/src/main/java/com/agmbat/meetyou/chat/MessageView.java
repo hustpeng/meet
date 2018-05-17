@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ChatMessage;
 import com.agmbat.imsdk.user.UserManager;
@@ -24,7 +25,7 @@ public class MessageView extends FrameLayout {
     }
 
     public void update(MessageObject msg) {
-        if (isToOthers(msg)) {
+        if (MessageManager.isToOthers(msg)) {
             mFromView.setVisibility(View.GONE);
             mToView.setVisibility(View.VISIBLE);
             mToView.update(msg);
@@ -35,7 +36,4 @@ public class MessageView extends FrameLayout {
         }
     }
 
-    private static boolean isToOthers(MessageObject messageObject) {
-        return messageObject.getSenderJid().equals(UserManager.getInstance().getLoginUser().getJid());
-    }
 }
