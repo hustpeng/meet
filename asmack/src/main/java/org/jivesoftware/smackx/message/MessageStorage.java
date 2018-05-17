@@ -118,49 +118,18 @@ public class MessageStorage {
         }
     }
 
-    public ArrayList<MessageObject> query(String selection, String[] selectionArgs, String sortOrder) {
+    private ArrayList<MessageObject> query(String selection, String[] selectionArgs, String sortOrder) {
         ArrayList<MessageObject> array = new ArrayList<MessageObject>();
-
         Cursor cursor = null;
         try {
-
-
             SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
             qb.setTables(getTableName());
             SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-
             cursor = qb.query(db, null, selection, selectionArgs, null, null, sortOrder);
-
-            final int senderJidIndex = cursor.getColumnIndex(Columns.MSG_SENDER_JID);
-            final int receiverJidIndex = cursor.getColumnIndex(Columns.MSG_RECEIVER_JID);
-            final int senderNameIndex = cursor.getColumnIndex(Columns.MSG_SENDER_NAME);
-            final int bodyIndex = cursor.getColumnIndex(Columns.MSG_BODY);
-            final int htmlIndex = cursor.getColumnIndex(Columns.MSG_HTML);
-            final int outgoingIndex = cursor.getColumnIndex(Columns.MSG_IS_OUTGOING);
-            final int msgIdIndex = cursor.getColumnIndex(Columns.MSG_ID);
-            final int msgTypeIndex = cursor.getColumnIndex(Columns.MSG_TYPE);
-            final int msgStatusIndex = cursor.getColumnIndex(Columns.MSG_STATUS);
-            final int dateIndex = cursor.getColumnIndex(Columns.MSG_DATE);
-
             while (cursor.moveToNext()) {
-                MessageObject obj = new MessageObject();
-                obj.setSenderJid(cursor.getString(senderJidIndex));
-                obj.setReceiverJid(cursor.getString(receiverJidIndex));
-                obj.setSenderNickName(cursor.getString(senderNameIndex));
-                obj.setBody(cursor.getString(bodyIndex));
-                obj.setHtml(cursor.getString(htmlIndex));
-                if (cursor.getInt(outgoingIndex) != 0) {
-                    obj.setOutgoing(true);
-                } else {
-                    obj.setOutgoing(false);
-                }
-                obj.setMsg_id(cursor.getString(msgIdIndex));
-                obj.setMsgType(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
-                obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(msgStatusIndex)]);
-                obj.setDate(cursor.getLong(dateIndex));
+                MessageObject obj = cursorToMessage(cursor);
                 array.add(obj);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -168,7 +137,6 @@ public class MessageStorage {
                 cursor.close();
             }
         }
-
         return array;
     }
 
@@ -230,7 +198,7 @@ public class MessageStorage {
         delete(where, selectionArgs);
     }
 
-    static String getTableName() {
+    private static String getTableName() {
         return "messages_data";
     }
 
@@ -285,9 +253,9 @@ public class MessageStorage {
     //////
     // MessageFragment data
     public List<MessageObject> getAllMessage(String myJid) {
-        List<MessageObject> sender_array = getSenderMessageObjects(myJid);
-        List<MessageObject> receiver_array = getReceiverMessageObjects(myJid);
-        List<MessageObject> resultArray = mergeMessage(sender_array, receiver_array);
+        List<MessageObject> senderArray = getSenderMessageObjects(myJid);
+        List<MessageObject> receiverArray = getReceiverMessageObjects(myJid);
+        List<MessageObject> resultArray = mergeMessage(senderArray, receiverArray);
         return resultArray;
     }
 
@@ -300,25 +268,8 @@ public class MessageStorage {
                 }, Columns.MSG_SENDER_JID, null, MessageStorage.Columns.MSG_DATE + " DESC");
 
         if (cursor != null) {
-            int senderJidIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_SENDER_JID);
-            int receiverJidIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_RECEIVER_JID);
-            int senderNameIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_SENDER_NAME);
-            int bodyIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_BODY);
-            int msgIdIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_ID);
-            int msgTypeIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_TYPE);
-            int msgStatusIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_STATUS);
-            int dateIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_DATE);
-
             while (cursor.moveToNext()) {
-                MessageObject obj = new MessageObject();
-                obj.setSenderJid(cursor.getString(senderJidIndex));
-                obj.setReceiverJid(cursor.getString(receiverJidIndex));
-                obj.setSenderNickName(cursor.getString(senderNameIndex));
-                obj.setBody(cursor.getString(bodyIndex));
-                obj.setMsg_id(cursor.getString(msgIdIndex));
-                obj.setMsgType(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
-                obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(msgStatusIndex)]);
-                obj.setDate(cursor.getLong(dateIndex));
+                MessageObject obj = cursorToMessage(cursor);
                 obj.setOutgoing(false);
                 messages.add(obj);
             }
@@ -326,6 +277,7 @@ public class MessageStorage {
         }
         return messages;
     }
+
 
     private List<MessageObject> getSenderMessageObjects(String myJid) {
         List<MessageObject> messages = new ArrayList<MessageObject>();
@@ -336,25 +288,8 @@ public class MessageStorage {
                 }, Columns.MSG_RECEIVER_JID, null, Columns.MSG_DATE + " DESC");
 
         if (cursor != null) {
-            int senderJidIndex = cursor.getColumnIndex(Columns.MSG_SENDER_JID);
-            int receiverJidIndex = cursor.getColumnIndex(Columns.MSG_RECEIVER_JID);
-            int senderNameIndex = cursor.getColumnIndex(Columns.MSG_SENDER_NAME);
-            int bodyIndex = cursor.getColumnIndex(Columns.MSG_BODY);
-            int msgIdIndex = cursor.getColumnIndex(Columns.MSG_ID);
-            int msgTypeIndex = cursor.getColumnIndex(Columns.MSG_TYPE);
-            int msgStatusIndex = cursor.getColumnIndex(Columns.MSG_STATUS);
-            int dateIndex = cursor.getColumnIndex(Columns.MSG_DATE);
-
             while (cursor.moveToNext()) {
-                MessageObject obj = new MessageObject();
-                obj.setSenderJid(cursor.getString(senderJidIndex));
-                obj.setReceiverJid(cursor.getString(receiverJidIndex));
-                obj.setSenderNickName(cursor.getString(senderNameIndex));
-                obj.setBody(cursor.getString(bodyIndex));
-                obj.setMsg_id(cursor.getString(msgIdIndex));
-                obj.setMsgType(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
-                obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(msgStatusIndex)]);
-                obj.setDate(cursor.getLong(dateIndex));
+                MessageObject obj = cursorToMessage(cursor);
                 obj.setOutgoing(true);
                 messages.add(obj);
             }
@@ -363,18 +298,24 @@ public class MessageStorage {
         return messages;
     }
 
-    private static List<MessageObject> mergeMessage(List<MessageObject> sender_array,
-                                                    List<MessageObject> receiver_array) {
+    /**
+     * 合并消息
+     *
+     * @param senderArray
+     * @param receiverArray
+     * @return
+     */
+    private static List<MessageObject> mergeMessage(List<MessageObject> senderArray,
+                                                    List<MessageObject> receiverArray) {
         List<MessageObject> resultArray = null;
         boolean duplicateFlag = false;
-        if (sender_array.size() > 0 && receiver_array.size() > 0) {
-            for (MessageObject senderMessageObject : sender_array) {
-                for (MessageObject receiverMessageObject : receiver_array) {
-                    if (senderMessageObject.getSenderJid().equals(
-                            receiverMessageObject.getReceiverJid())) {
+        if (senderArray.size() > 0 && receiverArray.size() > 0) {
+            for (MessageObject senderMessageObject : senderArray) {
+                for (MessageObject receiverMessageObject : receiverArray) {
+                    if (senderMessageObject.getSenderJid().equals(receiverMessageObject.getReceiverJid())) {
                         if (senderMessageObject.getDate() > receiverMessageObject.getDate()) {
-                            receiver_array.remove(receiverMessageObject);
-                            receiver_array.add(senderMessageObject);
+                            receiverArray.remove(receiverMessageObject);
+                            receiverArray.add(senderMessageObject);
                         }
                         duplicateFlag = true;
                         break;
@@ -382,14 +323,14 @@ public class MessageStorage {
                 }
 
                 if (!duplicateFlag) {
-                    receiver_array.add(senderMessageObject);
+                    receiverArray.add(senderMessageObject);
                 }
             }
-            resultArray = receiver_array;
-        } else if (sender_array.size() > 0) {
-            resultArray = sender_array;
+            resultArray = receiverArray;
+        } else if (senderArray.size() > 0) {
+            resultArray = senderArray;
         } else {
-            resultArray = receiver_array;
+            resultArray = receiverArray;
         }
         return resultArray;
     }
@@ -403,7 +344,6 @@ public class MessageStorage {
      */
     public List<MessageObject> getMessages(String myJid, String chatJid) {
         List<MessageObject> resultArray = new ArrayList<MessageObject>();
-
         Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null, "("
                         + Columns.MSG_SENDER_JID + "=? And " + Columns.MSG_RECEIVER_JID + "=?) Or ("
                         + Columns.MSG_SENDER_JID + "=? And " + Columns.MSG_RECEIVER_JID + "=?)",
@@ -412,33 +352,8 @@ public class MessageStorage {
                         chatJid, myJid
                 }, null, null, Columns.MSG_DATE + " ASC");
         if (cursor != null) {
-            int senderJidIndex = cursor.getColumnIndex(Columns.MSG_SENDER_JID);
-            int receiverJidIndex = cursor.getColumnIndex(Columns.MSG_RECEIVER_JID);
-            int senderNameIndex = cursor.getColumnIndex(Columns.MSG_SENDER_NAME);
-            int bodyIndex = cursor.getColumnIndex(Columns.MSG_BODY);
-            int htmlIndex = cursor.getColumnIndex(Columns.MSG_HTML);
-            int msgIdIndex = cursor.getColumnIndex(Columns.MSG_ID);
-            int msgTypeIndex = cursor.getColumnIndex(Columns.MSG_TYPE);
-            int msgStatusIndex = cursor.getColumnIndex(Columns.MSG_STATUS);
-            int outgoingIndex = cursor.getColumnIndex(Columns.MSG_IS_OUTGOING);
-            int dateIndex = cursor.getColumnIndex(Columns.MSG_DATE);
-
             while (cursor.moveToNext()) {
                 MessageObject obj = new MessageObject();
-                obj.setSenderJid(cursor.getString(senderJidIndex));
-                obj.setReceiverJid(cursor.getString(receiverJidIndex));
-                obj.setSenderNickName(cursor.getString(senderNameIndex));
-                obj.setHtml(cursor.getString(htmlIndex));
-                obj.setBody(cursor.getString(bodyIndex));
-                obj.setMsg_id(cursor.getString(msgIdIndex));
-                obj.setMsgType(MessageSubType.values()[cursor.getInt(msgTypeIndex)]);
-                obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(msgStatusIndex)]);
-                obj.setDate(cursor.getLong(dateIndex));
-                if (cursor.getInt(outgoingIndex) != 0) {
-                    obj.setOutgoing(true);
-                } else {
-                    obj.setOutgoing(false);
-                }
                 resultArray.add(obj);
             }
             cursor.close();
@@ -468,5 +383,58 @@ public class MessageStorage {
         }
         return count;
     }
+
     ////
+    private static MessageIndex sMessageIndex;
+
+    private static MessageObject cursorToMessage(Cursor cursor) {
+        if (sMessageIndex == null) {
+            sMessageIndex = new MessageIndex(cursor);
+        }
+        MessageObject obj = new MessageObject();
+        obj.setSenderJid(cursor.getString(sMessageIndex.senderJidIndex));
+        obj.setReceiverJid(cursor.getString(sMessageIndex.receiverJidIndex));
+        obj.setSenderNickName(cursor.getString(sMessageIndex.senderNameIndex));
+        obj.setBody(cursor.getString(sMessageIndex.bodyIndex));
+        obj.setMsg_id(cursor.getString(sMessageIndex.msgIdIndex));
+        obj.setMsgType(MessageSubType.values()[cursor.getInt(sMessageIndex.msgTypeIndex)]);
+        obj.setMsg_status(MessageObjectStatus.values()[cursor.getInt(sMessageIndex.msgStatusIndex)]);
+        obj.setDate(cursor.getLong(sMessageIndex.dateIndex));
+        obj.setHtml(cursor.getString(sMessageIndex.htmlIndex));
+        if (cursor.getInt(sMessageIndex.outgoingIndex) != 0) {
+            obj.setOutgoing(true);
+        } else {
+            obj.setOutgoing(false);
+        }
+        return obj;
+    }
+
+    private static class MessageIndex {
+
+        private final int senderJidIndex;
+        private final int receiverJidIndex;
+        private final int senderNameIndex;
+        private final int bodyIndex;
+        private final int msgIdIndex;
+        private final int msgTypeIndex;
+        private final int msgStatusIndex;
+        private final int dateIndex;
+        private final int htmlIndex;
+        private final int outgoingIndex;
+
+        public MessageIndex(Cursor cursor) {
+            senderJidIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_SENDER_JID);
+            receiverJidIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_RECEIVER_JID);
+            senderNameIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_SENDER_NAME);
+            bodyIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_BODY);
+            htmlIndex = cursor.getColumnIndex(Columns.MSG_HTML);
+            msgIdIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_ID);
+            msgTypeIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_TYPE);
+            msgStatusIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_STATUS);
+            dateIndex = cursor.getColumnIndex(MessageStorage.Columns.MSG_DATE);
+            outgoingIndex = cursor.getColumnIndex(Columns.MSG_IS_OUTGOING);
+
+        }
+
+    }
 }

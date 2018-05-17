@@ -32,9 +32,24 @@ import java.util.regex.Pattern;
  */
 public class MessageObject {
 
+    /**
+     * 发送者jid
+     */
     private String senderJid;
+
+    /**
+     * 发送者昵称
+     */
     private String senderNickName;
+
+    /**
+     * 接收者
+     */
     private String receiverJid;
+
+    /**
+     * 消息内容
+     */
     private String body;
     private boolean outgoing;
     private String msg_id;
@@ -84,22 +99,6 @@ public class MessageObject {
 
     public void setDate(long date) {
         this.date = date;
-    }
-
-    public static String getXmlNode(MessageObject object) {
-        if (object == null) {
-            return null;
-        }
-
-        StringBuilder buf = new StringBuilder();
-        buf.append("MessageObject: ");
-
-        return buf.toString();
-    }
-
-    @Override
-    public String toString() {
-        return getXmlNode(this);
     }
 
     public String getBody() {
