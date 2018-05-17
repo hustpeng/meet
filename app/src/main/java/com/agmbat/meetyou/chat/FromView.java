@@ -5,10 +5,17 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 
+import com.agmbat.android.image.ImageManager;
+import com.agmbat.imsdk.asmack.ContactManager;
+import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.data.body.AudioBody;
 import com.agmbat.meetyou.R;
 
+import org.jivesoftware.smackx.message.MessageObject;
 
+/**
+ * 其他发送过来的消息
+ */
 public class FromView extends ItemView {
 
     public FromView(Context context) {
@@ -18,6 +25,12 @@ public class FromView extends ItemView {
     @Override
     protected int getLayoutId() {
         return R.layout.chat_list_item_from;
+    }
+
+    @Override
+    public void update(MessageObject msg) {
+        super.update(msg);
+
     }
 
     @Override

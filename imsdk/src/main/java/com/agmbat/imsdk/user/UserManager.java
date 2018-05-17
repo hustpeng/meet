@@ -1,6 +1,8 @@
 package com.agmbat.imsdk.user;
 
+import com.agmbat.android.utils.UiUtils;
 import com.agmbat.imsdk.IUserManager;
+import com.agmbat.imsdk.asmack.ContactManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.api.OnFetchLoginUserListener;
 import com.agmbat.imsdk.asmack.api.OnSaveUserInfoListener;
@@ -82,6 +84,17 @@ public class UserManager implements IUserManager {
             public void onFetchLoginUser(LoginUser user) {
                 mLoginUser = user;
                 EventBus.getDefault().post(new LoginUserUpdateEvent(mLoginUser));
+                UiUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ContactInfo contactInfo = new ContactInfo();
+                        contactInfo.setBareJid(mLoginUser.getJid());
+                        contactInfo.setAvatar(mLoginUser.getAvatar());
+                        contactInfo.setNickname(mLoginUser.getNickname());
+                        contactInfo.setGender(mLoginUser.getGender());
+                        ContactManager.addContactInfo(contactInfo);
+                    }
+                });
             }
 
         });
@@ -154,30 +167,5 @@ public class UserManager implements IUserManager {
                 EventBus.getDefault().post(new LoginUserUpdateEvent(user));
             }
         });
-    }
-
-
-    /**
-     * 联系人缓存
-     */
-    private Map<String, ContactInfo> mContactCache = new HashMap<>();
-
-    /**
-     * 获取联系人
-     *
-     * @param jid
-     * @return
-     */
-    public ContactInfo getContactFromCache(String jid) {
-        return mContactCache.get(jid);
-    }
-
-    /**
-     * 添加到缓存中, 只于Activity共同访问数据
-     *
-     * @param contactInfo
-     */
-    public void addContactToCache(ContactInfo contactInfo) {
-        mContactCache.put(contactInfo.getBareJid(), contactInfo);
     }
 }

@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.ContactManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.data.body.Body;
@@ -70,7 +71,6 @@ public class ChatActivity extends Activity {
     private ContactInfo mParticipant;
 
     public static void openChat(Context context, ContactInfo contactInfo) {
-        UserManager.getInstance().addContactToCache(contactInfo);
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(KEY_CONTACT, contactInfo.getBareJid());
         context.startActivity(intent);
@@ -83,7 +83,7 @@ public class ChatActivity extends Activity {
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         String jid = getIntent().getStringExtra(KEY_CONTACT);
-        mParticipant = UserManager.getInstance().getContactFromCache(jid);
+        mParticipant = ContactManager.getContactInfo(jid);
         setupViews();
         EventBus.getDefault().register(this);
     }

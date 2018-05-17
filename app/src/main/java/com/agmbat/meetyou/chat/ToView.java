@@ -5,9 +5,17 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 
+import com.agmbat.android.image.ImageManager;
+import com.agmbat.imsdk.asmack.ContactManager;
+import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.data.body.AudioBody;
 import com.agmbat.meetyou.R;
 
+import org.jivesoftware.smackx.message.MessageObject;
+
+/**
+ * 发送给其他人的消息
+ */
 public class ToView extends ItemView {
 
     public ToView(Context context) {
@@ -17,6 +25,14 @@ public class ToView extends ItemView {
     @Override
     protected int getLayoutId() {
         return R.layout.chat_list_item_to;
+    }
+
+    @Override
+    public void update(MessageObject msg) {
+        super.update(msg);
+        String senderJid = msg.getSenderJid();
+        ContactInfo contactInfo = ContactManager.getContactInfo(senderJid);
+        ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
     }
 
     @Override

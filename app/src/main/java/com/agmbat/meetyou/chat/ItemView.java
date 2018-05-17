@@ -16,6 +16,7 @@ import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.android.utils.AppUtils;
 import com.agmbat.http.HttpUtils;
+import com.agmbat.imsdk.asmack.ContactManager;
 import com.agmbat.imsdk.data.ChatMessage;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.data.body.AudioBody;
@@ -38,7 +39,7 @@ public abstract class ItemView extends LinearLayout {
     private static final int BASE_WIDTH = (int) AppResources.dipToPixel(80);
     private static final int AUDIO_MAX_WIDTH = (int) AppResources.dipToPixel(200);
 
-    public ImageView mChatAvatarView;
+    protected ImageView mAvatarView;
     public TextView mChatContentView;
     public ImageView mBodyImage;
     public TextView mTimeView;
@@ -46,7 +47,7 @@ public abstract class ItemView extends LinearLayout {
     public ItemView(Context context) {
         super(context);
         View.inflate(context, getLayoutId(), this);
-        mChatAvatarView = (ImageView) findViewById(R.id.chat_avatar);
+        mAvatarView = (ImageView) findViewById(R.id.avatar);
         mChatContentView = (TextView) findViewById(R.id.chat_content);
         mTimeView = (TextView) findViewById(R.id.time);
         mBodyImage = (ImageView) findViewById(R.id.body_image);
@@ -64,8 +65,9 @@ public abstract class ItemView extends LinearLayout {
     }
 
     private void setAvatar(MessageObject msg) {
-//        ImageManager.displayImage(msg.getImageSrcUrl());
-//        ImageManager.displayImage(Scheme.wrapUri("avatar", msg.getAvatarBareAddress()), mChatAvatarView);
+        String senderJid = msg.getSenderJid();
+        ContactInfo contactInfo = ContactManager.getContactInfo(senderJid);
+        ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
     }
 
     private void setMessageBody(MessageObject msg) {

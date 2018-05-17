@@ -30,10 +30,9 @@
             android:contentDescription="@null" />
 
         <ImageView
-            android:id="@+id/chat_avatar"
+            android:id="@+id/avatar"
             android:layout_width="44dip"
             android:layout_height="44dip"
-            android:background="@drawable/bg_chat_avatar"
             android:contentDescription="@null"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_default_avatar" />
