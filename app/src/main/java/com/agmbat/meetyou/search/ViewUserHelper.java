@@ -62,6 +62,7 @@ public class ViewUserHelper {
     }
 
     private static void openDetail(Context context, ContactInfo contactInfo, int type) {
+        ContactManager.addContactInfo(contactInfo);
         Intent intent = new Intent(context, UserInfoActivity.class);
         intent.putExtra(KEY_USER_INFO, contactInfo.getBareJid());
         intent.putExtra(KEY_TYPE, type);
