@@ -18,6 +18,7 @@ import com.agmbat.android.media.AmrHelper;
 import com.agmbat.android.media.Recorder;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
+import com.agmbat.android.utils.KeyboardUtils;
 import com.agmbat.android.utils.PhoneUtils;
 import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.app.AppFileManager;
@@ -191,7 +192,7 @@ public class InputView extends LinearLayout {
     }
 
     private void init(Context context) {
-        View.inflate(context, R.layout.view_input, this);
+        View.inflate(context, R.layout.view_input1, this);
         ButterKnife.bind(this);
 
         mInputTextMode = true;
@@ -231,7 +232,7 @@ public class InputView extends LinearLayout {
             mInputSwitcher.setImageResource(R.drawable.chat_btn_input_audio);
             updateChattingBtn();
         } else {
-            ViewUtils.hideInputMethod(mChatInput);
+            KeyboardUtils.hideInputMethod(mChatInput);
             mTextPanel.setVisibility(View.GONE);
             mRecordButton.setVisibility(View.VISIBLE);
             mInputSwitcher.setImageResource(R.drawable.chat_btn_input_keyboard);

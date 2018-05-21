@@ -3,6 +3,7 @@ package com.agmbat.meetyou.chat;
 import android.content.Context;
 import android.location.Location;
 import android.os.Environment;
+import android.text.Spannable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,6 +16,8 @@ import com.agmbat.android.media.AudioPlayer;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.android.utils.AppUtils;
+import com.agmbat.android.utils.ViewUtils;
+import com.agmbat.emoji.display.EmojiDisplay;
 import com.agmbat.http.HttpUtils;
 import com.agmbat.imsdk.asmack.ContactManager;
 import com.agmbat.imsdk.data.ChatMessage;
@@ -77,7 +80,9 @@ public abstract class ItemView extends LinearLayout {
             ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
             params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
             mChatContentView.setVisibility(View.VISIBLE);
-            mChatContentView.setText(Emotion.getEmojiText(msg.getBody()));
+//            mChatContentView.setText(Emotion.getEmojiText(msg.getBody()));
+            Spannable spannable = EmojiDisplay.update(msg.getBody(), ViewUtils.getFontHeight(mChatContentView));
+            mChatContentView.setText(spannable);
             mChatContentView.setOnClickListener(null);
             mChatContentView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }

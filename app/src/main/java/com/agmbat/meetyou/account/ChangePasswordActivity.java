@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.agmbat.android.utils.KeyboardUtils;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.android.utils.WindowUtils;
@@ -62,7 +63,7 @@ public class ChangePasswordActivity extends Activity {
 
     @OnClick(R.id.btn_done)
     void onClickDone() {
-        ViewUtils.hideInputMethod(mInputConfirmPwd);
+        KeyboardUtils.hideInputMethod(mInputConfirmPwd);
 
         String currentPwd = mInputCurrentPwd.getText().toString().trim();
         String newPwd = mInputNewPwd.getText().toString();

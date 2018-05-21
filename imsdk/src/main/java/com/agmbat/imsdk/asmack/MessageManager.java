@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.agmbat.android.utils.UiUtils;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
-import com.agmbat.imsdk.user.UserManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jivesoftware.smack.Connection;

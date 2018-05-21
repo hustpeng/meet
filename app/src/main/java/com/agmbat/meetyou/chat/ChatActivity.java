@@ -10,6 +10,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.emoji.panel.p2.EmojiPanel;
+import com.agmbat.emoji.panel.p2.EmojiPanelConfig;
+import com.agmbat.emoji.res.DefEmoticons;
+import com.agmbat.emoji.res.DefXhsEmoticons;
 import com.agmbat.imsdk.asmack.ContactManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
@@ -17,9 +21,10 @@ import com.agmbat.imsdk.data.body.Body;
 import com.agmbat.imsdk.data.body.TextBody;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
-import com.agmbat.imsdk.user.UserManager;
-import com.agmbat.imsdk.view.InputView;
 import com.agmbat.imsdk.view.OnSendMessageListener;
+import com.agmbat.input.InputController;
+import com.agmbat.input.InputView;
+import com.agmbat.input.OnInputTextListener;
 import com.agmbat.meetyou.R;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
 
@@ -37,7 +42,7 @@ import butterknife.OnClick;
 /***
  * 消息聊天界面
  */
-public class ChatActivity extends Activity {
+public class ChatActivity extends Activity implements OnInputTextListener {
 
     /**
      * key, 用于标识联系人
@@ -51,7 +56,7 @@ public class ChatActivity extends Activity {
     TextView mNicknameView;
 
 
-    @BindView(R.id.chating_footer)
+    @BindView(R.id.input)
     InputView mInputView;
 
     /**
@@ -109,22 +114,41 @@ public class ChatActivity extends Activity {
     public void onEvent(ReceiveMessageEvent event) {
         if (event.getMessageObject().getSenderJid().equals(mParticipant.getBareJid())) {
             mAdapter.notifyDataSetChanged();
-            autoScrollToLast();
+//            autoScrollToLast();
         }
     }
 
+    private InputController mInputController;
+
     private void setupViews() {
         mNicknameView.setText(mParticipant.getNickName());
-        mInputView.setOnSendMessageListener(new OnSendMessageListener() {
-            @Override
-            public void onSendMessage(Body message) {
-                sendTextMsg(message);
-            }
-        });
+
+        mInputController = new InputController(mInputView);
+        mInputController.setOnInputTextListener(this);
+
+        // 配置 emoji 面板
+        EmojiPanelConfig config = new EmojiPanelConfig();
+        config.setEditText(mInputView.getEditText());
+        config.addEmojiResProvider(new DefEmoticons());
+        config.addEmojiResProvider(new DefXhsEmoticons());
+
+        EmojiPanel panel = new EmojiPanel(this);
+        panel.setConfig(config);
+        mInputController.addEmojiPanel(panel);
+
+        mInputController.setContentView(mPtrView);
+
+
+//        mInputView.setOnSendMessageListener(new OnSendMessageListener() {
+//            @Override
+//            public void onSendMessage(Body message) {
+//                sendTextMsg(message);
+//            }
+//        });
         List<MessageObject> chatMessages = XMPPManager.getInstance().getMessageManager().getMessageList(mParticipant.getBareJid());
         mAdapter = new MessageListAdapter(this, chatMessages);
         mPtrView.setAdapter(mAdapter);
-        autoScrollToLast();
+//        autoScrollToLast();
     }
 
     private void sendTextMsg(Body message) {
@@ -134,21 +158,33 @@ public class ChatActivity extends Activity {
             MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
                     .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), text);
             mAdapter.notifyDataSetChanged();
-            autoScrollToLast();
+//            autoScrollToLast();
             if (messageObject != null) {
                 EventBus.getDefault().post(new SendMessageEvent(messageObject));
             }
         }
     }
 
-    private void autoScrollToLast() {
-        mPtrView.post(new Runnable() {
-            @Override
-            public void run() {
-                ListView lv = mPtrView.getRefreshableView();
-                lv.setSelection(lv.getAdapter().getCount() - 1);
-            }
-        });
-    }
+//    private void autoScrollToLast() {
+//        mPtrView.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                ListView lv = mPtrView.getRefreshableView();
+//                lv.setSelection(lv.getAdapter().getCount() - 1);
+//            }
+//        });
+//    }
 
+    @Override
+    public void onInputText(String text) {
+        if (!TextUtils.isEmpty(text)) {
+            MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
+                    .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), text);
+            mAdapter.notifyDataSetChanged();
+//            autoScrollToLast();
+            if (messageObject != null) {
+                EventBus.getDefault().post(new SendMessageEvent(messageObject));
+            }
+        }
+    }
 }
