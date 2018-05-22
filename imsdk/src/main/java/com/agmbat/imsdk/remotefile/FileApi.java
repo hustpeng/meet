@@ -151,11 +151,6 @@ public class FileApi {
         if (StringUtils.isEmpty(text)) {
             return null;
         }
-        JSONObject jsonObject = JsonUtils.asJsonObject(text);
-        if (jsonObject == null) {
-            return null;
-        }
-
         Type jsonType = new TypeToken<TempFileApiResult>() {
         }.getType();
         TempFileApiResult apiResult = GsonHelper.fromJson(text, jsonType);

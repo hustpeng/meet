@@ -73,23 +73,32 @@ public abstract class ItemView extends LinearLayout {
         ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
     }
 
+    /**
+     * 设置文本内容显示
+     *
+     * @param textBody
+     */
+    private void setTextBody(String textBody) {
+        mBodyImage.setVisibility(View.GONE);
+        ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mChatContentView.setVisibility(View.VISIBLE);
+//            mChatContentView.setText(Emotion.getEmojiText(msg.getBody()));
+        Spannable spannable = EmojiDisplay.update(textBody, ViewUtils.getFontHeight(mChatContentView));
+        mChatContentView.setText(spannable);
+        mChatContentView.setOnClickListener(null);
+        mChatContentView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+    }
+
     private void setMessageBody(MessageObject msg) {
         MessageSubType messageSubType = msg.getMsgType();
         if (messageSubType == MessageSubType.text) {
-            mBodyImage.setVisibility(View.GONE);
-            ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
-            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            mChatContentView.setVisibility(View.VISIBLE);
-//            mChatContentView.setText(Emotion.getEmojiText(msg.getBody()));
-            Spannable spannable = EmojiDisplay.update(msg.getBody(), ViewUtils.getFontHeight(mChatContentView));
-            mChatContentView.setText(spannable);
-            mChatContentView.setOnClickListener(null);
-            mChatContentView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            setTextBody(msg.getBody());
+        } else if (messageSubType == MessageSubType.voice) {
+            setAudioBody(mChatContentView, new AudioBody(msg.getBody(), 1000l));
         }
 //        Body body = msg.getBody();
 //        if (body instanceof TextBody) {
-//            TextBody textBody = (TextBody) body;
-//            setTextBody(textBody);
 //        } else if (body instanceof AudioBody) {
 //            AudioBody audioBody = (AudioBody) body;
 //            setAudioBody(mChatContentView, audioBody);
