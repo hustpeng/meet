@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
@@ -21,10 +20,10 @@ import com.agmbat.imsdk.data.body.Body;
 import com.agmbat.imsdk.data.body.TextBody;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
-import com.agmbat.imsdk.view.OnSendMessageListener;
 import com.agmbat.input.InputController;
 import com.agmbat.input.InputView;
-import com.agmbat.input.OnInputTextListener;
+import com.agmbat.input.OnInputListener;
+import com.agmbat.input.VoiceInputController;
 import com.agmbat.meetyou.R;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
 
@@ -42,7 +41,7 @@ import butterknife.OnClick;
 /***
  * 消息聊天界面
  */
-public class ChatActivity extends Activity implements OnInputTextListener {
+public class ChatActivity extends Activity implements OnInputListener {
 
     /**
      * key, 用于标识联系人
@@ -119,12 +118,15 @@ public class ChatActivity extends Activity implements OnInputTextListener {
     }
 
     private InputController mInputController;
+    private VoiceInputController mVoiceInputController;
 
     private void setupViews() {
         mNicknameView.setText(mParticipant.getNickName());
 
         mInputController = new InputController(mInputView);
-        mInputController.setOnInputTextListener(this);
+        mInputController.setOnInputListener(this);
+        mVoiceInputController = new VoiceInputController(mInputView.getVoiceButton());
+        mVoiceInputController.setOnInputListener(this);
 
         // 配置 emoji 面板
         EmojiPanelConfig config = new EmojiPanelConfig();
@@ -176,15 +178,17 @@ public class ChatActivity extends Activity implements OnInputTextListener {
 //    }
 
     @Override
-    public void onInputText(String text) {
-        if (!TextUtils.isEmpty(text)) {
+    public void onInput(int type, String content) {
+        if (type == OnInputListener.TYPE_TEXT) {
             MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
-                    .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), text);
+                    .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), content);
             mAdapter.notifyDataSetChanged();
 //            autoScrollToLast();
             if (messageObject != null) {
                 EventBus.getDefault().post(new SendMessageEvent(messageObject));
             }
+        } else if (type == OnInputListener.TYPE_VOICE) {
+            String path = content;
         }
     }
 }

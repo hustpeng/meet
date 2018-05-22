@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.agmbat.android.media.AmrHelper;
@@ -20,7 +21,6 @@ import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.android.utils.KeyboardUtils;
 import com.agmbat.android.utils.PhoneUtils;
-import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.app.AppFileManager;
 import com.agmbat.file.FileUtils;
 import com.agmbat.http.HttpUtils;
@@ -38,11 +38,13 @@ import com.agmbat.imsdk.data.body.TextBody;
 import java.io.File;
 
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class InputView extends LinearLayout {
 
-    private ImageButton mInputSwitcher;
+    /**
+     * 语音和文本切换Button
+     */
+    private ImageView mVoiceOrTextButton;
 
     private View mTextPanel;
     private EditText mChatInput;
@@ -203,8 +205,8 @@ public class InputView extends LinearLayout {
         mChatInput.addTextChangedListener(mChatInputTextWatcher);
         mEmojiButton = (ImageButton) findViewById(R.id.btn_input_emoji);
         mEmojiButton.setOnClickListener(mOnClickListener);
-        mInputSwitcher = (ImageButton) findViewById(R.id.btn_input_switcher);
-        mInputSwitcher.setOnClickListener(mOnClickListener);
+        mVoiceOrTextButton = (ImageButton) findViewById(R.id.btn_input_switcher);
+        mVoiceOrTextButton.setOnClickListener(mOnClickListener);
         mRecordButton = (RecordButton) findViewById(R.id.btn_input_audio);
         mRecordButton.setOnRcordButtonListener(mOnRecordButtonListener);
         mRecordButton.setOnTouchListener(mRecordTouchListener);
@@ -229,13 +231,13 @@ public class InputView extends LinearLayout {
             mTextPanel.setVisibility(View.VISIBLE);
             mChatInput.requestFocus();
             mRecordButton.setVisibility(View.GONE);
-            mInputSwitcher.setImageResource(R.drawable.chat_btn_input_audio);
+            mVoiceOrTextButton.setImageResource(R.drawable.chat_btn_input_audio);
             updateChattingBtn();
         } else {
             KeyboardUtils.hideInputMethod(mChatInput);
             mTextPanel.setVisibility(View.GONE);
             mRecordButton.setVisibility(View.VISIBLE);
-            mInputSwitcher.setImageResource(R.drawable.chat_btn_input_keyboard);
+            mVoiceOrTextButton.setImageResource(R.drawable.chat_btn_input_keyboard);
             updateChattingBtn(true);
         }
     }
