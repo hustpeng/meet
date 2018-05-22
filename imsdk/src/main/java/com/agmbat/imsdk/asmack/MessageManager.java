@@ -240,6 +240,34 @@ public class MessageManager extends Xepmodule {
         return messageObject;
     }
 
+    /**
+     * 发送语音消息
+     *
+     * @param toJidString
+     * @param fromNickName
+     * @param body
+     */
+    public MessageObject sendVoiceMessage(String toJidString, String fromNickName, String body) {
+        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
+            return null;
+        }
+        if (TextUtils.isEmpty(body) || TextUtils.isEmpty(toJidString)) {
+            return null;
+        }
+        Message message = new Message();
+        message.setType(Type.chat);
+        message.setBody(body);
+        message.setSubType(MessageSubType.voice);
+        message.setTo(toJidString);
+        message.setSenderNickName(fromNickName);
+        message.setFrom(xmppConnection.getUser());
+        xmppConnection.sendPacket(message);
+        MessageObject messageObject = phareMessageFromPacket(message);
+        messageStorage.insertMsg(messageObject);
+        addMessage(toJidString, messageObject);
+        return messageObject;
+    }
+
     public void setMessageRead(String msg_id) {
         if (TextUtils.isEmpty(msg_id)) {
             return;

@@ -20,6 +20,9 @@ import com.agmbat.imsdk.data.body.Body;
 import com.agmbat.imsdk.data.body.TextBody;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
+import com.agmbat.imsdk.remotefile.OnFileUploadListener2;
+import com.agmbat.imsdk.remotefile.RemoteFileManager;
+import com.agmbat.imsdk.remotefile.TempFileApiResult;
 import com.agmbat.input.InputController;
 import com.agmbat.input.InputView;
 import com.agmbat.input.OnInputListener;
@@ -32,6 +35,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smackx.message.MessageObject;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -183,12 +187,25 @@ public class ChatActivity extends Activity implements OnInputListener {
             MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
                     .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), content);
             mAdapter.notifyDataSetChanged();
-//            autoScrollToLast();
             if (messageObject != null) {
                 EventBus.getDefault().post(new SendMessageEvent(messageObject));
             }
         } else if (type == OnInputListener.TYPE_VOICE) {
             String path = content;
+            RemoteFileManager.uploadVoiceFile(new File(path), new OnFileUploadListener2() {
+                @Override
+                public void onUpload(TempFileApiResult apiResult) {
+                    if (apiResult.mResult) {
+                        String url = apiResult.url;
+                        MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
+                                .sendVoiceMessage(mParticipant.getBareJid(), mParticipant.getNickName(), url);
+                        mAdapter.notifyDataSetChanged();
+                        if (messageObject != null) {
+                            EventBus.getDefault().post(new SendMessageEvent(messageObject));
+                        }
+                    }
+                }
+            });
         }
     }
 }

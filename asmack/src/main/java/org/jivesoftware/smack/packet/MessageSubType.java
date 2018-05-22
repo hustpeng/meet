@@ -7,7 +7,8 @@ public enum MessageSubType {
 
     text,
     image,
-    geoloc;
+    geoloc,
+    voice;
 
     public static MessageSubType fromString(String name) {
         try {
@@ -25,6 +26,8 @@ public enum MessageSubType {
                 return image;
             case 2:
                 return geoloc;
+            case 3:
+                return voice;
             default:
                 return text;
         }
