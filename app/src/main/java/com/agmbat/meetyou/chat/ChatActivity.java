@@ -8,16 +8,21 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.TextView;
 
+import com.agmbat.android.media.AmrHelper;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.app.AppFileManager;
 import com.agmbat.emoji.panel.p2.EmojiPanel;
 import com.agmbat.emoji.panel.p2.EmojiPanelConfig;
 import com.agmbat.emoji.res.DefEmoticons;
 import com.agmbat.emoji.res.DefXhsEmoticons;
+import com.agmbat.file.FileUtils;
+import com.agmbat.http.HttpUtils;
 import com.agmbat.imsdk.asmack.ContactManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.chat.body.AudioBody;
+import com.agmbat.imsdk.chat.body.Body;
+import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.data.body.Body;
-import com.agmbat.imsdk.data.body.TextBody;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.imsdk.remotefile.OnFileUploadListener2;
@@ -184,21 +189,30 @@ public class ChatActivity extends Activity implements OnInputListener {
     @Override
     public void onInput(int type, String content) {
         if (type == OnInputListener.TYPE_TEXT) {
+            Body body = new TextBody(content);
             MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
-                    .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), content);
+                    .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), body.toXml());
             mAdapter.notifyDataSetChanged();
             if (messageObject != null) {
                 EventBus.getDefault().post(new SendMessageEvent(messageObject));
             }
         } else if (type == OnInputListener.TYPE_VOICE) {
-            String path = content;
+            final String path = content;
             RemoteFileManager.uploadVoiceFile(new File(path), new OnFileUploadListener2() {
                 @Override
                 public void onUpload(TempFileApiResult apiResult) {
                     if (apiResult.mResult) {
                         String url = apiResult.url;
+                        File oldFile = new File(path);
+                        File newFile = new File(AppFileManager.getRecordDir(), HttpUtils.getFileNameFromUrl(url));
+                        // 将文件移到缓存文件夹下
+                        FileUtils.move(oldFile, newFile);
+
+                        long duration = AmrHelper.getAmrDuration(newFile);
+                        Body body = new AudioBody(url, duration);
+
                         MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
-                                .sendVoiceMessage(mParticipant.getBareJid(), mParticipant.getNickName(), url);
+                                .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), body.toXml());
                         mAdapter.notifyDataSetChanged();
                         if (messageObject != null) {
                             EventBus.getDefault().post(new SendMessageEvent(messageObject));
@@ -208,4 +222,6 @@ public class ChatActivity extends Activity implements OnInputListener {
             });
         }
     }
+
+
 }

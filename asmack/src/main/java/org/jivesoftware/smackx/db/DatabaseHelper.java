@@ -9,6 +9,9 @@ import org.jivesoftware.smackx.message.MessageStorage;
 import org.jivesoftware.smackx.visitor.VisitorMeReadFlagDBStoreProvider;
 import org.jivesoftware.smackx.visitor.VisitorRecordDBStoreProvider;
 
+/**
+ * TODO 用户数据库, 需要将登陆用户隔离, 一个用户是一个数据文件夹
+ */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "swan.db";

@@ -5,13 +5,8 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 
-import com.agmbat.android.image.ImageManager;
-import com.agmbat.imsdk.asmack.ContactManager;
-import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.data.body.AudioBody;
+import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.meetyou.R;
-
-import org.jivesoftware.smackx.message.MessageObject;
 
 /**
  * 其他发送过来的消息
@@ -28,15 +23,9 @@ public class FromView extends ItemView {
     }
 
     @Override
-    public void update(MessageObject msg) {
-        super.update(msg);
-
-    }
-
-    @Override
     protected void setAudioDrawable(AudioBody audioBody) {
         Drawable[] drawable = mChatContentView.getCompoundDrawables();
-        if (audioBody.isPlaying()) {
+        if (isPlaying(audioBody)) {
             if (drawable[0] == null || !(drawable[0] instanceof AnimationDrawable)) {
                 mChatContentView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.chatfrom_voice_playing_f, 0, 0,
                         0);
@@ -58,5 +47,6 @@ public class FromView extends ItemView {
     protected void setupViews() {
         mChatContentView.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
     }
+
 
 }

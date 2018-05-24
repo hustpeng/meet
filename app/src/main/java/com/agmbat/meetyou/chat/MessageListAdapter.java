@@ -5,9 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-
-import com.agmbat.imsdk.data.ChatMessage;
-
 import org.jivesoftware.smackx.message.MessageObject;
 
 import java.util.List;

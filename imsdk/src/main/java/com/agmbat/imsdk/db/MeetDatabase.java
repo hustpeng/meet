@@ -6,10 +6,7 @@ import com.agmbat.android.AppResources;
 import com.agmbat.db.DbException;
 import com.agmbat.db.DbManager;
 import com.agmbat.db.DbManagerFactory;
-import com.agmbat.imsdk.data.ChatMessage;
-import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.data.RecentChat;
 import com.agmbat.sqlite.SqliteDbConfig;
 
 import java.io.File;
@@ -120,66 +117,6 @@ public class MeetDatabase {
         } catch (DbException e) {
             e.printStackTrace();
         }
-        return list;
-    }
-
-
-    /**
-     * TODO 暂时模拟, 需要实现
-     * 获取消息列表
-     *
-     * @return
-     */
-    public List<RecentChat> getRecentChatList() {
-        List<RecentChat> list = new ArrayList<RecentChat>();
-        for (int i = 0; i < 50; i++) {
-            RecentChat chat = new RecentChat();
-            ContactInfo contactInfo = new ContactInfo();
-            contactInfo.setNickname("联系" + i);
-            chat.setContact(contactInfo);
-            ChatMessage message = new ChatMessage();
-            message.setContent("Content:" + i);
-            message.setTimestamp(System.currentTimeMillis());
-            chat.setLastChatMessage(message);
-            list.add(chat);
-        }
-        return list;
-    }
-
-
-
-
-    /**
-     * 通过jid查找联系人
-     *
-     * @param jid
-     * @return
-     */
-    public ContactInfo findParticipant(String jid) {
-        ContactInfo contactInfo = new ContactInfo();
-        contactInfo.setBareJid(jid);
-        contactInfo.setNickname("小小");
-        return contactInfo;
-    }
-
-    /**
-     * 获取聊天信息
-     *
-     * @param contactInfo
-     * @return
-     */
-    public List<ChatMessage> getMessage(ContactInfo contactInfo) {
-        List<ChatMessage> list = new ArrayList<>();
-        ChatMessage message = new ChatMessage();
-        list.add(message);
-        list.add(message);
-        list.add(message);
-        list.add(message);
-        list.add(message);
-        list.add(message);
-        list.add(message);
-        list.add(message);
-        list.add(message);
         return list;
     }
 

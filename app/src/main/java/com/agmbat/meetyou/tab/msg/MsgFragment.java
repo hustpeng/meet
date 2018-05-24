@@ -20,6 +20,7 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
+import com.agmbat.log.Debug;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
@@ -158,6 +159,8 @@ public class MsgFragment extends Fragment {
         ContactInfo contactInfo = MessageManager.getTalkContactInfo(recentChat);
         if (contactInfo != null) {
             ChatActivity.openChat(getActivity(), contactInfo);
+        } else {
+            Debug.printStackTrace();
         }
     }
 

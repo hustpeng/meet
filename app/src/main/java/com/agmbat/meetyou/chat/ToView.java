@@ -5,13 +5,8 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 
-import com.agmbat.android.image.ImageManager;
-import com.agmbat.imsdk.asmack.ContactManager;
-import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.data.body.AudioBody;
+import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.meetyou.R;
-
-import org.jivesoftware.smackx.message.MessageObject;
 
 /**
  * 发送给其他人的消息
@@ -28,17 +23,9 @@ public class ToView extends ItemView {
     }
 
     @Override
-    public void update(MessageObject msg) {
-        super.update(msg);
-        String senderJid = msg.getSenderJid();
-        ContactInfo contactInfo = ContactManager.getContactInfo(senderJid);
-        ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
-    }
-
-    @Override
     protected void setAudioDrawable(AudioBody audioBody) {
         Drawable[] drawable = mChatContentView.getCompoundDrawables();
-        if (audioBody.isPlaying()) {
+        if (isPlaying(audioBody)) {
             if (drawable[2] == null || !(drawable[2] instanceof AnimationDrawable)) {
                 mChatContentView
                         .setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.chatto_voice_playing_f, 0);

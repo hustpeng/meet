@@ -3,6 +3,8 @@ package com.agmbat.imsdk.asmack;
 import android.text.TextUtils;
 
 import com.agmbat.android.utils.UiUtils;
+import com.agmbat.imsdk.asmack.api.FetchContactInfoRunnable;
+import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 
@@ -240,33 +242,6 @@ public class MessageManager extends Xepmodule {
         return messageObject;
     }
 
-    /**
-     * 发送语音消息
-     *
-     * @param toJidString
-     * @param fromNickName
-     * @param body
-     */
-    public MessageObject sendVoiceMessage(String toJidString, String fromNickName, String body) {
-        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
-            return null;
-        }
-        if (TextUtils.isEmpty(body) || TextUtils.isEmpty(toJidString)) {
-            return null;
-        }
-        Message message = new Message();
-        message.setType(Type.chat);
-        message.setBody(body);
-        message.setSubType(MessageSubType.voice);
-        message.setTo(toJidString);
-        message.setSenderNickName(fromNickName);
-        message.setFrom(xmppConnection.getUser());
-        xmppConnection.sendPacket(message);
-        MessageObject messageObject = phareMessageFromPacket(message);
-        messageStorage.insertMsg(messageObject);
-        addMessage(toJidString, messageObject);
-        return messageObject;
-    }
 
     public void setMessageRead(String msg_id) {
         if (TextUtils.isEmpty(msg_id)) {
@@ -443,9 +418,54 @@ public class MessageManager extends Xepmodule {
         messageStorage.correctMessagesStatus();
     }
 
+    /**
+     * 获取所有聊天信息
+     *
+     * @param jid
+     * @return
+     */
     public List<MessageObject> getAllMessage(String jid) {
-        return messageStorage.getAllMessage(jid);
+        List<MessageObject> list = messageStorage.getAllMessage(jid);
+        // 检测所有消息中用户是否存在, 如果不存在
+        for (MessageObject messageObject : list) {
+            ensureMessageUser(messageObject);
+        }
+        return list;
     }
+
+    /**
+     * 确保用户信息存在中
+     *
+     * @param messageObject
+     */
+    private void ensureMessageUser(MessageObject messageObject) {
+        String senderJid = messageObject.getSenderJid();
+        ContactInfo contactInfo = ContactManager.getContactInfo(senderJid);
+        if (contactInfo == null) {
+            OnFetchContactListener listener = new OnFetchContactListener() {
+                @Override
+                public void onFetchContactInfo(ContactInfo contactInfo) {
+                    ContactManager.addContactInfo(contactInfo);
+                }
+            };
+            FetchContactInfoRunnable runnable = new FetchContactInfoRunnable(senderJid, listener);
+            runnable.run();
+        }
+
+        String receiverJid = messageObject.getReceiverJid();
+        contactInfo = ContactManager.getContactInfo(receiverJid);
+        if (contactInfo == null) {
+            OnFetchContactListener listener = new OnFetchContactListener() {
+                @Override
+                public void onFetchContactInfo(ContactInfo contactInfo) {
+                    ContactManager.addContactInfo(contactInfo);
+                }
+            };
+            FetchContactInfoRunnable runnable = new FetchContactInfoRunnable(receiverJid, listener);
+            runnable.run();
+        }
+    }
+
 
     /**
      * 查询与指定人对话的聊天记录

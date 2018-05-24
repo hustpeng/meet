@@ -1,4 +1,4 @@
-package com.agmbat.imsdk.data.body;
+package com.agmbat.imsdk.chat.body;
 
 public class TextBody extends Body {
 

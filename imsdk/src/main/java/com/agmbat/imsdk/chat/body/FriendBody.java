@@ -1,5 +1,4 @@
-package com.agmbat.imsdk.data.body;
-
+package com.agmbat.imsdk.chat.body;
 
 import com.agmbat.imsdk.data.ContactInfo;
 

@@ -1,12 +1,4 @@
-package com.agmbat.imsdk.data.body;
-
-import android.text.TextUtils;
-
-import com.agmbat.android.media.AudioPlayer;
-import com.agmbat.app.AppFileManager;
-import com.agmbat.http.HttpUtils;
-
-import java.io.File;
+package com.agmbat.imsdk.chat.body;
 
 public class AudioBody extends Body {
 
@@ -36,18 +28,18 @@ public class AudioBody extends Body {
         builder.append("</wrap>");
         return builder.toString();
     }
-
-    public boolean isPlaying() {
-        if (AudioPlayer.getDefault().isPlaying()) {
-            String url = getAudioFile().getAbsolutePath();
-            return TextUtils.equals(AudioPlayer.getDefault().getDataSource(), url);
-        }
-        return false;
-    }
-
-    public File getAudioFile() {
-        return new File(AppFileManager.getRecordDir(), HttpUtils.getFileNameFromUrl(mFileUrl));
-    }
+//
+//    public boolean isPlaying() {
+//        if (AudioPlayer.getDefault().isPlaying()) {
+//            String url = getAudioFile().getAbsolutePath();
+//            return TextUtils.equals(AudioPlayer.getDefault().getDataSource(), url);
+//        }
+//        return false;
+//    }
+//
+//    public File getAudioFile() {
+//        return new File(AppFileManager.getRecordDir(), HttpUtils.getFileNameFromUrl(mFileUrl));
+//    }
 
     @Override
     public BodyType getBodyType() {

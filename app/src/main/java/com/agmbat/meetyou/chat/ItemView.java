@@ -2,8 +2,7 @@ package com.agmbat.meetyou.chat;
 
 import android.content.Context;
 import android.location.Location;
-import android.os.Environment;
-import android.text.Spannable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,33 +15,37 @@ import com.agmbat.android.media.AudioPlayer;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.android.utils.AppUtils;
-import com.agmbat.android.utils.ViewUtils;
-import com.agmbat.emoji.display.EmojiDisplay;
+import com.agmbat.app.AppFileManager;
 import com.agmbat.http.HttpUtils;
 import com.agmbat.imsdk.asmack.ContactManager;
-import com.agmbat.imsdk.data.ChatMessage;
+import com.agmbat.imsdk.asmack.MessageManager;
+import com.agmbat.imsdk.chat.body.AudioBody;
+import com.agmbat.imsdk.chat.body.Body;
+import com.agmbat.imsdk.chat.body.BodyParser;
+import com.agmbat.imsdk.chat.body.FireBody;
+import com.agmbat.imsdk.chat.body.FriendBody;
+import com.agmbat.imsdk.chat.body.ImageBody;
+import com.agmbat.imsdk.chat.body.LocationBody;
+import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.data.ContactInfo;
-import com.agmbat.imsdk.data.body.AudioBody;
-import com.agmbat.imsdk.data.body.FriendBody;
-import com.agmbat.imsdk.data.body.ImageBody;
-import com.agmbat.imsdk.data.body.LocationBody;
-import com.agmbat.imsdk.data.body.TextBody;
 import com.agmbat.imsdk.emoji.Emotion;
+import com.agmbat.imsdk.mgr.XmppFileManager;
+import com.agmbat.log.Debug;
+import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.time.DurationFormat;
+import com.agmbat.time.TimeUtils;
 
-import org.jivesoftware.smack.packet.MessageSubType;
 import org.jivesoftware.smackx.message.MessageObject;
 
 import java.io.File;
-
 
 public abstract class ItemView extends LinearLayout {
 
     private static final int BASE_WIDTH = (int) AppResources.dipToPixel(80);
     private static final int AUDIO_MAX_WIDTH = (int) AppResources.dipToPixel(200);
 
-    protected ImageView mAvatarView;
+    public ImageView mAvatarView;
     public TextView mChatContentView;
     public ImageView mBodyImage;
     public TextView mTimeView;
@@ -64,54 +67,49 @@ public abstract class ItemView extends LinearLayout {
         setupViews();
         setAvatar(msg);
         setMessageBody(msg);
-//        mTimeView.setText(msg.getShowTimeText());
-    }
-
-    private void setAvatar(MessageObject msg) {
-        String senderJid = msg.getSenderJid();
-        ContactInfo contactInfo = ContactManager.getContactInfo(senderJid);
-        ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+        mTimeView.setText(TimeUtils.formatDateTime(msg.getDate()));
     }
 
     /**
-     * 设置文本内容显示
+     * 设置头像
      *
-     * @param textBody
+     * @param msg
      */
-    private void setTextBody(String textBody) {
-        mBodyImage.setVisibility(View.GONE);
-        ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
-        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-        mChatContentView.setVisibility(View.VISIBLE);
-//            mChatContentView.setText(Emotion.getEmojiText(msg.getBody()));
-        Spannable spannable = EmojiDisplay.update(textBody, ViewUtils.getFontHeight(mChatContentView));
-        mChatContentView.setText(spannable);
-        mChatContentView.setOnClickListener(null);
-        mChatContentView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+    private void setAvatar(MessageObject msg) {
+        String senderJid = msg.getSenderJid();
+        ContactInfo contactInfo = ContactManager.getContactInfo(senderJid);
+        if (contactInfo != null) {
+            ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+        } else {
+            Debug.printStackTrace();
+        }
     }
 
     private void setMessageBody(MessageObject msg) {
-        MessageSubType messageSubType = msg.getMsgType();
-        if (messageSubType == MessageSubType.text) {
-            setTextBody(msg.getBody());
-        } else if (messageSubType == MessageSubType.voice) {
-            setAudioBody(mChatContentView, new AudioBody(msg.getBody(), 1000l));
+        Body body = BodyParser.parse(msg.getBody());
+        if (body instanceof TextBody) {
+            TextBody textBody = (TextBody) body;
+            setTextBody(textBody);
+        } else if (body instanceof AudioBody) {
+            AudioBody audioBody = (AudioBody) body;
+            setAudioBody(mChatContentView, audioBody);
+        } else if (body instanceof FireBody) {
+            FireBody fireBody = (FireBody) body;
+            if (MessageManager.isToOthers(msg)) {
+                setImageBody(msg, fireBody, false);
+            } else {
+                setImageBody(msg, fireBody, true);
+            }
+        } else if (body instanceof ImageBody) {
+            ImageBody imageBody = (ImageBody) body;
+            setImageBody(msg, imageBody, false);
+        } else if (body instanceof LocationBody) {
+            LocationBody locationBody = (LocationBody) body;
+            setLocationBody(locationBody);
+        } else if (body instanceof FriendBody) {
+            FriendBody friendBody = (FriendBody) body;
+            setFriendBody(friendBody);
         }
-//        Body body = msg.getBody();
-//        if (body instanceof TextBody) {
-//        } else if (body instanceof AudioBody) {
-//            AudioBody audioBody = (AudioBody) body;
-//            setAudioBody(mChatContentView, audioBody);
-//        } else if (body instanceof ImageBody) {
-//            ImageBody imageBody = (ImageBody) body;
-//            setImageBody(msg, imageBody, false);
-//        } else if (body instanceof LocationBody) {
-//            LocationBody locationBody = (LocationBody) body;
-//            setLocationBody(locationBody);
-//        } else if (body instanceof FriendBody) {
-//            FriendBody friendBody = (FriendBody) body;
-//            setFriendBody(friendBody);
-//        }
     }
 
     private void setFriendBody(final FriendBody friendBody) {
@@ -145,13 +143,13 @@ public abstract class ItemView extends LinearLayout {
 //                info.setLongitude(location.getLongitude());
 //                final Context context = getContext();
 //                Intent i = new Intent(context, MapActivity.class);
-//                i.putExtra("EXTRA_CONTACT", info);
+//                i.putExtra(Constants.EXTRA_CONTACT, info);
 //                context.startActivity(i);
             }
         });
     }
 
-    private void setImageBody(final ChatMessage msg, final ImageBody imageBody, final boolean isFire) {
+    private void setImageBody(final MessageObject msg, final ImageBody imageBody, final boolean isFire) {
         mBodyImage.setVisibility(View.VISIBLE);
         mChatContentView.setVisibility(View.GONE);
         ImageManager.displayImage(imageBody.getFileUrl(), mBodyImage);
@@ -178,7 +176,7 @@ public abstract class ItemView extends LinearLayout {
         ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         mChatContentView.setVisibility(View.VISIBLE);
-//        mChatContentView.setText(Emotion.getEmojiText(body.getContent()));
+        mChatContentView.setText(Emotion.getEmojiText(body.getContent()));
         mChatContentView.setOnClickListener(null);
         mChatContentView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
@@ -199,9 +197,7 @@ public abstract class ItemView extends LinearLayout {
         setAudioDrawable(audioBody);
         final String url = audioBody.getFileUrl();
         if (url != null && url.startsWith("http")) {
-            // TODO
-//            final File file = XmppFileManager.getRecordFile(url);
-            final File file = Environment.getExternalStorageDirectory();
+            final File file = XmppFileManager.getRecordFile(url);
             if (file.exists()) {
                 setAudioPlayTextView(tv, file.getAbsolutePath());
             } else {
@@ -232,6 +228,16 @@ public abstract class ItemView extends LinearLayout {
                 AudioPlayer.getDefault().playOrPause(url);
             }
         });
+    }
+
+
+    public boolean isPlaying(AudioBody audioBody) {
+        if (AudioPlayer.getDefault().isPlaying()) {
+            File file = new File(AppFileManager.getRecordDir(), HttpUtils.getFileNameFromUrl(audioBody.getFileUrl()));
+            String url = file.getAbsolutePath();
+            return TextUtils.equals(AudioPlayer.getDefault().getDataSource(), url);
+        }
+        return false;
     }
 
 }

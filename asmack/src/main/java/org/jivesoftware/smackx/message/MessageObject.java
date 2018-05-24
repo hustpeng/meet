@@ -55,7 +55,7 @@ public class MessageObject {
     private String msgId;
     private MessageSubType msgType;
     private MessageObjectStatus msgStatus;
-    private Long date;
+    private long date;
     private String html;
 
     private String imageThumbUrl;

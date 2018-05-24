@@ -1,9 +1,12 @@
-package com.agmbat.imsdk.data.body;
+package com.agmbat.imsdk.chat.body;
 
 import android.location.Location;
 import android.os.Bundle;
 
 public class LocationBody extends Body {
+
+
+    public static final String EXTRA_ADDRESS = "address";
 
     private final Location mLocation;
 
@@ -30,7 +33,7 @@ public class LocationBody extends Body {
         String address = "";
         Bundle extra = mLocation.getExtras();
         if (extra != null) {
-            address = extra.getString(Body.EXTRA_ADDRESS);
+            address = extra.getString(EXTRA_ADDRESS);
         }
         builder.append("<address>").append(address).append("</address>");
         builder.append("</wrap>");

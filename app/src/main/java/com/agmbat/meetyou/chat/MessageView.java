@@ -5,9 +5,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.agmbat.imsdk.asmack.MessageManager;
-import com.agmbat.imsdk.asmack.XMPPManager;
-import com.agmbat.imsdk.data.ChatMessage;
-import com.agmbat.imsdk.user.UserManager;
 
 import org.jivesoftware.smackx.message.MessageObject;
 

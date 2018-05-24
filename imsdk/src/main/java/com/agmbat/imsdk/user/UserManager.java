@@ -10,15 +10,14 @@ import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.db.MeetDatabase;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
+import com.agmbat.log.Debug;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 提供给UI层, 用于用户信息管理
@@ -82,6 +81,10 @@ public class UserManager implements IUserManager {
         XMPPApi.fetchLoginUser(loginUserJid, new OnFetchLoginUserListener() {
             @Override
             public void onFetchLoginUser(LoginUser user) {
+                if (user == null) {
+                    Debug.printStackTrace();
+                    return;
+                }
                 mLoginUser = user;
                 EventBus.getDefault().post(new LoginUserUpdateEvent(mLoginUser));
                 UiUtils.post(new Runnable() {

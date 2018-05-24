@@ -1,4 +1,4 @@
-package com.agmbat.imsdk.data.body;
+package com.agmbat.imsdk.chat.body;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -8,19 +8,15 @@ import com.agmbat.android.utils.XmlUtils;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.text.StringParser;
 
-public abstract class Body {
-
-    public static final String EXTRA_ADDRESS = "address";
-
-    public abstract String toXml();
-
-    public abstract BodyType getBodyType();
+public class BodyParser {
 
     public static Body parse(String bodyText) {
         String type = XmlUtils.getNodeValue(bodyText, "type");
         BodyType bodyType = BodyType.TEXT;
         if (!TextUtils.isEmpty(type)) {
             bodyType = BodyType.valueOf(type);
+        } else {
+            return new TextBody(bodyText);
         }
         if (bodyType == BodyType.TEXT) {
             String content = XmlUtils.getNodeValue(bodyText, "content");
@@ -50,7 +46,7 @@ public abstract class Body {
             location.setLongitude(StringParser.parseDouble(lonText));
             if (!TextUtils.isEmpty(address)) {
                 Bundle extras = new Bundle();
-                extras.putString(EXTRA_ADDRESS, address);
+                extras.putString(LocationBody.EXTRA_ADDRESS, address);
                 location.setExtras(extras);
             }
             Body body = new LocationBody(location);
@@ -63,6 +59,5 @@ public abstract class Body {
         }
         return new TextBody(bodyText);
     }
-
 
 }

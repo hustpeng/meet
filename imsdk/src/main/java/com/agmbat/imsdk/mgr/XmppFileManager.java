@@ -38,10 +38,6 @@ public class XmppFileManager {
         return dir;
     }
 
-    public static String getMeetKeystorePath() {
-        return "/sdcard/meet.keystore";
-    }
-
     public static File getAvatarFile(String key) {
         File folder = new File(XmppFileManager.AVATAR_DIR);
         if (!folder.exists()) {
