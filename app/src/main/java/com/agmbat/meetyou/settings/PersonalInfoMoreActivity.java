@@ -7,8 +7,6 @@ import android.support.annotation.Nullable;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.IM;
-import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.imsdk.user.UserManager;

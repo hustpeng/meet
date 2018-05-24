@@ -17,7 +17,7 @@ import com.agmbat.emoji.res.DefEmoticons;
 import com.agmbat.emoji.res.DefXhsEmoticons;
 import com.agmbat.file.FileUtils;
 import com.agmbat.http.HttpUtils;
-import com.agmbat.imsdk.asmack.ContactManager;
+import com.agmbat.imsdk.asmack.RosterManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
@@ -96,7 +96,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         String jid = getIntent().getStringExtra(KEY_CONTACT);
-        mParticipant = ContactManager.getContactInfo(jid);
+        mParticipant = RosterManager.getContactInfo(jid);
         setupViews();
         EventBus.getDefault().register(this);
     }

@@ -4,12 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
@@ -17,19 +13,15 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
 
 import com.agmbat.android.utils.ToastUtil;
-import com.agmbat.imsdk.asmack.ContactManager;
-import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.asmack.RosterManager;
 import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.imevent.ContactGroupLoadEvent;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
-import com.agmbat.imsdk.user.OnLoadContactGroupListener;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.search.NewFriendActivity;
 import com.agmbat.meetyou.search.SearchUserActivity;
-import com.agmbat.meetyou.search.UserInfoActivity;
 import com.agmbat.meetyou.search.ViewUserHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -43,8 +35,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * 联系人tab界面
+ */
 public class ContactsFragment extends Fragment implements OnGroupClickListener,
-        OnChildClickListener, OnCreateContextMenuListener {
+        OnChildClickListener {
 
     private static final String TAG = ContactsFragment.class.getSimpleName();
 
@@ -104,7 +99,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
 
         setState(STATE_LOADING);
 
-        ContactManager.loadContactGroup();
+        RosterManager.loadContactGroup();
     }
 
     @Override
@@ -153,16 +148,6 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         mFriendsAdapter.notifyDataSetChanged();
     }
 
-    private void setState(int state) {
-        if (state == STATE_LOADING) {
-            mProgressBar.setVisibility(View.VISIBLE);
-            mListView.setVisibility(View.GONE);
-        } else if (state == STATE_LOAD_FINISH) {
-            mProgressBar.setVisibility(View.GONE);
-            mListView.setVisibility(View.VISIBLE);
-        }
-    }
-
     @Override
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
         int groupCount = mFriendsAdapter.getGroupCount();
@@ -181,74 +166,11 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     }
 
     @Override
-    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
-                                int childPosition, long id) {
+    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         ContactInfo contactInfo = mFriendsAdapter.getChild(groupPosition, childPosition);
         ViewUserHelper.openContactDetail(getActivity(), contactInfo);
         return false;
     }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-//        ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) menuInfo;
-//        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
-//        if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-//            int groupPos = ExpandableListView.getPackedPositionGroup(info.packedPosition);
-//            menu.setHeaderTitle(R.string.context_menu_title);
-//            if (groupPos == ContactsAdapter.GROUP_INDEX_HOTLIST) {
-//                menu.add(0, MENU_INDEX_ADD_BLOCK_USER, 0, R.string.context_menu_add_block_user);
-//                menu.add(0, MENU_INDEX_REMOVE_FRIENDS, 0, R.string.context_menu_remove_hotlist);
-//            } else if (groupPos == ContactsAdapter.GROUP_INDEX_RECENTLY) {
-//                menu.add(0, MENU_INDEX_ADD_BLOCK_USER, 0, R.string.context_menu_add_block_user);
-//                menu.add(0, MENU_INDEX_REMOVE_RECENTLY, 0, R.string.context_menu_remove_recently);
-//            } else if (groupPos == ContactsAdapter.GROUP_INDEX_BLOCK) {
-//                menu.add(0, MENU_INDEX_REMOVE_BLOCK_USER, 0,
-//                        R.string.context_menu_remove_block_user);
-//            }
-//        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-//        ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) item.getMenuInfo();
-//        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
-//        if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-//            int groupPos = ExpandableListView.getPackedPositionGroup(info.packedPosition);
-//            int childPos = ExpandableListView.getPackedPositionChild(info.packedPosition);
-//            ContactInfo contactInfo = mFriendsAdapter.getChild(groupPos, childPos);
-//
-//            if (item.getItemId() == MENU_INDEX_ADD_BLOCK_USER) {
-//                if (ConnectionHelper.checkServerConnection()) {
-//                    MeetDatabase dataManager = MeetDatabase.getInstance();
-//                    int blockCount = dataManager.queryBlockUsersCount(mLoginUserName);
-//                    if (blockCount < RosterManager.MAX_BLOCK_COUNT) {
-//                        BlockUserTask blockUserTask = new BlockUserTask(contactInfo);
-//                        blockUserTask.execute();
-//                    } else {
-//                        GlobalToast.showToast(
-//                                getString(R.string.tips_block_user_reach_max,
-//                                        RosterManager.MAX_BLOCK_COUNT));
-//                    }
-//                }
-//            } else if (item.getItemId() == MENU_INDEX_REMOVE_BLOCK_USER) {
-//                if (ConnectionHelper.checkServerConnection()) {
-//                    RemoveBlockUserTask removeBlockUserTask = new RemoveBlockUserTask(contactInfo);
-//                    removeBlockUserTask.execute();
-//                }
-//            } else if (item.getItemId() == MENU_INDEX_REMOVE_FRIENDS) {
-//                if (ConnectionHelper.checkServerConnection()) {
-//                    showRemoveFriendDialog(contactInfo);
-//                }
-//            } else if (item.getItemId() == MENU_INDEX_REMOVE_RECENTLY) {
-//                removeRecentlyContact(contactInfo);
-//            }
-//        }
-        return super.onContextItemSelected(item);
-    }
-
-    private void removeRecentlyContact(ContactInfo contactInfo) {
-    }
-
 
     private void fillData(List<ContactGroup> groups) {
         mFriendsAdapter.clear();
@@ -256,6 +178,16 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         mFriendsAdapter.notifyDataSetChanged();
         if (groups.size() > 0) {
             mListView.expandGroup(0);
+        }
+    }
+
+    private void setState(int state) {
+        if (state == STATE_LOADING) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mListView.setVisibility(View.GONE);
+        } else if (state == STATE_LOAD_FINISH) {
+            mProgressBar.setVisibility(View.GONE);
+            mListView.setVisibility(View.VISIBLE);
         }
     }
 }

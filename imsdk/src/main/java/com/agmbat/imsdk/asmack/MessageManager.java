@@ -440,12 +440,12 @@ public class MessageManager extends Xepmodule {
      */
     private void ensureMessageUser(MessageObject messageObject) {
         String senderJid = messageObject.getSenderJid();
-        ContactInfo contactInfo = ContactManager.getContactInfo(senderJid);
+        ContactInfo contactInfo = RosterManager.getContactInfo(senderJid);
         if (contactInfo == null) {
             OnFetchContactListener listener = new OnFetchContactListener() {
                 @Override
                 public void onFetchContactInfo(ContactInfo contactInfo) {
-                    ContactManager.addContactInfo(contactInfo);
+                    RosterManager.addContactInfo(contactInfo);
                 }
             };
             FetchContactInfoRunnable runnable = new FetchContactInfoRunnable(senderJid, listener);
@@ -453,12 +453,12 @@ public class MessageManager extends Xepmodule {
         }
 
         String receiverJid = messageObject.getReceiverJid();
-        contactInfo = ContactManager.getContactInfo(receiverJid);
+        contactInfo = RosterManager.getContactInfo(receiverJid);
         if (contactInfo == null) {
             OnFetchContactListener listener = new OnFetchContactListener() {
                 @Override
                 public void onFetchContactInfo(ContactInfo contactInfo) {
-                    ContactManager.addContactInfo(contactInfo);
+                    RosterManager.addContactInfo(contactInfo);
                 }
             };
             FetchContactInfoRunnable runnable = new FetchContactInfoRunnable(receiverJid, listener);
@@ -520,7 +520,7 @@ public class MessageManager extends Xepmodule {
      */
     public static ContactInfo getTalkContactInfo(MessageObject messageObject) {
         String jid = getTalkJid(messageObject);
-        return ContactManager.getContactInfo(jid);
+        return RosterManager.getContactInfo(jid);
     }
 
     /**

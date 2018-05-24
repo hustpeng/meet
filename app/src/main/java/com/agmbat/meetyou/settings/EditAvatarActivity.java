@@ -1,7 +1,6 @@
 package com.agmbat.meetyou.settings;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,7 +15,6 @@ import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.loader.UILImageLoader;
 import com.agmbat.imagepicker.ui.ImageGridActivity;
 import com.agmbat.imagepicker.view.CropImageView;
-import com.agmbat.imsdk.IM;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
@@ -32,7 +30,6 @@ import com.agmbat.photoview.PhotoView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smackx.vcard.VCardObject;
 
 import java.io.File;
 import java.util.ArrayList;

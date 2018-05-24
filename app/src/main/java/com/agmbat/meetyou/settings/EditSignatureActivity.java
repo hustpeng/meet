@@ -10,8 +10,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.IM;
-import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.imsdk.user.UserManager;
@@ -20,7 +18,6 @@ import com.agmbat.meetyou.R;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smackx.vcardextend.VCardExtendObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

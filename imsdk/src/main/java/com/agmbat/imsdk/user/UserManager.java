@@ -2,7 +2,7 @@ package com.agmbat.imsdk.user;
 
 import com.agmbat.android.utils.UiUtils;
 import com.agmbat.imsdk.IUserManager;
-import com.agmbat.imsdk.asmack.ContactManager;
+import com.agmbat.imsdk.asmack.RosterManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.api.OnFetchLoginUserListener;
 import com.agmbat.imsdk.asmack.api.OnSaveUserInfoListener;
@@ -95,7 +95,7 @@ public class UserManager implements IUserManager {
                         contactInfo.setAvatar(mLoginUser.getAvatar());
                         contactInfo.setNickname(mLoginUser.getNickname());
                         contactInfo.setGender(mLoginUser.getGender());
-                        ContactManager.addContactInfo(contactInfo);
+                        RosterManager.addContactInfo(contactInfo);
                     }
                 });
             }

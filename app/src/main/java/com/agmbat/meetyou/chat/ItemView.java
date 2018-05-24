@@ -17,8 +17,8 @@ import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.android.utils.AppUtils;
 import com.agmbat.app.AppFileManager;
 import com.agmbat.http.HttpUtils;
-import com.agmbat.imsdk.asmack.ContactManager;
 import com.agmbat.imsdk.asmack.MessageManager;
+import com.agmbat.imsdk.asmack.RosterManager;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.BodyParser;
@@ -77,7 +77,7 @@ public abstract class ItemView extends LinearLayout {
      */
     private void setAvatar(MessageObject msg) {
         String senderJid = msg.getSenderJid();
-        ContactInfo contactInfo = ContactManager.getContactInfo(senderJid);
+        ContactInfo contactInfo = RosterManager.getContactInfo(senderJid);
         if (contactInfo != null) {
             ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
         } else {
