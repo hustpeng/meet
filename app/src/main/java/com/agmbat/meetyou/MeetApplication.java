@@ -8,7 +8,6 @@ import android.os.StrictMode;
 import com.agmbat.android.AppResources;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.splash.SplashManager;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.account.LoginActivity;
 
 public class MeetApplication extends Application {
@@ -20,7 +19,6 @@ public class MeetApplication extends Application {
         AppResources.init(this);
         ImageManager.initImageLoader(this);
         SplashManager.init(LoginActivity.class.getName());
-        UserManager.getInstance();
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)

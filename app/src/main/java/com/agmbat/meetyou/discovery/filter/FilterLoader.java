@@ -5,7 +5,6 @@ import android.view.View;
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.DiscoveryApi;
 import com.agmbat.meetyou.discovery.search.DiscoveryApiResult;
@@ -25,7 +24,7 @@ public class FilterLoader implements DiscoveryLoader {
 
     @Override
     public DiscoveryApiResult load(int page) {
-        LoginUser current = UserManager.getInstance().getLoginUser();
+        LoginUser current = XMPPManager.getInstance().getRosterManager().getLoginUser();
         if (current == null) {
             return null;
         }

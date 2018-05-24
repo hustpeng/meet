@@ -5,7 +5,6 @@ import android.view.View;
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 
 /**
@@ -20,7 +19,8 @@ public class HobbyLoader implements DiscoveryLoader {
 
     @Override
     public DiscoveryApiResult load(int page) {
-        return requestHobby(UserManager.getInstance().getLoginUser(), page);
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        return requestHobby(user, page);
     }
 
     @Override

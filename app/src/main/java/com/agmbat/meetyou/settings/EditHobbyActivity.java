@@ -7,9 +7,9 @@ import android.widget.Button;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.tag.CategoryTag;
 import com.agmbat.picker.tag.CategoryTagPickerView;
@@ -50,7 +50,7 @@ public class EditHobbyActivity extends Activity {
         setContentView(R.layout.activity_edit_hobby);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        update(UserManager.getInstance().getLoginUser());
+        update(XMPPManager.getInstance().getRosterManager().getLoginUser());
     }
 
     @Override
@@ -72,10 +72,42 @@ public class EditHobbyActivity extends Activity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LoginUserUpdateEvent event) {
-        LoginUser user = UserManager.getInstance().getLoginUser();
+        LoginUser user = event.getLoginUser();
         update(user);
     }
 
+    /**
+     * 点击返回键
+     */
+    @OnClick(R.id.title_btn_back)
+    void onClickBack() {
+        finish();
+    }
+
+    /**
+     * 点击保存
+     */
+    @OnClick(R.id.btn_save)
+    void onClickSave() {
+        List<String> tagList = mPickerView.getCheckedList();
+        String text = TagText.toTagText(tagList);
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        if (text.equals(user.getHobby())) {
+            // 未修改
+            finish();
+        } else {
+            // TODO 需要添加loading框
+            user.setHobby(text);
+            XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
+            finish();
+        }
+    }
+
+    /**
+     * 更新用户信息显示
+     *
+     * @param user
+     */
     private void update(LoginUser user) {
         String text = AppResources.readAssetFile("wheelpicker/hobby_category.json");
         Type jsonType = new TypeToken<List<CategoryTag>>() {
@@ -113,33 +145,5 @@ public class EditHobbyActivity extends Activity {
         }
         return false;
     }
-
-    /**
-     * 点击返回键
-     */
-    @OnClick(R.id.title_btn_back)
-    void onClickBack() {
-        finish();
-    }
-
-    /**
-     * 点击保存
-     */
-    @OnClick(R.id.btn_save)
-    void onClickSave() {
-        List<String> tagList = mPickerView.getCheckedList();
-        String text = TagText.toTagText(tagList);
-        LoginUser user = UserManager.getInstance().getLoginUser();
-        if (text.equals(user.getHobby())) {
-            // 未修改
-            finish();
-        } else {
-            // TODO 需要添加loading框
-            user.setHobby(text);
-            UserManager.getInstance().saveLoginUser(user);
-            finish();
-        }
-    }
-
 
 }

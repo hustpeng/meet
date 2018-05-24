@@ -9,9 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 
 import org.greenrobot.eventbus.EventBus;
@@ -64,7 +64,7 @@ public class EditNameActivity extends Activity {
             public void afterTextChanged(Editable s) {
             }
         });
-        update(UserManager.getInstance().getLoginUser());
+        update(XMPPManager.getInstance().getRosterManager().getLoginUser());
     }
 
     @Override
@@ -115,7 +115,7 @@ public class EditNameActivity extends Activity {
      * 修改昵称
      */
     private void changeNickName() {
-        LoginUser user = UserManager.getInstance().getLoginUser();
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         String nickName = mNameEditText.getText().toString();
         if (nickName.equals(user.getNickname())) {
             // 未修改
@@ -124,7 +124,7 @@ public class EditNameActivity extends Activity {
             // TODO 需要添加loading框
             // 修改昵称的逻辑
             user.setNickname(nickName);
-            UserManager.getInstance().saveLoginUser(user);
+            XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             finish();
         }
     }

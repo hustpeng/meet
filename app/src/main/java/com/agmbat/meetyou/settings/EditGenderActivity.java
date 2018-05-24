@@ -7,9 +7,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.GenderHelper;
 
@@ -37,13 +37,16 @@ public class EditGenderActivity extends Activity {
      */
     @BindView(R.id.btn_gender_female)
     TextView mGenderFemaleView;
+
     /**
      * 保存button
      */
     @BindView(R.id.btn_save)
     Button mSaveButton;
 
-
+    /**
+     * 用户选中的性别
+     */
     private int mGender;
 
     @Override
@@ -53,7 +56,8 @@ public class EditGenderActivity extends Activity {
         setContentView(R.layout.activity_edit_gender);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        updateGenderSelected(UserManager.getInstance().getLoginUser().getGender());
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        updateGenderSelected(user.getGender());
     }
 
     @Override
@@ -110,7 +114,7 @@ public class EditGenderActivity extends Activity {
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
-        LoginUser user = UserManager.getInstance().getLoginUser();
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         if (mGender == user.getGender()) {
             // 未修改
             finish();
@@ -118,7 +122,7 @@ public class EditGenderActivity extends Activity {
             // TODO 需要添加loading框
             // 修改性别
             user.setGender(mGender);
-            UserManager.getInstance().saveLoginUser(user);
+            XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             finish();
         }
     }

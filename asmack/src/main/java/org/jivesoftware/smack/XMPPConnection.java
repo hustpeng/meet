@@ -210,8 +210,6 @@ public class XMPPConnection extends Connection {
     private void notifyLoginSuccessful() {
         new Thread() {
             public void run() {
-                // 登录成功后重新刷新一次Roster
-                getRoster();
                 for (ConnectionListener listener : XMPPConnection.this.getConnectionListeners()) {
                     try {
                         listener.loginSuccessful();

@@ -2,7 +2,6 @@ package com.agmbat.meetyou.search;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -15,9 +14,9 @@ import android.widget.ArrayAdapter;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.tab.contacts.ContactsView;
 import com.agmbat.swipemenulist.SwipeMenu;
@@ -51,7 +50,7 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_new_friend);
         ButterKnife.bind(this);
-        mAdapter = new FriendAdapter(this, UserManager.getInstance().getFriendRequestList());
+        mAdapter = new FriendAdapter(this, XMPPManager.getInstance().getRosterManager().getFriendRequestList());
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
         // step 1. create a MenuCreator
@@ -74,7 +73,7 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
                 ContactInfo contactInfo = (ContactInfo) mListView.getItemAtPosition(position);
                 switch (index) {
                     case 0:
-                        UserManager.getInstance().removeFriendRequest(contactInfo);
+                        XMPPManager.getInstance().getRosterManager().removeFriendRequest(contactInfo);
                         mAdapter.notifyDataSetChanged();
                         break;
                 }

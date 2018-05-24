@@ -9,9 +9,9 @@ import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.GenderHelper;
 import com.agmbat.picker.NumberPicker;
@@ -52,7 +52,7 @@ public class PersonalInfoActivity extends Activity {
         setContentView(R.layout.activity_personal_info);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        update(UserManager.getInstance().getLoginUser());
+        update(XMPPManager.getInstance().getRosterManager().getLoginUser());
     }
 
     @Override
@@ -133,13 +133,13 @@ public class PersonalInfoActivity extends Activity {
      */
     @OnClick(R.id.btn_birth_year)
     void onClickBirthYear() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         int year = user.getBirthYear();
         NumberPicker.OnNumberPickListener l = new NumberPicker.OnNumberPickListener() {
             @Override
             public void onNumberPicked(int index, Number item) {
                 user.setBirthYear(item.intValue());
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
         };
         PickerHelper.showYearPicker(this, year, l);

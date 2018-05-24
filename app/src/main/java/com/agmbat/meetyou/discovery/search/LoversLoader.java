@@ -6,10 +6,12 @@ import android.view.View;
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.GenderHelper;
 
+/**
+ * 找恋人loader
+ */
 public class LoversLoader implements DiscoveryLoader {
 
     @Override
@@ -19,7 +21,8 @@ public class LoversLoader implements DiscoveryLoader {
 
     @Override
     public DiscoveryApiResult load(int page) {
-        return requestLover(UserManager.getInstance().getLoginUser(), page);
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        return requestLover(user, page);
     }
 
     @Override

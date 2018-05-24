@@ -16,9 +16,9 @@ import android.widget.TextView;
 import com.agmbat.android.AppResources;
 import com.agmbat.android.image.BitmapUtils;
 import com.agmbat.android.image.ImageManager;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.AboutActivity;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
@@ -86,7 +86,7 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        updateView(UserManager.getInstance().getLoginUser());
+        updateView(XMPPManager.getInstance().getRosterManager().getLoginUser());
     }
 
     @Override

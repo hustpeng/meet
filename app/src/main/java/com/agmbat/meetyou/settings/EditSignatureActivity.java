@@ -10,9 +10,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 
 import org.greenrobot.eventbus.EventBus;
@@ -68,7 +68,7 @@ public class EditSignatureActivity extends Activity {
                 mTipsView.setText(String.valueOf(remainder));
             }
         });
-        update(UserManager.getInstance().getLoginUser());
+        update(XMPPManager.getInstance().getRosterManager().getLoginUser());
     }
 
     @Override
@@ -107,7 +107,7 @@ public class EditSignatureActivity extends Activity {
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
-        LoginUser user = UserManager.getInstance().getLoginUser();
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         String text = mEditText.getText().toString();
         if (text.equals(user.getStatus())) {
             // 未修改
@@ -115,7 +115,7 @@ public class EditSignatureActivity extends Activity {
         } else {
             // TODO 需要添加loading框
             user.setStatus(text);
-            UserManager.getInstance().saveLoginUser(user);
+            XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             finish();
         }
     }

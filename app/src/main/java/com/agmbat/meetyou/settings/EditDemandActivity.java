@@ -10,9 +10,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 
 import org.greenrobot.eventbus.EventBus;
@@ -68,7 +68,8 @@ public class EditDemandActivity extends Activity {
                 mTipsView.setText(String.valueOf(remainder));
             }
         });
-        update(UserManager.getInstance().getLoginUser());
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        update(user);
     }
 
     @Override
@@ -108,14 +109,14 @@ public class EditDemandActivity extends Activity {
     @OnClick(R.id.btn_save)
     void onClickSave() {
         String text = mEditText.getText().toString();
-        LoginUser user = UserManager.getInstance().getLoginUser();
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         if (text.equals(user.getDemand())) {
             // 未修改
             finish();
         } else {
             // TODO 需要添加loading框
             user.setDemand(text);
-            UserManager.getInstance().saveLoginUser(user);
+            XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             finish();
         }
     }

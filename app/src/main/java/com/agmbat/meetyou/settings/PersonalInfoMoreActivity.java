@@ -7,9 +7,9 @@ import android.support.annotation.Nullable;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.NumberPicker;
 import com.agmbat.picker.OptionPicker;
@@ -26,7 +26,6 @@ import com.agmbat.picker.helper.WageItem;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smackx.vcardextend.VCardExtendObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -115,7 +114,7 @@ public class PersonalInfoMoreActivity extends Activity {
         setContentView(R.layout.activity_personal_more_info);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        update(UserManager.getInstance().getLoginUser());
+        update(XMPPManager.getInstance().getRosterManager().getLoginUser());
     }
 
     @Override
@@ -158,13 +157,13 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_height)
     void onClickHeight() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         int selected = user.getHeight();
         NumberPicker.OnNumberPickListener l = new NumberPicker.OnNumberPickListener() {
             @Override
             public void onNumberPicked(int index, Number item) {
                 user.setHeight(item.intValue());
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
         };
         PickerHelper.showHeightPicker(this, selected, l);
@@ -172,13 +171,13 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_weight)
     void onClickWeight() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         int selected = user.getWeight();
         NumberPicker.OnNumberPickListener l = new NumberPicker.OnNumberPickListener() {
             @Override
             public void onNumberPicked(int index, Number item) {
                 user.setWeight(item.intValue());
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
         };
         PickerHelper.showWeightPicker(this, selected, l);
@@ -186,13 +185,13 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_wage)
     void onClickWage() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         int value = user.getWage();
         SinglePicker.OnItemPickListener<WageItem> l = new SinglePicker.OnItemPickListener<WageItem>() {
             @Override
             public void onItemPicked(int index, WageItem item) {
                 user.setWage(item.mValue);
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
         };
         WageItem item = WageItem.valueOf(value);
@@ -201,14 +200,14 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_education)
     void onClickEducation() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         int value = user.getEducation();
         EducationItem item = EducationItem.valueOf(value);
         SinglePicker.OnItemPickListener<EducationItem> l = new SinglePicker.OnItemPickListener<EducationItem>() {
             @Override
             public void onItemPicked(int index, EducationItem item) {
                 user.setEducation(item.mValue);
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
         };
         PickerHelper.showEducationPicker(this, item, l);
@@ -216,14 +215,14 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_marriage)
     void onClickMarriage() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         int selected = user.getMarriage();
         MarriageItem item = MarriageItem.valueOf(selected);
         SinglePicker.OnItemPickListener<MarriageItem> l = new SinglePicker.OnItemPickListener<MarriageItem>() {
             @Override
             public void onItemPicked(int index, MarriageItem item) {
                 user.setMarriage(item.mValue);
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
         };
         PickerHelper.showMarriagePicker(this, item, l);
@@ -231,14 +230,14 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_car)
     void onClickCar() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         int selected = user.getCar();
         CarItem item = CarItem.valueOf(selected);
         SinglePicker.OnItemPickListener<CarItem> l = new SinglePicker.OnItemPickListener<CarItem>() {
             @Override
             public void onItemPicked(int index, CarItem item) {
                 user.setCar(item.mValue);
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
         };
         PickerHelper.showCarPicker(this, item, l);
@@ -246,14 +245,14 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_house)
     void onClickHouse() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         int selected = user.getHouse();
         HouseItem item = HouseItem.valueOf(selected);
         SinglePicker.OnItemPickListener<HouseItem> l = new SinglePicker.OnItemPickListener<HouseItem>() {
             @Override
             public void onItemPicked(int index, HouseItem item) {
                 user.setHouse(item.mValue);
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
         };
         PickerHelper.showHousePicker(this, item, l);
@@ -261,13 +260,13 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_career)
     void onClickCareer() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         String selected = user.getCareer();
         OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {
                 user.setCareer(item);
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
         };
         PickerHelper.showCareerPicker(this, selected, l);
@@ -276,13 +275,13 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_industry)
     void onClickIndustry() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         String selected = user.getIndustry();
         OptionPicker.OnOptionPickListener l = new OptionPicker.OnOptionPickListener() {
             @Override
             public void onOptionPicked(int index, String item) {
                 user.setIndustry(item);
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
         };
         PickerHelper.showIndustryPicker(this, selected, l);
@@ -315,26 +314,26 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_workarea)
     void onClickWorkarea() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         Address address = Address.fromProvinceCityText(user.getWorkarea());
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {
                 user.setWorkarea(address.toProvinceCityText());
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
         });
     }
 
     @OnClick(R.id.btn_birthplace)
     void onClickBirthplace() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         Address address = Address.fromProvinceCityText(user.getBirthplace());
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {
                 user.setBirthplace(address.toProvinceCityText());
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
 
         });
@@ -342,13 +341,13 @@ public class PersonalInfoMoreActivity extends Activity {
 
     @OnClick(R.id.btn_residence)
     void onClickResidence() {
-        final LoginUser user = UserManager.getInstance().getLoginUser();
+        final LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         Address address = Address.fromProvinceCityText(user.getResidence());
         PickerHelper.showProvinceCityPicker(this, address, new AddressPicker.OnAddressPickListener() {
             @Override
             public void onAddressPicked(Address address) {
                 user.setResidence(address.toProvinceCityText());
-                UserManager.getInstance().saveLoginUser(user);
+                XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             }
 
         });

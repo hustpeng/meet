@@ -10,9 +10,9 @@ import android.widget.TextView;
 import com.agmbat.android.AppResources;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.GenderHelper;
 import com.google.zxing.client.android.encode.QRCodeEncoder;
@@ -52,7 +52,7 @@ public class QRCodeCardActivity extends Activity {
         setContentView(R.layout.activity_qr_code_card);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        update(UserManager.getInstance().getLoginUser());
+        update(XMPPManager.getInstance().getRosterManager().getLoginUser());
     }
 
     @Override
@@ -86,6 +86,11 @@ public class QRCodeCardActivity extends Activity {
         finish();
     }
 
+    /**
+     * 更新用户信息显示
+     *
+     * @param user
+     */
     private void update(LoginUser user) {
         String text = user.getUserName();
         int dimension = (int) AppResources.dipToPixel(250);

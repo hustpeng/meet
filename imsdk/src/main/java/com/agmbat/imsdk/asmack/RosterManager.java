@@ -4,19 +4,26 @@ import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.android.utils.UiUtils;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
+import com.agmbat.imsdk.asmack.api.OnFetchLoginUserListener;
+import com.agmbat.imsdk.asmack.api.OnSaveUserInfoListener;
 import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.data.ContactGroup;
 import com.agmbat.imsdk.data.ContactInfo;
 import com.agmbat.imsdk.db.ContactDBCache;
+import com.agmbat.imsdk.db.MeetDatabase;
 import com.agmbat.imsdk.imevent.ContactGroupLoadEvent;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
+import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribedEvent;
-import com.agmbat.imsdk.user.UserManager;
+import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.log.Debug;
 import com.agmbat.log.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
@@ -50,7 +57,6 @@ public class RosterManager {
     private final RosterListenerAdapter mRosterListener = new RosterListenerAdapter();
 
 
-    private final String mLoginUserName;
     private final Connection mConnection;
 
     /**
@@ -68,7 +74,6 @@ public class RosterManager {
         roster.setSubscriptionMode(SubscriptionMode.manual);
         Log.i("Delete", "Subscription mode change to : " + roster.getSubscriptionMode());
         roster.addRosterListener(mRosterListener);
-        mLoginUserName = connection.getConfiguration().getUsername();
         mConnection = connection;
 
         mFriendGroup = new ContactGroup();
@@ -76,6 +81,37 @@ public class RosterManager {
 
         mGroupList = new ArrayList<>();
         mGroupList.add(mFriendGroup);
+
+        registerLoginEvent();
+    }
+
+    /**
+     * 注册登陆成功事件
+     */
+    private void registerLoginEvent() {
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(new ConnectionListener() {
+                    @Override
+                    public void loginSuccessful() {
+                        // 登陆成功后刷新登陆用户信息
+                        refreshLoginUserInfo();
+                        // 登录成功后重新刷新一次Roster
+                        mRoster.reload();
+                    }
+
+                    @Override
+                    public void connectionClosed() {
+                    }
+
+                    @Override
+                    public void connectionClosedOnError(Exception e) {
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -546,7 +582,7 @@ public class RosterManager {
                         public void run() {
                             RosterManager.addContactInfo(contactInfo);
 
-                            UserManager.getInstance().addFriendRequest(contactInfo);
+                            addFriendRequest(contactInfo);
                             EventBus.getDefault().post(new PresenceSubscribeEvent(contactInfo));
                         }
                     });
@@ -712,6 +748,170 @@ public class RosterManager {
             }
         });
     }
+
+
+    /**
+     * 当前登陆用户
+     */
+    private LoginUser mLoginUser;
+
+    /**
+     * 好友申请列表
+     */
+    private List<ContactInfo> mFriendRequestList;
+
+    /**
+     * 刷新登陆用户信息
+     */
+    private void refreshLoginUserInfo() {
+        String loginUserJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        XMPPApi.fetchLoginUser(loginUserJid, new OnFetchLoginUserListener() {
+            @Override
+            public void onFetchLoginUser(LoginUser user) {
+                if (user == null) {
+                    Debug.printStackTrace();
+                    return;
+                }
+                mLoginUser = user;
+                EventBus.getDefault().post(new LoginUserUpdateEvent(mLoginUser));
+                UiUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ContactInfo contactInfo = new ContactInfo();
+                        contactInfo.setBareJid(mLoginUser.getJid());
+                        contactInfo.setAvatar(mLoginUser.getAvatar());
+                        contactInfo.setNickname(mLoginUser.getNickname());
+                        contactInfo.setGender(mLoginUser.getGender());
+                        RosterManager.addContactInfo(contactInfo);
+                    }
+                });
+            }
+
+        });
+    }
+
+    /**
+     * 添加申请用户列表, 有新的朋友添加我为好友
+     *
+     * @param willToAdd
+     */
+    private void addFriendRequest(ContactInfo willToAdd) {
+        MeetDatabase.getInstance().saveFriendRequest(willToAdd);
+        ContactInfo exist = getFriendRequest(willToAdd.getBareJid());
+        if (exist == null) {
+            mFriendRequestList.add(willToAdd);
+        }
+    }
+
+    public void removeFriendRequest(ContactInfo contactInfo) {
+        MeetDatabase.getInstance().deleteFriendRequest(contactInfo);
+        ContactInfo exist = getFriendRequest(contactInfo.getBareJid());
+        if (exist != null) {
+            mFriendRequestList.remove(exist);
+        }
+    }
+
+    /**
+     * 对UI层
+     *
+     * @return
+     */
+    public List<ContactInfo> getFriendRequestList() {
+        if (mFriendRequestList == null) {
+            mFriendRequestList = MeetDatabase.getInstance().getFriendRequestList();
+        }
+        return mFriendRequestList;
+    }
+
+    /**
+     * 申请人信息
+     *
+     * @param jid
+     * @return
+     */
+    public ContactInfo getFriendRequest(String jid) {
+        List<ContactInfo> list = getFriendRequestList();
+        for (ContactInfo contactInfo : list) {
+            if (contactInfo.getBareJid().equals(jid)) {
+                return contactInfo;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 获取登陆用户信息
+     *
+     * @return
+     */
+    public LoginUser getLoginUser() {
+        return mLoginUser;
+    }
+
+
+    /**
+     * 保存登陆用户信息
+     *
+     * @param user
+     */
+    public void saveLoginUser(LoginUser user) {
+        // 先通知UI变化
+        EventBus.getDefault().post(new LoginUserUpdateEvent(user));
+        XMPPApi.saveUserInfo(user, new OnSaveUserInfoListener() {
+            @Override
+            public void onSaveUserInfo(LoginUser user) {
+                EventBus.getDefault().post(new LoginUserUpdateEvent(user));
+            }
+        });
+    }
+
+//    /**
+//     *
+//     /**
+//     * 获取好友申请列表
+//     *
+//     * @return
+//     */
+//    public List<ContactInfo> getFriendRequestList();
+//
+//    /**
+//     * 获取申请人信息
+//     *
+//     * @param jid
+//     * @return
+//     */
+//    public ContactInfo getFriendRequest(String jid);
+
+//    /**
+//     * 同意添加自己为好友
+//     *
+//     * @param contactInfo
+//     */
+//    public void acceptFriend(ContactInfo contactInfo);
+
+//    /**
+//     * 申请添加对方为好友
+//     *
+//     * @param contactInfo
+//     * @return
+//     */
+//    boolean requestAddContactToFriend(ContactInfo contactInfo);
+
+//    /**
+//     * 删除好友申请消息
+//     *
+//     * @param contactInfo
+//     */
+//    void removeFriendRequest(ContactInfo contactInfo);
+//
+//    /**
+//     * 加载所有好友分组
+//     *
+//     * @param l
+//     */
+//    void loadContactGroup(OnLoadContactGroupListener l);
+
 
 }
 

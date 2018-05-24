@@ -16,10 +16,10 @@ import com.agmbat.imagepicker.loader.UILImageLoader;
 import com.agmbat.imagepicker.ui.ImageGridActivity;
 import com.agmbat.imagepicker.view.CropImageView;
 import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
 import com.agmbat.imsdk.user.LoginUser;
-import com.agmbat.imsdk.user.UserManager;
 import com.agmbat.isdialog.ISActionSheetDialog;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
@@ -59,7 +59,7 @@ public class EditAvatarActivity extends Activity {
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
 
-        LoginUser user = UserManager.getInstance().getLoginUser();
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         update(user);
     }
 
@@ -155,7 +155,7 @@ public class EditAvatarActivity extends Activity {
      * 保存图片
      */
     private void savePicture() {
-        LoginUser user = UserManager.getInstance().getLoginUser();
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
         File imageFile = ImageManager.getDiskCacheFile(user.getAvatar());
         File headFile = new File(Environment.getExternalStorageDirectory(), "head_" + System.currentTimeMillis() + ".jpg");
         FileUtils.copyFileNio(imageFile, headFile);
@@ -197,7 +197,12 @@ public class EditAvatarActivity extends Activity {
         });
     }
 
+    /**
+     * 更新用户信息显示
+     *
+     * @param user
+     */
     private void update(LoginUser user) {
-
+        ImageManager.displayImage(user.getAvatar(), mPhotoView);
     }
 }
