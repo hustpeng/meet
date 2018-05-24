@@ -18,7 +18,7 @@ import com.agmbat.android.utils.AppUtils;
 import com.agmbat.app.AppFileManager;
 import com.agmbat.http.HttpUtils;
 import com.agmbat.imsdk.asmack.MessageManager;
-import com.agmbat.imsdk.asmack.RosterManager;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.BodyParser;
@@ -27,11 +27,10 @@ import com.agmbat.imsdk.chat.body.FriendBody;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.emoji.Emotion;
 import com.agmbat.imsdk.mgr.XmppFileManager;
 import com.agmbat.log.Debug;
-import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.time.DurationFormat;
 import com.agmbat.time.TimeUtils;
@@ -77,7 +76,7 @@ public abstract class ItemView extends LinearLayout {
      */
     private void setAvatar(MessageObject msg) {
         String senderJid = msg.getSenderJid();
-        ContactInfo contactInfo = RosterManager.getContactInfo(senderJid);
+        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactInfo(senderJid);
         if (contactInfo != null) {
             ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
         } else {

@@ -1,6 +1,6 @@
 package com.agmbat.imsdk.asmack.api;
 
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 
 /**
  * 获取联系人回调

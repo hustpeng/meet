@@ -1,9 +1,10 @@
-package com.agmbat.imsdk.db;
+package com.agmbat.imsdk.asmack.roster;
 
 import com.agmbat.db.DbException;
 import com.agmbat.db.DbManager;
-import com.agmbat.imsdk.data.ContactGroup;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactGroup;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.imsdk.db.MeetDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,23 @@ import java.util.Map;
  * 联系人表管理
  */
 public class ContactDBCache {
+
+    /**
+     * 先清空原数据, 再保存新的列表
+     *
+     * @param list
+     */
+    public static void saveAndClearOldList(List<ContactInfo> list) {
+        DbManager db = MeetDatabase.getInstance().getDatabase();
+        try {
+            db.delete(ContactInfo.class);
+            for (ContactInfo contactInfo : list) {
+                db.save(contactInfo);
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 保存或更新联系人信息
@@ -42,27 +60,15 @@ public class ContactDBCache {
      * @return
      */
     public static List<ContactGroup> getGroupList() {
-        List<ContactGroup> list = new ArrayList<>();
         DbManager db = MeetDatabase.getInstance().getDatabase();
         try {
             List<ContactInfo> contactInfoList = db.selector(ContactInfo.class).findAll();
-            if (contactInfoList != null && contactInfoList.size() > 0) {
-                Map<String, ContactGroup> groupMap = new HashMap<>();
-                for (ContactInfo contactInfo : contactInfoList) {
-                    String groupName = contactInfo.getGroupName();
-                    ContactGroup group = groupMap.get(groupName);
-                    if (group == null) {
-                        group = new ContactGroup();
-                        group.setGroupName(groupName);
-                        groupMap.put(groupName, group);
-                    }
-                    group.addContact(contactInfo);
-                }
-                list.addAll(groupMap.values());
-            }
+            return RosterHelper.toGroupList(contactInfoList);
         } catch (DbException e) {
             e.printStackTrace();
         }
-        return list;
+        return new ArrayList<>();
     }
+
+
 }

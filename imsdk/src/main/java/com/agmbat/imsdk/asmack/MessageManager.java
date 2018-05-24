@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.agmbat.android.utils.UiUtils;
 import com.agmbat.imsdk.asmack.api.FetchContactInfoRunnable;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -440,12 +440,12 @@ public class MessageManager extends Xepmodule {
      */
     private void ensureMessageUser(MessageObject messageObject) {
         String senderJid = messageObject.getSenderJid();
-        ContactInfo contactInfo = RosterManager.getContactInfo(senderJid);
+        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactInfo(senderJid);
         if (contactInfo == null) {
             OnFetchContactListener listener = new OnFetchContactListener() {
                 @Override
                 public void onFetchContactInfo(ContactInfo contactInfo) {
-                    RosterManager.addContactInfo(contactInfo);
+                    XMPPManager.getInstance().getRosterManager().addContactInfo(contactInfo);
                 }
             };
             FetchContactInfoRunnable runnable = new FetchContactInfoRunnable(senderJid, listener);
@@ -453,12 +453,12 @@ public class MessageManager extends Xepmodule {
         }
 
         String receiverJid = messageObject.getReceiverJid();
-        contactInfo = RosterManager.getContactInfo(receiverJid);
+        contactInfo = XMPPManager.getInstance().getRosterManager().getContactInfo(receiverJid);
         if (contactInfo == null) {
             OnFetchContactListener listener = new OnFetchContactListener() {
                 @Override
                 public void onFetchContactInfo(ContactInfo contactInfo) {
-                    RosterManager.addContactInfo(contactInfo);
+                    XMPPManager.getInstance().getRosterManager().addContactInfo(contactInfo);
                 }
             };
             FetchContactInfoRunnable runnable = new FetchContactInfoRunnable(receiverJid, listener);
@@ -520,7 +520,7 @@ public class MessageManager extends Xepmodule {
      */
     public static ContactInfo getTalkContactInfo(MessageObject messageObject) {
         String jid = getTalkJid(messageObject);
-        return RosterManager.getContactInfo(jid);
+        return XMPPManager.getInstance().getRosterManager().getContactInfo(jid);
     }
 
     /**
@@ -551,5 +551,15 @@ public class MessageManager extends Xepmodule {
         String talk1 = getTalkJid(m1);
         String talk2 = getTalkJid(m2);
         return talk1.equals(talk2);
+    }
+
+    /**
+     * 删除两个的聊天记录
+     *
+     * @param loginUserId
+     * @param bareJid
+     */
+    public void deleteMessage(String loginUserId, String bareJid) {
+        messageStorage.deleteChatMessage(loginUserId, bareJid);
     }
 }

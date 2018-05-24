@@ -2,7 +2,7 @@ package com.agmbat.meetyou.search;
 
 import android.view.View;
 
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.meetyou.R;
 
 /**

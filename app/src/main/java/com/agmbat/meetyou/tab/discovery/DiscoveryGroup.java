@@ -1,7 +1,7 @@
 package com.agmbat.meetyou.tab.discovery;
 
 
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 
 import java.util.List;
 

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.account.RegisterInfo;
+import com.agmbat.imsdk.asmack.roster.RosterManager;
 import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.imsdk.util.LocationAutoSync;
 import com.agmbat.imsdk.util.LocationHelper;
@@ -359,4 +360,5 @@ public class XMPPManager {
         String phone = XmppStringUtils.parseName(user);
         return phone;
     }
+
 }

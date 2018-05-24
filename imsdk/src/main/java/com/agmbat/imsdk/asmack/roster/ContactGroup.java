@@ -1,4 +1,4 @@
-package com.agmbat.imsdk.data;
+package com.agmbat.imsdk.asmack.roster;
 
 import com.agmbat.db.annotation.Column;
 import com.agmbat.db.annotation.Table;
@@ -106,8 +106,17 @@ public class ContactGroup {
         mContacts.clear();
     }
 
+    /**
+     * 获取显示名称
+     *
+     * @return
+     */
     public String getDisplayGroupName() {
-        return String.format("%s(%d)", mGroupName, getContactCount());
+        String name = mGroupName;
+        if (name.equals(RosterManager.GROUP_FRIENDS)) {
+            name = "我的好友";
+        }
+        return String.format("%s(%d)", name, getContactCount());
     }
 
     public long getGroupId() {

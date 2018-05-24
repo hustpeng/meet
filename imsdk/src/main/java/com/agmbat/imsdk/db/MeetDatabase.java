@@ -6,7 +6,8 @@ import com.agmbat.android.AppResources;
 import com.agmbat.db.DbException;
 import com.agmbat.db.DbManager;
 import com.agmbat.db.DbManagerFactory;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.FriendRequest;
 import com.agmbat.sqlite.SqliteDbConfig;
 
 import java.io.File;

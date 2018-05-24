@@ -1,6 +1,6 @@
 package com.agmbat.imsdk.user;
 
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 
 import org.jivesoftware.smackx.vcard.VCardObject;
 

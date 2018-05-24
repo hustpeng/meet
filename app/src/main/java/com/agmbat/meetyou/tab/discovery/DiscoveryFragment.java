@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.agmbat.android.AppResources;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.DiscoveryHelper;
 import com.agmbat.meetyou.tab.discovery.card.CardInfo;

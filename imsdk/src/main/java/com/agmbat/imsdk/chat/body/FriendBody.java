@@ -1,6 +1,6 @@
 package com.agmbat.imsdk.chat.body;
 
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 
 public class FriendBody extends Body {
 

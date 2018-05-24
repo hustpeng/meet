@@ -1,4 +1,4 @@
-package com.agmbat.imsdk.data;
+package com.agmbat.imsdk.asmack.roster;
 
 import com.agmbat.db.annotation.Column;
 import com.agmbat.db.annotation.Table;

@@ -15,7 +15,7 @@ import android.widget.ArrayAdapter;
 import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.tab.contacts.ContactsView;

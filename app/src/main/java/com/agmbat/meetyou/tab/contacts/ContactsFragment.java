@@ -13,9 +13,9 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
 
 import com.agmbat.android.utils.ToastUtil;
-import com.agmbat.imsdk.asmack.RosterManager;
-import com.agmbat.imsdk.data.ContactGroup;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.asmack.roster.ContactGroup;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ContactGroupLoadEvent;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
@@ -98,8 +98,8 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         mListView.setAdapter(mFriendsAdapter);
 
         setState(STATE_LOADING);
-
-        RosterManager.loadContactGroup();
+        // 加载数据
+        XMPPManager.getInstance().getRosterManager().loadContactGroupFromDB();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.agmbat.meetyou.discovery.search;
 
 import com.agmbat.imsdk.api.ApiResult;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 import com.google.gson.annotations.SerializedName;

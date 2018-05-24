@@ -2,7 +2,7 @@ package com.agmbat.meetyou.search;
 
 import android.view.View;
 
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 
 /**
  * 查看用户信息界面 , 业务处理

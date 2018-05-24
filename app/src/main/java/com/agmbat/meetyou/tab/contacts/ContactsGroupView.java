@@ -6,9 +6,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.agmbat.imsdk.data.ContactGroup;
+import com.agmbat.imsdk.asmack.roster.ContactGroup;
 import com.agmbat.meetyou.R;
 
+/**
+ * 联系人组名View
+ */
 public class ContactsGroupView extends LinearLayout {
 
     private TextView mGroupNameView;

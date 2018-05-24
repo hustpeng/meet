@@ -1,8 +1,8 @@
-package com.agmbat.imsdk.db;
+package com.agmbat.imsdk.asmack.roster;
 
 import com.agmbat.db.annotation.Column;
 import com.agmbat.db.annotation.Table;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 
 /**
  * 好友申请信息

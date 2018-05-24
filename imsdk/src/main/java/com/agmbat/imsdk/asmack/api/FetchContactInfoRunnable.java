@@ -1,7 +1,7 @@
 package com.agmbat.imsdk.asmack.api;
 
 import com.agmbat.imsdk.asmack.XMPPManager;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.user.UserHelper;
 
 import org.jivesoftware.smackx.vcard.VCardListener;

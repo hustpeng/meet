@@ -11,10 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.filter.FilterView;
-import com.agmbat.meetyou.search.UserInfoActivity;
 import com.agmbat.meetyou.search.ViewUserHelper;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;

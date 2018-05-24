@@ -1,6 +1,6 @@
 package com.agmbat.imsdk.asmack;
 
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 
 import java.util.List;
 

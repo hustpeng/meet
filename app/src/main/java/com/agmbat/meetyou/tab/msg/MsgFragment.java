@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.log.Debug;
@@ -278,6 +278,7 @@ public class MsgFragment extends Fragment {
 
         @Override
         protected List<MessageObject> doInBackground(Void... params) {
+            XMPPManager.getInstance().getRosterManager().loadContactGroupFromDBSync();
             String user = XMPPManager.getInstance().getXmppConnection().getBareJid();
             return XMPPManager.getInstance().getMessageManager().getAllMessage(user);
         }

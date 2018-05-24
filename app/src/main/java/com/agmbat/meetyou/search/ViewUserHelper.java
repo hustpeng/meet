@@ -3,8 +3,8 @@ package com.agmbat.meetyou.search;
 import android.content.Context;
 import android.content.Intent;
 
-import com.agmbat.imsdk.asmack.RosterManager;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 
 /**
  * 查看用户信息辅助类
@@ -61,7 +61,7 @@ public class ViewUserHelper {
     }
 
     private static void openDetail(Context context, ContactInfo contactInfo, int type) {
-        RosterManager.addContactInfo(contactInfo);
+        XMPPManager.getInstance().getRosterManager().addContactInfo(contactInfo);
         Intent intent = new Intent(context, UserInfoActivity.class);
         intent.putExtra(KEY_USER_INFO, contactInfo.getBareJid());
         intent.putExtra(KEY_TYPE, type);
@@ -76,7 +76,7 @@ public class ViewUserHelper {
      */
     public static BusinessHandler getBusinessHandler(Intent intent) {
         String jid = intent.getStringExtra(KEY_USER_INFO);
-        ContactInfo contactInfo = RosterManager.getContactInfo(jid);
+        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactInfo(jid);
         int type = intent.getIntExtra(KEY_TYPE, 0);
         if (type == TYPE_CONTACTS) {
             return new ContactsBusinessHandler(contactInfo);

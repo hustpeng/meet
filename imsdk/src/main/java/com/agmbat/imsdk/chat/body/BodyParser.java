@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.agmbat.android.utils.XmlUtils;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.text.StringParser;
 
 public class BodyParser {

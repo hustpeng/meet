@@ -17,12 +17,11 @@ import com.agmbat.emoji.res.DefEmoticons;
 import com.agmbat.emoji.res.DefXhsEmoticons;
 import com.agmbat.file.FileUtils;
 import com.agmbat.http.HttpUtils;
-import com.agmbat.imsdk.asmack.RosterManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.TextBody;
-import com.agmbat.imsdk.data.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.imsdk.remotefile.OnFileUploadListener2;
@@ -96,7 +95,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         String jid = getIntent().getStringExtra(KEY_CONTACT);
-        mParticipant = RosterManager.getContactInfo(jid);
+        mParticipant = XMPPManager.getInstance().getRosterManager().getContactInfo(jid);
         setupViews();
         EventBus.getDefault().register(this);
     }

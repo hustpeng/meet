@@ -174,6 +174,16 @@ public class MessageStorage {
      * @param msg
      */
     public void deleteChatMessage(MessageObject msg) {
+        deleteChatMessage(msg.getSenderJid(), msg.getReceiverJid());
+    }
+
+    /**
+     * 删除两个人的聊天记录
+     *
+     * @param aJid
+     * @param bJid
+     */
+    public void deleteChatMessage(String aJid, String bJid) {
         StringBuilder builder = new StringBuilder();
         builder.append("(");
         builder.append(Columns.MSG_SENDER_JID);
@@ -193,7 +203,7 @@ public class MessageStorage {
 
         String where = builder.toString();
         String[] selectionArgs = new String[]{
-                msg.getSenderJid(), msg.getReceiverJid(), msg.getReceiverJid(), msg.getSenderJid()
+                aJid, bJid, bJid, aJid
         };
         delete(where, selectionArgs);
     }
