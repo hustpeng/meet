@@ -65,6 +65,9 @@ public class MsgFragment extends Fragment {
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
 
+    /**
+     * 聊天记录的adapter
+     */
     private RecentChatAdapter mAdapter;
 
     @Override
@@ -78,38 +81,11 @@ public class MsgFragment extends Fragment {
         ButterKnife.bind(this, view);
         EventBus.getDefault().register(this);
         // step 1. create a MenuCreator
-        SwipeMenuCreator creator = new SwipeMenuCreator() {
+        final SwipeMenuCreator creator = new SwipeMenuCreator() {
 
             @Override
             public void create(SwipeMenu menu) {
-                // create "open" item
-                SwipeMenuItem openItem = new SwipeMenuItem(
-                        getActivity().getApplicationContext());
-                // set item background
-                openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-                        0xCE)));
-                // set item width
-                openItem.setWidth((int) AppResources.dipToPixel(90));
-                // set item title
-                openItem.setTitle("Open");
-                // set item title fontsize
-                openItem.setTitleSize(18);
-                // set item title font color
-                openItem.setTitleColor(Color.WHITE);
-                // add to menu
-                menu.addMenuItem(openItem);
-
-                // create "delete" item
-                SwipeMenuItem deleteItem = new SwipeMenuItem(
-                        getActivity().getApplicationContext());
-                // set item background
-                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                        0x3F, 0x25)));
-                // set item width
-                deleteItem.setWidth((int) AppResources.dipToPixel(90));
-                // set a icon
-//                deleteItem.setIcon(R.drawable.ic_delete);
-                // add to menu
+                SwipeMenuItem deleteItem = createDeleteMenuItem();
                 menu.addMenuItem(deleteItem);
             }
         };
@@ -120,17 +96,13 @@ public class MsgFragment extends Fragment {
         mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-//                ApplicationInfo item = mAppList.get(position);
                 switch (index) {
                     case 0:
-                        // open
-//                        open(item);
-                        break;
-                    case 1:
-                        // delete
-//					delete(item);
-//                        mAppList.remove(position);
-//                        mAdapter.notifyDataSetChanged();
+                        MessageObject item = mAdapter.getItem(position);
+                        mAdapter.remove(item);
+                        mAdapter.notifyDataSetChanged();
+                        refreshState();
+                        XMPPManager.getInstance().getMessageManager().deleteMessage(item);
                         break;
                 }
                 return false;
@@ -219,6 +191,11 @@ public class MsgFragment extends Fragment {
         updateRecentMsgList(messageObject);
     }
 
+    /**
+     * 更新聊天列表
+     *
+     * @param messageObject
+     */
     private void updateRecentMsgList(MessageObject messageObject) {
         MessageObject existTalkMessage = findTalkMessage(MessageManager.getTalkJid(messageObject));
         if (existTalkMessage != null) {
@@ -226,7 +203,9 @@ public class MsgFragment extends Fragment {
         }
         mAdapter.insert(messageObject, 0);
         mAdapter.notifyDataSetChanged();
+        refreshState();
     }
+
 
     /**
      * 查找已存的最近对话
@@ -244,6 +223,11 @@ public class MsgFragment extends Fragment {
         return null;
     }
 
+    /**
+     * 设置状态
+     *
+     * @param state
+     */
     private void setState(int state) {
         if (state == STATE_LOADING) {
             mProgressBar.setVisibility(View.VISIBLE);
@@ -255,16 +239,10 @@ public class MsgFragment extends Fragment {
             mResultView.setVisibility(View.GONE);
         } else if (state == STATE_NO_DATA) {
             mProgressBar.setVisibility(View.GONE);
-            mListView.setVisibility(View.GONE);
+            mListView.setVisibility(View.VISIBLE);
             mResultView.setText("没有聊天");
             mResultView.setVisibility(View.VISIBLE);
         }
-    }
-
-    private void fillListView(List<MessageObject> recentChatList) {
-        mAdapter = new RecentChatAdapter(getActivity(), recentChatList);
-        mListView.setAdapter(mAdapter);
-//        mAdapter.sort();
     }
 
     private class InitRecentChatTask extends AsyncTask<Void, Void, List<MessageObject>> {
@@ -285,13 +263,57 @@ public class MsgFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<MessageObject> recentChatList) {
-            fillListView(recentChatList);
-            if (recentChatList.size() > 0) {
-                setState(STATE_SUCCESS);
-            } else {
-                setState(STATE_NO_DATA);
-            }
+            mAdapter = new RecentChatAdapter(getActivity(), recentChatList);
+            mListView.setAdapter(mAdapter);
+            refreshState();
         }
+    }
+
+    /**
+     * 刷新状态显示
+     */
+    private void refreshState() {
+        if (mAdapter.getCount() > 0) {
+            setState(STATE_SUCCESS);
+        } else {
+            setState(STATE_NO_DATA);
+        }
+    }
+
+    private SwipeMenuItem createOpenMenuItem() {
+        // create "open" item
+        SwipeMenuItem openItem = new SwipeMenuItem(getActivity().getApplicationContext());
+        // set item background
+        openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
+                0xCE)));
+        // set item width
+        openItem.setWidth((int) AppResources.dipToPixel(90));
+        // set item title
+        openItem.setTitle("Open");
+        // set item title fontsize
+        openItem.setTitleSize(18);
+        // set item title font color
+        openItem.setTitleColor(Color.WHITE);
+        return openItem;
+    }
+
+    /**
+     * 创建删除的menu item
+     *
+     * @return
+     */
+    private SwipeMenuItem createDeleteMenuItem() {
+        // create "delete" item
+        SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity().getApplicationContext());
+        // set item background
+        deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9, 0x3F, 0x25)));
+        // set item width
+        deleteItem.setWidth((int) AppResources.dipToPixel(90));
+        deleteItem.setTitle("删除");
+        deleteItem.setTitleColor(Color.WHITE);
+        deleteItem.setTitleSize(18);
+        // set a icon
+        return deleteItem;
     }
 
 }

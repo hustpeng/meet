@@ -2,6 +2,7 @@ package com.agmbat.meetyou.chat;
 
 import android.content.Context;
 import android.location.Location;
+import android.text.Spannable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,9 @@ import com.agmbat.android.media.AudioPlayer;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.android.utils.AppUtils;
+import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.app.AppFileManager;
+import com.agmbat.emoji.display.EmojiDisplay;
 import com.agmbat.http.HttpUtils;
 import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
@@ -28,7 +31,6 @@ import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
-import com.agmbat.imsdk.emoji.Emotion;
 import com.agmbat.imsdk.mgr.XmppFileManager;
 import com.agmbat.log.Debug;
 import com.agmbat.meetyou.R;
@@ -175,7 +177,11 @@ public abstract class ItemView extends LinearLayout {
         ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         mChatContentView.setVisibility(View.VISIBLE);
-        mChatContentView.setText(Emotion.getEmojiText(body.getContent()));
+
+        int fontSize = ViewUtils.getFontHeight(mChatContentView);
+        Spannable spannable = EmojiDisplay.update(body.getContent(), fontSize);
+        mChatContentView.setText(spannable);
+
         mChatContentView.setOnClickListener(null);
         mChatContentView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }

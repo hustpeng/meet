@@ -41,6 +41,11 @@ public class MessageManager extends Xepmodule {
 
     private MessageStorage messageStorage;
 
+    /**
+     * 内存中消息列表
+     */
+    private Map<String, List<MessageObject>> mMessageMap = new HashMap<>();
+
     public MessageManager(final Connection connection) {
         this.xmppConnection = connection;
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -404,9 +409,6 @@ public class MessageManager extends Xepmodule {
         messageStorage.deleteAllMsg();
     }
 
-    public void deleteMessage(MessageObject msg) {
-        messageStorage.deleteChatMessage(msg);
-    }
 
     public void deleteMessage(List<MessageObject> msgs) {
         for (int i = 0; i < msgs.size(); i++) {
@@ -499,18 +501,15 @@ public class MessageManager extends Xepmodule {
         list.add(messageObject);
     }
 
-    private Map<String, List<MessageObject>> mMessageMap = new HashMap<>();
-
     /**
-     * 判断消息是否是当前用户发送的
+     * 移除内存中消息记录
      *
-     * @param messageObject
-     * @return
+     * @param jid
      */
-    public static boolean isToOthers(MessageObject messageObject) {
-        String loginUserJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
-        return messageObject.getSenderJid().equals(loginUserJid);
+    private void removeMessage(String jid) {
+        mMessageMap.remove(jid);
     }
+
 
     /**
      * 获取对话的人
@@ -521,6 +520,42 @@ public class MessageManager extends Xepmodule {
     public static ContactInfo getTalkContactInfo(MessageObject messageObject) {
         String jid = getTalkJid(messageObject);
         return XMPPManager.getInstance().getRosterManager().getContactInfo(jid);
+    }
+
+
+    /**
+     * 判断两个消息是否为同一个对话者
+     *
+     * @param m1
+     * @param m2
+     * @return
+     */
+    public static boolean isSameTalk(MessageObject m1, MessageObject m2) {
+        String talk1 = getTalkJid(m1);
+        String talk2 = getTalkJid(m2);
+        return talk1.equals(talk2);
+    }
+
+    /**
+     * 删除两个的聊天记录
+     *
+     * @param msg
+     */
+    public void deleteMessage(MessageObject msg) {
+        String talkJid = getTalkJid(msg);
+        removeMessage(talkJid);
+        messageStorage.deleteChatMessage(msg);
+    }
+
+    /**
+     * 删除两个的聊天记录
+     *
+     * @param loginUserId
+     * @param bareJid
+     */
+    public void deleteMessage(String loginUserId, String bareJid) {
+        removeMessage(bareJid);
+        messageStorage.deleteChatMessage(loginUserId, bareJid);
     }
 
     /**
@@ -541,25 +576,13 @@ public class MessageManager extends Xepmodule {
 
 
     /**
-     * 判断两个消息是否为同一个对话者
+     * 判断消息是否是当前用户发送的
      *
-     * @param m1
-     * @param m2
+     * @param messageObject
      * @return
      */
-    public static boolean isSameTalk(MessageObject m1, MessageObject m2) {
-        String talk1 = getTalkJid(m1);
-        String talk2 = getTalkJid(m2);
-        return talk1.equals(talk2);
-    }
-
-    /**
-     * 删除两个的聊天记录
-     *
-     * @param loginUserId
-     * @param bareJid
-     */
-    public void deleteMessage(String loginUserId, String bareJid) {
-        messageStorage.deleteChatMessage(loginUserId, bareJid);
+    public static boolean isToOthers(MessageObject messageObject) {
+        String loginUserJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        return messageObject.getSenderJid().equals(loginUserJid);
     }
 }

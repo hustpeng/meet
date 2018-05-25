@@ -63,6 +63,9 @@ public class ChatActivity extends Activity implements OnInputListener {
     TextView mNicknameView;
 
 
+    /**
+     * 输入控件
+     */
     @BindView(R.id.input)
     InputView mInputView;
 
@@ -81,6 +84,9 @@ public class ChatActivity extends Activity implements OnInputListener {
      * 参与聊天的联系人
      */
     private ContactInfo mParticipant;
+
+    private InputController mInputController;
+    private VoiceInputController mVoiceInputController;
 
     public static void openChat(Context context, ContactInfo contactInfo) {
         Intent intent = new Intent(context, ChatActivity.class);
@@ -121,12 +127,9 @@ public class ChatActivity extends Activity implements OnInputListener {
     public void onEvent(ReceiveMessageEvent event) {
         if (event.getMessageObject().getSenderJid().equals(mParticipant.getBareJid())) {
             mAdapter.notifyDataSetChanged();
-//            autoScrollToLast();
         }
     }
 
-    private InputController mInputController;
-    private VoiceInputController mVoiceInputController;
 
     private void setupViews() {
         mNicknameView.setText(mParticipant.getNickName());
@@ -158,7 +161,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         List<MessageObject> chatMessages = XMPPManager.getInstance().getMessageManager().getMessageList(mParticipant.getBareJid());
         mAdapter = new MessageListAdapter(this, chatMessages);
         mPtrView.setAdapter(mAdapter);
-//        autoScrollToLast();
     }
 
     private void sendTextMsg(Body message) {

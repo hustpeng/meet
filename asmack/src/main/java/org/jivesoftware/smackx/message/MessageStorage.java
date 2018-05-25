@@ -169,7 +169,7 @@ public class MessageStorage {
     }
 
     /**
-     * 删除聊天消息
+     * 删除两个人的聊天消息
      *
      * @param msg
      */
