@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <drawable name="emotion_divider">#CDCDCD</drawable>
     <color name="footer_text_color">#ff7f7f7f</color>
 </resources>
