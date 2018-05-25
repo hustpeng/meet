@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.agmbat.android.media.AmrHelper;
@@ -25,11 +24,11 @@ import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.loader.UILImageLoader;
 import com.agmbat.imagepicker.ui.ImageGridActivity;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.TextBody;
-import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.imsdk.remotefile.OnFileUploadListener2;
@@ -256,30 +255,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         menuInfo.setOnClickMenuListener(l);
         return menuInfo;
     }
-
-    private void sendTextMsg(Body message) {
-        TextBody textBody = (TextBody) message;
-        String text = textBody.getContent();
-        if (!TextUtils.isEmpty(text)) {
-            MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
-                    .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), text);
-            mAdapter.notifyDataSetChanged();
-//            autoScrollToLast();
-            if (messageObject != null) {
-                EventBus.getDefault().post(new SendMessageEvent(messageObject));
-            }
-        }
-    }
-
-//    private void autoScrollToLast() {
-//        mPtrView.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                ListView lv = mPtrView.getRefreshableView();
-//                lv.setSelection(lv.getAdapter().getCount() - 1);
-//            }
-//        });
-//    }
 
     @Override
     public void onInput(int type, String content) {
