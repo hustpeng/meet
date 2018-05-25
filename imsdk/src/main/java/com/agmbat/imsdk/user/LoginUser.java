@@ -18,6 +18,15 @@ public class LoginUser {
      */
     private VCardExtendObject mVCardExtendObject;
 
+    /**
+     * 判断用户信息是否有效
+     *
+     * @return
+     */
+    public boolean isValid() {
+        return mVCardObject != null && mVCardExtendObject != null;
+    }
+
     public VCardObject getVCardObject() {
         return mVCardObject;
     }

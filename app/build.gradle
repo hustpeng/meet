@@ -40,7 +40,7 @@ dependencies {
     compile "com.disbts:isdialog:3.9.0@aar"
     compile "com.disbts:wheelpicker:3.9.0@aar"
     compile "com.disbts:wxshare:3.9.0@aar"
-    compile "com.disbts:inputview:4.0.2@aar"
+    compile "com.disbts:inputview:4.0.3@aar"
     compile "com.disbts:inputvoice:4.0.3@aar"
     compile "com.disbts:emoji:4.0.1@aar"
 

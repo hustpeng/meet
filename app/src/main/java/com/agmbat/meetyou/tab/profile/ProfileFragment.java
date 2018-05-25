@@ -143,6 +143,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private void updateView(LoginUser user) {
+        if (!user.isValid()) {
+            return;
+        }
         mNickNameView.setText(user.getNickname());
         ImageManager.displayImage(user.getAvatar(), mAvatarView, AvatarHelper.getOptions());
         mUserNameView.setText(getString(R.string.id_name_format) + " " + user.getUserName());

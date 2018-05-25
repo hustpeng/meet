@@ -3,12 +3,15 @@ package com.agmbat.meetyou.chat;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.agmbat.android.media.AmrHelper;
+import com.agmbat.android.media.AudioPlayer;
+import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.app.AppFileManager;
 import com.agmbat.emoji.panel.p2.EmojiPanel;
@@ -17,9 +20,14 @@ import com.agmbat.emoji.res.DefEmoticons;
 import com.agmbat.emoji.res.DefXhsEmoticons;
 import com.agmbat.file.FileUtils;
 import com.agmbat.http.HttpUtils;
+import com.agmbat.imagepicker.ImagePicker;
+import com.agmbat.imagepicker.bean.ImageItem;
+import com.agmbat.imagepicker.loader.UILImageLoader;
+import com.agmbat.imagepicker.ui.ImageGridActivity;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
+import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
@@ -32,6 +40,8 @@ import com.agmbat.input.InputView;
 import com.agmbat.input.OnInputListener;
 import com.agmbat.input.VoiceInputController;
 import com.agmbat.meetyou.R;
+import com.agmbat.menu.MenuInfo;
+import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,6 +50,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smackx.message.MessageObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -88,6 +99,40 @@ public class ChatActivity extends Activity implements OnInputListener {
     private InputController mInputController;
     private VoiceInputController mVoiceInputController;
 
+    private AudioPlayer.OnPlayListener mOnPlayListener = new AudioPlayer.OnPlayListener() {
+
+        @Override
+        public boolean onError(MediaPlayer mp, int what, int extra) {
+            return false;
+        }
+
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            if (mAdapter != null) {
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onPlaying(int position, int duration) {
+        }
+
+        @Override
+        public void onPlay() {
+            if (mAdapter != null) {
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onPause() {
+            if (mAdapter != null) {
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    };
+
+
     public static void openChat(Context context, ContactInfo contactInfo) {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(KEY_CONTACT, contactInfo.getBareJid());
@@ -104,12 +149,15 @@ public class ChatActivity extends Activity implements OnInputListener {
         mParticipant = XMPPManager.getInstance().getRosterManager().getContactInfo(jid);
         setupViews();
         EventBus.getDefault().register(this);
+        AudioPlayer.getDefault().addListener(mOnPlayListener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        AudioPlayer.getDefault().removeListener(mOnPlayListener);
+        AudioPlayer.getDefault().pause();
     }
 
     @Override
@@ -149,6 +197,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         panel.setConfig(config);
         mInputController.addEmojiPanel(panel);
 
+        initOtherPanel();
         mInputController.setContentView(mPtrView);
 
 
@@ -161,6 +210,51 @@ public class ChatActivity extends Activity implements OnInputListener {
         List<MessageObject> chatMessages = XMPPManager.getInstance().getMessageManager().getMessageList(mParticipant.getBareJid());
         mAdapter = new MessageListAdapter(this, chatMessages);
         mPtrView.setAdapter(mAdapter);
+    }
+
+    private void initOtherPanel() {
+        List<MenuInfo> beans = new ArrayList<>();
+        beans.add(createMenuInfo(R.mipmap.icon_photo, "图片", new OnClickMenuListener() {
+            @Override
+            public void onClick(MenuInfo menu, int index) {
+                mInputController.reset();
+                selectPicture();
+            }
+        }));
+        beans.add(createMenuInfo(R.mipmap.icon_camera, "拍照", new OnClickMenuListener() {
+            @Override
+            public void onClick(MenuInfo menu, int index) {
+                mInputController.reset();
+                takePicture();
+            }
+        }));
+        beans.add(createMenuInfo(R.mipmap.icon_contact, "联系人", new OnClickMenuListener() {
+            @Override
+            public void onClick(MenuInfo menu, int index) {
+
+            }
+        }));
+        beans.add(createMenuInfo(R.mipmap.icon_file, "文件", new OnClickMenuListener() {
+            @Override
+            public void onClick(MenuInfo menu, int index) {
+
+            }
+        }));
+        beans.add(createMenuInfo(R.mipmap.icon_loaction, "位置", new OnClickMenuListener() {
+            @Override
+            public void onClick(MenuInfo menu, int index) {
+
+            }
+        }));
+        SimpleAppsGridView gridView = new SimpleAppsGridView(this);
+        gridView.addMenuList(beans);
+        mInputController.addOtherPanel(gridView);
+    }
+
+    private MenuInfo createMenuInfo(int icon, String title, OnClickMenuListener l) {
+        MenuInfo menuInfo = new MenuInfo(icon, title);
+        menuInfo.setOnClickMenuListener(l);
+        return menuInfo;
     }
 
     private void sendTextMsg(Body message) {
@@ -199,7 +293,7 @@ public class ChatActivity extends Activity implements OnInputListener {
             }
         } else if (type == OnInputListener.TYPE_VOICE) {
             final String path = content;
-            RemoteFileManager.uploadVoiceFile(new File(path), new OnFileUploadListener2() {
+            RemoteFileManager.uploadTempFile(new File(path), new OnFileUploadListener2() {
                 @Override
                 public void onUpload(TempFileApiResult apiResult) {
                     if (apiResult.mResult) {
@@ -218,11 +312,82 @@ public class ChatActivity extends Activity implements OnInputListener {
                         if (messageObject != null) {
                             EventBus.getDefault().post(new SendMessageEvent(messageObject));
                         }
+                    } else {
+                        ToastUtil.showToast("发送语音失败!");
                     }
                 }
             });
         }
     }
 
+
+    private static final int REQUEST_CODE_TAKE_PICTURE = 121;
+
+    /**
+     * 选择图片
+     */
+    private void selectPicture() {
+        ImagePicker imagePicker = ImagePicker.getInstance();
+        imagePicker.setImageLoader(new UILImageLoader());
+        imagePicker.setShowCamera(false); //显示拍照按钮
+        imagePicker.setCrop(false); //允许裁剪（单选才有效）
+        imagePicker.setSaveRectangle(false); //是否按矩形区域保存
+        imagePicker.setSelectLimit(9); //选中数量限制
+        imagePicker.setMultiMode(true); // 设置为单选
+        Intent intent = new Intent(this, ImageGridActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
+    }
+
+    /**
+     * 拍照
+     */
+    private void takePicture() {
+        ImagePicker imagePicker = ImagePicker.getInstance();
+        imagePicker.setImageLoader(new UILImageLoader());
+        imagePicker.setCrop(false); //允许裁剪（单选才有效）
+        Intent intent = new Intent(this, ImageGridActivity.class);
+        intent.putExtra(ImageGridActivity.EXTRAS_TAKE_PICKERS, true); // 是否是直接打开相机
+        startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_TAKE_PICTURE) {
+            if (data != null) {
+                ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+                if (images != null) {
+                    for (ImageItem imageItem : images) {
+                        sendImage(imageItem.path);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 发送图片
+     *
+     * @param path
+     */
+    private void sendImage(final String path) {
+        RemoteFileManager.uploadTempFile(new File(path), new OnFileUploadListener2() {
+            @Override
+            public void onUpload(TempFileApiResult apiResult) {
+                if (apiResult.mResult) {
+                    String url = apiResult.url;
+                    Body body = new ImageBody(url, new ImageBody.Image());
+                    MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
+                            .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), body.toXml());
+                    mAdapter.notifyDataSetChanged();
+                    if (messageObject != null) {
+                        EventBus.getDefault().post(new SendMessageEvent(messageObject));
+                    }
+                } else {
+                    ToastUtil.showToast("发送图片失败!");
+                }
+            }
+        });
+    }
 
 }

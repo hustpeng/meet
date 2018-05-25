@@ -210,7 +210,7 @@ public class XMPPConnection extends Connection {
     private void notifyLoginSuccessful() {
         new Thread() {
             public void run() {
-                for (ConnectionListener listener : XMPPConnection.this.getConnectionListeners()) {
+                for (ConnectionListener listener : getConnectionListeners()) {
                     try {
                         listener.loginSuccessful();
                     } catch (Exception e) {

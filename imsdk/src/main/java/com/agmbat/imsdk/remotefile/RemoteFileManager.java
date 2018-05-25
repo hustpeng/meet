@@ -32,11 +32,11 @@ public class RemoteFileManager {
      * @param file
      * @param l
      */
-    public static void uploadVoiceFile(final File file, final OnFileUploadListener2 l) {
+    public static void uploadTempFile(final File file, final OnFileUploadListener2 l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, TempFileApiResult>() {
             @Override
             protected TempFileApiResult doInBackground(Void... voids) {
-                return requestUploadVoiceFile(file);
+                return requestUploadTempFile(file);
             }
 
             @Override
@@ -146,12 +146,12 @@ public class RemoteFileManager {
     }
 
     /**
-     * 上传音频文件
+     * 上传临时文件
      *
      * @param file
      * @return
      */
-    private static TempFileApiResult requestUploadVoiceFile(File file) {
+    private static TempFileApiResult requestUploadTempFile(File file) {
         String phone = XMPPManager.getInstance().getConnectionUserName();
         String ticket = XMPPManager.getInstance().getTokenManager().getTokenRetry();
         String format = FileUtils.getExtension(file.getPath());

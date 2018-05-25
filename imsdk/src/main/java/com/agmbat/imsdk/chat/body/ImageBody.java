@@ -28,6 +28,9 @@ public class ImageBody extends Body {
             height = image.height;
         }
 
+        public Image() {
+        }
+
         public int rotation;
         public double latitude;
         public double longitude;

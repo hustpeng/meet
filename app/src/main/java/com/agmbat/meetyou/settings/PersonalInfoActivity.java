@@ -158,6 +158,9 @@ public class PersonalInfoActivity extends Activity {
      * 更新UI显示
      */
     private void update(LoginUser user) {
+        if (!user.isValid()) {
+            return;
+        }
         ImageManager.displayImage(user.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
         mNickNameView.setText(user.getNickname());
         mGenderView.setText(GenderHelper.getName(user.getGender()));

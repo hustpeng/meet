@@ -659,10 +659,11 @@ public class RosterManager {
         XMPPApi.fetchLoginUser(loginUserJid, new OnFetchLoginUserListener() {
             @Override
             public void onFetchLoginUser(LoginUser user) {
-                if (user == null) {
+                if (!user.isValid()) {
                     Debug.printStackTrace();
                     return;
                 }
+
                 mLoginUser = user;
                 EventBus.getDefault().post(new LoginUserUpdateEvent(mLoginUser));
                 UiUtils.post(new Runnable() {
