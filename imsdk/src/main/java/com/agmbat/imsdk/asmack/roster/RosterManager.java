@@ -82,22 +82,14 @@ public class RosterManager {
     private boolean mNetworkLoaded = false;
 
     /**
-     * 从内存缓存中获取联系人信息
-     *
-     * @param jid
-     * @return
+     * 当前登陆用户
      */
-    public ContactInfo getContactInfo(String jid) {
-        return CONTACT_MAP.get(jid);
-    }
+    private LoginUser mLoginUser;
 
-    public void addContactInfo(ContactInfo contactInfo) {
-        CONTACT_MAP.put(contactInfo.getBareJid(), contactInfo);
-    }
-
-    public void addContactInfo(String jid, ContactInfo contactInfo) {
-        CONTACT_MAP.put(jid, contactInfo);
-    }
+    /**
+     * 好友申请列表
+     */
+    private List<ContactInfo> mFriendRequestList;
 
 
     public RosterManager(Connection connection, Roster roster) {
@@ -108,6 +100,25 @@ public class RosterManager {
         mConnection = connection;
         mGroupList = new ArrayList<>();
         registerLoginEvent();
+    }
+
+    /**
+     * TODO 修改函数名，加上缓存信息
+     * 从内存缓存中获取联系人信息
+     *
+     * @param jid
+     * @return
+     */
+    public ContactInfo getContactInfo(String jid) {
+        return CONTACT_MAP.get(jid);
+    }
+
+    public void addContactInfo(ContactInfo contactInfo) {
+        addContactInfo(contactInfo.getBareJid(), contactInfo);
+    }
+
+    public void addContactInfo(String jid, ContactInfo contactInfo) {
+        CONTACT_MAP.put(jid, contactInfo);
     }
 
     /**
@@ -149,23 +160,12 @@ public class RosterManager {
     }
 
     /**
-     * 获取联系人列表
+     * 获取所有分组
      *
      * @return
      */
     public List<ContactGroup> getContactGroupList() {
         return mGroupList;
-    }
-
-    /**
-     * 获取所有分组
-     *
-     * @return
-     */
-    private List<RosterGroup> getGroupList() {
-        List<RosterGroup> list = new ArrayList<>();
-        list.addAll(mRoster.getGroups());
-        return list;
     }
 
     /**
@@ -211,7 +211,12 @@ public class RosterManager {
         return false;
     }
 
-
+    /**
+     * 删除联系人
+     *
+     * @param contact
+     * @return
+     */
     public boolean deleteContact(ContactInfo contact) {
         boolean success = false;
         try {
@@ -220,7 +225,6 @@ public class RosterManager {
             success = true;
         } catch (Exception e) {
             e.printStackTrace();
-            success = false;
         }
         return success;
     }
@@ -248,6 +252,7 @@ public class RosterManager {
     }
 
 
+    @Deprecated
     public List<ContactInfo> getContactList() {
         Collection<RosterEntry> list = mRoster.getEntries();
         List<ContactInfo> contactList = new ArrayList<ContactInfo>(list.size());
@@ -257,7 +262,7 @@ public class RosterManager {
         return contactList;
     }
 
-
+    @Deprecated
     public List<String> getGroupsNames() {
         Collection<RosterGroup> groups = mRoster.getGroups();
         List<String> result = new ArrayList<String>(groups.size());
@@ -277,10 +282,7 @@ public class RosterManager {
         }
     }
 
-//    public PresenceAdapter getPresence(String jid) {
-//        return new PresenceAdapter(mRoster.getPresence(jid));
-//    }
-
+    @Deprecated
     public void addContactToGroup(String groupName, String jid) {
         createGroup(groupName);
         RosterGroup group = mRoster.getGroup(groupName);
@@ -291,6 +293,7 @@ public class RosterManager {
         }
     }
 
+    @Deprecated
     public void removeContactFromGroup(String groupName, String jid) {
         RosterGroup group = mRoster.getGroup(groupName);
         try {
@@ -304,54 +307,6 @@ public class RosterManager {
             e.printStackTrace();
         }
     }
-
-
-    //
-    private void insertContactTable(ContactInfo friend) {
-//        if (null != friend) {
-//            MeetDatabase dataManager = MeetDatabase.getInstance();
-//            if (!dataManager.isFriendExist(mLoginUserName, friend.getUserName())) {
-//                friend.setGroups(ContactGroup.GROUP_FRIENDS);
-//                dataManager.insertFriend(friend);
-//            }
-//
-//            // Update recently and block list, but not insert
-//            if (dataManager.isRecentContactExist(mLoginUserName, friend.getUserName())) {
-//                friend.setGroups(ContactGroup.GROUP_RECENTLY);
-//                dataManager.updateRecentContact(friend, false);
-//            }
-//
-//            if (dataManager.isBlockUserExist(mLoginUserName, friend.getUserName())) {
-//                friend.setGroups(ContactGroup.GROUP_BLOCK);
-//                dataManager.updateBlockUser(friend);
-//            }
-//
-//        }
-    }
-//
-//    private void updateContactPresence(ContactInfo contact) {
-//        if (null != contact) {
-//            MeetDatabase dataManager = MeetDatabase.getInstance();
-//            contact.setGroups(ContactGroup.GROUP_FRIENDS);
-//            dataManager.updateFriend(contact);
-//
-//            if (dataManager.isRecentContactExist(mLoginUserName, contact.getUserName())) {
-//                contact.setGroups(ContactGroup.GROUP_RECENTLY);
-//                dataManager.updateRecentContact(contact, false);
-//            }
-//
-//            contact.setGroups(ContactGroup.GROUP_BLOCK);
-//            dataManager.updateBlockUser(contact);
-//        }
-//    }
-//
-//    private void deleteContactFromTable(String userName) {
-//        if (!TextUtils.isEmpty(userName)) {
-//            MeetDatabase dataManager = MeetDatabase.getInstance();
-//            dataManager.deleteFriendByUserName(mLoginUserName, userName);
-//        }
-//    }
-//
 
 
 //
@@ -410,10 +365,6 @@ public class RosterManager {
 //        return isFriend;
 //    }
 //
-//    public void clearContactsCache() {
-//        mStrangersCache.clear();
-//    }
-//
 //    public Profile getContactProfile(String jid) {
 //        Profile profile = null;
 //        if (mConnection.isAuthenticated() && !TextUtils.isEmpty(jid)) {
@@ -453,77 +404,6 @@ public class RosterManager {
         addContactToFriend(contactInfo);
         mRoster.sendSubscribed(contactInfo.getBareJid());
     }
-
-
-//    /**
-//     * @param contactInfo
-//     */
-//    public void saveOrUpdateContact(ContactInfo contactInfo) {
-//        ContactDBCache.saveOrUpdateContact(contactInfo);
-//        ContactInfo exist = findExistContactInfo(contactInfo.getBareJid());
-//        if (exist != null) {
-//            exist.apply(contactInfo);
-//        } else {
-//            mContactList.add(contactInfo);
-//        }
-//    }
-
-//    /**
-//     * 更新组信息
-//     */
-//    public void updateGroupList() {
-//        List<RosterGroup> list = getGroupList();
-//        for (RosterGroup rosterGroup : list) {
-//            ContactGroup exist = findExitContactGroup(rosterGroup.getName());
-//            if (exist == null) {
-//                ContactGroup item = new ContactGroup(rosterGroup.getName());
-//                ContactGroupTableManager.save(item);
-//                for (RosterEntry entry : rosterGroup.getEntries()) {
-//                    ContactInfo contactInfo = findExistContactInfo(entry.getUser());
-//                    if (contactInfo == null) {
-//                        android.util.Log.e("updateGroupList", "updateGroupList error");
-//                    } else {
-//                        ContactGroupBelong belong = new ContactGroupBelong();
-//                        belong.mGroupId = item.getGroupId();
-//                        belong.mUserJid = contactInfo.getBareJid();
-//                        ContactGroupBelongTableManager.save(belong);
-//
-//                        // 更新list
-//                        item.addContact(contactInfo);
-//                    }
-//                }
-//                mGroupList.add(item);
-//            } else {
-//                // 更新组信息
-//                // TODO
-//
-//            }
-//        }
-//    }
-
-//    private ContactGroup findExitContactGroup(String groupName) {
-//        for (ContactGroup exist : mGroupList) {
-//            if (exist.getGroupName().equals(groupName)) {
-//                return exist;
-//            }
-//        }
-//        return null;
-//    }
-
-//    /**
-//     * 查找已存在的联系人
-//     *
-//     * @param jid
-//     * @return
-//     */
-//    private ContactInfo findExistContactInfo(String jid) {
-//        for (ContactInfo exist : mContactList) {
-//            if (exist.getBareJid().equals(jid)) {
-//                return exist;
-//            }
-//        }
-//        return null;
-//    }
 
 
     /**
@@ -684,19 +564,6 @@ public class RosterManager {
 
 
     /**
-     * 获取联系人信息，基本上信息为空
-     *
-     * @param jid
-     * @return
-     */
-    private ContactInfo getContact(String jid) {
-        if (mRoster.contains(jid)) {
-            return getContactFromRosterEntry(mRoster.getEntry(jid));
-        }
-        return null;
-    }
-
-    /**
      * Get a contact from a RosterEntry.
      *
      * @param entry a roster entry containing information for the contact.
@@ -783,16 +650,6 @@ public class RosterManager {
         }
     }
 
-
-    /**
-     * 当前登陆用户
-     */
-    private LoginUser mLoginUser;
-
-    /**
-     * 好友申请列表
-     */
-    private List<ContactInfo> mFriendRequestList;
 
     /**
      * 刷新登陆用户信息
@@ -924,13 +781,6 @@ public class RosterManager {
 //     */
 //    public void acceptFriend(ContactInfo contactInfo);
 
-//    /**
-//     * 申请添加对方为好友
-//     *
-//     * @param contactInfo
-//     * @return
-//     */
-//    boolean requestAddContactToFriend(ContactInfo contactInfo);
 
 //    /**
 //     * 删除好友申请消息
@@ -977,6 +827,7 @@ public class RosterManager {
 
         mGroupList.clear();
         mGroupList.addAll(RosterHelper.toGroupList(newList));
+        addGroupList(mGroupList);
 
     }
 
@@ -1011,7 +862,7 @@ public class RosterManager {
         List<ContactInfo> list = new ArrayList<>();
         for (RosterGroup group : entryCollection) {
             for (RosterEntry entry : group.getEntries()) {
-                // TODO 此时信息先取内存, 如果没有再从服务器拉取
+                // 直接从服务器拉取
                 ContactInfo contactInfo = RosterHelper.loadContactInfo(entry.getUser());
                 contactInfo.setGroupName(group.getName());
                 list.add(contactInfo);
@@ -1021,5 +872,18 @@ public class RosterManager {
     }
 
 
+    /**
+     * 获取联系人信息，基本上信息为空
+     *
+     * @param jid
+     * @return
+     */
+    @Deprecated
+    private ContactInfo getContact(String jid) {
+        if (mRoster.contains(jid)) {
+            return getContactFromRosterEntry(mRoster.getEntry(jid));
+        }
+        return null;
+    }
 }
 

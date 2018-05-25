@@ -503,8 +503,8 @@ public class VCardExtendObject implements ICacheStoreObject {
         buf.append(" xmlns=\"");
         buf.append(VCardExtendProvider.namespace());
         buf.append("\">");
-//public
-        buf.append("<PUBLIC>");
+        // public
+        buf.append("<public>");
         XmppStringUtils.appendXml(buf, KEY_HEIGHT, String.valueOf(object.getHeight()));
         XmppStringUtils.appendXml(buf, KEY_EDUCATION, String.valueOf(object.getEducation()));
         XmppStringUtils.appendXml(buf, KEY_WAGE, String.valueOf(object.getWage()));
@@ -521,11 +521,11 @@ public class VCardExtendObject implements ICacheStoreObject {
         XmppStringUtils.appendXml(buf, KEY_INTRODUCE, object.getIntroduce());
         XmppStringUtils.appendXml(buf, KEY_DEMAND, object.getDemand());
         XmppStringUtils.appendXml(buf, KEY_STATUS, object.getStatus());
-        buf.append("</PUBLIC>");
+        buf.append("</public>");
 
-//private info
-        buf.append("<PRIVATE>");
-        buf.append("</PRIVATE>");
+        // private info
+        buf.append("<private>");
+        buf.append("</private>");
 
         buf.append("</");
         buf.append(VCardExtendProvider.elementName());
@@ -537,6 +537,5 @@ public class VCardExtendObject implements ICacheStoreObject {
     public String toString() {
         return getXmlNode(this);
     }
-
 
 }
