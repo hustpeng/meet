@@ -41,6 +41,7 @@ public class SplashActivity extends Activity {
         SplashManager.displaySplash(imageView);
         Permissions.request(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.RECORD_AUDIO,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE

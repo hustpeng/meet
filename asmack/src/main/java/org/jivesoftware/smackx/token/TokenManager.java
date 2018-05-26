@@ -46,6 +46,13 @@ public class TokenManager extends Xepmodule {
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {
+            // 每次登陆成功后自动刷一次token
+//            new Thread() {
+//                @Override
+//                public void run() {
+//                    getTokenRetry();
+//                }
+//            }.start();
         }
 
         @Override
