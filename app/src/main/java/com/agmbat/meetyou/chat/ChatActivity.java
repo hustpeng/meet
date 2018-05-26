@@ -346,7 +346,7 @@ public class ChatActivity extends Activity implements OnInputListener {
      * @param path
      */
     private void sendImage(final String path) {
-        RemoteFileManager.uploadTempFile(new File(path), new OnFileUploadListener2() {
+        RemoteFileManager.uploadImageFile(new File(path), new OnFileUploadListener2() {
             @Override
             public void onUpload(TempFileApiResult apiResult) {
                 if (apiResult.mResult) {

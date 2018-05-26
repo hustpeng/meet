@@ -3,11 +3,14 @@ package com.agmbat.imsdk.remotefile;
 import android.graphics.Bitmap;
 
 import com.agmbat.android.image.BitmapUtils;
+import com.agmbat.android.image.ImageUtils;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.file.FileUtils;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.mgr.UserFileManager;
+import com.agmbat.log.Log;
 import com.agmbat.text.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,6 +28,34 @@ public class RemoteFileManager {
         public void onUpload(ApiResult<String> apiResult);
 
     }
+
+    /**
+     * 上传图片文件, 如果文件过大, 需要将文件进行裁剪
+     *
+     * @param file
+     * @param l
+     */
+    public static void uploadImageFile(final File file, final OnFileUploadListener2 l) {
+        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, TempFileApiResult>() {
+            @Override
+            protected TempFileApiResult doInBackground(Void... voids) {
+                // 先对图片进行裁剪
+                String name = file.getName();
+                File outFile = new File(UserFileManager.getCurImageDir(), name);
+                ImageUtils.resizeImage(file.getAbsolutePath(), outFile.getAbsolutePath(), 1080, 1920);
+                return requestUploadTempFile(outFile.getAbsoluteFile());
+            }
+
+            @Override
+            protected void onPostExecute(TempFileApiResult result) {
+                super.onPostExecute(result);
+                if (l != null) {
+                    l.onUpload(result);
+                }
+            }
+        });
+    }
+
 
     /**
      * 上传音频文件
