@@ -3,18 +3,16 @@ package com.agmbat.meetyou.discovery.meeting;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
-import com.agmbat.android.utils.AppUtils;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.browser.WebViewActivity;
+import com.agmbat.meetyou.component.WebViewActivity;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 

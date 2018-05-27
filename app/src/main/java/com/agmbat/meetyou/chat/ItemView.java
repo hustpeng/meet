@@ -15,7 +15,6 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.media.AudioPlayer;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
-import com.agmbat.android.utils.AppUtils;
 import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.app.AppFileManager;
 import com.agmbat.emoji.display.EmojiDisplay;
@@ -34,6 +33,7 @@ import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.mgr.XmppFileManager;
 import com.agmbat.log.Debug;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.component.ViewImageActivity;
 import com.agmbat.time.DurationFormat;
 import com.agmbat.time.TimeUtils;
 
@@ -158,16 +158,7 @@ public abstract class ItemView extends LinearLayout {
 
             @Override
             public void onClick(View v) {
-                File file = imageBody.getLocalFile();
-                if (file != null && file.isFile()) {
-                    if (isFire) {
-//                        FireImageActivity.viewFireImage(getContext(), file.getAbsolutePath());
-//                        MsgManager.getInstance().delete(msg);
-//                        MeetDatabase.getInstance().deleteChatMessage(msg);
-                    } else {
-                        AppUtils.viewImage(getContext(), file);
-                    }
-                }
+                ViewImageActivity.viewImage(getContext(), imageBody.getFileUrl());
             }
         });
     }

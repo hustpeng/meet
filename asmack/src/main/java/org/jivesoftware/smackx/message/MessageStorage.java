@@ -286,6 +286,12 @@ public class MessageStorage {
     }
 
 
+    /**
+     * 获取已发送的信息
+     *
+     * @param myJid
+     * @return
+     */
     private List<MessageObject> getSenderMessageObjects(String myJid) {
         List<MessageObject> messages = new ArrayList<MessageObject>();
         Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null,

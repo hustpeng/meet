@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.browser;
+package com.agmbat.meetyou.component;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +18,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * 内置浏览器
+ */
 public class WebViewActivity extends Activity {
 
 
@@ -50,7 +53,6 @@ public class WebViewActivity extends Activity {
         intent.setData(Uri.parse(url));
         intent.putExtra(Intent.EXTRA_TITLE, title);
         intent.setClass(context, WebViewActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -69,7 +71,6 @@ public class WebViewActivity extends Activity {
         }
         Uri uri = intent.getData();
         String url = uri.toString(); // "http://www.baidu.com"
-        // //ResourcesManager.inflateView("web_browser");
         mBrowser = new WebBrowser(this, findViewById(android.R.id.content));
         mBrowser.hideInputLayout();
         mBrowser.setHideGoButton(true);

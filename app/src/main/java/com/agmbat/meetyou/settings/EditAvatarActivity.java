@@ -22,6 +22,7 @@ import com.agmbat.imsdk.remotefile.RemoteFileManager;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.isdialog.ISActionSheetDialog;
 import com.agmbat.isdialog.ISLoadingDialog;
+import com.agmbat.log.Debug;
 import com.agmbat.meetyou.R;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
@@ -203,6 +204,10 @@ public class EditAvatarActivity extends Activity {
      * @param user
      */
     private void update(LoginUser user) {
+        if (user == null || !user.isValid()) {
+            Debug.printStackTrace();
+            return;
+        }
         ImageManager.displayImage(user.getAvatar(), mPhotoView);
     }
 }

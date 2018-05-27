@@ -120,7 +120,11 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.agmbat.meetyou.browser.WebViewActivity"
+            android:name="com.agmbat.meetyou.component.WebViewActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.component.ViewImageActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
     </application>

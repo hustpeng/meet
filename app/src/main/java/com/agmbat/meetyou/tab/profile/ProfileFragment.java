@@ -19,6 +19,7 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.log.Debug;
 import com.agmbat.meetyou.AboutActivity;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
@@ -143,7 +144,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void updateView(LoginUser user) {
-        if (!user.isValid()) {
+        if (user == null || !user.isValid()) {
+            Debug.printStackTrace();
             return;
         }
         mNickNameView.setText(user.getNickname());

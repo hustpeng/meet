@@ -10,7 +10,6 @@ import com.agmbat.file.FileUtils;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.mgr.UserFileManager;
-import com.agmbat.log.Log;
 import com.agmbat.text.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -114,7 +113,13 @@ public class RemoteFileManager {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult<String>>() {
             @Override
             protected ApiResult<String> doInBackground(Void... voids) {
-                return requestUploadAvatar(path);
+                // 先对图片进行裁剪
+                File file = new File(path);
+                String name = file.getName();
+                File outFile = new File(UserFileManager.getCurImageDir(), name);
+                // 将头像大小调整为400x400
+                ImageUtils.resizeImage(file.getAbsolutePath(), outFile.getAbsolutePath(), 400, 400);
+                return requestUploadAvatar(outFile.getAbsolutePath());
             }
 
             @Override
