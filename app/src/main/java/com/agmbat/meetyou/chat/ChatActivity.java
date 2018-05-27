@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.agmbat.android.media.AmrHelper;
 import com.agmbat.android.media.AudioPlayer;
 import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.android.utils.UrlStringUtils;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.app.AppFileManager;
 import com.agmbat.emoji.panel.p2.EmojiPanel;
@@ -29,6 +30,7 @@ import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.TextBody;
+import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.imsdk.remotefile.OnFileUploadListener2;
@@ -259,7 +261,12 @@ public class ChatActivity extends Activity implements OnInputListener {
     @Override
     public void onInput(int type, String content) {
         if (type == OnInputListener.TYPE_TEXT) {
-            Body body = new TextBody(content);
+            Body body;
+            if (UrlStringUtils.isValidUrl(content)) {
+                body = new UrlBody(content);
+            } else {
+                body = new TextBody(content);
+            }
             MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
                     .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), body.toXml());
             mAdapter.notifyDataSetChanged();

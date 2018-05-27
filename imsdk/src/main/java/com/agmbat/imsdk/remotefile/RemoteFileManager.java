@@ -170,12 +170,6 @@ public class RemoteFileManager {
             String imageUrl = result.mData;
             if (!StringUtils.isEmpty(imageUrl)) {
                 result.mErrorMsg = "上传头像成功";
-                VCardObject vCardObject = XMPPManager.getInstance().getvCardManager().fetchMyVCard();
-                if (vCardObject != null) {
-                    vCardObject.setAvatar(imageUrl);
-                    EventBus.getDefault().post(vCardObject);
-                    XMPPManager.getInstance().getvCardManager().setMyVCard(vCardObject);
-                }
             }
         }
         return result;

@@ -56,6 +56,15 @@ public class LoginUser {
         return 2018 - mVCardObject.getBirthYear();
     }
 
+    /**
+     * 设置头像url
+     *
+     * @param url
+     */
+    public void setAvatar(String url) {
+        mVCardObject.setAvatar(url);
+    }
+
     public String getAvatar() {
         return mVCardObject.getAvatar();
     }

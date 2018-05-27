@@ -15,6 +15,7 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.media.AudioPlayer;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
+import com.agmbat.android.utils.AppUtils;
 import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.app.AppFileManager;
 import com.agmbat.emoji.display.EmojiDisplay;
@@ -30,6 +31,7 @@ import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.imsdk.mgr.XmppFileManager;
 import com.agmbat.log.Debug;
 import com.agmbat.meetyou.R;
@@ -91,6 +93,9 @@ public abstract class ItemView extends LinearLayout {
         if (body instanceof TextBody) {
             TextBody textBody = (TextBody) body;
             setTextBody(textBody);
+        } else if (body instanceof UrlBody) {
+            UrlBody urlBody = (UrlBody) body;
+            setUrlBody(urlBody);
         } else if (body instanceof AudioBody) {
             AudioBody audioBody = (AudioBody) body;
             setAudioBody(mChatContentView, audioBody);
@@ -163,6 +168,11 @@ public abstract class ItemView extends LinearLayout {
         });
     }
 
+    /**
+     * 设置文本消息view
+     *
+     * @param body
+     */
     private void setTextBody(TextBody body) {
         mBodyImage.setVisibility(View.GONE);
         ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
@@ -174,6 +184,26 @@ public abstract class ItemView extends LinearLayout {
         mChatContentView.setText(spannable);
 
         mChatContentView.setOnClickListener(null);
+        mChatContentView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+    }
+
+    /**
+     * 设置url body
+     *
+     * @param body
+     */
+    private void setUrlBody(final UrlBody body) {
+        mBodyImage.setVisibility(View.GONE);
+        ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mChatContentView.setVisibility(View.VISIBLE);
+        mChatContentView.setText(body.getContent());
+        mChatContentView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppUtils.openBrowser(getContext(), body.getContent());
+            }
+        });
         mChatContentView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
 

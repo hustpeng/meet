@@ -31,6 +31,7 @@ import com.agmbat.photoview.PhotoView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smackx.vcard.VCardObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -194,6 +195,12 @@ public class EditAvatarActivity extends Activity {
             public void onUpload(ApiResult<String> apiResult) {
                 ToastUtil.showToastLong(apiResult.mErrorMsg);
                 dialog.dismiss();
+                if (apiResult.mResult) {
+                    LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
+                    user.setAvatar(apiResult.mData);
+                    XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
+                }
+
             }
         });
     }

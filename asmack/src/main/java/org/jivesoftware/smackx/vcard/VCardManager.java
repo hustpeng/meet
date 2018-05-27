@@ -34,7 +34,7 @@ public class VCardManager extends Xepmodule {
         @Override
         public void loginSuccessful() {
             cacheStorage.cleanAllEntryForOwner();
-            fetchMyVCard();
+//            fetchMyVCard();
         }
 
         @Override
@@ -136,9 +136,9 @@ public class VCardManager extends Xepmodule {
      * @return 返回vcard; 如果返回null, 则会异步去服务器获取,然后通过notifyFetchVCardResult返回结果
      * 如果当前没有登录，notifyFetchVCardResult(jid, null)会在函数返回前被调用。
      */
-    public VCardObject fetchMyVCard() {
-        return fetchVCard(xmppConnection.getBareJid());
-    }
+//    public VCardObject fetchMyVCard() {
+//        return fetchVCard(xmppConnection.getBareJid());
+//    }
 
     /**
      * @param jid 必须传bare jid,不能带resource

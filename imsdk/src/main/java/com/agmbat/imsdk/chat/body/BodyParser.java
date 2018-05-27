@@ -10,6 +10,12 @@ import com.agmbat.text.StringParser;
 
 public class BodyParser {
 
+    /**
+     * 解析body
+     *
+     * @param bodyText
+     * @return
+     */
     public static Body parse(String bodyText) {
         String type = XmlUtils.getNodeValue(bodyText, "type");
         BodyType bodyType = BodyType.TEXT;
@@ -18,26 +24,40 @@ public class BodyParser {
         } else {
             return new TextBody(bodyText);
         }
+        // 文本
         if (bodyType == BodyType.TEXT) {
             String content = XmlUtils.getNodeValue(bodyText, "content");
-            Body body = new TextBody(content);
-            return body;
-        } else if (bodyType == BodyType.AUDIO) {
+            return new TextBody(content);
+        }
+        // url
+        if (bodyType == BodyType.URL) {
+            String content = XmlUtils.getNodeValue(bodyText, "content");
+            return new UrlBody(content);
+        }
+
+        // 音频
+        if (bodyType == BodyType.AUDIO) {
             String fileUrl = XmlUtils.getNodeValue(bodyText, "file_url");
             long duration = StringParser.parseLong(XmlUtils.getNodeValue(bodyText, "duration"));
-            Body body = new AudioBody(fileUrl, duration);
-            return body;
-        } else if (bodyType == BodyType.IMAGE) {
+            return new AudioBody(fileUrl, duration);
+        }
+
+        // 图片
+        if (bodyType == BodyType.IMAGE) {
             String fileUrl = XmlUtils.getNodeValue(bodyText, "file_url");
             ImageBody.Image image = new ImageBody.Image(bodyText);
-            Body body = new ImageBody(fileUrl, image);
-            return body;
-        } else if (bodyType == BodyType.FIRE) {
+            return new ImageBody(fileUrl, image);
+        }
+
+        // 阅后即焚图片
+        if (bodyType == BodyType.FIRE) {
             String fileUrl = XmlUtils.getNodeValue(bodyText, "file_url");
             ImageBody.Image image = new ImageBody.Image(bodyText);
-            Body body = new FireBody(fileUrl, image);
-            return body;
-        } else if (bodyType == BodyType.GEOLOC) {
+            return new FireBody(fileUrl, image);
+        }
+
+        // 位置
+        if (bodyType == BodyType.GEOLOC) {
             String latText = XmlUtils.getNodeValue(bodyText, "lat");
             String lonText = XmlUtils.getNodeValue(bodyText, "lon");
             String address = XmlUtils.getNodeValue(bodyText, "address");
@@ -49,9 +69,11 @@ public class BodyParser {
                 extras.putString(LocationBody.EXTRA_ADDRESS, address);
                 location.setExtras(extras);
             }
-            Body body = new LocationBody(location);
-            return body;
-        } else if (bodyType == BodyType.FRIEND) {
+            return new LocationBody(location);
+        }
+
+        // 好友
+        if (bodyType == BodyType.FRIEND) {
             String jid = XmlUtils.getNodeValue(bodyText, "friend_jid");
             ContactInfo contactInfo = new ContactInfo();
             contactInfo.setBareJid(jid);
