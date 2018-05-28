@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.agmbat.meetyou">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -8,6 +9,14 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="false"
+        android:resizeable="true"
+        android:smallScreens="true"
+        tools:replace="android:normalScreens" />
 
     <application
         android:name="com.agmbat.meetyou.MeetApplication"
@@ -125,6 +134,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.agmbat.meetyou.component.ViewImageActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.component.MapActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
     </application>

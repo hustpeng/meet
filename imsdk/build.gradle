@@ -32,6 +32,8 @@ dependencies {
     compile "com.disbts:universal-image-loader:1.9.7"
     compile "com.disbts:adatabase:3.8.4"
     compile "com.disbts:dom4j:1.6.1"
+    compile "com.disbts:baidumap:${BAIDUMAP_VERSION}@aar"
+
     compile project(':asmack')
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.greenrobot:eventbus:3.0.0'

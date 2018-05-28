@@ -1,20 +1,19 @@
 package com.agmbat.imsdk.chat.body;
 
-import android.location.Location;
-import android.os.Bundle;
+import com.baidu.location.BDLocation;
 
 public class LocationBody extends Body {
 
 
     public static final String EXTRA_ADDRESS = "address";
 
-    private final Location mLocation;
+    private final BDLocation mLocation;
 
-    public LocationBody(Location location) {
+    public LocationBody(BDLocation location) {
         mLocation = location;
     }
 
-    public Location getLocation() {
+    public BDLocation getLocation() {
         return mLocation;
     }
 
@@ -31,10 +30,10 @@ public class LocationBody extends Body {
         builder.append("<lat>").append(mLocation.getLatitude()).append("</lat>");
         builder.append("<lon>").append(mLocation.getLongitude()).append("</lon>");
         String address = "";
-        Bundle extra = mLocation.getExtras();
-        if (extra != null) {
-            address = extra.getString(EXTRA_ADDRESS);
-        }
+//        Bundle extra = mLocation.getExtras();
+//        if (extra != null) {
+//            address = extra.getString(EXTRA_ADDRESS);
+//        }
         builder.append("<address>").append(address).append("</address>");
         builder.append("</wrap>");
         return builder.toString();

@@ -1,7 +1,6 @@
 package com.agmbat.meetyou.chat;
 
 import android.content.Context;
-import android.location.Location;
 import android.text.Spannable;
 import android.text.TextUtils;
 import android.view.View;
@@ -18,10 +17,13 @@ import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.android.utils.AppUtils;
 import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.app.AppFileManager;
+import com.agmbat.baidumap.MapConfig;
+import com.agmbat.baidumap.MapHelper;
 import com.agmbat.emoji.display.EmojiDisplay;
 import com.agmbat.http.HttpUtils;
 import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.BodyParser;
@@ -30,7 +32,6 @@ import com.agmbat.imsdk.chat.body.FriendBody;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
-import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.imsdk.mgr.XmppFileManager;
 import com.agmbat.log.Debug;
@@ -38,10 +39,17 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.component.ViewImageActivity;
 import com.agmbat.time.DurationFormat;
 import com.agmbat.time.TimeUtils;
+import com.baidu.location.BDLocation;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.model.LatLng;
 
 import org.jivesoftware.smackx.message.MessageObject;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class ItemView extends LinearLayout {
 
@@ -111,7 +119,7 @@ public abstract class ItemView extends LinearLayout {
             setImageBody(msg, imageBody, false);
         } else if (body instanceof LocationBody) {
             LocationBody locationBody = (LocationBody) body;
-            setLocationBody(locationBody);
+            setLocationBody(msg, locationBody);
         } else if (body instanceof FriendBody) {
             FriendBody friendBody = (FriendBody) body;
             setFriendBody(friendBody);
@@ -135,7 +143,12 @@ public abstract class ItemView extends LinearLayout {
         mChatContentView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
 
-    public void setLocationBody(final LocationBody locationBody) {
+    /**
+     * 设置位置显示
+     *
+     * @param locationBody
+     */
+    public void setLocationBody(final MessageObject msg, final LocationBody locationBody) {
         mBodyImage.setVisibility(View.VISIBLE);
         mChatContentView.setVisibility(View.GONE);
         mBodyImage.setImageResource(R.drawable.ic_chat_def_location);
@@ -143,18 +156,59 @@ public abstract class ItemView extends LinearLayout {
 
             @Override
             public void onClick(View v) {
-                Location location = locationBody.getLocation();
-//                ContactInfo info = new ContactInfo(ChatRes.getParticipant());
-//                info.setLatitude(location.getLatitude());
-//                info.setLongitude(location.getLongitude());
-//                final Context context = getContext();
-//                Intent i = new Intent(context, MapActivity.class);
-//                i.putExtra(Constants.EXTRA_CONTACT, info);
-//                context.startActivity(i);
+                viewMap(msg, locationBody);
             }
         });
     }
 
+    /**
+     * 创建marker
+     *
+     * @param lat
+     * @param lon
+     * @param iconPath
+     * @return
+     */
+    private MarkerOptions createMarkerOptions(double lat, double lon, String iconPath) {
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromPath(iconPath);
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(new LatLng(lat, lon));
+        markerOptions.anchor(0.5f, 0.5f);
+        markerOptions.icon(icon);
+        markerOptions.zIndex(9);
+        return markerOptions;
+    }
+
+    /**
+     * 查看地图
+     *
+     * @param msg
+     * @param locationBody
+     */
+    private void viewMap(MessageObject msg, LocationBody locationBody) {
+        MapConfig config = new MapConfig();
+        config.setIsShowCurrent(true);
+        List<MarkerOptions> list = new ArrayList<>();
+
+        BDLocation location = locationBody.getLocation();
+        config.setMapCenter(new LatLng(location.getLatitude(), location.getLongitude()));
+
+        String senderJid = msg.getSenderJid();
+        ContactInfo user = XMPPManager.getInstance().getRosterManager().getContactInfo(senderJid);
+        File file = ImageManager.getDiskCacheFile(user.getAvatar());
+        list.add(createMarkerOptions(location.getLatitude(), location.getLongitude(), file.getAbsolutePath()));
+
+        config.setMarkerList(list);
+        MapHelper.viewMap(getContext(), config);
+    }
+
+    /**
+     * 设置图片
+     *
+     * @param msg
+     * @param imageBody
+     * @param isFire
+     */
     private void setImageBody(final MessageObject msg, final ImageBody imageBody, final boolean isFire) {
         mBodyImage.setVisibility(View.VISIBLE);
         mChatContentView.setVisibility(View.GONE);

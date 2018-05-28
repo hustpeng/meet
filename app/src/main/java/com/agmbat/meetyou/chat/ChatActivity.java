@@ -11,9 +11,11 @@ import android.widget.TextView;
 import com.agmbat.android.media.AmrHelper;
 import com.agmbat.android.media.AudioPlayer;
 import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.android.utils.UiUtils;
 import com.agmbat.android.utils.UrlStringUtils;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.app.AppFileManager;
+import com.agmbat.baidumap.BDLocationManager;
 import com.agmbat.emoji.panel.p2.EmojiPanel;
 import com.agmbat.emoji.panel.p2.EmojiPanelConfig;
 import com.agmbat.emoji.res.DefEmoticons;
@@ -29,6 +31,7 @@ import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.ImageBody;
+import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
@@ -44,6 +47,9 @@ import com.agmbat.meetyou.R;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.mapapi.model.LatLng;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -133,6 +139,34 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
     };
 
+    /**
+     * 位置管理
+     */
+    private BDLocationManager mLocationManager;
+
+    private BDLocationListener mBDLocationListener = new BDLocationListener() {
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            if (location != null) {
+                final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//                DataManager.getInstance().setPlace(latLng);
+//                final String address = location.getAddrStr();
+//                DataManager.getInstance().setAddress(address);
+                UiUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        stopRecordLocation();
+//                        LocaltrainHelper.loadHotPoints();
+//                        if (TextUtils.isEmpty(address)) {
+//                            mSearch = GeoCoder.newInstance();
+//                            mSearch.setOnGetGeoCodeResultListener(mOnGetGeoCoderResultListener);
+//                            mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
+//                        }
+                    }
+                });
+            }
+        }
+    };
 
     public static void openChat(Context context, ContactInfo contactInfo) {
         Intent intent = new Intent(context, ChatActivity.class);
@@ -151,6 +185,10 @@ public class ChatActivity extends Activity implements OnInputListener {
         setupViews();
         EventBus.getDefault().register(this);
         AudioPlayer.getDefault().addListener(mOnPlayListener);
+
+        mLocationManager = new BDLocationManager();
+        mLocationManager.recordLocation(true);
+        mLocationManager.addBDLocationListener(mBDLocationListener);
     }
 
     @Override
@@ -159,6 +197,8 @@ public class ChatActivity extends Activity implements OnInputListener {
         EventBus.getDefault().unregister(this);
         AudioPlayer.getDefault().removeListener(mOnPlayListener);
         AudioPlayer.getDefault().pause();
+
+        stopRecordLocation();
     }
 
     @Override
@@ -179,6 +219,10 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
     }
 
+    private void stopRecordLocation() {
+        mLocationManager.removeBDLocationListener(mBDLocationListener);
+        mLocationManager.recordLocation(false);
+    }
 
     private void setupViews() {
         mNicknameView.setText(mParticipant.getNickName());
@@ -244,7 +288,13 @@ public class ChatActivity extends Activity implements OnInputListener {
         beans.add(createMenuInfo(R.mipmap.icon_loaction, "位置", new OnClickMenuListener() {
             @Override
             public void onClick(MenuInfo menu, int index) {
-
+                BDLocation location = mLocationManager.getCurrentLocation();
+                if (location == null) {
+                    ToastUtil.showToast("获取位置失败");
+                    return;
+                }
+                LocationBody body = new LocationBody(location);
+                sendMessage(body);
             }
         }));
         SimpleAppsGridView gridView = new SimpleAppsGridView(this);
@@ -267,12 +317,7 @@ public class ChatActivity extends Activity implements OnInputListener {
             } else {
                 body = new TextBody(content);
             }
-            MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
-                    .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), body.toXml());
-            mAdapter.notifyDataSetChanged();
-            if (messageObject != null) {
-                EventBus.getDefault().post(new SendMessageEvent(messageObject));
-            }
+            sendMessage(body);
         } else if (type == OnInputListener.TYPE_VOICE) {
             final String path = content;
             RemoteFileManager.uploadTempFile(new File(path), new OnFileUploadListener2() {
@@ -287,13 +332,7 @@ public class ChatActivity extends Activity implements OnInputListener {
 
                         long duration = AmrHelper.getAmrDuration(newFile);
                         Body body = new AudioBody(url, duration);
-
-                        MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
-                                .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), body.toXml());
-                        mAdapter.notifyDataSetChanged();
-                        if (messageObject != null) {
-                            EventBus.getDefault().post(new SendMessageEvent(messageObject));
-                        }
+                        sendMessage(body);
                     } else {
                         ToastUtil.showToast("发送语音失败!");
                     }
@@ -302,6 +341,19 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
     }
 
+    /**
+     * 发送消息
+     *
+     * @param body
+     */
+    private void sendMessage(Body body) {
+        MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
+                .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), body.toXml());
+        mAdapter.notifyDataSetChanged();
+        if (messageObject != null) {
+            EventBus.getDefault().post(new SendMessageEvent(messageObject));
+        }
+    }
 
     private static final int REQUEST_CODE_TAKE_PICTURE = 121;
 
