@@ -1,6 +1,7 @@
 package com.agmbat.meetyou.search;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
@@ -65,6 +66,12 @@ public class UserInfoActivity extends Activity {
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     @OnClick(R.id.title_btn_back)

@@ -26,6 +26,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="TTFdGMPcwEX5qcZK6kEKS0MckfrjmmUg" />
+
         <activity
             android:name="com.agmbat.meetyou.account.LoginActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"

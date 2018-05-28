@@ -13,6 +13,7 @@ import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
 
@@ -40,6 +41,11 @@ public class LoginActivity extends FragmentActivity {
     @BindView(R.id.input_password)
     EditText mPasswordView;
 
+    private ISLoadingDialog mISLoadingDialog;
+
+    /**
+     * 账号管理
+     */
     private ImAccountManager mLoginManager;
 
     @Override
@@ -104,7 +110,11 @@ public class LoginActivity extends FragmentActivity {
         startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
     }
 
+    /**
+     * 登录
+     */
     private void login() {
+        showLoadingDialog();
         String userName = mUserNameView.getText().toString();
         String password = mPasswordView.getText().toString();
 
@@ -112,6 +122,7 @@ public class LoginActivity extends FragmentActivity {
         mLoginManager.login(userName, password, new ImAccountManager.OnLoginListener() {
             @Override
             public void onLogin(ApiResult result) {
+                hideLoadingDialog();
                 ToastUtil.showToastLong(result.mErrorMsg);
                 if (result.mResult) {
                     finish();
@@ -151,4 +162,24 @@ public class LoginActivity extends FragmentActivity {
         mLoginButton.setEnabled(enabled);
     }
 
+    /**
+     * 显示loading框
+     */
+    private void showLoadingDialog() {
+        if (mISLoadingDialog == null) {
+            mISLoadingDialog = new ISLoadingDialog(this);
+            mISLoadingDialog.setMessage("正在登录...");
+            mISLoadingDialog.setCancelable(false);
+        }
+        mISLoadingDialog.show();
+    }
+
+    /**
+     * 隐藏loading框
+     */
+    private void hideLoadingDialog() {
+        if (mISLoadingDialog != null) {
+            mISLoadingDialog.dismiss();
+        }
+    }
 }

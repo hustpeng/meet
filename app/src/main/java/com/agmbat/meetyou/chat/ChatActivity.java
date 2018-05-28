@@ -288,11 +288,12 @@ public class ChatActivity extends Activity implements OnInputListener {
         beans.add(createMenuInfo(R.mipmap.icon_loaction, "位置", new OnClickMenuListener() {
             @Override
             public void onClick(MenuInfo menu, int index) {
-                BDLocation location = mLocationManager.getCurrentLocation();
+                BDLocation location = mLocationManager.getLocation();
                 if (location == null) {
                     ToastUtil.showToast("获取位置失败");
                     return;
                 }
+                mInputController.reset();
                 LocationBody body = new LocationBody(location);
                 sendMessage(body);
             }
