@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.agmbat.android.utils.XmlUtils;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.map.LocationObject;
 import com.agmbat.text.StringParser;
 import com.baidu.location.BDLocation;
 
@@ -62,15 +63,11 @@ public class BodyParser {
             String latText = XmlUtils.getNodeValue(bodyText, "lat");
             String lonText = XmlUtils.getNodeValue(bodyText, "lon");
             String address = XmlUtils.getNodeValue(bodyText, "address");
-            BDLocation location = new BDLocation();
-            location.setLatitude(StringParser.parseDouble(latText));
-            location.setLongitude(StringParser.parseDouble(lonText));
-//            if (!TextUtils.isEmpty(address)) {
-//                Bundle extras = new Bundle();
-//                extras.putString(LocationBody.EXTRA_ADDRESS, address);
-//                location.setExtras(extras);
-//            }
-            return new LocationBody(location);
+            LocationObject locationObject = new LocationObject();
+            locationObject.mLatitude = StringParser.parseDouble(latText);
+            locationObject.mLongitude = StringParser.parseDouble(lonText);
+            locationObject.mAddress = address;
+            return new LocationBody(locationObject);
         }
 
         // 好友

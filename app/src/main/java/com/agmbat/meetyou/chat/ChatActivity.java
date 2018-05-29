@@ -43,6 +43,9 @@ import com.agmbat.input.InputController;
 import com.agmbat.input.InputView;
 import com.agmbat.input.OnInputListener;
 import com.agmbat.input.VoiceInputController;
+import com.agmbat.map.LocationCallback;
+import com.agmbat.map.LocationObject;
+import com.agmbat.map.Maps;
 import com.agmbat.meetyou.R;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
@@ -139,34 +142,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
     };
 
-    /**
-     * 位置管理
-     */
-    private BDLocationManager mLocationManager;
-
-    private BDLocationListener mBDLocationListener = new BDLocationListener() {
-        @Override
-        public void onReceiveLocation(BDLocation location) {
-            if (location != null) {
-                final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//                DataManager.getInstance().setPlace(latLng);
-//                final String address = location.getAddrStr();
-//                DataManager.getInstance().setAddress(address);
-                UiUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        stopRecordLocation();
-//                        LocaltrainHelper.loadHotPoints();
-//                        if (TextUtils.isEmpty(address)) {
-//                            mSearch = GeoCoder.newInstance();
-//                            mSearch.setOnGetGeoCodeResultListener(mOnGetGeoCoderResultListener);
-//                            mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
-//                        }
-                    }
-                });
-            }
-        }
-    };
 
     public static void openChat(Context context, ContactInfo contactInfo) {
         Intent intent = new Intent(context, ChatActivity.class);
@@ -185,10 +160,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         setupViews();
         EventBus.getDefault().register(this);
         AudioPlayer.getDefault().addListener(mOnPlayListener);
-
-        mLocationManager = new BDLocationManager();
-        mLocationManager.recordLocation(true);
-        mLocationManager.addBDLocationListener(mBDLocationListener);
     }
 
     @Override
@@ -197,8 +168,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         EventBus.getDefault().unregister(this);
         AudioPlayer.getDefault().removeListener(mOnPlayListener);
         AudioPlayer.getDefault().pause();
-
-        stopRecordLocation();
     }
 
     @Override
@@ -217,11 +186,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         if (event.getMessageObject().getSenderJid().equals(mParticipant.getBareJid())) {
             mAdapter.notifyDataSetChanged();
         }
-    }
-
-    private void stopRecordLocation() {
-        mLocationManager.removeBDLocationListener(mBDLocationListener);
-        mLocationManager.recordLocation(false);
     }
 
     private void setupViews() {
@@ -288,14 +252,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         beans.add(createMenuInfo(R.mipmap.icon_loaction, "位置", new OnClickMenuListener() {
             @Override
             public void onClick(MenuInfo menu, int index) {
-                BDLocation location = mLocationManager.getLocation();
-                if (location == null) {
-                    ToastUtil.showToast("获取位置失败");
-                    return;
-                }
-                mInputController.reset();
-                LocationBody body = new LocationBody(location);
-                sendMessage(body);
+                getLocation();
             }
         }));
         SimpleAppsGridView gridView = new SimpleAppsGridView(this);
@@ -307,6 +264,21 @@ public class ChatActivity extends Activity implements OnInputListener {
         MenuInfo menuInfo = new MenuInfo(icon, title);
         menuInfo.setOnClickMenuListener(l);
         return menuInfo;
+    }
+
+    private void getLocation() {
+        Maps.getLocation(this, new LocationCallback() {
+            @Override
+            public void callback(LocationObject location) {
+                if (location == null) {
+                    ToastUtil.showToast("获取位置失败");
+                    return;
+                }
+                mInputController.reset();
+                LocationBody body = new LocationBody(location);
+                sendMessage(body);
+            }
+        });
     }
 
     @Override

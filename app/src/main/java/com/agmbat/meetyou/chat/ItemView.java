@@ -34,7 +34,10 @@ import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.imsdk.mgr.XmppFileManager;
+import com.agmbat.imsdk.util.LocationHelper;
 import com.agmbat.log.Debug;
+import com.agmbat.map.LocationObject;
+import com.agmbat.map.Maps;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.component.ViewImageActivity;
 import com.agmbat.time.DurationFormat;
@@ -170,7 +173,7 @@ public abstract class ItemView extends LinearLayout {
      * @return
      */
     private MarkerOptions createMarkerOptions(double lat, double lon, String iconPath) {
-        BitmapDescriptor icon = BitmapDescriptorFactory.fromPath(iconPath);
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.map_pin);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(new LatLng(lat, lon));
         markerOptions.anchor(0.5f, 0.5f);
@@ -190,16 +193,16 @@ public abstract class ItemView extends LinearLayout {
         config.setIsShowCurrent(true);
         List<MarkerOptions> list = new ArrayList<>();
 
-        BDLocation location = locationBody.getLocation();
-        config.setMapCenter(new LatLng(location.getLatitude(), location.getLongitude()));
+        LocationObject location = locationBody.getLocation();
+        config.setMapCenter(new LatLng(location.mLatitude, location.mLongitude));
 
         String senderJid = msg.getSenderJid();
         ContactInfo user = XMPPManager.getInstance().getRosterManager().getContactInfo(senderJid);
         File file = ImageManager.getDiskCacheFile(user.getAvatar());
-        list.add(createMarkerOptions(location.getLatitude(), location.getLongitude(), file.getAbsolutePath()));
+        list.add(createMarkerOptions(location.mLatitude, location.mLongitude, file.getAbsolutePath()));
 
         config.setMarkerList(list);
-        MapHelper.viewMap(getContext(), config);
+        Maps.viewMap(getContext(), config);
     }
 
     /**
