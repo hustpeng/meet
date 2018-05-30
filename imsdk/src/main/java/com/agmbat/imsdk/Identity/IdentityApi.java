@@ -60,5 +60,41 @@ public class IdentityApi {
         return apiResult;
     }
 
-
+    /**
+     * 查询身份实名认证状态
+     * GET
+     * https://{DOMAIN}/egret/v1/user/authstatus.api?uid=<phone>&sign=<sign>
+     * <p>
+     * 返回内容如下：
+     * <p>
+     * {
+     * "result":true, // true调用成功，false 调用失败
+     * "auth":{
+     * "name": "xxxx",
+     * "identity": "420502xxxxxxxxxxxx",
+     * "photo_front": " http://xxxxxxxxx/sss/yyy_front.jpg ",
+     * "photo_back": "http://xxxxxxxxx/sss/yyy_back.jpg",
+     * "status": 0,    //审核状态：0 待审核，1通过， 2未通过
+     * "opinion": "",  //如status值为2，opinion则为未通过的原因
+     * " creation_time": 1522502852,
+     * " last_modified_time": 1522502852
+     * }
+     * }
+     */
+    public static AuthStatusResult authStatus(String uid) {
+        String apiName = "authstatus";
+        HttpRequester.Builder builder = new HttpRequester.Builder();
+        builder.baseUrl(Api.getBaseUserUrl(apiName));
+        builder.urlParam("uid", uid);
+        builder.urlParam("sign", Api.getSign(apiName, uid));
+        HttpRequester requester = builder.build();
+        String text = requester.requestAsString();
+        if (StringUtils.isEmpty(text)) {
+            return null;
+        }
+        Type jsonType = new TypeToken<AuthStatusResult>() {
+        }.getType();
+        AuthStatusResult apiResult = GsonHelper.fromJson(text, jsonType);
+        return apiResult;
+    }
 }

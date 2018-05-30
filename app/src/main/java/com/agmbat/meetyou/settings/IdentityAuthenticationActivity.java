@@ -17,9 +17,11 @@ import com.agmbat.imagepicker.ImagePicker;
 import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.loader.UILImageLoader;
 import com.agmbat.imagepicker.ui.ImageGridActivity;
+import com.agmbat.imsdk.Identity.AuthStatusResult;
 import com.agmbat.imsdk.Identity.IdentityApi;
 import com.agmbat.imsdk.Identity.IdentityManager;
 import com.agmbat.imsdk.Identity.OnIdentityListener;
+import com.agmbat.imsdk.Identity.OnLoadAuthStatusListener;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.remotefile.FileApi;
@@ -77,6 +79,15 @@ public class IdentityAuthenticationActivity extends Activity {
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_identity_autentication);
         ButterKnife.bind(this);
+
+        showLoadingDialog();
+        IdentityManager.authStatus(new OnLoadAuthStatusListener() {
+            @Override
+            public void onLoadAuthStatus(AuthStatusResult result) {
+                ToastUtil.showToast(result.mErrorMsg);
+                hideLoadingDialog();
+            }
+        });
     }
 
     @Override
@@ -99,7 +110,6 @@ public class IdentityAuthenticationActivity extends Activity {
             }
         }
     }
-
 
     /**
      * 点击返回键

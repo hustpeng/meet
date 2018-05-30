@@ -16,6 +16,31 @@ import java.io.File;
 
 public class IdentityManager {
 
+    public static void authStatus(final OnLoadAuthStatusListener l) {
+
+        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Object, Object, AuthStatusResult>() {
+            @Override
+            protected AuthStatusResult doInBackground(Object... objects) {
+                String phone = XMPPManager.getInstance().getConnectionUserName();
+                AuthStatusResult result = IdentityApi.authStatus(phone);
+                if (result == null) {
+                    result = new AuthStatusResult();
+                    result.mResult = false;
+                    result.mErrorMsg = "请求服务器失败！";
+                }
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(AuthStatusResult result) {
+                super.onPostExecute(result);
+                if (l != null) {
+                    l.onLoadAuthStatus(result);
+                }
+            }
+        });
+    }
+
     /**
      * 身份认证
      */
