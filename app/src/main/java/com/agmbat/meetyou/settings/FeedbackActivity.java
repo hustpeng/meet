@@ -8,11 +8,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.agmbat.android.image.ImageManager;
+import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imagepicker.ImagePicker;
 import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.loader.UILImageLoader;
 import com.agmbat.imagepicker.ui.ImageGridActivity;
+import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.imsdk.feedback.FeedbackManager;
+import com.agmbat.imsdk.feedback.OnFeedbackListener;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
 import com.nostra13.universalimageloader.core.download.Scheme;
@@ -87,21 +91,21 @@ public class FeedbackActivity extends Activity {
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
-        final String name = mInputView.getText().toString();
+        final String content = mInputView.getText().toString();
         // 上传照片
         showLoadingDialog();
-//        IdentityManager.auth(name, identity, mPhotoPath, mBackPath, new OnIdentityListener() {
-//            @Override
-//            public void onIdentity(ApiResult apiResult) {
-//                hideLoadingDialog();
-//                ToastUtil.showToast(apiResult.mErrorMsg);
-//            }
-//        });
+        FeedbackManager.feedback(content, mPhotoPath, new OnFeedbackListener() {
+            @Override
+            public void onFeedback(ApiResult result) {
+                hideLoadingDialog();
+                ToastUtil.showToast(result.mErrorMsg);
+            }
+        });
     }
 
 
     /**
-     * 点击拍身份证前面照片
+     * 点击添加反馈图片
      */
     @OnClick(R.id.btn_add_image)
     void onClickAddImage() {
