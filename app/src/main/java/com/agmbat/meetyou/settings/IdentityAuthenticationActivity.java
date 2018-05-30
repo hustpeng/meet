@@ -6,21 +6,30 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.file.FileUtils;
 import com.agmbat.imagepicker.ImagePicker;
 import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.loader.UILImageLoader;
 import com.agmbat.imagepicker.ui.ImageGridActivity;
+import com.agmbat.imsdk.Identity.IdentityApi;
+import com.agmbat.imsdk.Identity.IdentityManager;
+import com.agmbat.imsdk.Identity.OnIdentityListener;
+import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.remotefile.FileApi;
+import com.agmbat.imsdk.remotefile.FileApiResult;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
 import com.nostra13.universalimageloader.core.download.Scheme;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -43,6 +52,19 @@ public class IdentityAuthenticationActivity extends Activity {
      */
     @BindView(R.id.identity_image_back)
     ImageView mBackImageView;
+
+    /**
+     * 姓名编辑框
+     */
+    @BindView(R.id.input_name)
+    EditText mInputNameView;
+
+    /**
+     * 身份证号编辑框
+     */
+    @BindView(R.id.input_identity)
+    EditText mInputIdentityView;
+
 
     private ISLoadingDialog mISLoadingDialog;
 
@@ -96,21 +118,17 @@ public class IdentityAuthenticationActivity extends Activity {
             ToastUtil.showToast("请拍摄两张身份认证照片");
             return;
         }
+        final String name = mInputNameView.getText().toString();
+        final String identity = mInputIdentityView.getText().toString();
         // 上传照片
         showLoadingDialog();
-        new AsyncTask<Void, Void, Void>() {
+        IdentityManager.auth(name, identity, mFrontPath, mBackPath, new OnIdentityListener() {
             @Override
-            protected Void doInBackground(Void... voids) {
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
+            public void onIdentity(ApiResult apiResult) {
                 hideLoadingDialog();
+                ToastUtil.showToast(apiResult.mErrorMsg);
             }
-        }.execute();
+        });
     }
 
     private int type = 0;
@@ -152,7 +170,7 @@ public class IdentityAuthenticationActivity extends Activity {
     private void takePicture() {
         ImagePicker imagePicker = ImagePicker.getInstance();
         imagePicker.setImageLoader(new UILImageLoader());
-        imagePicker.setCrop(false); //允许裁剪（单选才有效）
+        imagePicker.setCrop(false);
         Intent intent = new Intent(this, ImageGridActivity.class);
         intent.putExtra(ImageGridActivity.EXTRAS_TAKE_PICKERS, true); // 是否是直接打开相机
         startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);

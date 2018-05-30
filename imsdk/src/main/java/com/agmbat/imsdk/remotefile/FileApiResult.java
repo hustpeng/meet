@@ -3,7 +3,7 @@ package com.agmbat.imsdk.remotefile;
 import com.agmbat.imsdk.api.ApiResult;
 import com.google.gson.annotations.SerializedName;
 
-public class TempFileApiResult extends ApiResult<String> {
+public class FileApiResult extends ApiResult<String> {
 
     /**
      * 错误码

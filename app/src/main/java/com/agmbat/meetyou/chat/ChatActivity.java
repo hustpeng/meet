@@ -12,11 +12,9 @@ import android.widget.TextView;
 import com.agmbat.android.media.AmrHelper;
 import com.agmbat.android.media.AudioPlayer;
 import com.agmbat.android.utils.ToastUtil;
-import com.agmbat.android.utils.UiUtils;
 import com.agmbat.android.utils.UrlStringUtils;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.app.AppFileManager;
-import com.agmbat.baidumap.BDLocationManager;
 import com.agmbat.emoji.panel.p2.EmojiPanel;
 import com.agmbat.emoji.panel.p2.EmojiPanelConfig;
 import com.agmbat.emoji.res.DefEmoticons;
@@ -37,9 +35,9 @@ import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
-import com.agmbat.imsdk.remotefile.OnFileUploadListener2;
+import com.agmbat.imsdk.remotefile.OnFileUploadListener;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
-import com.agmbat.imsdk.remotefile.TempFileApiResult;
+import com.agmbat.imsdk.remotefile.FileApiResult;
 import com.agmbat.input.InputController;
 import com.agmbat.input.InputView;
 import com.agmbat.input.OnInputListener;
@@ -51,9 +49,6 @@ import com.agmbat.meetyou.R;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.mapapi.model.LatLng;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -295,9 +290,9 @@ public class ChatActivity extends Activity implements OnInputListener {
             sendMessage(body);
         } else if (type == OnInputListener.TYPE_VOICE) {
             final String path = content;
-            RemoteFileManager.uploadTempFile(new File(path), new OnFileUploadListener2() {
+            RemoteFileManager.uploadTempFile(new File(path), new OnFileUploadListener() {
                 @Override
-                public void onUpload(TempFileApiResult apiResult) {
+                public void onUpload(FileApiResult apiResult) {
                     if (apiResult.mResult) {
                         String url = apiResult.url;
                         File oldFile = new File(path);
@@ -380,9 +375,9 @@ public class ChatActivity extends Activity implements OnInputListener {
      * @param path
      */
     private void sendImage(final String path) {
-        RemoteFileManager.uploadImageFile(new File(path), new OnFileUploadListener2() {
+        RemoteFileManager.uploadImageFile(new File(path), new OnFileUploadListener() {
             @Override
-            public void onUpload(TempFileApiResult apiResult) {
+            public void onUpload(FileApiResult apiResult) {
                 if (apiResult.mResult) {
                     String url = apiResult.url;
                     Body body = new ImageBody(url, new ImageBody.Image());

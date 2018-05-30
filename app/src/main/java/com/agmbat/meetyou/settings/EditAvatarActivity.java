@@ -18,6 +18,8 @@ import com.agmbat.imagepicker.view.CropImageView;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
+import com.agmbat.imsdk.remotefile.FileApiResult;
+import com.agmbat.imsdk.remotefile.OnFileUploadListener;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.isdialog.ISActionSheetDialog;
@@ -189,15 +191,15 @@ public class EditAvatarActivity extends Activity {
         dialog.setMessage("正在上传头像...");
         dialog.setCancelable(false);
         dialog.show();
-        RemoteFileManager.uploadAvatarFile(path, new RemoteFileManager.OnFileUploadListener() {
+        RemoteFileManager.uploadAvatarFile(path, new OnFileUploadListener() {
 
             @Override
-            public void onUpload(ApiResult<String> apiResult) {
+            public void onUpload(FileApiResult apiResult) {
                 ToastUtil.showToastLong(apiResult.mErrorMsg);
                 dialog.dismiss();
                 if (apiResult.mResult) {
                     LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
-                    user.setAvatar(apiResult.mData);
+                    user.setAvatar(apiResult.url);
                     XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
                 }
 
