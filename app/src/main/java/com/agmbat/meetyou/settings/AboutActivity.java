@@ -46,6 +46,6 @@ public class AboutActivity extends Activity {
 
     @OnClick(R.id.user_feedback)
     void onClickFeedback() {
-
+        startActivity(new Intent(this, FeedbackActivity.class));
     }
 }

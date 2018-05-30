@@ -39,7 +39,6 @@ public class FeedbackApi {
         builder.postParam("ticket", ticket);
         builder.postParam("content", content);
         builder.postParam("photo_url", photoUrl);
-        builder.postParam("photo_url", photoUrl);
         // 设备类型，例如aphone，apad
         builder.postParam("devicetype", PhoneUtils.getDeviceModel());
         // OS版本
