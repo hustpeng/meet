@@ -81,11 +81,12 @@ public class IdentityApi {
      * }
      * }
      */
-    public static AuthStatusResult authStatus(String uid) {
+    public static AuthStatusResult authStatus(String uid, String ticket) {
         String apiName = "authstatus";
         HttpRequester.Builder builder = new HttpRequester.Builder();
         builder.baseUrl(Api.getBaseUserUrl(apiName));
         builder.urlParam("uid", uid);
+        builder.urlParam("ticket", ticket);
         builder.urlParam("sign", Api.getSign(apiName, uid));
         HttpRequester requester = builder.build();
         String text = requester.requestAsString();

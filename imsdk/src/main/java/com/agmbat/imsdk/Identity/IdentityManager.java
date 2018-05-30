@@ -16,17 +16,44 @@ import java.io.File;
 
 public class IdentityManager {
 
+    /**
+     * 查询身份验证状态
+     *
+     * @param l
+     */
     public static void authStatus(final OnLoadAuthStatusListener l) {
 
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Object, Object, AuthStatusResult>() {
             @Override
             protected AuthStatusResult doInBackground(Object... objects) {
                 String phone = XMPPManager.getInstance().getConnectionUserName();
-                AuthStatusResult result = IdentityApi.authStatus(phone);
+                String ticket = XMPPManager.getInstance().getTokenManager().getTokenRetry();
+                AuthStatusResult result = IdentityApi.authStatus(phone, ticket);
                 if (result == null) {
                     result = new AuthStatusResult();
                     result.mResult = false;
                     result.mErrorMsg = "请求服务器失败！";
+                    return result;
+                }
+                if (!result.mResult) {
+                    if (TextUtils.isEmpty(result.mErrorMsg)) {
+                        result.mErrorMsg = "请求服务器失败！";
+                    }
+                    return result;
+                }
+
+                if (result.mAuth.status == 0) {
+                    if (TextUtils.isEmpty(result.mErrorMsg)) {
+                        result.mErrorMsg = "待审核！";
+                    }
+                } else if (result.mAuth.status == 1) {
+                    if (TextUtils.isEmpty(result.mErrorMsg)) {
+                        result.mErrorMsg = "审核通过！";
+                    }
+                } else if (result.mAuth.status == 2) {
+                    if (TextUtils.isEmpty(result.mErrorMsg)) {
+                        result.mErrorMsg = result.mAuth.opinion;
+                    }
                 }
                 return result;
             }

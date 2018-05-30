@@ -29,7 +29,7 @@ import butterknife.OnClick;
 public class FeedbackActivity extends Activity {
 
     /**
-     * 身份证背面照片
+     * 显示用户反馈图片
      */
     @BindView(R.id.image)
     ImageView mImageView;
@@ -37,7 +37,7 @@ public class FeedbackActivity extends Activity {
     /**
      * 姓名编辑框
      */
-    @BindView(R.id.input)
+    @BindView(R.id.input_text)
     EditText mInputView;
 
 
@@ -103,8 +103,8 @@ public class FeedbackActivity extends Activity {
     /**
      * 点击拍身份证前面照片
      */
-    @OnClick(R.id.btn_identity_front)
-    void onClickTakeFront() {
+    @OnClick(R.id.btn_add_image)
+    void onClickAddImage() {
         takePicture();
     }
 
