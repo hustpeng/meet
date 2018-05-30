@@ -8,4 +8,9 @@
     <color name="im_settings_normal">#ffffff</color>
 
     <color name="gray">#D9D9D9</color>
+
+    <!--状态栏颜色-->
+    <color name="bg_status_bar">#ff232325</color>
+
+
 </resources>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
@@ -152,7 +153,7 @@ public class ChatActivity extends Activity implements OnInputListener {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        WindowUtils.setStatusBarColor(this, 0xff232325);
+        WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         String jid = getIntent().getStringExtra(KEY_CONTACT);
@@ -246,7 +247,8 @@ public class ChatActivity extends Activity implements OnInputListener {
         beans.add(createMenuInfo(R.mipmap.icon_file, "文件", new OnClickMenuListener() {
             @Override
             public void onClick(MenuInfo menu, int index) {
-
+                mInputController.reset();
+                selectFileFromLocal();
             }
         }));
         beans.add(createMenuInfo(R.mipmap.icon_loaction, "位置", new OnClickMenuListener() {
@@ -395,6 +397,24 @@ public class ChatActivity extends Activity implements OnInputListener {
                 }
             }
         });
+    }
+
+    public static final int REQUEST_CODE_SELECT_FILE = 24;
+
+    /**
+     * 选择文件
+     */
+    private void selectFileFromLocal() {
+        Intent intent = null;
+        if (Build.VERSION.SDK_INT < 19) {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("*/*");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        } else {
+            intent = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        }
+        startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
     }
 
 }

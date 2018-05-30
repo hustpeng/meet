@@ -26,6 +26,7 @@ import com.agmbat.meetyou.account.ChangePasswordActivity;
 import com.agmbat.meetyou.coins.CoinsActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
+import com.agmbat.meetyou.settings.IdentityAuthenticationActivity;
 import com.agmbat.meetyou.settings.PersonalInfoActivity;
 import com.agmbat.wxshare.ShareContent;
 import com.agmbat.wxshare.WXShare;
@@ -141,6 +142,14 @@ public class ProfileFragment extends Fragment {
     @OnClick(R.id.btn_about)
     void onClickAbout() {
         startActivity(new Intent(getActivity(), AboutActivity.class));
+    }
+
+    /**
+     * 点击身份认证
+     */
+    @OnClick(R.id.identity_authentication)
+    void onClickIdentityAuthentication() {
+        startActivity(new Intent(getActivity(), IdentityAuthenticationActivity.class));
     }
 
     private void updateView(LoginUser user) {

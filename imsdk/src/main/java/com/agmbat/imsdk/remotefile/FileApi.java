@@ -156,4 +156,55 @@ public class FileApi {
         TempFileApiResult apiResult = GsonHelper.fromJson(text, jsonType);
         return apiResult;
     }
+
+
+    /**
+     * 上传其他持久化文件（包括身份认证图片, 举报的证据截图，反馈建议截图等）
+     POST
+     https://{DOMAIN}/egret/v1/user/upload_common.api?uid=<phone>&ticket=<ticket>&format=<>&sign=<sign>
+
+     参数名	Required?	格式	意义
+     uid	Yes	String	Phone或群号
+     ticket	YES	String	The auth ticket
+     format	Yes	String	png,jpg,etc…, 不带”.”
+     sign	Yes	String	API调用签名
+     POST BODY就是图片内容的字节数组。
+     如果uid和ticket不匹配，返回403错误码。
+     其它情况的返回内容如下：
+
+     {
+     "result":true, //true  API调用成功，否则调用失败
+     "error_reason":"uploaded_exceeded",//错误码
+     "url":"http://……" ,//文件的url，调用者应当存储该url，以后用该url可以获取该文件
+     thumbnail_url":"http://……"//若是图片（格式为jpg或png），会返回缩略图的url，调用者应当存储该url，以后用该url可以获取图片缩略图
+     }
+
+     * @param uid
+     * @param ticket
+     * @param format
+     * @param file
+     * @return
+     */
+    public static TempFileApiResult uploadTempFile2(String uid, String ticket, String format, File file) {
+        String apiName = "upload_temp";
+        HttpRequester.Builder builder = new HttpRequester.Builder();
+        builder.method("POST");
+        builder.baseUrl(Api.getBaseUserUrl(apiName));
+        builder.urlParam("uid", uid);
+        builder.urlParam("ticket", ticket);
+        builder.urlParam("format", format);
+        builder.urlParam("sign", Api.getSign(apiName, uid));
+        builder.addFilePart("file", file);
+        HttpRequester requester = builder.build();
+        String text = requester.requestAsString();
+        if (StringUtils.isEmpty(text)) {
+            return null;
+        }
+        Type jsonType = new TypeToken<TempFileApiResult>() {
+        }.getType();
+        TempFileApiResult apiResult = GsonHelper.fromJson(text, jsonType);
+        return apiResult;
+    }
+
+
 }

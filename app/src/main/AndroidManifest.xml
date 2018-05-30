@@ -105,6 +105,10 @@
             android:name="com.agmbat.meetyou.settings.QRCodeCardActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.settings.IdentityAuthenticationActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.agmbat.meetyou.search.SearchUserActivity"

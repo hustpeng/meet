@@ -29,7 +29,7 @@ public class CoinsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        WindowUtils.setStatusBarColor(this, 0xff232325);
+        WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_coins);
         ButterKnife.bind(this);
         mPageLoader = new CoinsLoader(this);
