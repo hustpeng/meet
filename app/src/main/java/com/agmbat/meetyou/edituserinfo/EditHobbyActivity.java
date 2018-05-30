@@ -1,41 +1,41 @@
-package com.agmbat.meetyou.settings;
+package com.agmbat.meetyou.edituserinfo;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
+import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.meetyou.R;
+import com.agmbat.picker.tag.CategoryTag;
+import com.agmbat.picker.tag.CategoryTagPickerView;
+import com.agmbat.server.GsonHelper;
+import com.agmbat.text.TagText;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * 编辑个性签名界面
+ * 编辑兴趣爱好
  */
-public class EditSignatureActivity extends Activity {
+public class EditHobbyActivity extends Activity {
 
-    /**
-     * 昵称编辑框
-     */
-    @BindView(R.id.input_text)
-    EditText mEditText;
-
-    @BindView(R.id.tips)
-    TextView mTipsView;
+    @BindView(R.id.picker)
+    CategoryTagPickerView mPickerView;
 
     /**
      * 保存button
@@ -47,27 +47,9 @@ public class EditSignatureActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
-        setContentView(R.layout.activity_edit_signature);
+        setContentView(R.layout.activity_edit_hobby);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        mEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String text = mEditText.getText().toString();
-                int remainder = 50 - text.length();
-                mTipsView.setText(String.valueOf(remainder));
-            }
-        });
         update(XMPPManager.getInstance().getRosterManager().getLoginUser());
     }
 
@@ -107,21 +89,61 @@ public class EditSignatureActivity extends Activity {
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
+        List<String> tagList = mPickerView.getCheckedList();
+        String text = TagText.toTagText(tagList);
         LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
-        String text = mEditText.getText().toString();
-        if (text.equals(user.getStatus())) {
+        if (text.equals(user.getHobby())) {
             // 未修改
             finish();
         } else {
             // TODO 需要添加loading框
-            user.setStatus(text);
+            user.setHobby(text);
             XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             finish();
         }
     }
 
+    /**
+     * 更新用户信息显示
+     *
+     * @param user
+     */
     private void update(LoginUser user) {
-        mEditText.setText(user.getStatus());
-        mEditText.setSelection(mEditText.getText().toString().trim().length());
+        String text = AppResources.readAssetFile("wheelpicker/hobby_category.json");
+        Type jsonType = new TypeToken<List<CategoryTag>>() {
+        }.getType();
+        List<CategoryTag> list = GsonHelper.fromJson(text, jsonType);
+        List<String> checkedList = TagText.parseTagList(user.getHobby());
+        cleanCheckedList(list, checkedList);
+        mPickerView.setCategoryTagList(list);
+        mPickerView.setMaxSelectCount(5);
+        mPickerView.setCheckedList(checkedList);
+        mPickerView.update();
     }
+
+    /**
+     * 将选中的tag中不在tag面板了tag移除
+     *
+     * @param list
+     * @param checkedList
+     */
+    private static void cleanCheckedList(List<CategoryTag> list, List<String> checkedList) {
+        List<String> removeList = new ArrayList<>();
+        for (String tag : checkedList) {
+            if (!checkTag(list, tag)) {
+                removeList.add(tag);
+            }
+        }
+        checkedList.removeAll(removeList);
+    }
+
+    private static boolean checkTag(List<CategoryTag> list, String tag) {
+        for (CategoryTag categoryTag : list) {
+            if (categoryTag.contains(tag)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

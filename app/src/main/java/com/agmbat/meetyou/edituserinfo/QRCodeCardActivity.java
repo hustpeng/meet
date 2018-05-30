@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.settings;
+package com.agmbat.meetyou.edituserinfo;
 
 import android.app.Activity;
 import android.graphics.Bitmap;

@@ -1,10 +1,12 @@
-package com.agmbat.meetyou;
+package com.agmbat.meetyou.settings;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.meetyou.R;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -28,6 +30,12 @@ public class AboutActivity extends Activity {
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
     /**
      * 点击返回键
      */
@@ -36,4 +44,8 @@ public class AboutActivity extends Activity {
         finish();
     }
 
+    @OnClick(R.id.user_feedback)
+    void onClickFeedback() {
+
+    }
 }

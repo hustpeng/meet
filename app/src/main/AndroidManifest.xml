@@ -61,52 +61,56 @@
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
 
         <activity
-            android:name="com.agmbat.meetyou.settings.PersonalInfoActivity"
+            android:name="com.agmbat.meetyou.edituserinfo.PersonalInfoActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.agmbat.meetyou.settings.PersonalInfoMoreActivity"
+            android:name="com.agmbat.meetyou.edituserinfo.PersonalInfoMoreActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.agmbat.meetyou.settings.EditAvatarActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.agmbat.meetyou.settings.EditNameActivity"
+            android:name="com.agmbat.meetyou.edituserinfo.EditAvatarActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.agmbat.meetyou.settings.EditGenderActivity"
+            android:name="com.agmbat.meetyou.edituserinfo.EditNameActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.agmbat.meetyou.settings.EditSignatureActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.agmbat.meetyou.settings.EditDemandActivity"
+            android:name="com.agmbat.meetyou.edituserinfo.EditGenderActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.agmbat.meetyou.settings.EditIntroduceActivity"
+            android:name="com.agmbat.meetyou.edituserinfo.EditSignatureActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.agmbat.meetyou.settings.EditHobbyActivity"
+            android:name="com.agmbat.meetyou.edituserinfo.EditDemandActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.agmbat.meetyou.settings.QRCodeCardActivity"
+            android:name="com.agmbat.meetyou.edituserinfo.EditIntroduceActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.edituserinfo.EditHobbyActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.agmbat.meetyou.edituserinfo.QRCodeCardActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.agmbat.meetyou.settings.IdentityAuthenticationActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.settings.FeedbackActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
 
@@ -133,7 +137,7 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.agmbat.meetyou.AboutActivity"
+            android:name="com.agmbat.meetyou.settings.AboutActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity

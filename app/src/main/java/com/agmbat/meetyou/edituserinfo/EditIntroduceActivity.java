@@ -1,9 +1,12 @@
-package com.agmbat.meetyou.settings;
+package com.agmbat.meetyou.edituserinfo;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
@@ -11,7 +14,6 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.helper.GenderHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -22,21 +24,18 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * 编辑性别界面
+ * 编辑个人介绍
  */
-public class EditGenderActivity extends Activity {
+public class EditIntroduceActivity extends Activity {
 
     /**
-     * 男性
+     * 昵称编辑框
      */
-    @BindView(R.id.btn_gender_male)
-    TextView mGenderMaleView;
+    @BindView(R.id.input_text)
+    EditText mEditText;
 
-    /**
-     * 女性
-     */
-    @BindView(R.id.btn_gender_female)
-    TextView mGenderFemaleView;
+    @BindView(R.id.tips)
+    TextView mTipsView;
 
     /**
      * 保存button
@@ -44,20 +43,32 @@ public class EditGenderActivity extends Activity {
     @BindView(R.id.btn_save)
     Button mSaveButton;
 
-    /**
-     * 用户选中的性别
-     */
-    private int mGender;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
-        setContentView(R.layout.activity_edit_gender);
+        setContentView(R.layout.activity_edit_introduce);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
-        updateGenderSelected(user.getGender());
+        mEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = mEditText.getText().toString();
+                int remainder = 100 - text.length();
+                mTipsView.setText(String.valueOf(remainder));
+            }
+        });
+        update(XMPPManager.getInstance().getRosterManager().getLoginUser());
     }
 
     @Override
@@ -80,7 +91,7 @@ public class EditGenderActivity extends Activity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(LoginUserUpdateEvent event) {
         LoginUser user = event.getLoginUser();
-        updateGenderSelected(user.getGender());
+        update(user);
     }
 
     /**
@@ -92,49 +103,25 @@ public class EditGenderActivity extends Activity {
     }
 
     /**
-     * 点击返回键
-     */
-    @OnClick(R.id.btn_gender_male)
-    void onClickMale() {
-        mGender = GenderHelper.GENDER_MALE;
-        updateGenderSelected(mGender);
-    }
-
-    /**
-     * 点击返回键
-     */
-    @OnClick(R.id.btn_gender_female)
-    void onClickFemale() {
-        mGender = GenderHelper.GENDER_FEMALE;
-        updateGenderSelected(mGender);
-    }
-
-    /**
      * 点击保存
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
         LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
-        if (mGender == user.getGender()) {
+        String text = mEditText.getText().toString();
+        if (text.equals(user.getIntroduce())) {
             // 未修改
             finish();
         } else {
             // TODO 需要添加loading框
-            // 修改性别
-            user.setGender(mGender);
+            user.setIntroduce(text);
             XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             finish();
         }
     }
 
-    private void updateGenderSelected(int gender) {
-        if (gender == GenderHelper.GENDER_MALE) {
-            mGenderMaleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_selected, 0);
-            mGenderFemaleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        } else if (gender == GenderHelper.GENDER_FEMALE) {
-            mGenderMaleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            mGenderFemaleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_selected, 0);
-        }
+    private void update(LoginUser user) {
+        mEditText.setText(user.getIntroduce());
+        mEditText.setSelection(mEditText.getText().toString().trim().length());
     }
-
 }

@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.settings;
+package com.agmbat.meetyou.edituserinfo;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
@@ -23,15 +24,18 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * 编辑昵称界面
+ * 编辑择友要求
  */
-public class EditNameActivity extends Activity {
+public class EditDemandActivity extends Activity {
 
     /**
-     * 昵称编辑框
+     * 编辑框
      */
-    @BindView(R.id.input_name)
-    EditText mNameEditText;
+    @BindView(R.id.input_text)
+    EditText mEditText;
+
+    @BindView(R.id.tips)
+    TextView mTipsView;
 
     /**
      * 保存button
@@ -43,28 +47,29 @@ public class EditNameActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
-        setContentView(R.layout.activity_edit_name);
+        setContentView(R.layout.activity_edit_demand);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        mNameEditText.addTextChangedListener(new TextWatcher() {
+        mEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (mNameEditText.getText().toString().trim().length() > 0) {
-                    mSaveButton.setEnabled(true);
-                } else {
-                    mSaveButton.setEnabled(false);
-                }
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                String text = mEditText.getText().toString();
+                int remainder = 100 - text.length();
+                mTipsView.setText(String.valueOf(remainder));
             }
         });
-        update(XMPPManager.getInstance().getRosterManager().getLoginUser());
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        update(user);
     }
 
     @Override
@@ -103,30 +108,21 @@ public class EditNameActivity extends Activity {
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
-        changeNickName();
-    }
-
-    private void update(LoginUser user) {
-        mNameEditText.setText(user.getNickname());
-        mNameEditText.setSelection(mNameEditText.getText().toString().trim().length());
-    }
-
-    /**
-     * 修改昵称
-     */
-    private void changeNickName() {
+        String text = mEditText.getText().toString();
         LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
-        String nickName = mNameEditText.getText().toString();
-        if (nickName.equals(user.getNickname())) {
+        if (text.equals(user.getDemand())) {
             // 未修改
             finish();
         } else {
             // TODO 需要添加loading框
-            // 修改昵称的逻辑
-            user.setNickname(nickName);
+            user.setDemand(text);
             XMPPManager.getInstance().getRosterManager().saveLoginUser(user);
             finish();
         }
     }
 
+    private void update(LoginUser user) {
+        mEditText.setText(user.getDemand());
+        mEditText.setSelection(mEditText.getText().toString().trim().length());
+    }
 }
