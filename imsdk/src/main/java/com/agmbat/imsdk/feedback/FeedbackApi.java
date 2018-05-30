@@ -35,6 +35,7 @@ public class FeedbackApi {
         String apiName = "feedback";
         HttpRequester.Builder builder = new HttpRequester.Builder();
         builder.baseUrl(Api.getBaseUserUrl(apiName));
+        builder.method("POST");
         builder.postParam("uid", uid);
         builder.postParam("ticket", ticket);
         builder.postParam("content", content);

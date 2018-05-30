@@ -1,5 +1,7 @@
 package com.agmbat.imsdk.feedback;
 
+import android.text.TextUtils;
+
 import com.agmbat.android.image.ImageUtils;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
@@ -50,6 +52,10 @@ public class FeedbackManager {
                     result.mResult = false;
                     result.mErrorMsg = "反馈失败!";
                     return result;
+                } else if (result.mResult) {
+                    if (TextUtils.isEmpty(result.mErrorMsg)) {
+                        result.mErrorMsg = "反馈成功";
+                    }
                 }
                 return result;
             }
