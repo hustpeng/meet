@@ -36,25 +36,35 @@
             android:textColor="#ffffff" />
     </FrameLayout>
 
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none">
 
         <LinearLayout
+            android:id="@+id/identity_authentication_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
             <EditText
                 android:id="@+id/input_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:hint="请输入姓名" />
 
             <EditText
                 android:id="@+id/input_identity"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:hint="请输入身份证号码"
+                android:inputType="numberSigned" />
 
             <ImageView
                 android:id="@+id/identity_image_front"

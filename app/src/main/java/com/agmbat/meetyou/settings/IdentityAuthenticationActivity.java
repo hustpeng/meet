@@ -6,8 +6,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
@@ -17,6 +19,7 @@ import com.agmbat.imagepicker.ImagePicker;
 import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.loader.UILImageLoader;
 import com.agmbat.imagepicker.ui.ImageGridActivity;
+import com.agmbat.imsdk.Identity.Auth;
 import com.agmbat.imsdk.Identity.AuthStatusResult;
 import com.agmbat.imsdk.Identity.IdentityApi;
 import com.agmbat.imsdk.Identity.IdentityManager;
@@ -67,6 +70,11 @@ public class IdentityAuthenticationActivity extends Activity {
     @BindView(R.id.input_identity)
     EditText mInputIdentityView;
 
+    @BindView(R.id.text)
+    TextView mStatusView;
+
+    @BindView(R.id.identity_authentication_layout)
+    View mIdentityAuthenticationLayout;
 
     private ISLoadingDialog mISLoadingDialog;
 
@@ -79,13 +87,18 @@ public class IdentityAuthenticationActivity extends Activity {
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_identity_autentication);
         ButterKnife.bind(this);
+        mIdentityAuthenticationLayout.setVisibility(View.GONE);
 
-        showLoadingDialog();
+        showLoadingDialog("正在获取身份验证状态...");
         IdentityManager.authStatus(new OnLoadAuthStatusListener() {
             @Override
             public void onLoadAuthStatus(AuthStatusResult result) {
                 ToastUtil.showToast(result.mErrorMsg);
                 hideLoadingDialog();
+                mStatusView.setText("当前身份认证状态:" + result.mErrorMsg);
+                if (result.mAuth.hasNeedAuth()) {
+                    mIdentityAuthenticationLayout.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -131,7 +144,7 @@ public class IdentityAuthenticationActivity extends Activity {
         final String name = mInputNameView.getText().toString();
         final String identity = mInputIdentityView.getText().toString();
         // 上传照片
-        showLoadingDialog();
+        showLoadingDialog("正在上传认证资料...");
         IdentityManager.auth(name, identity, mFrontPath, mBackPath, new OnIdentityListener() {
             @Override
             public void onIdentity(ApiResult apiResult) {
@@ -189,10 +202,10 @@ public class IdentityAuthenticationActivity extends Activity {
     /**
      * 显示loading框
      */
-    private void showLoadingDialog() {
+    private void showLoadingDialog(String msg) {
         if (mISLoadingDialog == null) {
             mISLoadingDialog = new ISLoadingDialog(this);
-            mISLoadingDialog.setMessage("正在上传...");
+            mISLoadingDialog.setMessage(msg);
             mISLoadingDialog.setCancelable(false);
         }
         mISLoadingDialog.show();

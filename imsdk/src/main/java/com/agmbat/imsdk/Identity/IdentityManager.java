@@ -42,17 +42,24 @@ public class IdentityManager {
                     return result;
                 }
 
-                if (result.mAuth.status == 0) {
+                if (result.mAuth == null) {
+                    result.mAuth = new Auth();
+                    result.mAuth.mStatus = Auth.STATUS_NONE;
+                    result.mErrorMsg = "未申请认证";
+                    return result;
+                }
+
+                if (result.mAuth.mStatus == Auth.STATUS_PENDING_TRIAL) {
                     if (TextUtils.isEmpty(result.mErrorMsg)) {
                         result.mErrorMsg = "待审核！";
                     }
-                } else if (result.mAuth.status == 1) {
+                } else if (result.mAuth.mStatus == Auth.STATUS_PASS) {
                     if (TextUtils.isEmpty(result.mErrorMsg)) {
                         result.mErrorMsg = "审核通过！";
                     }
-                } else if (result.mAuth.status == 2) {
+                } else if (result.mAuth.mStatus == Auth.STATUS_FAIL) {
                     if (TextUtils.isEmpty(result.mErrorMsg)) {
-                        result.mErrorMsg = result.mAuth.opinion;
+                        result.mErrorMsg = result.mAuth.mOpinion;
                     }
                 }
                 return result;
