@@ -22,6 +22,9 @@ import com.agmbat.emoji.res.DefXhsEmoticons;
 import com.agmbat.file.FileUtils;
 import com.agmbat.http.HttpUtils;
 import com.agmbat.imagepicker.ImagePicker;
+import com.agmbat.imagepicker.ImagePickerHelper;
+import com.agmbat.imagepicker.OnPickImageListener;
+import com.agmbat.imagepicker.OnPickMultiImageListener;
 import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.loader.UILImageLoader;
 import com.agmbat.imagepicker.ui.ImageGridActivity;
@@ -325,49 +328,34 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
     }
 
-    private static final int REQUEST_CODE_TAKE_PICTURE = 121;
-
     /**
      * 选择图片
      */
     private void selectPicture() {
-        ImagePicker imagePicker = ImagePicker.getInstance();
-        imagePicker.setImageLoader(new UILImageLoader());
-        imagePicker.setShowCamera(false); //显示拍照按钮
-        imagePicker.setCrop(false); //允许裁剪（单选才有效）
-        imagePicker.setSaveRectangle(false); //是否按矩形区域保存
-        imagePicker.setSelectLimit(9); //选中数量限制
-        imagePicker.setMultiMode(true); // 设置为单选
-        Intent intent = new Intent(this, ImageGridActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
+        ImagePickerHelper.pickMultiImage(this, new OnPickMultiImageListener() {
+            @Override
+            public void onPickImage(List<ImageItem> imageList) {
+                if (imageList != null) {
+                    for (ImageItem imageItem : imageList) {
+                        sendImage(imageItem.path);
+                    }
+                }
+            }
+        });
     }
 
     /**
      * 拍照
      */
     private void takePicture() {
-        ImagePicker imagePicker = ImagePicker.getInstance();
-        imagePicker.setImageLoader(new UILImageLoader());
-        imagePicker.setCrop(false); //允许裁剪（单选才有效）
-        Intent intent = new Intent(this, ImageGridActivity.class);
-        intent.putExtra(ImageGridActivity.EXTRAS_TAKE_PICKERS, true); // 是否是直接打开相机
-        startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
+        ImagePickerHelper.takePicture(this, new OnPickImageListener() {
+            @Override
+            public void onPickImage(ImageItem imageItem) {
+                sendImage(imageItem.path);
+            }
+        });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_TAKE_PICTURE) {
-            if (data != null) {
-                ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-                if (images != null) {
-                    for (ImageItem imageItem : images) {
-                        sendImage(imageItem.path);
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * 发送图片
