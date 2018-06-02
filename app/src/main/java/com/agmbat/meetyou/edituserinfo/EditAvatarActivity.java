@@ -11,6 +11,9 @@ import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.file.FileUtils;
 import com.agmbat.imagepicker.ImagePicker;
+import com.agmbat.imagepicker.ImagePickerHelper;
+import com.agmbat.imagepicker.OnPickImageListener;
+import com.agmbat.imagepicker.PickerOption;
 import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.loader.UILImageLoader;
 import com.agmbat.imagepicker.ui.ImageGridActivity;
@@ -46,11 +49,6 @@ import butterknife.OnClick;
  * 编辑头像界面
  */
 public class EditAvatarActivity extends Activity {
-
-    /**
-     * 拍照
-     */
-    private static final int REQUEST_CODE_TAKE_PICTURE = 100;
 
     @BindView(R.id.avatar)
     PhotoView mPhotoView;
@@ -129,30 +127,45 @@ public class EditAvatarActivity extends Activity {
      * 拍照
      */
     private void takePicture() {
-        ImagePicker.getInstance().setImageLoader(new UILImageLoader());
-        Intent intent = new Intent(this, ImageGridActivity.class);
-        intent.putExtra(ImageGridActivity.EXTRAS_TAKE_PICKERS, true); // 是否是直接打开相机
-        startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
+        ImagePickerHelper.takePicture(this, new OnPickImageListener() {
+            @Override
+            public void onPickImage(ImageItem imageItem) {
+                String path = imageItem.path;
+                uploadAvatarFile(path);
+            }
+        });
     }
 
     /**
      * 选择图片
      */
     private void selectPicture() {
+        PickerOption.CropParams params = new PickerOption.CropParams();
+        params.setStyle(CropImageView.Style.RECTANGLE); //裁剪框的形状
+        params.setFocusWidth(800); //裁剪框的宽度。单位像素（圆形自动取宽高最小值）
+        params.setFocusHeight(800); //裁剪框的高度。单位像素（圆形自动取宽高最小值）
+        params.setOutPutX(200);//保存文件的宽度。单位像素
+        params.setOutPutY(200);//保存文件的高度。单位像素 }
+
+        PickerOption option = new PickerOption();
+        option.setShowCamera(false);
+        option.setCropParams(params);
+
         ImagePicker imagePicker = ImagePicker.getInstance();
         imagePicker.setImageLoader(new UILImageLoader());
-        imagePicker.setShowCamera(false); //显示拍照按钮
         imagePicker.setCrop(true); //允许裁剪（单选才有效）
         imagePicker.setSaveRectangle(true); //是否按矩形区域保存
         imagePicker.setSelectLimit(1); //选中数量限制
         imagePicker.setMultiMode(false); // 设置为单选
-        imagePicker.setStyle(CropImageView.Style.RECTANGLE); //裁剪框的形状
-        imagePicker.setFocusWidth(800); //裁剪框的宽度。单位像素（圆形自动取宽高最小值）
-        imagePicker.setFocusHeight(800); //裁剪框的高度。单位像素（圆形自动取宽高最小值）
-        imagePicker.setOutPutX(200);//保存文件的宽度。单位像素
-        imagePicker.setOutPutY(200);//保存文件的高度。单位像素 }
-        Intent intent = new Intent(this, ImageGridActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
+        imagePicker.setPickerOption(option);
+
+        ImagePickerHelper.pickImage(this, option, new OnPickImageListener() {
+            @Override
+            public void onPickImage(ImageItem imageItem) {
+                String path = imageItem.path;
+                uploadAvatarFile(path);
+            }
+        });
     }
 
     /**
@@ -166,19 +179,6 @@ public class EditAvatarActivity extends Activity {
         // TODO 发送广播让系统将文件扫描到系统数据库中
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_TAKE_PICTURE) {
-            if (data != null) {
-                ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-                if (images != null) {
-                    String path = images.get(0).path;
-                    uploadAvatarFile(path);
-                }
-            }
-        }
-    }
 
     /**
      * 上传图片文件

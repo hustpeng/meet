@@ -35,7 +35,7 @@ dependencies {
     compile 'com.disbts:pagedataloader:3.5.7@aar'
     compile 'com.disbts:zxing-core:1.0.0'
     compile 'com.disbts:zxing-android-core:1.0.2@aar'
-    compile "com.disbts:imagepicker:4.1.4@aar"
+    compile "com.disbts:imagepicker:4.1.6@aar"
     compile "com.disbts:photoview:3.5.7@aar"
     compile "com.disbts:isdialog:3.9.0@aar"
     compile "com.disbts:wheelpicker:3.9.0@aar"

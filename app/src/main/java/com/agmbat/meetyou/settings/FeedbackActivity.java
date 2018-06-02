@@ -11,6 +11,9 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imagepicker.ImagePicker;
+import com.agmbat.imagepicker.ImagePickerHelper;
+import com.agmbat.imagepicker.OnPickImageListener;
+import com.agmbat.imagepicker.PickerOption;
 import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.loader.UILImageLoader;
 import com.agmbat.imagepicker.ui.ImageGridActivity;
@@ -71,21 +74,6 @@ public class FeedbackActivity extends Activity {
         finish();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_TAKE_PICTURE) {
-            if (data != null) {
-                ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-                if (images != null) {
-                    if (images.size() == 1) {
-                        onTakePhoto(images.get(0).path);
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * 点击保存
      */
@@ -112,19 +100,19 @@ public class FeedbackActivity extends Activity {
         takePicture();
     }
 
-    private static final int REQUEST_CODE_TAKE_PICTURE = 121;
-
-
     /**
      * 拍照
      */
     private void takePicture() {
-        ImagePicker imagePicker = ImagePicker.getInstance();
-        imagePicker.setImageLoader(new UILImageLoader());
-        imagePicker.setCrop(false);
-        Intent intent = new Intent(this, ImageGridActivity.class);
-        intent.putExtra(ImageGridActivity.EXTRAS_TAKE_PICKERS, true); // 是否是直接打开相机
-        startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
+        PickerOption option = new PickerOption();
+        option.setShowCamera(true);
+        ImagePickerHelper.pickImage(this, option, new OnPickImageListener() {
+            @Override
+            public void onPickImage(ImageItem imageItem) {
+                mPhotoPath = imageItem.path;
+                ImageManager.displayImage(Scheme.wrapUri("file", imageItem.path), mImageView);
+            }
+        });
     }
 
     /**
@@ -148,10 +136,5 @@ public class FeedbackActivity extends Activity {
         }
     }
 
-
-    private void onTakePhoto(String path) {
-        mPhotoPath = path;
-        ImageManager.displayImage(Scheme.wrapUri("file", path), mImageView);
-    }
 
 }
