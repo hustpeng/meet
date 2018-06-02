@@ -38,7 +38,7 @@ public class FeedbackActivity extends Activity {
     /**
      * 显示用户反馈图片
      */
-    @BindView(R.id.image)
+    @BindView(R.id.btn_add_image)
     ImageView mImageView;
 
     /**
@@ -47,9 +47,14 @@ public class FeedbackActivity extends Activity {
     @BindView(R.id.input_text)
     EditText mInputView;
 
-
+    /**
+     * loading对话框
+     */
     private ISLoadingDialog mISLoadingDialog;
 
+    /**
+     * 上传的图片路径
+     */
     private String mPhotoPath;
 
     @Override
@@ -79,7 +84,11 @@ public class FeedbackActivity extends Activity {
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
-        final String content = mInputView.getText().toString();
+        final String content = mInputView.getText().toString().trim();
+        if (content.length() < 4) {
+            ToastUtil.showToast(getString(R.string.feedback_tips));
+            return;
+        }
         // 上传照片
         showLoadingDialog();
         FeedbackManager.feedback(content, mPhotoPath, new OnFeedbackListener() {
@@ -87,6 +96,9 @@ public class FeedbackActivity extends Activity {
             public void onFeedback(ApiResult result) {
                 hideLoadingDialog();
                 ToastUtil.showToast(result.mErrorMsg);
+                if (result.mResult) {
+                    finish();
+                }
             }
         });
     }
@@ -98,6 +110,12 @@ public class FeedbackActivity extends Activity {
     @OnClick(R.id.btn_add_image)
     void onClickAddImage() {
         takePicture();
+    }
+
+    @OnClick(R.id.remove)
+    void onClickClear() {
+        mPhotoPath = null;
+        mImageView.setImageResource(R.drawable.selector_image_add);
     }
 
     /**
@@ -121,7 +139,7 @@ public class FeedbackActivity extends Activity {
     private void showLoadingDialog() {
         if (mISLoadingDialog == null) {
             mISLoadingDialog = new ISLoadingDialog(this);
-            mISLoadingDialog.setMessage("正在上传...");
+            mISLoadingDialog.setMessage(getString(R.string.feedback_loading));
             mISLoadingDialog.setCancelable(false);
         }
         mISLoadingDialog.show();

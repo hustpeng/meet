@@ -32,7 +32,7 @@
             android:layout_gravity="center_vertical|right"
             android:layout_margin="10dp"
             android:background="@drawable/bg_btn_login"
-            android:text="上传"
+            android:text="@string/feedback_submit"
             android:textColor="#ffffff" />
     </FrameLayout>
 
@@ -44,25 +44,61 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#ffffffff"
             android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:background="#fff5f5f5"
+                android:gravity="center_vertical"
+                android:paddingLeft="5dp"
+                android:text="@string/feedback_problem"
+                android:textColor="#ff666666" />
 
             <EditText
                 android:id="@+id/input_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="175dp"
+                android:background="#ffffffff"
+                android:gravity="left"
+                android:hint="@string/feedback_problem_hint"
+                android:maxLength="200"
+                android:padding="5dp"
+                android:textColor="#ff000000"
+                android:textSize="16sp" />
 
-
-            <ImageView
-                android:id="@+id/image"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/chat_btn_input_emoji" />
+                android:layout_height="42dp"
+                android:background="#fff5f5f5"
+                android:gravity="center_vertical"
+                android:paddingLeft="5dp"
+                android:text="@string/feedback_problem_image"
+                android:textColor="#ff666666" />
 
-            <Button
-                android:id="@+id/btn_add_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="添加反馈图片" />
+            <FrameLayout
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp">
+
+                <ImageView
+                    android:id="@+id/btn_add_image"
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
+                    android:scaleType="center"
+                    android:src="@drawable/selector_image_add" />
+
+                <ImageView
+                    android:id="@+id/remove"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:scaleType="center"
+                    android:src="@drawable/widget_edit_clear" />
+
+            </FrameLayout>
 
         </LinearLayout>
     </ScrollView>

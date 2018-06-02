@@ -138,4 +138,12 @@
     <string name="recent_chat_type_recommend">[推荐好友]</string>
     <string name="identity_authentication">身份认证</string>
 
+    <!-- 用户反馈 -->
+    <string name="feedback_tips">请添加问题描述,并大于3个字符</string>
+    <string name="feedback_loading">正在提交反馈...</string>
+    <string name="feedback_submit">提交</string>
+    <string name="feedback_problem">问题描述(必填)</string>
+    <string name="feedback_problem_hint">请描述您遇到的问题</string>
+    <string name="feedback_problem_image">上传问题截图(选填)</string>
+
 </resources>
