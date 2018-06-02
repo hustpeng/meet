@@ -16,6 +16,8 @@ import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.file.FileUtils;
 import com.agmbat.imagepicker.ImagePicker;
+import com.agmbat.imagepicker.ImagePickerHelper;
+import com.agmbat.imagepicker.OnPickImageListener;
 import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.loader.UILImageLoader;
 import com.agmbat.imagepicker.ui.ImageGridActivity;
@@ -78,8 +80,26 @@ public class IdentityAuthenticationActivity extends Activity {
 
     private ISLoadingDialog mISLoadingDialog;
 
+    /**
+     * 第一张图片路径
+     */
     private String mFrontPath;
+
+    /**
+     * 第一张url, 存在从服务器下载后未修改图片再次上传的情况
+     */
+    private String mFrontUrl;
+
+
+    /**
+     * 第二张图片路径
+     */
     private String mBackPath;
+
+    /**
+     * 第二张url
+     */
+    private String mBackUrl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,9 +115,25 @@ public class IdentityAuthenticationActivity extends Activity {
             public void onLoadAuthStatus(AuthStatusResult result) {
                 ToastUtil.showToast(result.mErrorMsg);
                 hideLoadingDialog();
+                if (!result.mResult) {
+                    ToastUtil.showToast("获取身份状态失败");
+                    finish();
+                    return;
+                }
+
                 mStatusView.setText("当前身份认证状态:" + result.mErrorMsg);
                 if (result.mAuth.hasNeedAuth()) {
                     mIdentityAuthenticationLayout.setVisibility(View.VISIBLE);
+                }
+
+                // 如果已上传过则显示相关信息
+                if (result.mAuth.mStatus == Auth.STATUS_PASS || result.mAuth.mStatus == Auth.STATUS_PENDING_TRIAL) {
+                    mInputNameView.setText(result.mAuth.mName);
+                    mInputIdentityView.setText(result.mAuth.mIdentity);
+                    mFrontUrl = result.mAuth.mPhotoFront;
+                    mBackUrl = result.mAuth.mPhotoBack;
+                    ImageManager.displayImage(result.mAuth.mPhotoFront, mFontImageView);
+                    ImageManager.displayImage(result.mAuth.mPhotoBack, mBackImageView);
                 }
             }
         });
@@ -107,21 +143,6 @@ public class IdentityAuthenticationActivity extends Activity {
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_TAKE_PICTURE) {
-            if (data != null) {
-                ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-                if (images != null) {
-                    if (images.size() == 1) {
-                        onTakePhoto(images.get(0).path);
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -137,15 +158,30 @@ public class IdentityAuthenticationActivity extends Activity {
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
-        if (TextUtils.isEmpty(mFrontPath) || TextUtils.isEmpty(mBackPath)) {
+        final String name = mInputNameView.getText().toString().trim();
+        if (TextUtils.isEmpty(name)) {
+            ToastUtil.showToast("请输入姓名!");
+            return;
+        }
+        final String identity = mInputIdentityView.getText().toString();
+        if (TextUtils.isEmpty(identity)) {
+            ToastUtil.showToast("请输入身份证号码!");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mFrontPath) && TextUtils.isEmpty(mFrontUrl)) {
             ToastUtil.showToast("请拍摄两张身份认证照片");
             return;
         }
-        final String name = mInputNameView.getText().toString();
-        final String identity = mInputIdentityView.getText().toString();
+
+        if (TextUtils.isEmpty(mBackPath) && TextUtils.isEmpty(mBackUrl)) {
+            ToastUtil.showToast("请拍摄两张身份认证照片");
+            return;
+        }
+
         // 上传照片
         showLoadingDialog("正在上传认证资料...");
-        IdentityManager.auth(name, identity, mFrontPath, mBackPath, new OnIdentityListener() {
+        IdentityManager.auth(name, identity, mFrontPath, mBackPath, mFrontUrl, mBackUrl, new OnIdentityListener() {
             @Override
             public void onIdentity(ApiResult apiResult) {
                 hideLoadingDialog();
@@ -154,15 +190,18 @@ public class IdentityAuthenticationActivity extends Activity {
         });
     }
 
-    private int type = 0;
-
     /**
      * 点击拍身份证前面照片
      */
     @OnClick(R.id.btn_identity_front)
     void onClickTakeFront() {
-        type = 0;
-        takePicture();
+        ImagePickerHelper.takePicture(this, new OnPickImageListener() {
+            @Override
+            public void onPickImage(ImageItem imageItem) {
+                mFrontPath = imageItem.path;
+                ImageManager.displayImage(Scheme.wrapUri("file", mFrontPath), mFontImageView);
+            }
+        });
     }
 
     /**
@@ -170,33 +209,25 @@ public class IdentityAuthenticationActivity extends Activity {
      */
     @OnClick(R.id.btn_identity_back)
     void onClickTakeBack() {
-        type = 1;
-        takePicture();
+        ImagePickerHelper.takePicture(this, new OnPickImageListener() {
+            @Override
+            public void onPickImage(ImageItem imageItem) {
+                mBackPath = imageItem.path;
+                ImageManager.displayImage(Scheme.wrapUri("file", mBackPath), mBackImageView);
+            }
+        });
     }
 
-
-    private void onTakePhoto(String path) {
-        if (type == 0) {
-            mFrontPath = path;
-            ImageManager.displayImage(Scheme.wrapUri("file", path), mFontImageView);
-        } else {
-            mBackPath = path;
-            ImageManager.displayImage(Scheme.wrapUri("file", path), mBackImageView);
-        }
+    @OnClick(R.id.remove_front)
+    void onClickRemoveFront() {
+        mFrontPath = null;
+        mFontImageView.setImageResource(R.drawable.auth_front);
     }
 
-    private static final int REQUEST_CODE_TAKE_PICTURE = 121;
-
-    /**
-     * 拍照
-     */
-    private void takePicture() {
-        ImagePicker imagePicker = ImagePicker.getInstance();
-        imagePicker.setImageLoader(new UILImageLoader());
-        imagePicker.setCrop(false);
-        Intent intent = new Intent(this, ImageGridActivity.class);
-        intent.putExtra(ImageGridActivity.EXTRAS_TAKE_PICKERS, true); // 是否是直接打开相机
-        startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
+    @OnClick(R.id.remove_back)
+    void onClickRemoveBack() {
+        mBackPath = null;
+        mBackImageView.setImageResource(R.drawable.auth_back);
     }
 
     /**
@@ -205,9 +236,9 @@ public class IdentityAuthenticationActivity extends Activity {
     private void showLoadingDialog(String msg) {
         if (mISLoadingDialog == null) {
             mISLoadingDialog = new ISLoadingDialog(this);
-            mISLoadingDialog.setMessage(msg);
             mISLoadingDialog.setCancelable(false);
         }
+        mISLoadingDialog.setMessage(msg);
         mISLoadingDialog.show();
     }
 

@@ -103,7 +103,6 @@ public class FeedbackActivity extends Activity {
         });
     }
 
-
     /**
      * 点击添加反馈图片
      */

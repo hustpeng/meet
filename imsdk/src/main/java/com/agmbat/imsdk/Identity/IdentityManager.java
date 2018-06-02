@@ -14,6 +14,9 @@ import com.agmbat.imsdk.remotefile.FileApiResult;
 
 import java.io.File;
 
+/**
+ * 身份认证管理
+ */
 public class IdentityManager {
 
     /**
@@ -51,11 +54,11 @@ public class IdentityManager {
 
                 if (result.mAuth.mStatus == Auth.STATUS_PENDING_TRIAL) {
                     if (TextUtils.isEmpty(result.mErrorMsg)) {
-                        result.mErrorMsg = "待审核！";
+                        result.mErrorMsg = "待审核";
                     }
                 } else if (result.mAuth.mStatus == Auth.STATUS_PASS) {
                     if (TextUtils.isEmpty(result.mErrorMsg)) {
-                        result.mErrorMsg = "审核通过！";
+                        result.mErrorMsg = "审核通过";
                     }
                 } else if (result.mAuth.mStatus == Auth.STATUS_FAIL) {
                     if (TextUtils.isEmpty(result.mErrorMsg)) {
@@ -79,48 +82,11 @@ public class IdentityManager {
      * 身份认证
      */
     public static void auth(final String name, final String identity, final String frontPath, final String backPath,
-                            final OnIdentityListener listener) {
+                            final String frontUrl, final String backUrl, final OnIdentityListener listener) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
             @Override
             protected ApiResult doInBackground(Void... voids) {
-                File frontFile = new File(frontPath);
-                String frontFileName = frontFile.getName();
-                File outFrontFile = new File(UserFileManager.getCurImageDir(), frontFileName);
-                ImageUtils.resizeImage(frontFile.getAbsolutePath(), outFrontFile.getAbsolutePath(), 1080, 1920);
-
-
-                String phone = XMPPManager.getInstance().getConnectionUserName();
-                String ticket = XMPPManager.getInstance().getTokenManager().getTokenRetry();
-                String format = FileUtils.getExtension(frontPath);
-                FileApiResult result1 = FileApi.uploadCommonFile(phone, ticket, format, outFrontFile);
-                if (result1 == null || !result1.mResult) {
-                    return errorResult("上传正面身份证照片失败!");
-                }
-
-                File backFile = new File(backPath);
-                String backFileName = backFile.getName();
-                File outBackFile = new File(UserFileManager.getCurImageDir(), backFileName);
-                ImageUtils.resizeImage(frontFile.getAbsolutePath(), outBackFile.getAbsolutePath(), 1080, 1920);
-
-                format = FileUtils.getExtension(backPath);
-                FileApiResult result2 = FileApi.uploadCommonFile(phone, ticket, format, outBackFile);
-                if (result2 == null || !result2.mResult) {
-                    return errorResult("上传背面身份证照片失败!");
-                }
-                ApiResult result = IdentityApi.auth(phone, ticket, name, identity, result1.url, result2.url);
-                if (result == null) {
-                    return errorResult("上传认证资料失败!");
-                }
-                if (!result.mResult) {
-                    if (TextUtils.isEmpty(result.mErrorMsg)) {
-                        result.mErrorMsg = "上传认证资料失败!!";
-                    }
-                } else {
-                    if (TextUtils.isEmpty(result.mErrorMsg)) {
-                        result.mErrorMsg = "上传认证资料成功!";
-                    }
-                }
-                return result;
+                return requestUpload(name, identity, frontPath, backPath, frontUrl, backUrl);
             }
 
             @Override
@@ -132,6 +98,47 @@ public class IdentityManager {
             }
         });
 
+    }
+
+
+    private static ApiResult requestUpload(String name, String identity, String frontPath, String backPath,
+                                           String frontUrl, String backUrl) {
+
+        String phone = XMPPManager.getInstance().getConnectionUserName();
+        String ticket = XMPPManager.getInstance().getTokenManager().getTokenRetry();
+
+        if (!TextUtils.isEmpty(frontPath)) {
+            FileApiResult result = uploadFile(phone, ticket, frontPath);
+            if (result == null || !result.mResult) {
+                return errorResult("上传正面身份证照片失败!");
+            } else {
+                frontUrl = result.url;
+            }
+        } // else frontUrl 是不为空的
+
+        if (!TextUtils.isEmpty(backPath)) {
+            FileApiResult result = uploadFile(phone, ticket, backPath);
+            if (result == null || !result.mResult) {
+                return errorResult("上传背面身份证照片失败!");
+            } else {
+                backUrl = result.url;
+            }
+        } // else backUrl 是不为空的
+
+        ApiResult result = IdentityApi.auth(phone, ticket, name, identity, frontUrl, backUrl);
+        if (result == null) {
+            return errorResult("上传认证资料失败!");
+        }
+        if (!result.mResult) {
+            if (TextUtils.isEmpty(result.mErrorMsg)) {
+                result.mErrorMsg = "上传认证资料失败!!";
+            }
+        } else {
+            if (TextUtils.isEmpty(result.mErrorMsg)) {
+                result.mErrorMsg = "上传认证资料成功!";
+            }
+        }
+        return result;
     }
 
     /**
@@ -146,4 +153,22 @@ public class IdentityManager {
         result.mErrorMsg = msg;
         return result;
     }
+
+    /**
+     * 上传文件
+     *
+     * @param phone
+     * @param ticket
+     * @param path
+     * @return
+     */
+    private static FileApiResult uploadFile(String phone, String ticket, String path) {
+        File frontFile = new File(path);
+        String frontFileName = frontFile.getName();
+        File outFrontFile = new File(UserFileManager.getCurImageDir(), frontFileName);
+        ImageUtils.resizeImage(frontFile.getAbsolutePath(), outFrontFile.getAbsolutePath(), 1080, 1920);
+        String format = FileUtils.getExtension(path);
+        return FileApi.uploadCommonFile(phone, ticket, format, outFrontFile);
+    }
+
 }
