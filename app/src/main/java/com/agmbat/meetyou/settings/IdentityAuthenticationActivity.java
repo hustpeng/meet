@@ -221,12 +221,14 @@ public class IdentityAuthenticationActivity extends Activity {
     @OnClick(R.id.remove_front)
     void onClickRemoveFront() {
         mFrontPath = null;
+        mFrontUrl = null;
         mFontImageView.setImageResource(R.drawable.auth_front);
     }
 
     @OnClick(R.id.remove_back)
     void onClickRemoveBack() {
         mBackPath = null;
+        mBackUrl = null;
         mBackImageView.setImageResource(R.drawable.auth_back);
     }
 
