@@ -43,7 +43,7 @@ dependencies {
     compile "com.disbts:inputview:4.0.3@aar"
     compile "com.disbts:inputvoice:4.0.3@aar"
     compile "com.disbts:emoji:4.0.1@aar"
-    compile 'com.disbts:browser:4.0.3@aar'
+    compile 'com.disbts:browser:4.1.7@aar'
 
     compile "com.disbts:baidumap:${BAIDUMAP_VERSION}@aar"
 

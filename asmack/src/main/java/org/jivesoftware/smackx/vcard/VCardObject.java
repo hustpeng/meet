@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.vcard;
 
 import android.text.TextUtils;
@@ -33,9 +32,10 @@ public class VCardObject implements ICacheStoreObject {
      */
     public static final String KEY_AVATAR = "avatar";
 
+    /**
+     * 用户id
+     */
     private String jid;
-    private String status;
-    private Date update_date;
 
     /**
      * 昵称
@@ -56,6 +56,9 @@ public class VCardObject implements ICacheStoreObject {
      * 头像url
      */
     private String avatar;
+
+    private String status;
+    private Date update_date;
 
     public String getNickname() {
         if (TextUtils.isEmpty(nickname)) {
@@ -139,6 +142,18 @@ public class VCardObject implements ICacheStoreObject {
         this.status = status;
     }
 
+
+    @Override
+    public String toString() {
+        return getXmlNode(this);
+    }
+
+    /**
+     * 将VCardObject转为xml字符串
+     *
+     * @param object
+     * @return
+     */
     public static String getXmlNode(VCardObject object) {
         if (object == null) {
             return null;
@@ -160,11 +175,5 @@ public class VCardObject implements ICacheStoreObject {
         buf.append(">");
         return buf.toString();
     }
-
-    @Override
-    public String toString() {
-        return getXmlNode(this);
-    }
-
 
 }

@@ -101,6 +101,11 @@ public class LoginUser {
         mVCardObject.setNickname(nickName);
     }
 
+    /**
+     * 获取用户名
+     *
+     * @return
+     */
     public String getUserName() {
         return mVCardObject.getUserName();
     }

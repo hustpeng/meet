@@ -16,6 +16,7 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
+import com.agmbat.meetyou.helper.UserInfoDisplay;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +60,8 @@ public class UserInfoActivity extends Activity {
         ImageManager.displayImage(mContactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
         mNickNameView.setText(mContactInfo.getNickName());
         mGenderView.setImageResource(GenderHelper.getIconRes(mContactInfo.getGender()));
-        mUserNameView.setText(getString(R.string.id_name_format) + " " + mContactInfo.getUserName());
+        String displayName = UserInfoDisplay.getDisplayUserName(mContactInfo.getUserName());
+        mUserNameView.setText(getString(R.string.id_name_format) + " " + displayName);
     }
 
     @Override

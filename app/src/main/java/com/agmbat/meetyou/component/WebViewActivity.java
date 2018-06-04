@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
@@ -72,6 +75,7 @@ public class WebViewActivity extends Activity {
         Uri uri = intent.getData();
         String url = uri.toString(); // "http://www.baidu.com"
         mBrowser = new WebBrowser(this, findViewById(android.R.id.content));
+
         mBrowser.hideInputLayout();
         mBrowser.setHideGoButton(true);
         mBrowser.loadUrl(url);
