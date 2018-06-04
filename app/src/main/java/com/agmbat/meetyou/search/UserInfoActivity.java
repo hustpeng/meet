@@ -102,6 +102,8 @@ public class UserInfoActivity extends Activity {
         });
         popupMenu.addItem(reportUser);
 
+        mBusinessHandler.onPrepareMoreMenu(this, popupMenu, mContactInfo);
+
         View v = (View) view.getParent();
         popupMenu.show(v);
     }
