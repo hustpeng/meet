@@ -224,6 +224,9 @@ public class XMPPManager {
         xmppConnection.getConfiguration().setReconnectionAllowed(true);
     }
 
+    /**
+     * 退出登录
+     */
     public void logout() {
         Context context = AppResources.getAppContext();
         AppConfigUtils.setPassword(context, null);
