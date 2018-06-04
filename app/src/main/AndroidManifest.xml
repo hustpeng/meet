@@ -123,6 +123,10 @@
             android:name="com.agmbat.meetyou.search.UserInfoActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.search.ReportUserActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.agmbat.meetyou.search.NewFriendActivity"

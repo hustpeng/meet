@@ -25,6 +25,14 @@
             android:textColor="#ffffffff"
             android:textSize="20sp" />
 
+        <ImageView
+            android:id="@+id/title_btn_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_friend_more" />
+
     </FrameLayout>
 
     <LinearLayout

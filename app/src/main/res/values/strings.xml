@@ -146,4 +146,11 @@
     <string name="feedback_problem_hint">请描述您遇到的问题</string>
     <string name="feedback_problem_image">上传问题截图(选填)</string>
 
+    <!-- 举报用户-->
+    <string name="report_user">举报</string>
+    <string name="report_user_tips">请添举报内容,并大于3个字符</string>
+    <string name="report_user_loading">正在提交举报内容...</string>
+    <string name="report_user_problem">举报内容(必填)</string>
+    <string name="report_user_hint">请描述举报内容</string>
+    <string name="report_user_image">上传举报截图(选填)</string>
 </resources>

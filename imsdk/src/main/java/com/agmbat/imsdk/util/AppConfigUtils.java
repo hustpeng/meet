@@ -63,7 +63,7 @@ public class AppConfigUtils {
 
     /**
      * 程序首次运行时,返回0
-     * 
+     *
      * @param context
      * @return
      */
@@ -75,7 +75,7 @@ public class AppConfigUtils {
 
     /**
      * 程序首次运行时，将手机屏幕宽度存储</br> 详细说明：{@link setScreenDisplayHeight}
-     * 
+     *
      * @param context
      * @param width
      * @return
@@ -94,7 +94,7 @@ public class AppConfigUtils {
 
     /**
      * 程序首次运行时，将屏幕高度存储</br> 此高度，并不包括状态栏高度</br> 此高度用作Profile界面中动态设置ScrollView的高度
-     * 
+     *
      * @param context
      * @param height
      * @return
@@ -138,10 +138,6 @@ public class AppConfigUtils {
         editor.putString(KEY_USERNAME, username);
         editor.putString(KEY_PASSWORD, password);
         editor.commit();
-    }
-
-    public static String getFacebookUid(Context context) {
-        return getPreferences(context).getString(KEY_FB_UID, "");
     }
 
     public static String getUserName(Context context) {

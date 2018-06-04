@@ -13,7 +13,7 @@ public class ViewUserHelper {
 
     private static final String KEY_TYPE = "type";
 
-    private static final String KEY_USER_INFO = "userInfo";
+    public static final String KEY_USER_INFO = "userInfo";
 
     /**
      * 从联系页面进入, 查看联系人信息

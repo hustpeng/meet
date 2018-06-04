@@ -137,7 +137,7 @@ public class MsgFragment extends Fragment {
     }
 
     @OnClick(R.id.title_btn_add)
-    void onClickAdd() {
+    void onClickAdd(View view) {
         PopupMenu popupMenu = new PopupMenu(getContext());
 
         MenuInfo groupChat = new MenuInfo();
@@ -175,8 +175,8 @@ public class MsgFragment extends Fragment {
         });
         popupMenu.addItem(scan);
 
-        View view = (View) getView().findViewById(R.id.title_btn_add).getParent();
-        popupMenu.show(view);
+        View v = (View) view.getParent();
+        popupMenu.show(v);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

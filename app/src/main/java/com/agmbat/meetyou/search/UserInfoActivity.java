@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +18,9 @@ import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
 import com.agmbat.meetyou.helper.UserInfoDisplay;
+import com.agmbat.menu.MenuInfo;
+import com.agmbat.menu.OnClickMenuListener;
+import com.agmbat.menu.PopupMenu;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,6 +86,28 @@ public class UserInfoActivity extends Activity {
     }
 
     /**
+     * 点击标题栏中的more
+     */
+    @OnClick(R.id.title_btn_more)
+    void onClickMore(View view) {
+        PopupMenu popupMenu = new PopupMenu(this);
+
+        MenuInfo reportUser = new MenuInfo();
+        reportUser.setTitle(getString(R.string.report_user));
+        reportUser.setOnClickMenuListener(new OnClickMenuListener() {
+            @Override
+            public void onClick(MenuInfo menu, int index) {
+                reportUser();
+            }
+        });
+        popupMenu.addItem(reportUser);
+
+        View v = (View) view.getParent();
+        popupMenu.show(v);
+    }
+
+
+    /**
      * 点击添加联系人
      */
     @OnClick(R.id.btn_add_to_contact)
@@ -108,6 +134,15 @@ public class UserInfoActivity extends Activity {
     @OnClick(R.id.btn_chat)
     void onClickChat() {
         ChatActivity.openChat(this, mContactInfo);
+    }
+
+    /**
+     * 举报用户
+     */
+    private void reportUser() {
+        Intent intent = new Intent(this, ReportUserActivity.class);
+        intent.putExtra(ViewUserHelper.KEY_USER_INFO, mBusinessHandler.getContactInfo().getBareJid());
+        startActivity(intent);
     }
 
     //    UserInfo mUserInfo;
