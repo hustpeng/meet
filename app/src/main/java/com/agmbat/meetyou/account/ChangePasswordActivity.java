@@ -35,7 +35,6 @@ public class ChangePasswordActivity extends Activity {
     @BindView(R.id.input_confirm_pwd)
     EditText mInputConfirmPwd;
 
-    private ImAccountManager mLoginManager;
     private ProgressDialog mProgressDialog;
 
     @Override
@@ -44,9 +43,8 @@ public class ChangePasswordActivity extends Activity {
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_change_password);
         ButterKnife.bind(this);
-        mLoginManager = new ImAccountManager(this);
         TextView tv = (TextView) findViewById(R.id.username);
-        tv.setText(mLoginManager.getConnectionUserName());
+        tv.setText(ImAccountManager.getConnectionUserName());
         mInputCurrentPwd.requestFocus();
     }
 
@@ -74,18 +72,19 @@ public class ChangePasswordActivity extends Activity {
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
 
-        mLoginManager.changePassword(currentPwd, newPwd, confirmPwd, new ImAccountManager.OnChangePasswordListener() {
-            @Override
-            public void onChangePassword(ApiResult result) {
-                if (null != mProgressDialog && mProgressDialog.isShowing()) {
-                    mProgressDialog.dismiss();
-                }
-                ToastUtil.showToastLong(result.mErrorMsg);
-                if (result.mResult) {
-                    finish();
-                }
-            }
-        });
+        ImAccountManager.changePassword(currentPwd, newPwd, confirmPwd,
+                new ImAccountManager.OnChangePasswordListener() {
+                    @Override
+                    public void onChangePassword(ApiResult result) {
+                        if (null != mProgressDialog && mProgressDialog.isShowing()) {
+                            mProgressDialog.dismiss();
+                        }
+                        ToastUtil.showToastLong(result.mErrorMsg);
+                        if (result.mResult) {
+                            finish();
+                        }
+                    }
+                });
     }
 
 }

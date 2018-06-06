@@ -108,8 +108,7 @@ public abstract class Packet {
     private String packetID = null;
     private String to = null;
     private String from = null;
-    private final List<PacketExtension> packetExtensions
-            = new CopyOnWriteArrayList<PacketExtension>();
+    private final List<PacketExtension> packetExtensions = new CopyOnWriteArrayList<PacketExtension>();
 
     private final Map<String, Object> properties = new HashMap<String, Object>();
     private XMPPError error = null;

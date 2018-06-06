@@ -100,11 +100,6 @@ public class RegisterActivity extends Activity {
 
     private Counter mCountDownTimer;
 
-    /**
-     * 注册登陆管理
-     */
-    private ImAccountManager mLoginManager;
-
     private TelTextWatcher.OnInputTelephoneListener mOnInputTelephoneListener = new TelTextWatcher.OnInputTelephoneListener() {
         @Override
         public void onInputTelephone(boolean complete, boolean isTelephone) {
@@ -129,7 +124,6 @@ public class RegisterActivity extends Activity {
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
-        mLoginManager = new ImAccountManager(this);
         mUserNameView.addTextChangedListener(new TelTextWatcher(mOnInputTelephoneListener));
         mPasswordView.addTextChangedListener(new TextChange());
         mGenderView.setText(GenderHelper.female());
@@ -183,7 +177,7 @@ public class RegisterActivity extends Activity {
     void onClickGetVerificationCode() {
         startTimer();
         String phone = mUserNameView.getText().toString();
-        mLoginManager.getRegisterVerificationCode(phone, new ImAccountManager.OnGetVerificationCodeListener() {
+        ImAccountManager.getRegisterVerificationCode(phone, new ImAccountManager.OnGetVerificationCodeListener() {
             @Override
             public void onGetVerificationCode(ApiResult result) {
                 mCountDownTimer.cancel();
@@ -252,7 +246,7 @@ public class RegisterActivity extends Activity {
         registerInfo.setBirthYear(birthYear);
         registerInfo.setInviteCode(inviteCode);
 
-        mLoginManager.register(registerInfo, new ImAccountManager.OnRegisterListener() {
+        ImAccountManager.register(registerInfo, new ImAccountManager.OnRegisterListener() {
             @Override
             public void onRegister(ApiResult result) {
                 dismissDialog();

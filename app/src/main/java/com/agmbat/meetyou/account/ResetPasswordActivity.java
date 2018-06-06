@@ -55,11 +55,6 @@ public class ResetPasswordActivity extends Activity {
 
     private Counter mCountDownTimer;
 
-    /**
-     * 注册登陆管理
-     */
-    private ImAccountManager mLoginManager;
-
     private TelTextWatcher.OnInputTelephoneListener mOnInputTelephoneListener = new TelTextWatcher.OnInputTelephoneListener() {
         @Override
         public void onInputTelephone(boolean complete, boolean isTelephone) {
@@ -84,7 +79,6 @@ public class ResetPasswordActivity extends Activity {
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_reset_password);
         ButterKnife.bind(this);
-        mLoginManager = new ImAccountManager(this);
         // setupViews
         mUserNameView.addTextChangedListener(new TelTextWatcher(mOnInputTelephoneListener));
         mPasswordView.addTextChangedListener(new TextChange());
@@ -125,7 +119,7 @@ public class ResetPasswordActivity extends Activity {
     void onClickGetVerificationCode() {
         startTimer();
         String phone = mUserNameView.getText().toString();
-        mLoginManager.getResetVerificationCode(phone, new ImAccountManager.OnGetVerificationCodeListener() {
+        ImAccountManager.getResetVerificationCode(phone, new ImAccountManager.OnGetVerificationCodeListener() {
             @Override
             public void onGetVerificationCode(ApiResult result) {
                 ToastUtil.showToastLong(result.mErrorMsg);
@@ -156,15 +150,16 @@ public class ResetPasswordActivity extends Activity {
         String name = mUserNameView.getText().toString();
         String password = mPasswordView.getText().toString();
         String verificationCode = mVerificationCodeView.getText().toString();
-        mLoginManager.resetPassword(name, password, verificationCode, new ImAccountManager.OnResetPasswordListener() {
-            @Override
-            public void onResetPassword(ApiResult result) {
-                ToastUtil.showToastLong(result.mErrorMsg);
-                if (result.mResult) {
-                    finish();
-                }
-            }
-        });
+        ImAccountManager.resetPassword(name, password, verificationCode,
+                new ImAccountManager.OnResetPasswordListener() {
+                    @Override
+                    public void onResetPassword(ApiResult result) {
+                        ToastUtil.showToastLong(result.mErrorMsg);
+                        if (result.mResult) {
+                            finish();
+                        }
+                    }
+                });
     }
 
     /**

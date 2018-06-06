@@ -68,7 +68,7 @@ public class RosterManager {
     /**
      * 缓存, 此map可以不用更新
      */
-    private Map<String, ContactInfo> CONTACT_MAP = new HashMap<>();
+    private Map<String, ContactInfo> mContactMap = new HashMap<>();
 
 
     /**
@@ -103,6 +103,20 @@ public class RosterManager {
     }
 
     /**
+     * 重置数据, 用于切换用户, 需要重新获取数据
+     */
+    public void resetData() {
+        mGroupList.clear();
+        mCacheLoaded = false;
+        mNetworkLoaded = false;
+        mLoginUser = null;
+        if (mFriendRequestList != null) {
+            mFriendRequestList.clear();
+        }
+        mContactMap.clear();
+    }
+
+    /**
      * TODO 修改函数名，加上缓存信息
      * 从内存缓存中获取联系人信息
      *
@@ -110,7 +124,7 @@ public class RosterManager {
      * @return
      */
     public ContactInfo getContactInfo(String jid) {
-        return CONTACT_MAP.get(jid);
+        return mContactMap.get(jid);
     }
 
     public void addContactInfo(ContactInfo contactInfo) {
@@ -118,7 +132,7 @@ public class RosterManager {
     }
 
     public void addContactInfo(String jid, ContactInfo contactInfo) {
-        CONTACT_MAP.put(jid, contactInfo);
+        mContactMap.put(jid, contactInfo);
     }
 
     /**
@@ -636,6 +650,9 @@ public class RosterManager {
         });
     }
 
+    /**
+     * 同步加载用户信息数据
+     */
     public void loadContactGroupFromDBSync() {
         if (mCacheLoaded) {
             EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));

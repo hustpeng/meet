@@ -151,14 +151,6 @@ public class EditAvatarActivity extends Activity {
         option.setShowCamera(false);
         option.setCropParams(params);
 
-        ImagePicker imagePicker = ImagePicker.getInstance();
-        imagePicker.setImageLoader(new UILImageLoader());
-        imagePicker.setCrop(true); //允许裁剪（单选才有效）
-        imagePicker.setSaveRectangle(true); //是否按矩形区域保存
-        imagePicker.setSelectLimit(1); //选中数量限制
-        imagePicker.setMultiMode(false); // 设置为单选
-        imagePicker.setPickerOption(option);
-
         ImagePickerHelper.pickImage(this, option, new OnPickImageListener() {
             @Override
             public void onPickImage(ImageItem imageItem) {

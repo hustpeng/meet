@@ -235,8 +235,7 @@ public class XMPPConnection extends Connection {
         username = username.toLowerCase().trim();
 
         String response;
-        if (config.isSASLAuthenticationEnabled() &&
-                saslAuthentication.hasNonAnonymousAuthentication()) {
+        if (config.isSASLAuthenticationEnabled() && saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             if (password != null) {
                 response = saslAuthentication.authenticate(username, password, resource);

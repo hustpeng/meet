@@ -43,11 +43,6 @@ public class LoginActivity extends FragmentActivity {
 
     private ISLoadingDialog mISLoadingDialog;
 
-    /**
-     * 账号管理
-     */
-    private ImAccountManager mLoginManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +51,6 @@ public class LoginActivity extends FragmentActivity {
         ButterKnife.bind(this);
 
         EventBus.getDefault().register(this);
-        mLoginManager = new ImAccountManager(this);
 
         mUserNameView.addTextChangedListener(new TextChange());
         mPasswordView.addTextChangedListener(new TextChange());
@@ -119,7 +113,7 @@ public class LoginActivity extends FragmentActivity {
         String password = mPasswordView.getText().toString();
 
         AccountDebug.saveAccount(userName, password);
-        mLoginManager.login(userName, password, new ImAccountManager.OnLoginListener() {
+        ImAccountManager.login(userName, password, new ImAccountManager.OnLoginListener() {
             @Override
             public void onLogin(ApiResult result) {
                 hideLoadingDialog();

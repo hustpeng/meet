@@ -7,9 +7,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -55,15 +55,14 @@ public class PlainSaslClient implements SaslClient {
         }
     }
 
+    @Override
     public byte[] evaluateChallenge(byte[] challenge) throws SaslException {
         if (completed) {
-            throw new IllegalStateException("PLAIN: authentication already " +
-                    "completed");
+            throw new IllegalStateException("PLAIN: authentication already completed");
         }
         completed = true;
         try {
-            byte authzid[] =
-                    authorizationID == null ? null : authorizationID.getBytes("UTF8");
+            byte authzid[] = authorizationID == null ? null : authorizationID.getBytes("UTF8");
             byte authnid[] = authenticationID.getBytes("UTF8");
             byte response[] =
                     new byte[
@@ -90,18 +89,22 @@ public class PlainSaslClient implements SaslClient {
         }
     }
 
+    @Override
     public String getMechanismName() {
         return "PLAIN";
     }
 
+    @Override
     public boolean hasInitialResponse() {
         return true;
     }
 
+    @Override
     public boolean isComplete() {
         return completed;
     }
 
+    @Override
     public byte[] unwrap(byte[] incoming, int offset, int len) throws SaslException {
         if (completed) {
             throw new IllegalStateException("PLAIN: this mechanism supports " +
@@ -112,6 +115,7 @@ public class PlainSaslClient implements SaslClient {
         }
     }
 
+    @Override
     public byte[] wrap(byte[] outgoing, int offset, int len) throws SaslException {
         if (completed) {
             throw new IllegalStateException("PLAIN: this mechanism supports " +
@@ -122,6 +126,7 @@ public class PlainSaslClient implements SaslClient {
         }
     }
 
+    @Override
     public Object getNegotiatedProperty(String propName) {
         if (completed) {
             if (propName.equals(Sasl.QOP)) {
@@ -130,8 +135,7 @@ public class PlainSaslClient implements SaslClient {
                 return null;
             }
         } else {
-            throw new IllegalStateException("PLAIN: authentication not " +
-                    "completed");
+            throw new IllegalStateException("PLAIN: authentication not completed");
         }
     }
 
@@ -144,10 +148,12 @@ public class PlainSaslClient implements SaslClient {
         }
     }
 
+    @Override
     public void dispose() throws SaslException {
         clearPassword();
     }
 
+    @Override
     protected void finalize() {
         clearPassword();
     }

@@ -1,9 +1,5 @@
 package com.agmbat.imsdk.account;
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.imsdk.api.ApiResult;
@@ -45,13 +41,6 @@ public class ImAccountManager {
         public void onResetPassword(ApiResult result);
     }
 
-    private Context mContext;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
-
-    public ImAccountManager(Context activity) {
-        mContext = activity.getApplicationContext();
-    }
-
     /**
      * 登陆
      *
@@ -59,7 +48,7 @@ public class ImAccountManager {
      * @param password
      * @param l
      */
-    public void login(final String userName, final String password, final OnLoginListener l) {
+    public static void login(final String userName, final String password, final OnLoginListener l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
             @Override
             protected ApiResult doInBackground(Void... voids) {
@@ -80,7 +69,7 @@ public class ImAccountManager {
     /**
      * 获取注册验证码
      */
-    public void getRegisterVerificationCode(final String phone, final OnGetVerificationCodeListener l) {
+    public static void getRegisterVerificationCode(final String phone, final OnGetVerificationCodeListener l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
             @Override
             protected ApiResult doInBackground(Void... voids) {
@@ -100,7 +89,7 @@ public class ImAccountManager {
     /**
      * 获取重置密码验证码
      */
-    public void getResetVerificationCode(final String phone, final OnGetVerificationCodeListener l) {
+    public static void getResetVerificationCode(final String phone, final OnGetVerificationCodeListener l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
             @Override
             protected ApiResult doInBackground(Void... voids) {
@@ -120,7 +109,7 @@ public class ImAccountManager {
     /**
      * 注册
      */
-    public void register(final RegisterInfo registerInfo, final OnRegisterListener l) {
+    public static void register(final RegisterInfo registerInfo, final OnRegisterListener l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
             @Override
             protected ApiResult doInBackground(Void... voids) {
@@ -146,7 +135,8 @@ public class ImAccountManager {
      * @param confirmPwd
      * @param l
      */
-    public void changePassword(final String oldPassword, final String newPassword, final String confirmPwd, final OnChangePasswordListener l) {
+    public static void changePassword(final String oldPassword, final String newPassword, final String confirmPwd,
+                                      final OnChangePasswordListener l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
             @Override
             protected ApiResult doInBackground(Void... voids) {
@@ -166,7 +156,8 @@ public class ImAccountManager {
     /**
      * 重置密码
      */
-    public void resetPassword(final String name, final String password, final String verificationCode, final OnResetPasswordListener l) {
+    public static void resetPassword(final String name, final String password, final String verificationCode,
+                                     final OnResetPasswordListener l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
             @Override
             protected ApiResult doInBackground(Void... voids) {
@@ -184,7 +175,7 @@ public class ImAccountManager {
 
     }
 
-    public String getConnectionUserName() {
+    public static String getConnectionUserName() {
         return XMPPManager.getInstance().getConnectionUserName();
     }
 }

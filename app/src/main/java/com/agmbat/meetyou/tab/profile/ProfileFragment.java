@@ -158,7 +158,9 @@ public class ProfileFragment extends Fragment {
      */
     @OnClick(R.id.btn_exit)
     void onClickExit() {
+        // TODO 显示对话框, 需要清空数据
         XMPPManager.getInstance().logout();
+        XMPPManager.getInstance().getRosterManager().resetData();
         getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
         getActivity().finish();
     }

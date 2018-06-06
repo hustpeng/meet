@@ -292,13 +292,11 @@ public class SASLAuthentication implements UserAuthentication {
      */
 
     @Override
-    public String authenticate(String username, String password, String resource)
-            throws XMPPException {
+    public String authenticate(String username, String password, String resource) throws XMPPException {
         // Locate the SASLMechanism to use
         String selectedMechanism = null;
         for (String mechanism : mechanismsPreferences) {
-            if (implementedMechanisms.containsKey(mechanism) &&
-                    serverMechanisms.contains(mechanism)) {
+            if (implementedMechanisms.containsKey(mechanism) && serverMechanisms.contains(mechanism)) {
                 selectedMechanism = mechanism;
                 break;
             }
@@ -341,16 +339,14 @@ public class SASLAuthentication implements UserAuthentication {
                     return bindResourceAndEstablishSession(resource);
                 } else {
                     // SASL authentication failed so try a Non-SASL authentication
-                    return new NonSASLAuthentication(connection)
-                            .authenticate(username, password, resource);
+                    return new NonSASLAuthentication(connection).authenticate(username, password, resource);
                 }
             } catch (XMPPException e) {
                 throw e;
             } catch (Exception e) {
                 e.printStackTrace();
                 // SASL authentication failed so try a Non-SASL authentication
-                return new NonSASLAuthentication(connection)
-                        .authenticate(username, password, resource);
+                return new NonSASLAuthentication(connection).authenticate(username, password, resource);
             }
         } else {
             // No SASL method was found so try a Non-SASL authentication
