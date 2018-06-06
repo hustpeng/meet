@@ -51,6 +51,7 @@ public class MessageObject {
      * 消息内容
      */
     private String body;
+
     private boolean outgoing;
     private String msgId;
     private MessageSubType msgType;

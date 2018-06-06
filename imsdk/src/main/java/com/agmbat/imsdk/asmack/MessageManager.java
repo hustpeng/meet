@@ -428,7 +428,7 @@ public class MessageManager extends Xepmodule {
      */
     public List<MessageObject> getAllMessage(String jid) {
         List<MessageObject> list = messageStorage.getAllMessage(jid);
-        // 检测所有消息中用户是否存在, 如果不存在
+        // 检测所有消息中用户是否存在, 如果不存在, 则不显示
         for (MessageObject messageObject : list) {
             ensureMessageUser(messageObject);
         }
@@ -441,29 +441,31 @@ public class MessageManager extends Xepmodule {
      * @param messageObject
      */
     private void ensureMessageUser(MessageObject messageObject) {
-        String senderJid = messageObject.getSenderJid();
-        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactInfo(senderJid);
-        if (contactInfo == null) {
-            OnFetchContactListener listener = new OnFetchContactListener() {
-                @Override
-                public void onFetchContactInfo(ContactInfo contactInfo) {
-                    XMPPManager.getInstance().getRosterManager().addContactInfo(contactInfo);
-                }
-            };
-            FetchContactInfoRunnable runnable = new FetchContactInfoRunnable(senderJid, listener);
-            runnable.run();
+        // 如果用户信息不存在, 则不显示此消息记录, 等同步服务器上的用户信息后, 可直接删除相关信息
+        if (isToOthers(messageObject)) {
+            String receiverJid = messageObject.getReceiverJid();
+            ensureUser(receiverJid);
+        } else {
+            String senderJid = messageObject.getSenderJid();
+            ensureUser(senderJid);
         }
+    }
 
-        String receiverJid = messageObject.getReceiverJid();
-        contactInfo = XMPPManager.getInstance().getRosterManager().getContactInfo(receiverJid);
+    /**
+     * 加载指定用户并保存到缓存中
+     *
+     * @param jid
+     */
+    private void ensureUser(String jid) {
+        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(jid);
         if (contactInfo == null) {
             OnFetchContactListener listener = new OnFetchContactListener() {
                 @Override
                 public void onFetchContactInfo(ContactInfo contactInfo) {
-                    XMPPManager.getInstance().getRosterManager().addContactInfo(contactInfo);
+                    XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
                 }
             };
-            FetchContactInfoRunnable runnable = new FetchContactInfoRunnable(receiverJid, listener);
+            FetchContactInfoRunnable runnable = new FetchContactInfoRunnable(jid, listener);
             runnable.run();
         }
     }
@@ -519,7 +521,7 @@ public class MessageManager extends Xepmodule {
      */
     public static ContactInfo getTalkContactInfo(MessageObject messageObject) {
         String jid = getTalkJid(messageObject);
-        return XMPPManager.getInstance().getRosterManager().getContactInfo(jid);
+        return XMPPManager.getInstance().getRosterManager().getContactFromMemCache(jid);
     }
 
 

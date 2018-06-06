@@ -46,21 +46,10 @@ public class MessageStorage {
         mOpenHelper = new DatabaseHelper(AppResources.getAppContext());
     }
 
-    /**
-     * 插入数据消息内容
-     *
-     * @param t
-     * @return
-     */
-    public long insert(MessageObject t) {
-        ContentValues values = onAddToDatabase(t, new ContentValues());
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final long rowId = db.insert(getTableName(), null, values);
-        return rowId;
-    }
 
     public int update(MessageObject t, String selection, String[] selectionArgs) {
-        ContentValues values = onAddToDatabase(t, new ContentValues());
+        ContentValues values = new ContentValues();
+        onAddToDatabase(t, values);
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count = db.update(getTableName(), values, selection, selectionArgs);
         return count;
@@ -82,9 +71,18 @@ public class MessageStorage {
         return db.update(getTableName(), values, selection, selectionArgs);
     }
 
-    public void insertMsg(MessageObject newMsg) {
-        if (newMsg != null) {
-            insert(newMsg);
+    /**
+     * 插入数据消息内容
+     *
+     * @param msg
+     * @return
+     */
+    public void insertMsg(MessageObject msg) {
+        if (msg != null) {
+            ContentValues values = new ContentValues();
+            onAddToDatabase(msg, values);
+            SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+            db.insert(getTableName(), null, values);
         }
     }
 
@@ -241,9 +239,15 @@ public class MessageStorage {
         return builder.buildSql();
     }
 
-    public static ContentValues onAddToDatabase(MessageObject obj, ContentValues values) {
+    /**
+     * 将相关信息添加的ContentValues中
+     *
+     * @param obj
+     * @param values
+     */
+    public static void onAddToDatabase(MessageObject obj, ContentValues values) {
         if (obj == null || values == null) {
-            return null;
+            return;
         }
         values.put(Columns.MSG_SENDER_JID, obj.getSenderJid());
         values.put(Columns.MSG_RECEIVER_JID, obj.getReceiverJid());
@@ -255,7 +259,6 @@ public class MessageStorage {
         values.put(Columns.MSG_TYPE, obj.getMsgType().ordinal());
         values.put(Columns.MSG_STATUS, obj.getMsgStatus().ordinal());
         values.put(Columns.MSG_DATE, obj.getDate());
-        return values;
     }
 
     // MessageFragment data

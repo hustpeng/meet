@@ -117,21 +117,25 @@ public class RosterManager {
     }
 
     /**
-     * TODO 修改函数名，加上缓存信息
      * 从内存缓存中获取联系人信息
      *
      * @param jid
      * @return
      */
-    public ContactInfo getContactInfo(String jid) {
+    public ContactInfo getContactFromMemCache(String jid) {
         return mContactMap.get(jid);
     }
 
-    public void addContactInfo(ContactInfo contactInfo) {
-        addContactInfo(contactInfo.getBareJid(), contactInfo);
+    /**
+     * 将用户信息保存在内存缓存中
+     *
+     * @param contactInfo
+     */
+    public void addContactToMemCache(ContactInfo contactInfo) {
+        addContactToMemCache(contactInfo.getBareJid(), contactInfo);
     }
 
-    public void addContactInfo(String jid, ContactInfo contactInfo) {
+    public void addContactToMemCache(String jid, ContactInfo contactInfo) {
         mContactMap.put(jid, contactInfo);
     }
 
@@ -500,6 +504,7 @@ public class RosterManager {
 //            for (IRosterListener l : mRemoteRosListeners) {
 //                l.onPresenceChanged(presenceAdapter);
 //            }
+            Log.d(presence.toString());
         }
 
         @Override
@@ -513,7 +518,7 @@ public class RosterManager {
                     UiUtils.runOnUIThread(new Runnable() {
                         @Override
                         public void run() {
-                            XMPPManager.getInstance().getRosterManager().addContactInfo(contactInfo);
+                            XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
 
                             addFriendRequest(contactInfo);
                             EventBus.getDefault().post(new PresenceSubscribeEvent(contactInfo));
@@ -543,7 +548,7 @@ public class RosterManager {
                         @Override
                         public void run() {
                             // 添加到内存中
-                            XMPPManager.getInstance().getRosterManager().addContactInfo(contactInfo);
+                            XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
 
                             // 添加对方为好友
                             if (success) {
@@ -618,7 +623,7 @@ public class RosterManager {
     public void addGroupList(List<ContactGroup> result) {
         for (ContactGroup group : result) {
             for (ContactInfo info : group.getContactList()) {
-                addContactInfo(info);
+                addContactToMemCache(info);
             }
         }
     }
@@ -691,7 +696,7 @@ public class RosterManager {
                         contactInfo.setAvatar(mLoginUser.getAvatar());
                         contactInfo.setNickname(mLoginUser.getNickname());
                         contactInfo.setGender(mLoginUser.getGender());
-                        XMPPManager.getInstance().getRosterManager().addContactInfo(contactInfo);
+                        XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
                     }
                 });
             }

@@ -42,7 +42,7 @@ public class ContactView extends LinearLayout {
 
     public void update(ContactInfo contactInfo) {
         mNickNameView.setText(contactInfo.getNickName());
-        String distText = contactInfo.getDist() + "米以内";
+        String distText = contactInfo.getDist() + "km以内";
         mMessageView.setText(distText);
         mGenderView.setImageResource(GenderHelper.getIconRes(contactInfo.getGender()));
         mLastMsgTimeView.setVisibility(View.GONE);

@@ -18,7 +18,6 @@ import com.agmbat.android.utils.AppUtils;
 import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.app.AppFileManager;
 import com.agmbat.baidumap.MapConfig;
-import com.agmbat.baidumap.MapHelper;
 import com.agmbat.emoji.display.EmojiDisplay;
 import com.agmbat.http.HttpUtils;
 import com.agmbat.imsdk.asmack.MessageManager;
@@ -34,7 +33,6 @@ import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.imsdk.mgr.XmppFileManager;
-import com.agmbat.imsdk.util.LocationHelper;
 import com.agmbat.log.Debug;
 import com.agmbat.map.LocationObject;
 import com.agmbat.map.Maps;
@@ -42,7 +40,6 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.component.ViewImageActivity;
 import com.agmbat.time.DurationFormat;
 import com.agmbat.time.TimeUtils;
-import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MarkerOptions;
@@ -91,7 +88,7 @@ public abstract class ItemView extends LinearLayout {
      */
     private void setAvatar(MessageObject msg) {
         String senderJid = msg.getSenderJid();
-        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactInfo(senderJid);
+        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(senderJid);
         if (contactInfo != null) {
             ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
         } else {
@@ -197,7 +194,7 @@ public abstract class ItemView extends LinearLayout {
         config.setMapCenter(new LatLng(location.mLatitude, location.mLongitude));
 
         String senderJid = msg.getSenderJid();
-        ContactInfo user = XMPPManager.getInstance().getRosterManager().getContactInfo(senderJid);
+        ContactInfo user = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(senderJid);
         File file = ImageManager.getDiskCacheFile(user.getAvatar());
         list.add(createMarkerOptions(location.mLatitude, location.mLongitude, file.getAbsolutePath()));
 

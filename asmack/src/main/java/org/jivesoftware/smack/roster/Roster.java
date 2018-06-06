@@ -392,7 +392,7 @@ public class Roster {
             }
 
         }
-        //This is modified to fix bug #23460 for Meet
+        // This is modified to fix bug #23460 for Meet
         else if (!RosterPacketItemType.none.equals(item.getItemType())) {
             // Make sure the entry is in the entry list.
             Log.d(TAG, "Put entries: [user=" + entry.getUser() + ",name=" + entry.getName() + ",personalMsg=" + entry.getPersonalMsg() + ",avatarId=" + entry.getAvatarId() + ",lat=" + entry.getLatitude() + ",lon=" + entry.getLongitude());

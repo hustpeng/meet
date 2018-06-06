@@ -11,6 +11,9 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
+/**
+ * 闪屏页api
+ */
 public class SplashApi {
 
     private static String sPackageName = null;
@@ -19,7 +22,7 @@ public class SplashApi {
     /**
      * 是否使用模拟api返回的结果
      */
-    private static final boolean ENABLE_MOCK = true;
+    private static final boolean ENABLE_MOCK = false;
 
     public static ApiResult<SplashResp> getSplash(String uid, int ver) {
         if (StringUtils.isEmpty(sPackageName)) {

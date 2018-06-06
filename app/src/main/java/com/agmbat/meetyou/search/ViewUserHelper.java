@@ -61,7 +61,7 @@ public class ViewUserHelper {
     }
 
     private static void openDetail(Context context, ContactInfo contactInfo, int type) {
-        XMPPManager.getInstance().getRosterManager().addContactInfo(contactInfo);
+        XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
         Intent intent = new Intent(context, UserInfoActivity.class);
         intent.putExtra(KEY_USER_INFO, contactInfo.getBareJid());
         intent.putExtra(KEY_TYPE, type);
@@ -76,7 +76,7 @@ public class ViewUserHelper {
      */
     public static BusinessHandler getBusinessHandler(Intent intent) {
         String jid = intent.getStringExtra(KEY_USER_INFO);
-        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactInfo(jid);
+        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(jid);
         int type = intent.getIntExtra(KEY_TYPE, 0);
         if (type == TYPE_CONTACTS) {
             return new ContactsBusinessHandler(contactInfo);

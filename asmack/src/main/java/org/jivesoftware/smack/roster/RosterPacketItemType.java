@@ -1,5 +1,8 @@
 package org.jivesoftware.smack.roster;
 
+/**
+ * 好友关系， both 表示双方互为好友
+ */
 public enum RosterPacketItemType {
 
     /**
