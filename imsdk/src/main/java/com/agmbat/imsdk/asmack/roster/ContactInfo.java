@@ -238,4 +238,13 @@ public class ContactInfo {
     public void setRosterType(int rosterType) {
         mRosterType = rosterType;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof ContactInfo)) {
+            return false;
+        }
+        ContactInfo other = (ContactInfo) obj;
+        return mBareJid.equals(other.mBareJid);
+    }
 }

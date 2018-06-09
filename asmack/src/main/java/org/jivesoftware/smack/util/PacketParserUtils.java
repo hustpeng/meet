@@ -103,7 +103,8 @@ public class PacketParserUtils {
                 String elementName = parser.getName();
                 String namespace = parser.getNamespace();
                 if (elementName.equals("body")) {
-                    message.setBody(parser.nextText());
+                    // 由于内容为xml标签, parse.nextText()会出Bug
+                    message.setBody(parseContent(parser));
                 } else if (elementName.equals("nick")) {
                     message.setSenderNickName(parser.nextText());
                 } else if (elementName.equals("delay")) {
@@ -147,10 +148,8 @@ public class PacketParserUtils {
                 Date date = format.parse(stampString);
                 return date;
             } catch (ParseException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (java.text.ParseException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -863,5 +862,23 @@ public class PacketParserUtils {
         RosterPacketItemType type = RosterPacketItemType.valueOf(subscription != null ? subscription : "none");
         item.setItemType(type);
         return item;
+    }
+
+    /**
+     * Returns the content of a tag as string regardless of any tags included.
+     *
+     * @param parser the XML pull parser
+     * @return the content of a tag as string
+     * @throws XmlPullParserException if parser encounters invalid XML
+     * @throws IOException            if an IO error occurs
+     */
+    private static String parseContent(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+        String content = "";
+        int parserDepth = parser.getDepth();
+        while (!(parser.next() == XmlPullParser.END_TAG && parser.getDepth() == parserDepth)) {
+            content += parser.getText();
+        }
+        return content;
     }
 }

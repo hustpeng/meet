@@ -85,7 +85,7 @@ public class Message extends Packet {
         this.type = type;
     }
 
-
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<message");
@@ -109,7 +109,8 @@ public class Message extends Packet {
         }
         buf.append(">");
         if (getBody() != null) {
-            buf.append("<body>").append(getBody()).append("</body>");
+//            buf.append("<body>").append(getBody()).append("</body>");
+            buf.append("<body>").append(XmppStringUtils.escapeForXML(getBody())).append("</body>");
         }
         if (getSenderNickName() != null) {
             buf.append("<nick>").append(getSenderNickName()).append("</nick>");

@@ -178,6 +178,15 @@ public class RosterManager {
     }
 
     /**
+     * 获取未分组的分组
+     *
+     * @return
+     */
+    private ContactGroup getUngroup() {
+        return RosterHelper.findContactGroup(GROUP_UNGROUPED, mGroupList);
+    }
+
+    /**
      * 注册登陆成功事件
      */
     private void registerLoginEvent() {
@@ -240,6 +249,7 @@ public class RosterManager {
     public boolean addContact(ContactInfo contact, String group) {
         try {
             createGroup(group);
+            contact.setGroupName(group);
             mRoster.addContact(contact.getBareJid(), contact.getNickName(),
                     contact.getRemark(), "", "", 0,
                     0, false, new String[]{group});
@@ -532,6 +542,7 @@ public class RosterManager {
                         @Override
                         public void run() {
                             XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
+                            contactInfo.setRosterType(ContactInfo.ROSTER_SUBSCRIBE_ME);
                             addFriendRequest(contactInfo);
                             EventBus.getDefault().post(new PresenceSubscribeEvent(contactInfo));
                         }
@@ -565,6 +576,10 @@ public class RosterManager {
                             // 添加对方为好友
                             if (success) {
                                 getFriendGroup().addContact(contactInfo);
+                                ContactGroup ungroup = getUngroup();
+                                if (ungroup != null) {
+                                    ungroup.removeContact(contactInfo);
+                                }
                                 //   将mGroupList保存一次
                                 EventBus.getDefault().post(new PresenceSubscribedEvent(contactInfo));
                                 EventBus.getDefault().post(new ContactListUpdateEvent(mGroupList));

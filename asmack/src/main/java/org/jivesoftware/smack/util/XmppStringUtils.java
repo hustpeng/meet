@@ -142,7 +142,7 @@ public class XmppStringUtils {
      */
     public static Date parseDate(String dateString) throws ParseException {
         Matcher matcher = xep0091Pattern.matcher(dateString);
-        
+
         /*
          * if date is in XEP-0091 format handle ambiguous dates missing the
          * leading zero in month and day
@@ -175,10 +175,10 @@ public class XmppStringUtils {
                 }
             }
         }
-        
+
         /*
          * We assume it is the XEP-0082 DateTime profile with no milliseconds at this point.  If it isn't, is is just not parseable, then we attempt
-         * to parse it regardless and let it throw the ParseException. 
+         * to parse it regardless and let it throw the ParseException.
          */
         synchronized (dateTimeNoMillisFormatter) {
             return dateTimeNoMillisFormatter.parse(dateString);
@@ -537,7 +537,7 @@ public class XmppStringUtils {
 
     /**
      * Escapes all necessary characters in the String so that it can be used
-     * in an XML doc.
+     * in an XML doc. 格式化xml标签,转义为其他字符,如带xml文件的字符串用xml标签后, 其他程序解析时就会出现问题
      *
      * @param string the string to escape.
      * @return the string with appropriate characters escaped.
