@@ -23,6 +23,7 @@ package org.jivesoftware.smack.roster;
 import org.jivesoftware.smack.packet.Presence;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A listener that is fired any time a roster is changed or the presence of
@@ -95,4 +96,13 @@ public interface RosterListener {
      * @param presence
      */
     void presenceSubscribed(Presence presence);
+
+    /**
+     * 用户列表从服务器加载回来后回调
+     *
+     * @param list
+     */
+    public void onRosterLoad(List<RosterPacketItem> list);
+
+
 }

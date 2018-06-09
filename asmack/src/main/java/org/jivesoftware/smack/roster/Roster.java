@@ -20,6 +20,7 @@
 
 package org.jivesoftware.smack.roster;
 
+import com.agmbat.log.Debug;
 import com.agmbat.log.Log;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
@@ -66,12 +67,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Roster {
 
+    private static final String TAG = Roster.class.getSimpleName();
+
     /**
      * The default subscription processing mode to use when a Roster is created. By default
      * all subscription requests are automatically accepted.
      */
     private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.accept_all;
-    private RosterStorage persistentStorage;
 
     private final Connection connection;
     private final Map<String, RosterGroup> groups;
@@ -87,6 +89,7 @@ public class Roster {
     private SubscriptionMode subscriptionMode = getDefaultSubscriptionMode();
 
     private String requestPacketId;
+
 
     /**
      * Returns the default subscription processing mode to use when a new Roster is created. The
@@ -114,7 +117,6 @@ public class Roster {
 
     public Roster(final Connection connection, RosterStorage persistentStorage) {
         this(connection);
-        this.persistentStorage = persistentStorage;
     }
 
     /**
@@ -124,10 +126,6 @@ public class Roster {
      */
     public Roster(final Connection connection) {
         this.connection = connection;
-        //Disable roster versioning if server doesn't offer support for it
-        if (!connection.getConfiguration().isRosterVersioningAvailable()) {
-            persistentStorage = null;
-        }
         groups = new ConcurrentHashMap<String, RosterGroup>();
         unfiledEntries = new CopyOnWriteArrayList<RosterEntry>();
         entries = new ConcurrentHashMap<String, RosterEntry>();
@@ -221,9 +219,6 @@ public class Roster {
         }
 
         RosterPacket packet = new RosterPacket();
-        if (persistentStorage != null) {
-            packet.setVersion(persistentStorage.getRosterVersion());
-        }
         requestPacketId = packet.getPacketID();
         PacketFilter idFilter = new PacketIDFilter(requestPacketId);
         connection.addPacketListener(new RosterResultListener(), idFilter);
@@ -346,19 +341,6 @@ public class Roster {
         }
 
     }
-
-    private void insertRosterItems(List<RosterPacketItem> items) {
-        Collection<String> addedEntries = new ArrayList<String>();
-        Collection<String> updatedEntries = new ArrayList<String>();
-        Collection<String> deletedEntries = new ArrayList<String>();
-        Iterator<RosterPacketItem> iter = items.iterator();
-        while (iter.hasNext()) {
-            insertRosterItem(iter.next(), addedEntries, updatedEntries, deletedEntries);
-        }
-        fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
-    }
-
-    private final String TAG = Roster.class.getSimpleName();
 
     private void insertRosterItem(RosterPacketItem item, Collection<String> addedEntries,
                                   Collection<String> updatedEntries, Collection<String> deletedEntries) {
@@ -825,6 +807,7 @@ public class Roster {
      */
     private void fireRosterChangedEvent(Collection<String> addedEntries, Collection<String> updatedEntries,
                                         Collection<String> deletedEntries) {
+        Debug.printStackTrace();
         for (RosterListener listener : rosterListeners) {
             if (!addedEntries.isEmpty()) {
                 listener.entriesAdded(addedEntries);
@@ -868,6 +851,17 @@ public class Roster {
     private void fireRosterPresenceSubscribed(Presence presence) {
         for (RosterListener listener : rosterListeners) {
             listener.presenceSubscribed(presence);
+        }
+    }
+
+    /**
+     * 通知联系人列表加载成功
+     *
+     * @param list
+     */
+    private void fireRosterOnLoad(List<RosterPacketItem> list) {
+        for (RosterListener listener : rosterListeners) {
+            listener.onRosterLoad(list);
         }
     }
 
@@ -1108,12 +1102,6 @@ public class Roster {
                     Collection<String> addedEntries = new ArrayList<String>();
                     Collection<String> updatedEntries = new ArrayList<String>();
                     Collection<String> deletedEntries = new ArrayList<String>();
-                    if (persistentStorage != null) {
-                        for (RosterPacketItem item : persistentStorage.getEntries()) {
-                            Log.d(TAG, "Insert roster item in RosterResultListener");
-                            insertRosterItem(item, addedEntries, updatedEntries, deletedEntries);
-                        }
-                    }
                     synchronized (Roster.this) {
                         rosterInitialized = true;
                         Roster.this.notifyAll();
@@ -1132,6 +1120,7 @@ public class Roster {
 
         @Override
         public void processPacket(Packet packet) {
+            Debug.printStackTrace();
             // Keep a registry of the entries that were added, deleted or updated. An event
             // will be fired for each affected entry
             Collection<String> addedEntries = new ArrayList<String>();
@@ -1147,29 +1136,13 @@ public class Roster {
             //Here we check if the server send a versioned roster, if not we do not use
             //the roster storage to store entries and work like in the old times
             if (rosterPacket.getVersion() == null) {
-                persistentStorage = null;
             } else {
                 version = rosterPacket.getVersion();
-            }
-
-            if (persistentStorage != null && !rosterInitialized) {
-                for (RosterPacketItem item : persistentStorage.getEntries()) {
-                    rosterItems.add(item);
-                }
             }
 
             for (RosterPacketItem item : rosterItems) {
                 Log.d(TAG, "Insert roster item in RosterPacketListener");
                 insertRosterItem(item, addedEntries, updatedEntries, deletedEntries);
-            }
-            if (persistentStorage != null) {
-                for (RosterPacketItem i : rosterPacket.getRosterItems()) {
-                    if (i.getItemType().equals(RosterPacketItemType.remove)) {
-                        persistentStorage.removeEntry(i.getUser());
-                    } else {
-                        persistentStorage.addEntry(i, version);
-                    }
-                }
             }
             // Mark the roster as initialized.
             synchronized (Roster.this) {
@@ -1179,6 +1152,9 @@ public class Roster {
 
             // Fire event for roster listeners.
             fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
+
+            fireRosterOnLoad(rosterItems);
         }
     }
+
 }

@@ -1,8 +1,10 @@
 package com.agmbat.imsdk.asmack.api;
 
+
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.user.UserHelper;
+import com.agmbat.log.Debug;
 
 import org.jivesoftware.smackx.vcard.VCardListener;
 import org.jivesoftware.smackx.vcard.VCardManager;
@@ -30,6 +32,10 @@ public class FetchContactInfoRunnable implements Runnable {
             @Override
             public void notifyFetchVCardResult(String jid, VCardObject vcard) {
                 if (contactJid.equals(jid)) {
+                    if (vcard == null) {
+                        Debug.print("SMACK Error, vcard is null:" + jid);
+                        Debug.printStackTrace();
+                    }
                     UserHelper.applyVCardObject(contactInfo, vcard);
                     vCardManager.removeListener(this);
                     synchronized (contactInfo) {

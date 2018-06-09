@@ -213,6 +213,7 @@ public class SASLAuthentication implements UserAuthentication {
      * @return the full JID provided by the server while binding a resource to the connection.
      * @throws XMPPException if an error occures while authenticating.
      */
+    @Override
     public String authenticate(String username, String resource, CallbackHandler cbh)
             throws XMPPException {
         // Locate the SASLMechanism to use
@@ -347,74 +348,6 @@ public class SASLAuthentication implements UserAuthentication {
                 e.printStackTrace();
                 // SASL authentication failed so try a Non-SASL authentication
                 return new NonSASLAuthentication(connection).authenticate(username, password, resource);
-            }
-        } else {
-            // No SASL method was found so try a Non-SASL authentication
-            return new NonSASLAuthentication(connection).authenticate(username, password, resource);
-        }
-    }
-
-    public String authenticateWithFacebook(String username, String password, String resource, String email, String deviceToken)
-            throws XMPPException {
-        // Locate the SASLMechanism to use
-        String selectedMechanism = null;
-        for (String mechanism : mechanismsPreferences) {
-            if (implementedMechanisms.containsKey(mechanism) &&
-                    serverMechanisms.contains(mechanism)) {
-                selectedMechanism = mechanism;
-                break;
-            }
-        }
-        if (selectedMechanism != null) {
-            // A SASL mechanism was found. Authenticate using the selected mechanism and then
-            // proceed to bind a resource
-            try {
-                Class<? extends SASLMechanism> mechanismClass = implementedMechanisms.get(selectedMechanism);
-                Constructor<? extends SASLMechanism> constructor = mechanismClass.getConstructor(SASLAuthentication.class);
-                currentMechanism = constructor.newInstance(this);
-                // Trigger SASL authentication with the selected mechanism. We use
-                // connection.getHost() since GSAPI requires the FQDN of the server, which
-                // may not match the XMPP domain.
-                currentMechanism.authenticateWithFacebook(username, connection.getServiceName(), password, email, deviceToken);
-
-                // Wait until SASL negotiation finishes
-                synchronized (this) {
-                    if (!saslNegotiated && !saslFailed) {
-                        try {
-                            wait(30000);
-                        } catch (InterruptedException e) {
-                            // Ignore
-                        }
-                    }
-                }
-
-                if (saslFailed) {
-                    // SASL authentication failed and the server may have closed the connection
-                    // so throw an exception
-                    if (errorCondition != null) {
-                        throw new XMPPException("SASL authentication " +
-                                selectedMechanism + " failed: " + errorCondition);
-                    } else {
-                        throw new XMPPException("SASL authentication failed using mechanism " +
-                                selectedMechanism);
-                    }
-                }
-
-                if (saslNegotiated) {
-                    // Bind a resource for this connection and
-                    return bindResourceAndEstablishSession(resource);
-                } else {
-                    // SASL authentication failed so try a Non-SASL authentication
-                    return new NonSASLAuthentication(connection)
-                            .authenticate(username, password, resource);
-                }
-            } catch (XMPPException e) {
-                throw e;
-            } catch (Exception e) {
-                e.printStackTrace();
-                // SASL authentication failed so try a Non-SASL authentication
-                return new NonSASLAuthentication(connection)
-                        .authenticate(username, password, resource);
             }
         } else {
             // No SASL method was found so try a Non-SASL authentication

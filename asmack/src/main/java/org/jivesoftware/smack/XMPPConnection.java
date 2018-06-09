@@ -489,6 +489,7 @@ public class XMPPConnection extends Connection {
         this.packetReader = null;
     }
 
+    @Override
     public void sendPacket(Packet packet) {
         if (!isConnected()) {
             throw new IllegalStateException("Not connected to server.");

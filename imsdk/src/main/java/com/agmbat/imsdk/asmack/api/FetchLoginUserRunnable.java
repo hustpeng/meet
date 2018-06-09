@@ -2,6 +2,7 @@ package com.agmbat.imsdk.asmack.api;
 
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.log.Debug;
 
 import org.jivesoftware.smackx.vcard.VCardListener;
 import org.jivesoftware.smackx.vcard.VCardManager;
@@ -39,6 +40,10 @@ public class FetchLoginUserRunnable implements Runnable {
             @Override
             public void notifyFetchVCardResult(String jid, VCardObject vcard) {
                 if (mJid.equals(jid)) {
+                    if (vcard == null) {
+                        Debug.print("SMACK Error, vcard is null:" + jid);
+                        Debug.printStackTrace();
+                    }
                     user.setVCardObject(vcard);
                     vCardManager.removeListener(this);
                     synchronized (user) {

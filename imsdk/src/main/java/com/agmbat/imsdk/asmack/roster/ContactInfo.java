@@ -13,6 +13,26 @@ import org.jivesoftware.smack.util.XmppStringUtils;
 public class ContactInfo {
 
     /**
+     * 对应roster信息
+     */
+    public static final int ROSTER_TYPE_NONE = 1;
+    public static final int ROSTER_TYPE_TO = 2;
+    public static final int ROSTER_TYPE_FROM = 3;
+    public static final int ROSTER_TYPE_BOTH = 4;
+    public static final int ROSTER_TYPE_REMOVE = 5;
+
+
+    /**
+     * 别人申请加我为好友, 但未未处理
+     */
+    public static final int ROSTER_SUBSCRIBE_ME = 6;
+
+    /**
+     * 我申请别人加好友, 对方未处理
+     */
+    public static final int ROSTER_SUBSCRIBE_OTHER = 7;
+
+    /**
      * 此id为数据库存储id值
      */
     @Column(name = "id", isId = true)
@@ -57,6 +77,18 @@ public class ContactInfo {
     @Column(name = "gender")
     @SerializedName("gender")
     private int mGender;
+
+
+    /**
+     * 与当前好友的关系
+     */
+    private int mRosterType;
+
+    /**
+     * 本地更新时间, 用户缓存当前缓存是否失效
+     */
+    @Column(name = "local_update_time")
+    private long mLocalUpdateTime;
 
 
     /****** 附近的人需要的字段 start **************/
@@ -189,5 +221,21 @@ public class ContactInfo {
 
     public void setGroupName(String name) {
         mGroupName = name;
+    }
+
+    public long getLocalUpdateTime() {
+        return mLocalUpdateTime;
+    }
+
+    public void setLocalUpdateTime(long time) {
+        mLocalUpdateTime = time;
+    }
+
+    public int getRosterType() {
+        return mRosterType;
+    }
+
+    public void setRosterType(int rosterType) {
+        mRosterType = rosterType;
     }
 }

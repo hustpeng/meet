@@ -105,25 +105,6 @@ public abstract class SASLMechanism implements CallbackHandler {
         authenticate();
     }
 
-    public void authenticateWithFacebook(String username, String host, String password, String email, String deviceToken) throws IOException, XMPPException {
-        //Since we were not provided with a CallbackHandler, we will use our own with the given
-        //information
-
-        //Set the authenticationID as the username, since they must be the same in this case.
-        this.authenticationId = username;
-        this.password = password;
-        this.hostname = host;
-        this.deviceToken = deviceToken;
-        this.deviceType = 5;
-        this.email = email;
-        this.passportType = 1;
-
-        String[] mechanisms = {getName()};
-        Map<String, String> props = new HashMap<String, String>();
-        sc = Sasl.createSaslClient(mechanisms, username, "xmpp", host, props, this);
-        authenticate();
-    }
-
     /**
      * Builds and sends the <tt>auth</tt> stanza to the server. The callback handler will handle
      * any additional information, such as the authentication ID or realm, if it is needed.
@@ -198,6 +179,7 @@ public abstract class SASLMechanism implements CallbackHandler {
     /**
      *
      */
+    @Override
     public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
         for (int i = 0; i < callbacks.length; i++) {
             if (callbacks[i] instanceof NameCallback) {
@@ -330,6 +312,7 @@ public abstract class SASLMechanism implements CallbackHandler {
             }
         }
 
+        @Override
         public String toXML() {
             StringBuilder stanza = new StringBuilder();
             stanza.append("<response xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
@@ -351,6 +334,7 @@ public abstract class SASLMechanism implements CallbackHandler {
             this.data = data;
         }
 
+        @Override
         public String toXML() {
             StringBuilder stanza = new StringBuilder();
             stanza.append("<success xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
@@ -382,6 +366,7 @@ public abstract class SASLMechanism implements CallbackHandler {
             return condition;
         }
 
+        @Override
         public String toXML() {
             StringBuilder stanza = new StringBuilder();
             stanza.append("<failure xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");

@@ -31,7 +31,8 @@ public class XepQueryInfo {
         setParam1(aParam1);
         setParam2(aParam2);
         setParam3(param3);
-        setTimeout(30);
+        // TODO 调试改为3000 秒, 原为30秒
+        setTimeout(3000);
         setTimer(new Timer());
     }
 

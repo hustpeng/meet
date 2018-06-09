@@ -30,6 +30,7 @@ import org.jivesoftware.smack.roster.Roster.SubscriptionMode;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
 import org.jivesoftware.smack.roster.RosterListener;
+import org.jivesoftware.smack.roster.RosterPacketItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -564,7 +565,34 @@ public class RosterManager {
             };
             loadContactFromPresence(presence, listener);
         }
+
+        @Override
+        public void onRosterLoad(final List<RosterPacketItem> list) {
+            new Thread("onRosterLoad") {
+                @Override
+                public void run() {
+                    super.run();
+                    // 下面方法会阻塞[包处理]回调线程
+                    mNetworkLoaded = true;
+                    List<ContactInfo> contactInfoList = new ArrayList<>();
+                    for (RosterPacketItem item : list) {
+                        ContactInfo info = RosterHelper.loadContactInfo(item.getUser());
+                        info.setLocalUpdateTime(System.currentTimeMillis());
+                        info.setRosterType(RosterHelper.getRosterType(item.getItemType()));
+                        contactInfoList.add(info);
+                    }
+                    mNetworkContactList.clear();
+                    mNetworkContactList.addAll(contactInfoList);
+                    // TODO 重新刷新界面, 保存数据到缓存
+                }
+            }.start();
+        }
     }
+
+    /**
+     * 服务器上的用户列表, 以此这标准
+     */
+    private List<ContactInfo> mNetworkContactList = new ArrayList<>();
 
 
     private void loadContactFromPresence(Presence presence, OnFetchContactListener l) {

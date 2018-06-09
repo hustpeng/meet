@@ -14,7 +14,14 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public class RosterPacketItem {
 
+    /**
+     * jid
+     */
     private final String user;
+
+    /**
+     * 昵称
+     */
     private String name;
 
     /**
@@ -32,6 +39,10 @@ public class RosterPacketItem {
     private String personalMsg;
     private double latitude;
     private double longitude;
+
+    /**
+     * 好友备注
+     */
     private String nickName;
     private boolean isRobot;
 

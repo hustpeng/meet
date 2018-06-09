@@ -2,15 +2,15 @@
  * $RCSfile$
  * $Revision$
  * $Date$
- *
+ * <p>
  * Copyright 2003-2007 Jive Software.
- *
+ * <p>
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,14 +36,14 @@ interface UserAuthentication {
      * Authenticates the user with the server.  This method will return the full JID provided by
      * the server.  The server may assign a full JID with a username and resource different than
      * requested by this method.
-     *
+     * <p>
      * Note that using callbacks is the prefered method of authenticating users since it allows
      * more flexability in the mechanisms used.
      *
      * @param username the requested username (authorization ID) for authenticating to the server
      * @param resource the requested resource.
-     * @param cbh the CallbackHandler used to obtain authentication ID, password, or other
-     * information
+     * @param cbh      the CallbackHandler used to obtain authentication ID, password, or other
+     *                 information
      * @return the full JID provided by the server while binding a resource for the connection.
      * @throws XMPPException if an error occurs while authenticating.
      */
@@ -54,7 +54,7 @@ interface UserAuthentication {
      * Authenticates the user with the server. This method will return the full JID provided by
      * the server. The server may assign a full JID with a username and resource different than
      * the requested by this method.
-     *
+     * <p>
      * It is recommended that @{link #authenticate(String, String, CallbackHandler)} be used instead
      * since it provides greater flexability in authenticaiton and authorization.
      *
@@ -66,8 +66,6 @@ interface UserAuthentication {
      */
     String authenticate(String username, String password, String resource) throws
             XMPPException;
-
-    String authenticateWithFacebook(String username, String password, String resource, String email, String deviceToken) throws XMPPException;
 
     /**
      * Performs an anonymous authentication with the server. The server will created a new full JID

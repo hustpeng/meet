@@ -3,6 +3,9 @@ package com.agmbat.imsdk.asmack.roster;
 import com.agmbat.imsdk.asmack.api.FetchContactInfoRunnable;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 
+import org.jivesoftware.smack.roster.RosterPacketItem;
+import org.jivesoftware.smack.roster.RosterPacketItemType;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +58,7 @@ public class RosterHelper {
 
     /**
      * 由于好友列表信息中获取的信息不全, 需要重新从服务器下拉
-     * 此方法不要在读写包线程运行
+     * 此方法不要在读写包线程运行, 同步方法
      *
      * @param jid
      * @return
@@ -107,5 +110,25 @@ public class RosterHelper {
         return null;
     }
 
+    /**
+     * 获取对应的整型值
+     *
+     * @param type
+     * @return
+     */
+    public static int getRosterType(RosterPacketItemType type) {
+        if (type == RosterPacketItemType.none) {
+            return ContactInfo.ROSTER_TYPE_NONE;
+        } else if (type == RosterPacketItemType.to) {
+            return ContactInfo.ROSTER_TYPE_TO;
+        } else if (type == RosterPacketItemType.from) {
+            return ContactInfo.ROSTER_TYPE_FROM;
+        } else if (type == RosterPacketItemType.both) {
+            return ContactInfo.ROSTER_TYPE_BOTH;
+        } else if (type == RosterPacketItemType.remove) {
+            return ContactInfo.ROSTER_TYPE_REMOVE;
+        }
+        return ContactInfo.ROSTER_TYPE_NONE;
+    }
 
 }

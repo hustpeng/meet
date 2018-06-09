@@ -190,6 +190,11 @@ public class XMPPManager {
         config.setCompressionEnabled(false);
         config.setReconnectionAllowed(false);
         config.setRosterLoadedAtLogin(false);
+
+        // TODO 以下配置是为解决  SASL authentication failed using mechanism PLAIN:
+//        config.setSelfSignedCertificateEnabled(false);
+//        config.setSASLAuthenticationEnabled(false);
+//        config.setVerifyChainEnabled(false);
         return config;
     }
 
