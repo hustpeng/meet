@@ -13,7 +13,7 @@ public class CoinsRecords {
     @SerializedName("coins")
     public long coins;
 
-    @SerializedName("creation_time")
+    @SerializedName("creation")
     public long time;
 
     /**
@@ -22,7 +22,7 @@ public class CoinsRecords {
      * @return
      */
     public long getTimeInMillis() {
-        return time * 1000;
+        return time;
     }
 
 }

@@ -135,9 +135,6 @@ public class ContactInfo {
     @SerializedName("career")
     private String career;
 
-    @SerializedName("create_time")
-    private long create_time;
-
     @SerializedName("demand")
     private String demand;
 
