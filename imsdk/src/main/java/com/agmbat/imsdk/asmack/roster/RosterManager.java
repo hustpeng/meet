@@ -10,6 +10,7 @@ import com.agmbat.imsdk.asmack.api.OnFetchLoginUserListener;
 import com.agmbat.imsdk.asmack.api.OnSaveUserInfoListener;
 import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.db.MeetDatabase;
+import com.agmbat.imsdk.imevent.ContactDeleteEvent;
 import com.agmbat.imsdk.imevent.ContactGroupLoadEvent;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
@@ -31,6 +32,7 @@ import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
 import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smack.roster.RosterPacketItem;
+import org.jivesoftware.smackx.message.MessageObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,9 +49,14 @@ public class RosterManager {
     private static final String TAG = RosterManager.class.getSimpleName();
 
     /**
-     * 好友分组
+     * 好友分组-默认我的好友
      */
-    public static final String GROUP_FRIENDS = "Hotlist";
+    public static final String GROUP_FRIENDS = "MyFriends";
+
+    /**
+     * 好友分组-未分组
+     */
+    public static final String GROUP_UNGROUPED = "Ungrouped";
 
     /**
      * 管理好友列表
@@ -62,14 +69,14 @@ public class RosterManager {
 
 
     /**
-     * 所有好友分组列表
+     * 所有好友分组列表, 内存缓存
      */
     private List<ContactGroup> mGroupList;
 
     /**
-     * 缓存, 此map可以不用更新
+     * 缓存, 此map可以不用更新, 此缓存不对外暴露使用
      */
-    private Map<String, ContactInfo> mContactMap = new HashMap<>();
+    private Map<String, ContactInfo> mContactMemCache = new HashMap<>();
 
 
     /**
@@ -78,7 +85,7 @@ public class RosterManager {
     private boolean mCacheLoaded = false;
 
     /**
-     * 是否已人服务器加载
+     * 是否从服务器加载
      */
     private boolean mNetworkLoaded = false;
 
@@ -114,7 +121,7 @@ public class RosterManager {
         if (mFriendRequestList != null) {
             mFriendRequestList.clear();
         }
-        mContactMap.clear();
+        mContactMemCache.clear();
     }
 
     /**
@@ -124,7 +131,7 @@ public class RosterManager {
      * @return
      */
     public ContactInfo getContactFromMemCache(String jid) {
-        return mContactMap.get(jid);
+        return mContactMemCache.get(jid);
     }
 
     /**
@@ -137,7 +144,20 @@ public class RosterManager {
     }
 
     public void addContactToMemCache(String jid, ContactInfo contactInfo) {
-        mContactMap.put(jid, contactInfo);
+        mContactMemCache.put(jid, contactInfo);
+    }
+
+    /**
+     * 将group list 中的联系人添加到缓存中
+     *
+     * @param result
+     */
+    public void addGroupListToMemCache(List<ContactGroup> result) {
+        for (ContactGroup group : result) {
+            for (ContactInfo info : group.getContactList()) {
+                addContactToMemCache(info);
+            }
+        }
     }
 
     /**
@@ -146,7 +166,15 @@ public class RosterManager {
      * @return
      */
     private ContactGroup getFriendGroup() {
-        return RosterHelper.findContactGroup(GROUP_FRIENDS, mGroupList);
+        ContactGroup group = RosterHelper.findContactGroup(GROUP_FRIENDS, mGroupList);
+        if (group == null) {
+            createGroup(GROUP_FRIENDS);
+            group = new ContactGroup();
+            group.setGroupName(GROUP_FRIENDS);
+            // 我的好友放在第一位
+            mGroupList.add(0, group);
+        }
+        return group;
     }
 
     /**
@@ -178,14 +206,6 @@ public class RosterManager {
         });
     }
 
-    /**
-     * 获取所有分组
-     *
-     * @return
-     */
-    public List<ContactGroup> getContactGroupList() {
-        return mGroupList;
-    }
 
     /**
      * 请求添加好友
@@ -434,15 +454,7 @@ public class RosterManager {
         public void entriesAdded(Collection<String> addresses) {
             Log.d(TAG, "[RosterListenerAdapter][entriesAdded]:" + addresses);
             // 登陆成功后刷新一次服务器数据
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Collection<RosterGroup> entryCollection = mRoster.getGroups();
-                    refreshContactList(entryCollection);
-                }
-            }).start();
-
+            // 登陆成功后, 加载完联系列表后, 不在些方法中回调..
 
 //            for (final String address : addresses) {
 //                com.agmbat.log.Log.d(TAG, "==>onEntriesAdded(Thread): [address=" + address);
@@ -520,7 +532,6 @@ public class RosterManager {
                         @Override
                         public void run() {
                             XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
-
                             addFriendRequest(contactInfo);
                             EventBus.getDefault().post(new PresenceSubscribeEvent(contactInfo));
                         }
@@ -568,22 +579,41 @@ public class RosterManager {
 
         @Override
         public void onRosterLoad(final List<RosterPacketItem> list) {
+            Debug.printStackTrace();
             new Thread("onRosterLoad") {
                 @Override
                 public void run() {
                     super.run();
                     // 下面方法会阻塞[包处理]回调线程
-                    mNetworkLoaded = true;
-                    List<ContactInfo> contactInfoList = new ArrayList<>();
+                    final List<ContactInfo> contactInfoList = new ArrayList<>();
                     for (RosterPacketItem item : list) {
                         ContactInfo info = RosterHelper.loadContactInfo(item.getUser());
                         info.setLocalUpdateTime(System.currentTimeMillis());
                         info.setRosterType(RosterHelper.getRosterType(item.getItemType()));
+                        info.setGroupName(mRoster.getGroupName(item.getUser()));
                         contactInfoList.add(info);
                     }
-                    mNetworkContactList.clear();
-                    mNetworkContactList.addAll(contactInfoList);
-                    // TODO 重新刷新界面, 保存数据到缓存
+
+                    UiUtils.runOnUIThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mNetworkLoaded = true;
+                            mNetworkContactList.clear();
+                            mNetworkContactList.addAll(contactInfoList);
+
+                            //  重新刷新界面, 保存数据到缓存
+                            List<ContactGroup> groupList = RosterHelper.toGroupList(contactInfoList);
+                            mGroupList.clear();
+                            mGroupList.addAll(groupList);
+
+                            // 将列表同步到数据库中
+                            ContactDBCache.saveAndClearOldList(contactInfoList);
+
+                            clearMessage(contactInfoList);
+                            EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));
+                        }
+                    });
+
                 }
             }.start();
         }
@@ -644,19 +674,6 @@ public class RosterManager {
 
 
     /**
-     * 将group list 中的联系人添加到缓存中
-     *
-     * @param result
-     */
-    public void addGroupList(List<ContactGroup> result) {
-        for (ContactGroup group : result) {
-            for (ContactInfo info : group.getContactList()) {
-                addContactToMemCache(info);
-            }
-        }
-    }
-
-    /**
      * 加载缓存中联系人列表
      */
     public void loadContactGroupFromDB() {
@@ -676,7 +693,7 @@ public class RosterManager {
                 super.onPostExecute(result);
                 if (!mNetworkLoaded) {
                     mGroupList.addAll(result);
-                    addGroupList(result);
+                    addGroupListToMemCache(result);
                     EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));
                 }
             }
@@ -692,14 +709,15 @@ public class RosterManager {
             return;
         }
         mCacheLoaded = true;
-        List<ContactGroup> result = ContactDBCache.getGroupList();
         if (!mNetworkLoaded) {
+            // 当网络没有加载的时候, 才去更新缓存数据
+            List<ContactGroup> result = ContactDBCache.getGroupList();
+            mGroupList.clear();
             mGroupList.addAll(result);
-            addGroupList(result);
+            addGroupListToMemCache(result);
             EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));
         }
     }
-
 
     /**
      * 刷新登陆用户信息
@@ -851,35 +869,41 @@ public class RosterManager {
     /**
      * 刷新一次联系人列表
      *
-     * @param entryCollection
+     * @param newList
      */
-    private void refreshContactList(Collection<RosterGroup> entryCollection) {
+    private void clearMessage(List<ContactInfo> newList) {
         // 将列表同步到内存中
-
         // 删除不存在好友及聊天记录
         // 新列表
-        List<ContactInfo> newList = genContactList(entryCollection);
-
-        // 将列表同步到数据库中
-        ContactDBCache.saveAndClearOldList(newList);
-
-        // 旧的列表
-        List<ContactInfo> oldList = RosterHelper.toContactList(mGroupList);
-
-        // 查找需要删除的列表
-        List<ContactInfo> deleteList = findDeleteList(newList, oldList);
 
         // 删除所有不是好友的聊天记录
         MessageManager messageManager = XMPPManager.getInstance().getMessageManager();
-        String loginUserId = mConnection.getBareJid();
-        for (ContactInfo contactInfo : deleteList) {
-            messageManager.deleteMessage(loginUserId, contactInfo.getBareJid());
+        String user = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        List<MessageObject> messageObjects = messageManager.getAllMessage(user);
+
+        for (MessageObject messageObject : messageObjects) {
+            // 如果用户信息不存在, 则不显示此消息记录, 等同步服务器上的用户信息后, 可直接删除相关信息
+            if (MessageManager.isToOthers(messageObject)) {
+                String receiverJid = messageObject.getReceiverJid();
+                // 如果数据库中没有此用户则直接删除与此用户相关的所有聊天记录
+                ContactInfo info = RosterHelper.findContactInfo(receiverJid, newList);
+                if (info == null) {
+                    messageManager.deleteMessage(user, receiverJid);
+                    Debug.print("not found message:" + receiverJid);
+                    Debug.printStackTrace();
+                    EventBus.getDefault().post(new ContactDeleteEvent(receiverJid));
+                }
+            } else {
+                String senderJid = messageObject.getSenderJid();
+                ContactInfo info = RosterHelper.findContactInfo(senderJid, newList);
+                if (info == null) {
+                    messageManager.deleteMessage(user, senderJid);
+                    Debug.print("not found message:" + senderJid);
+                    Debug.printStackTrace();
+                    EventBus.getDefault().post(new ContactDeleteEvent(senderJid));
+                }
+            }
         }
-
-        mGroupList.clear();
-        mGroupList.addAll(RosterHelper.toGroupList(newList));
-        addGroupList(mGroupList);
-
     }
 
 
@@ -904,11 +928,37 @@ public class RosterManager {
 
 
     /**
+     * 获取联系人信息，基本上信息为空
+     *
+     * @param jid
+     * @return
+     */
+    @Deprecated
+    private ContactInfo getContact(String jid) {
+        if (mRoster.contains(jid)) {
+            return getContactFromRosterEntry(mRoster.getEntry(jid));
+        }
+        return null;
+    }
+
+    /**
+     * 获取所有分组
+     *
+     * @return
+     */
+    @Deprecated
+    public List<ContactGroup> getContactGroupList() {
+        return mGroupList;
+    }
+
+
+    /**
      * 将所有的用户转成列表
      *
      * @param entryCollection
      * @return
      */
+    @Deprecated
     private List<ContactInfo> genContactList(Collection<RosterGroup> entryCollection) {
         List<ContactInfo> list = new ArrayList<>();
         for (RosterGroup group : entryCollection) {
@@ -922,19 +972,38 @@ public class RosterManager {
         return list;
     }
 
-
     /**
-     * 获取联系人信息，基本上信息为空
+     * 刷新一次联系人列表
      *
-     * @param jid
-     * @return
+     * @param newList
      */
     @Deprecated
-    private ContactInfo getContact(String jid) {
-        if (mRoster.contains(jid)) {
-            return getContactFromRosterEntry(mRoster.getEntry(jid));
+    private void refreshContactList2(List<ContactInfo> newList) {
+        // 将列表同步到内存中
+        // 删除不存在好友及聊天记录
+        // 新列表
+        // 将列表同步到数据库中
+        ContactDBCache.saveAndClearOldList(newList);
+
+        // 旧的列表
+        List<ContactInfo> oldList = RosterHelper.toContactList(mGroupList);
+
+        // 查找需要删除的列表
+        List<ContactInfo> deleteList = findDeleteList(newList, oldList);
+
+        // 删除所有不是好友的聊天记录
+        MessageManager messageManager = XMPPManager.getInstance().getMessageManager();
+
+
+        String loginUserId = mConnection.getBareJid();
+        for (ContactInfo contactInfo : deleteList) {
+            messageManager.deleteMessage(loginUserId, contactInfo.getBareJid());
         }
-        return null;
+
+        mGroupList.clear();
+        mGroupList.addAll(RosterHelper.toGroupList(newList));
+        addGroupListToMemCache(mGroupList);
     }
+
 }
 

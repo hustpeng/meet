@@ -322,7 +322,7 @@ public class Roster {
         item.setLatitude(latitude);
         item.setLongitude(longitude);
         item.setPersonalMsg(personalMsg);
-        item.setItemType(RosterPacketItemType.from);
+        item.setItemType(RosterPacketItemType.both); // 通过验证后, 双方互为好友
         item.setItemStatus(RosterPacketItemStatus.SUBSCRIPTION_PENDING);
         item.setRobot(isRobot);
         rosterPacket.addRosterItem(item);
@@ -807,7 +807,6 @@ public class Roster {
      */
     private void fireRosterChangedEvent(Collection<String> addedEntries, Collection<String> updatedEntries,
                                         Collection<String> deletedEntries) {
-        Debug.printStackTrace();
         for (RosterListener listener : rosterListeners) {
             if (!addedEntries.isEmpty()) {
                 listener.entriesAdded(addedEntries);
@@ -1155,6 +1154,24 @@ public class Roster {
 
             fireRosterOnLoad(rosterItems);
         }
+    }
+
+    /**
+     * 通过jid获取groupName
+     *
+     * @param jid
+     * @return
+     */
+    public String getGroupName(String jid) {
+        Collection<RosterGroup> groups = getGroups();
+        for (RosterGroup group : groups) {
+            for (RosterEntry entry : group.getEntries()) {
+                if (entry.getUser().equals(jid)) {
+                    return group.getName();
+                }
+            }
+        }
+        return null;
     }
 
 }

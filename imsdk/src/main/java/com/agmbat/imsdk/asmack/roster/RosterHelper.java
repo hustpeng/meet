@@ -3,7 +3,6 @@ package com.agmbat.imsdk.asmack.roster;
 import com.agmbat.imsdk.asmack.api.FetchContactInfoRunnable;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 
-import org.jivesoftware.smack.roster.RosterPacketItem;
 import org.jivesoftware.smack.roster.RosterPacketItemType;
 
 import java.util.ArrayList;
@@ -28,6 +27,10 @@ public class RosterHelper {
             Map<String, ContactGroup> groupMap = new HashMap<>();
             for (ContactInfo contactInfo : contactInfoList) {
                 String groupName = contactInfo.getGroupName();
+                if (groupName == null) {
+                    // 如果没有在指定分组, 则添加到未分组项
+                    groupName = RosterManager.GROUP_UNGROUPED;
+                }
                 ContactGroup group = groupMap.get(groupName);
                 if (group == null) {
                     group = new ContactGroup();

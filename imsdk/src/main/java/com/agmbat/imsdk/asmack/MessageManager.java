@@ -7,6 +7,7 @@ import com.agmbat.imsdk.asmack.api.FetchContactInfoRunnable;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
+import com.agmbat.log.Debug;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jivesoftware.smack.Connection;
@@ -29,6 +30,7 @@ import org.jivesoftware.smackx.message.MessageObjectStatus;
 import org.jivesoftware.smackx.message.MessageStorage;
 import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -428,46 +430,45 @@ public class MessageManager extends Xepmodule {
      */
     public List<MessageObject> getAllMessage(String jid) {
         List<MessageObject> list = messageStorage.getAllMessage(jid);
-        // 检测所有消息中用户是否存在, 如果不存在, 则不显示
-        for (MessageObject messageObject : list) {
-            ensureMessageUser(messageObject);
-        }
         return list;
     }
 
     /**
-     * 确保用户信息存在中
-     *
-     * @param messageObject
-     */
-    private void ensureMessageUser(MessageObject messageObject) {
-        // 如果用户信息不存在, 则不显示此消息记录, 等同步服务器上的用户信息后, 可直接删除相关信息
-        if (isToOthers(messageObject)) {
-            String receiverJid = messageObject.getReceiverJid();
-            ensureUser(receiverJid);
-        } else {
-            String senderJid = messageObject.getSenderJid();
-            ensureUser(senderJid);
-        }
-    }
-
-    /**
-     * 加载指定用户并保存到缓存中
+     * 获取最近的所有聊天信息, 过虑掉不在用户列表中的聊天记录
      *
      * @param jid
+     * @return
      */
-    private void ensureUser(String jid) {
-        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(jid);
-        if (contactInfo == null) {
-            OnFetchContactListener listener = new OnFetchContactListener() {
-                @Override
-                public void onFetchContactInfo(ContactInfo contactInfo) {
-                    XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
+    public List<MessageObject> getRecentMessage(String jid) {
+        List<MessageObject> retList = new ArrayList<>();
+        List<MessageObject> list = messageStorage.getAllMessage(jid);
+        // 检测所有消息中用户是否存在, 如果不存在, 则不显示
+        for (MessageObject messageObject : list) {
+            // 如果用户信息不存在, 则不显示此消息记录, 等同步服务器上的用户信息后, 可直接删除相关信息
+            if (isToOthers(messageObject)) {
+                String receiverJid = messageObject.getReceiverJid();
+                // 如果数据库中没有此用户则直接删除与此用户相关的所有聊天记录
+                ContactInfo info = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(receiverJid);
+                if (info != null) {
+                    retList.add(messageObject);
+                } else {
+                    Debug.print("not found message:" + receiverJid);
+                    Debug.printStackTrace();
                 }
-            };
-            FetchContactInfoRunnable runnable = new FetchContactInfoRunnable(jid, listener);
-            runnable.run();
+            } else {
+                String senderJid = messageObject.getSenderJid();
+                // 如果数据库中没有此用户则直接删除与此用户相关的所有聊天记录
+                ContactInfo info = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(senderJid);
+                if (info != null) {
+                    retList.add(messageObject);
+                } else {
+                    Debug.print("not found message:" + senderJid);
+                    Debug.printStackTrace();
+                }
+            }
         }
+        return retList;
+
     }
 
 
@@ -586,5 +587,65 @@ public class MessageManager extends Xepmodule {
     public static boolean isToOthers(MessageObject messageObject) {
         String loginUserJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
         return messageObject.getSenderJid().equals(loginUserJid);
+    }
+
+
+    /**
+     * 保证所有聊天中的用户存在
+     *
+     * @param list
+     */
+    @Deprecated
+    private void ensureMessageList(List<MessageObject> list) {
+        // 检测所有消息中用户是否存在, 如果不存在, 则不显示
+        for (MessageObject messageObject : list) {
+            // 如果用户信息不存在, 则不显示此消息记录, 等同步服务器上的用户信息后, 可直接删除相关信息
+            if (isToOthers(messageObject)) {
+                String receiverJid = messageObject.getReceiverJid();
+                // 如果数据库中没有此用户则直接删除与此用户相关的所有聊天记录
+                ensureUser(receiverJid);
+            } else {
+                String senderJid = messageObject.getSenderJid();
+                ensureUser(senderJid);
+            }
+        }
+    }
+
+    /**
+     * 确保用户信息存在中
+     *
+     * @param messageObject
+     */
+    @Deprecated
+    private void ensureMessageUser(MessageObject messageObject) {
+        // 如果用户信息不存在, 则不显示此消息记录, 等同步服务器上的用户信息后, 可直接删除相关信息
+        if (isToOthers(messageObject)) {
+            String receiverJid = messageObject.getReceiverJid();
+            // 如果数据库中没有此用户则直接删除与此用户相关的所有聊天记录
+            ensureUser(receiverJid);
+        } else {
+            String senderJid = messageObject.getSenderJid();
+            ensureUser(senderJid);
+        }
+    }
+
+    /**
+     * 加载指定用户并保存到缓存中
+     *
+     * @param jid
+     */
+    @Deprecated
+    private void ensureUser(String jid) {
+        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(jid);
+        if (contactInfo == null) {
+            OnFetchContactListener listener = new OnFetchContactListener() {
+                @Override
+                public void onFetchContactInfo(ContactInfo contactInfo) {
+                    XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
+                }
+            };
+            FetchContactInfoRunnable runnable = new FetchContactInfoRunnable(jid, listener);
+            runnable.run();
+        }
     }
 }

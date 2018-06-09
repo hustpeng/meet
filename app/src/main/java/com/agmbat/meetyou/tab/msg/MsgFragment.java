@@ -18,6 +18,7 @@ import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.imsdk.imevent.ContactDeleteEvent;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.log.Debug;
@@ -192,6 +193,23 @@ public class MsgFragment extends Fragment {
     }
 
     /**
+     * 删除了联系人事件
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ContactDeleteEvent event) {
+        String jid = event.getJid();
+        MessageObject existTalkMessage = findTalkMessage(jid);
+        if (existTalkMessage != null) {
+            mAdapter.remove(existTalkMessage);
+            mAdapter.notifyDataSetChanged();
+            refreshState();
+        }
+    }
+
+
+    /**
      * 更新聊天列表
      *
      * @param messageObject
@@ -258,7 +276,7 @@ public class MsgFragment extends Fragment {
         protected List<MessageObject> doInBackground(Void... params) {
             XMPPManager.getInstance().getRosterManager().loadContactGroupFromDBSync();
             String user = XMPPManager.getInstance().getXmppConnection().getBareJid();
-            return XMPPManager.getInstance().getMessageManager().getAllMessage(user);
+            return XMPPManager.getInstance().getMessageManager().getRecentMessage(user);
         }
 
         @Override
