@@ -113,11 +113,14 @@ public class ContactGroup {
      */
     public String getDisplayGroupName() {
         String name = mGroupName;
-        if (name.equals(RosterManager.GROUP_FRIENDS)) {
+        if (RosterManager.GROUP_FRIENDS.equals(name)) {
             name = "我的好友";
+        } else if (RosterManager.GROUP_UNGROUPED.equals(name)) {
+            name = "非好友(我同意加你好友了吗)";
         }
         return String.format("%s(%d)", name, getContactCount());
     }
+
 
     public long getGroupId() {
         return mGroupId;

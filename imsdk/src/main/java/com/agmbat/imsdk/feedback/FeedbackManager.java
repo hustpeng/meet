@@ -14,6 +14,9 @@ import com.agmbat.imsdk.remotefile.FileApiResult;
 
 import java.io.File;
 
+/**
+ * 用户反馈管理
+ */
 public class FeedbackManager {
 
     /**

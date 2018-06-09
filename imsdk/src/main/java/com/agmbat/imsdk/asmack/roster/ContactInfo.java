@@ -120,6 +120,67 @@ public class ContactInfo {
     @SerializedName("dist")
     private double dist;
 
+    /**
+     * 出生年份
+     */
+    @SerializedName("birth")
+    private int birth;
+
+    @SerializedName("birthplace")
+    private String birthplace;
+
+    @SerializedName("car")
+    private int car;
+
+    @SerializedName("career")
+    private String career;
+
+    @SerializedName("create_time")
+    private long create_time;
+
+    @SerializedName("demand")
+    private String demand;
+
+    @SerializedName("education")
+    private int education;
+
+    @SerializedName("height")
+    private int height;
+
+    @SerializedName("hobby")
+    private String hobby;
+
+    @SerializedName("house")
+    private int house;
+
+    @SerializedName("im_uid")
+    private int im_uid;
+
+    @SerializedName("industry")
+    private String industry;
+
+    @SerializedName("introduce")
+    private String introduce;
+
+    @SerializedName("marriage")
+    private int marriage;
+
+    @SerializedName("residence")
+    private String residence;
+
+    @SerializedName("status")
+    private String status;
+
+    @SerializedName("wage")
+    private int wage;
+
+    @SerializedName("weight")
+    private int weight;
+
+    @SerializedName("workarea")
+    private String workarea;
+
+
     /****** 附近的人需要的字段 end   **************/
 
     public void setNickname(String nickname) {

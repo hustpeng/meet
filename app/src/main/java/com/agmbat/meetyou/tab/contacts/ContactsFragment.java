@@ -112,6 +112,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     void onClickAdd() {
         Intent intent = new Intent(getActivity(), SearchUserActivity.class);
         startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     /**

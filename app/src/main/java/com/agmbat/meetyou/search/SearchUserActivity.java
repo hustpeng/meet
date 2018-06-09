@@ -15,7 +15,14 @@ import android.widget.TextView;
 
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.imsdk.feedback.FeedbackManager;
+import com.agmbat.imsdk.feedback.OnFeedbackListener;
+import com.agmbat.imsdk.searchuser.OnSearchUserListener;
+import com.agmbat.imsdk.searchuser.SearchUserManager;
+import com.agmbat.imsdk.searchuser.SearchUserResult;
+import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
 
 import butterknife.BindView;
@@ -39,6 +46,11 @@ public class SearchUserActivity extends Activity {
     @BindView(R.id.search_text)
     TextView mSearchTextView;
 
+    /**
+     * loading对话框
+     */
+    private ISLoadingDialog mISLoadingDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,28 +58,7 @@ public class SearchUserActivity extends Activity {
         setContentView(R.layout.activity_search_user);
         ButterKnife.bind(this);
         mNoResultTipView.setVisibility(View.GONE);
-
-        mEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String content = mEditText.getText().toString().trim();
-                mNoResultTipView.setVisibility(View.GONE);
-                if (content.length() > 0) {
-                    mSearchButton.setVisibility(View.VISIBLE);
-                    mSearchTextView.setText(content);
-                } else {
-                    mSearchButton.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+        mEditText.addTextChangedListener(new TextChangedListener());
     }
 
     @Override
@@ -97,14 +88,74 @@ public class SearchUserActivity extends Activity {
             ToastUtil.showToast("内容不能为空");
             return;
         }
-        // TODO 显示loading框
-        ContactInfo contactInfo = new ContactInfo();
-        contactInfo.setBareJid("123");
-        if (contactInfo == null) {
-            mNoResultTipView.setVisibility(View.VISIBLE);
-            mSearchButton.setVisibility(View.GONE);
-        } else {
-            ViewUserHelper.openStrangerDetail(this, contactInfo);
+        if (content.length() < 4) {
+            ToastUtil.showToast("请输入最少4个数字");
+            return;
+        }
+
+        // 上传照片
+        showLoadingDialog();
+        SearchUserManager.searchUser(content, new OnSearchUserListener() {
+            @Override
+            public void onSearchUser(SearchUserResult result) {
+                hideLoadingDialog();
+                ToastUtil.showToast(result.mErrorMsg);
+                if (result.mResult) {
+                    ContactInfo contactInfo = result.mData;
+                    if (contactInfo == null) {
+                        mNoResultTipView.setVisibility(View.VISIBLE);
+                        mSearchButton.setVisibility(View.GONE);
+                    } else {
+                        ViewUserHelper.openStrangerDetail(SearchUserActivity.this, contactInfo);
+                    }
+                }
+            }
+
+        });
+    }
+
+    /**
+     * 显示loading框
+     */
+    private void showLoadingDialog() {
+        if (mISLoadingDialog == null) {
+            mISLoadingDialog = new ISLoadingDialog(this);
+            mISLoadingDialog.setMessage("正在搜索...");
+            mISLoadingDialog.setCancelable(false);
+        }
+        mISLoadingDialog.show();
+    }
+
+    /**
+     * 隐藏loading框
+     */
+    private void hideLoadingDialog() {
+        if (mISLoadingDialog != null) {
+            mISLoadingDialog.dismiss();
+        }
+    }
+
+    private class TextChangedListener implements TextWatcher {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String content = mEditText.getText().toString().trim();
+            mNoResultTipView.setVisibility(View.GONE);
+            if (content.length() >= 4) {
+                mSearchButton.setVisibility(View.VISIBLE);
+                mSearchTextView.setText(content);
+            } else {
+                mSearchButton.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
         }
     }
 }
