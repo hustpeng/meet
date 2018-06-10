@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.tab.discovery;
+package com.agmbat.meetyou.tab.discovery2;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,24 +10,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
+import com.agmbat.debugger.R;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
-import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.helper.AvatarHelper;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 public class DiscoveryUserItemView extends FrameLayout {
 
-    @BindView(R.id.icon)
-    ImageView mImageView;
+    private ImageView mImageView;
 
-    @BindView(R.id.name)
-    TextView mNameView;
+    private TextView mNameView;
 
-    @BindView(R.id.location)
-    TextView mLocationView;
+    private TextView mLocationView;
 
     public DiscoveryUserItemView(@NonNull Context context) {
         super(context);
@@ -41,7 +34,9 @@ public class DiscoveryUserItemView extends FrameLayout {
 
     private void init() {
         View.inflate(getContext(), R.layout.found_item_user, this);
-        ButterKnife.bind(this, this);
+        mImageView = findViewById(R.id.icon);
+        mNameView = findViewById(R.id.name);
+        mLocationView = findViewById(R.id.location);
     }
 
     /**
@@ -51,7 +46,8 @@ public class DiscoveryUserItemView extends FrameLayout {
      */
     public void bindUser(ContactInfo contactInfo) {
         String uri = "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3109469113,4179252995&fm=27&gp=0.jpg";
-        ImageManager.displayImage(uri, mImageView, AvatarHelper.getOptions());
+        // , AvatarHelper.getOptions()
+        ImageManager.displayImage(uri, mImageView);
         mNameView.setText(contactInfo.getNickName());
     }
 

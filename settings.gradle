@@ -1,3 +1,6 @@
 include ':app'
 include ':imsdk'
 include ':asmack'
+
+// 辅助或已不使用的类
+include ':debugger'

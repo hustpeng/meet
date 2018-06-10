@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.tab.discovery;
+package com.agmbat.meetyou.tab.discovery2;
 
 
 import com.agmbat.imsdk.asmack.roster.ContactInfo;

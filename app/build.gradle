@@ -9,6 +9,12 @@ android {
         targetSdkVersion "${TARGET_SDK_VERSION}" as int
         versionCode 1
         versionName "1.0"
+
+        resConfigs "zh-rCN", "zh-rHK", "zh-rTW", "en"
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
+        }
     }
     buildTypes {
         release {
@@ -16,6 +22,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
 }
 
 dependencies {
@@ -57,4 +65,7 @@ dependencies {
     }
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile project(':imsdk')
+
+    // 正式包不需要引用debugger工程
+//    compile project(':debugger')
 }

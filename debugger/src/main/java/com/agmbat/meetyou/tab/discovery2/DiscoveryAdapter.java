@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.tab.discovery;
+package com.agmbat.meetyou.tab.discovery2;
 
 import android.content.Context;
 import android.view.View;

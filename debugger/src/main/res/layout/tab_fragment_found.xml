@@ -9,7 +9,7 @@
         android:layout_gravity="center"
         android:background="#ff232325"
         android:gravity="center"
-        android:text="@string/tab_found"
+        android:text="发现"
         android:textColor="#ffffffff"
         android:textSize="20sp" />
 

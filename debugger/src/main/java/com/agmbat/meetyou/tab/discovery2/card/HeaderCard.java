@@ -1,4 +1,4 @@
-package com.agmbat.meetyou.tab.discovery.card;
+package com.agmbat.meetyou.tab.discovery2.card;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.agmbat.meetyou.R;
+import com.agmbat.debugger.R;
 
 import java.util.List;
 
