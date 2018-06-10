@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +16,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.agmbat.android.AppResources;
+import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ContactDeleteEvent;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
+import com.agmbat.imsdk.searchuser.OnSearchUserListener;
+import com.agmbat.imsdk.searchuser.SearchUserManager;
+import com.agmbat.imsdk.searchuser.SearchUserResult;
+import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.log.Debug;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.search.SearchUserActivity;
+import com.agmbat.meetyou.search.ViewUserHelper;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.menu.PopupMenu;
@@ -33,6 +40,9 @@ import com.agmbat.swipemenulist.SwipeMenu;
 import com.agmbat.swipemenulist.SwipeMenuCreator;
 import com.agmbat.swipemenulist.SwipeMenuItem;
 import com.agmbat.swipemenulist.SwipeMenuListView;
+import com.agmbat.zxing.OnScanListener;
+import com.agmbat.zxing.ScannerHelper;
+import com.google.zxing.client.android.CaptureActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -70,6 +80,11 @@ public class MsgFragment extends Fragment {
      * 聊天记录的adapter
      */
     private RecentChatAdapter mAdapter;
+
+    /**
+     * loading对话框
+     */
+    private ISLoadingDialog mISLoadingDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -171,7 +186,7 @@ public class MsgFragment extends Fragment {
         scan.setOnClickMenuListener(new OnClickMenuListener() {
             @Override
             public void onClick(MenuInfo menu, int index) {
-
+                scanBarCode();
             }
         });
         popupMenu.addItem(scan);
@@ -208,6 +223,46 @@ public class MsgFragment extends Fragment {
         }
     }
 
+    /**
+     * 打开相机开始扫描二维码
+     */
+    private void scanBarCode() {
+        ScannerHelper.scan(getActivity(), new OnScanListener() {
+            @Override
+            public void onScan(String text) {
+                if (!TextUtils.isEmpty(text)) {
+                    searchUser(text);
+                }
+            }
+        });
+    }
+
+    /**
+     * 搜索用户
+     *
+     * @param uid
+     */
+    private void searchUser(String uid) {
+        showLoadingDialog();
+        SearchUserManager.searchUser(uid, new OnSearchUserListener() {
+            @Override
+            public void onSearchUser(SearchUserResult result) {
+                hideLoadingDialog();
+                ToastUtil.showToast(result.mErrorMsg);
+                if (result.mResult) {
+                    ContactInfo contactInfo = result.mData;
+                    if (contactInfo == null) {
+                        ToastUtil.showToast("未搜索到用户");
+                    } else {
+                        ViewUserHelper.openStrangerDetail(getActivity(), contactInfo);
+                    }
+                } else {
+                    ToastUtil.showToast("搜索用户失败!");
+                }
+            }
+
+        });
+    }
 
     /**
      * 更新聊天列表
@@ -334,4 +389,24 @@ public class MsgFragment extends Fragment {
         return deleteItem;
     }
 
+    /**
+     * 显示loading框
+     */
+    private void showLoadingDialog() {
+        if (mISLoadingDialog == null) {
+            mISLoadingDialog = new ISLoadingDialog(getActivity());
+            mISLoadingDialog.setMessage("正在搜索...");
+            mISLoadingDialog.setCancelable(false);
+        }
+        mISLoadingDialog.show();
+    }
+
+    /**
+     * 隐藏loading框
+     */
+    private void hideLoadingDialog() {
+        if (mISLoadingDialog != null) {
+            mISLoadingDialog.dismiss();
+        }
+    }
 }

@@ -92,9 +92,9 @@ public class SearchUserActivity extends Activity {
             ToastUtil.showToast("请输入最少4个数字");
             return;
         }
-
-        // 上传照片
         showLoadingDialog();
+
+        // 搜索用户
         SearchUserManager.searchUser(content, new OnSearchUserListener() {
             @Override
             public void onSearchUser(SearchUserResult result) {
