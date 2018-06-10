@@ -4,10 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.DiscoveryHelper;
 import com.agmbat.meetyou.discovery.meeting.MeetingActivity;
@@ -48,8 +53,20 @@ public class DiscoveryFragment extends Fragment {
         DiscoveryHelper.openLover(getActivity());
     }
 
+    /**
+     * 点击找玩伴
+     */
     @OnClick(R.id.btn_discovery_hobby)
     void onClickHobby() {
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        String hobby = user.getHobby();
+        if (TextUtils.isEmpty(hobby)) {
+            ISAlertDialog dialog = new ISAlertDialog(getActivity());
+            dialog.setMessage("请先设置兴趣爱好!");
+            dialog.setPositiveButton("确定", null);
+            dialog.show();
+            return;
+        }
         DiscoveryHelper.openHobby(getActivity());
     }
 

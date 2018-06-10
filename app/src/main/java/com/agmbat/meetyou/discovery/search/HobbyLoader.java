@@ -6,6 +6,9 @@ import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.meetyou.R;
+import com.agmbat.text.TagText;
+
+import java.util.List;
 
 /**
  * 找玩伴
@@ -25,7 +28,6 @@ public class HobbyLoader implements DiscoveryLoader {
 
     @Override
     public void setupViews(View view) {
-
     }
 
     /**
@@ -42,8 +44,13 @@ public class HobbyLoader implements DiscoveryLoader {
         String phone = XMPPManager.getInstance().getConnectionUserName();
         String token = XMPPManager.getInstance().getTokenManager().getTokenRetry();
         String hobby = current.getHobby();
+        String hobbyParam = "";
+        List<String> list = TagText.parseTagList(hobby);
+        if (list.size() > 0) {
+            hobbyParam = list.get(0);
+        }
         String center = "30.5,111.2";
-        return DiscoveryApi.getHobby(phone, token, center, hobby, pageIndex);
+        return DiscoveryApi.getHobby(phone, token, center, hobbyParam, pageIndex);
     }
 
 }
