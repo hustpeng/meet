@@ -44,7 +44,8 @@ public class SplashActivity extends Activity {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA
         }, new PermissionArrayAction() {
             @Override
             public void onResult(String[] permissions, boolean[] grantResults) {

@@ -2,7 +2,6 @@ package com.agmbat.imsdk.splash;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.widget.ImageView;
 
 import com.agmbat.android.AppResources;
@@ -12,6 +11,7 @@ import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.file.FileUtils;
 import com.agmbat.imsdk.R;
 import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.imsdk.mgr.UserFileManager;
 import com.agmbat.net.HttpUtils;
 import com.agmbat.security.SecurityUtil;
 import com.agmbat.text.StringUtils;
@@ -29,7 +29,25 @@ public class SplashManager {
      */
     private static String sMainClassName;
 
+    /**
+     * 闪屏配置文件名
+     */
     private static final String PREF_FILE = "splash";
+
+    /**
+     * 闪屛api版本 key
+     */
+    private static final String SPLASH_VERSION = "version";
+
+    /**
+     * 闪屏图片路径
+     */
+    private static final String SPLASH_IMAGE_PATH = "image";
+
+    /**
+     * 全局配置
+     */
+    private static final String GLOBAL_CONFIG_SENSITIVE_WORDS = "sensitiveWords";
 
     /**
      * 初始化
@@ -68,6 +86,17 @@ public class SplashManager {
             @Override
             protected ApiResult<SplashResp> doInBackground(Void... voids) {
                 ApiResult<SplashResp> result = SplashApi.getSplash(phone, splashVer);
+                if (result == null || !result.mResult) {
+                    return null;
+                }
+                if (result.mData == null) {
+                    return null;
+                }
+
+                if (result.mData.mGlobalConfig != null) {
+                    saveSensitiveWords(result.mData.mGlobalConfig.mSensitiveWords);
+                }
+
                 boolean success = downloadImage(result);
                 if (success) {
                     return result;
@@ -90,12 +119,6 @@ public class SplashManager {
      * @return
      */
     private static boolean downloadImage(ApiResult<SplashResp> result) {
-        if (result == null) {
-            return false;
-        }
-        if (result.mData == null) {
-            return false;
-        }
         if (result.mData.mSplashInfo == null) {
             return false;
         }
@@ -111,14 +134,13 @@ public class SplashManager {
         return success;
     }
 
-
     /**
      * 保存splash信息
      *
      * @param result
      */
     private static void saveSplash(ApiResult<SplashResp> result) {
-        if (result == null) {
+        if (result == null || !result.mResult) {
             return;
         }
         String url = result.mData.mSplashInfo.mImageUrl;
@@ -129,12 +151,13 @@ public class SplashManager {
     }
 
     private static String getSplashImagePath() {
-        return getSplashPrefs().getString("image", "");
+        return getSplashPrefs().getString(SPLASH_IMAGE_PATH, "");
     }
 
     private static void setSplashImagePath(String path) {
-        getSplashPrefs().edit().putString("image", path).commit();
+        getSplashPrefs().edit().putString(SPLASH_IMAGE_PATH, path).commit();
     }
+
 
     /**
      * 获取splash version
@@ -142,7 +165,7 @@ public class SplashManager {
      * @return
      */
     private static int getSplashVersion() {
-        return getSplashPrefs().getInt("version", 0);
+        return getSplashPrefs().getInt(SPLASH_VERSION, 0);
     }
 
     /**
@@ -151,7 +174,27 @@ public class SplashManager {
      * @param version
      */
     private static void setSplashVersion(int version) {
-        getSplashPrefs().edit().putInt("version", version).commit();
+        getSplashPrefs().edit().putInt(SPLASH_VERSION, version).commit();
+    }
+
+    /**
+     * 保存敏感词
+     *
+     * @param words
+     */
+    private static void saveSensitiveWords(String words) {
+        if (words != null) {
+            getSplashPrefs().edit().putString(GLOBAL_CONFIG_SENSITIVE_WORDS, words).commit();
+        }
+    }
+
+    /**
+     * 获取敏感永词
+     *
+     * @return
+     */
+    public static String getSensitiveWords() {
+        return getSplashPrefs().getString(GLOBAL_CONFIG_SENSITIVE_WORDS, null);
     }
 
     private static SharedPreferences getSplashPrefs() {
@@ -176,7 +219,8 @@ public class SplashManager {
      * @return
      */
     private static File getSplashDir() {
-        File dir = new File(Environment.getExternalStorageDirectory(), "splash");
+        File appDir = UserFileManager.getAppDir();
+        File dir = new File(appDir, "splash");
         FileUtils.ensureDir(dir);
         return dir;
     }

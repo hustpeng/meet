@@ -38,6 +38,7 @@ import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.imsdk.remotefile.OnFileUploadListener;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
 import com.agmbat.imsdk.remotefile.FileApiResult;
+import com.agmbat.imsdk.splash.SplashManager;
 import com.agmbat.input.InputController;
 import com.agmbat.input.InputView;
 import com.agmbat.input.OnInputListener;
@@ -49,6 +50,7 @@ import com.agmbat.meetyou.R;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
+import com.agmbat.text.TagText;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -278,15 +280,37 @@ public class ChatActivity extends Activity implements OnInputListener {
         });
     }
 
+    /**
+     * 内容是否包含敏感词
+     *
+     * @param content
+     * @return
+     */
+    private boolean hasSensitiveWords(String content) {
+        String worlds = SplashManager.getSensitiveWords();
+        List<String> worldList = TagText.parseTagList(worlds);
+        for (String world : worldList) {
+            if (content.contains(world)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onInput(int type, String content) {
         if (type == OnInputListener.TYPE_TEXT) {
-            Body body;
             if (UrlStringUtils.isValidUrl(content)) {
-                body = new UrlBody(content);
-            } else {
-                body = new TextBody(content);
+                Body body = new UrlBody(content);
+                sendMessage(body);
+                return;
             }
+            // else  当前为文本消息
+            if (hasSensitiveWords(content)) {
+                ToastUtil.showToast("请勿发送违法或敏感内容，否则你将负上法律责任!");
+                return;
+            }
+            Body body = new TextBody(content);
             sendMessage(body);
         } else if (type == OnInputListener.TYPE_VOICE) {
             final String path = content;

@@ -16,7 +16,14 @@ import java.lang.reflect.Type;
  */
 public class SplashApi {
 
+    /**
+     * 应用程序包名
+     */
     private static String sPackageName = null;
+
+    /**
+     * app版本号
+     */
     private static int sAppVer = 0;
 
     /**
