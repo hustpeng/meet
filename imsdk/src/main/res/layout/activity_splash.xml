@@ -9,17 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <TextView
-        android:id="@+id/btn_entry"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="80dp"
-        android:background="@drawable/chat_btn_input_send"
-        android:gravity="center"
-        android:text="进入"
-        android:textColor="#ff000000"
-        android:textSize="20sp" />
 
     <ImageView
         android:id="@+id/splash_image"

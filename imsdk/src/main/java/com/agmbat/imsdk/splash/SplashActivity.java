@@ -35,20 +35,18 @@ public class SplashActivity extends Activity {
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            Intent intent = new Intent();
-            intent.setClassName(getPackageName(), SplashManager.getMainClassName());
-            startActivity(intent);
-            finish();
+            entryMainPager();
         }
     };
 
 
     private ViewPager mViewPager;
 
-    private TextView mEntryButton;
-
     private ImageView mSplashImageView;
 
+    /**
+     * 跳过button
+     */
     private TextView mSkipButton;
 
 
@@ -58,17 +56,34 @@ public class SplashActivity extends Activity {
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_splash);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mEntryButton = (TextView) findViewById(R.id.btn_entry);
         mSplashImageView = (ImageView) findViewById(R.id.splash_image);
         mSkipButton = (TextView) findViewById(R.id.btn_skip);
         if (isFirstLaunch()) {
             showGuide();
-            // 保存不是第一次启动
-            SharedPreferences preferences = getSharedPreferences("splash_launch", Context.MODE_PRIVATE);
-            preferences.edit().putBoolean("splash_launch_first", false).commit();
         } else {
             showSplash();
         }
+        Permissions.request(this, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA
+        }, new PermissionArrayAction() {
+            @Override
+            public void onResult(String[] permissions, boolean[] grantResults) {
+                if (Permissions.checkResult(grantResults)) {
+                    if (mViewPager.isShown()) {
+                        // 如果显示了引导页面, 则不处理
+                    } else {
+                        mHandler.postDelayed(mRunnable, 3000);
+                    }
+                } else {
+                    showNoPermissionDialog();
+                }
+            }
+        });
     }
 
     @Override
@@ -82,7 +97,6 @@ public class SplashActivity extends Activity {
      */
     private void showGuide() {
         mViewPager.setVisibility(View.VISIBLE);
-        mEntryButton.setVisibility(View.INVISIBLE);
         mSplashImageView.setVisibility(View.INVISIBLE);
         mSkipButton.setVisibility(View.INVISIBLE);
 
@@ -90,34 +104,17 @@ public class SplashActivity extends Activity {
         list.add(R.drawable.guide1);
         list.add(R.drawable.guide2);
         list.add(R.drawable.guide3);
-        mViewPager.setAdapter(new ViewPagerAdapter(this, list));
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == list.size() - 1) {
-                    mEntryButton.setVisibility(View.VISIBLE);
-                } else {
-                    mEntryButton.setVisibility(View.INVISIBLE);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        mEntryButton.setOnClickListener(new View.OnClickListener() {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this, list);
+        adapter.setOnEntryListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSplash();
+                saveFirstLaunch();
+                // 进入
+                entryMainPager();
             }
         });
+        mViewPager.setAdapter(adapter);
     }
 
     /**
@@ -125,29 +122,11 @@ public class SplashActivity extends Activity {
      */
     private void showSplash() {
         mViewPager.setVisibility(View.GONE);
-        mEntryButton.setVisibility(View.GONE);
         mSplashImageView.setVisibility(View.VISIBLE);
         mSkipButton.setVisibility(View.INVISIBLE);
 
         mSplashImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         SplashManager.displaySplash(mSplashImageView);
-        Permissions.request(this, new String[]{
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA
-        }, new PermissionArrayAction() {
-            @Override
-            public void onResult(String[] permissions, boolean[] grantResults) {
-                if (Permissions.checkResult(grantResults)) {
-                    mHandler.postDelayed(mRunnable, 3000);
-                } else {
-                    showNoPermissionDialog();
-                }
-            }
-        });
     }
 
     /**
@@ -166,6 +145,15 @@ public class SplashActivity extends Activity {
                 .show();
     }
 
+    /**
+     * 进入主页面
+     */
+    private void entryMainPager() {
+        Intent intent = new Intent();
+        intent.setClassName(getPackageName(), SplashManager.getMainClassName());
+        startActivity(intent);
+        finish();
+    }
 
     /**
      * 是否第一次启动
@@ -177,10 +165,20 @@ public class SplashActivity extends Activity {
         return preferences.getBoolean("splash_launch_first", true);
     }
 
+    /**
+     * 保存不是第一次启动
+     */
+    private void saveFirstLaunch() {
+        SharedPreferences preferences = getSharedPreferences("splash_launch", Context.MODE_PRIVATE);
+        preferences.edit().putBoolean("splash_launch_first", false).commit();
+    }
+
     private static class ViewPagerAdapter extends PagerAdapter {
 
         private Context mContext;
         private List<Integer> mDataList;
+
+        private View.OnClickListener mOnEntryListener;
 
         public ViewPagerAdapter(Context context, List<Integer> list) {
             mContext = context;
@@ -199,9 +197,18 @@ public class SplashActivity extends Activity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            ImageView view = new ImageView(mContext);
-            view.setImageResource((mDataList.get(position)));
-            view.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            View view = View.inflate(mContext, R.layout.guide_item, null);
+            ImageView imageView = (ImageView) view.findViewById(R.id.icon);
+            imageView.setImageResource((mDataList.get(position)));
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            // 引导页进入的Button
+            TextView entryButton = (TextView) view.findViewById(R.id.btn_entry);
+            if (position == 2) {
+                entryButton.setVisibility(View.VISIBLE);
+                entryButton.setOnClickListener(mOnEntryListener);
+            } else {
+                entryButton.setVisibility(View.GONE);
+            }
             container.addView(view);
             return view;
         }
@@ -209,6 +216,10 @@ public class SplashActivity extends Activity {
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
+        }
+
+        public void setOnEntryListener(View.OnClickListener l) {
+            mOnEntryListener = l;
         }
     }
 }
