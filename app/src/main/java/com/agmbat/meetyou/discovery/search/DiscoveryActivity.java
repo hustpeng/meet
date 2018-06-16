@@ -36,6 +36,9 @@ public class DiscoveryActivity extends Activity {
     @BindView(R.id.filter_view)
     FilterView mFilterView;
 
+    @BindView(R.id.tag_selected_view)
+    TagSelectedView mTagSelectedView;
+
     /**
      * 对应发现页各功能搜索
      */
@@ -54,8 +57,18 @@ public class DiscoveryActivity extends Activity {
         ButterKnife.bind(this);
         mLoader = DiscoveryHelper.getLoader(getIntent());
         mTitleView.setText(mLoader.getName());
+
+
         mPageDataLoader = new DiscoveryPageLoader(this);
         mPageDataLoader.setupViews(findViewById(android.R.id.content));
+
+        mTagSelectedView.setOnSelectedListener(new TagSelectedView.OnSelectedListener() {
+            @Override
+            public void onSelected(String tag) {
+                mPageDataLoader.loadData();
+            }
+        });
+
         mPageDataLoader.loadData();
     }
 

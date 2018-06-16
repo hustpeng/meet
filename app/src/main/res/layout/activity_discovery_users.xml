@@ -38,6 +38,12 @@
             android:visibility="gone" />
     </FrameLayout>
 
+    <com.agmbat.meetyou.discovery.search.TagSelectedView
+        android:id="@+id/tag_selected_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
