@@ -1,11 +1,5 @@
 package com.agmbat.imsdk.splash;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.widget.ImageView;
-
-import com.agmbat.android.AppResources;
-import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.file.FileUtils;
@@ -30,26 +24,6 @@ public class SplashManager {
     private static String sMainClassName;
 
     /**
-     * 闪屏配置文件名
-     */
-    private static final String PREF_FILE = "splash";
-
-    /**
-     * 闪屛api版本 key
-     */
-    private static final String SPLASH_VERSION = "version";
-
-    /**
-     * 闪屏图片路径
-     */
-    private static final String SPLASH_IMAGE_PATH = "image";
-
-    /**
-     * 全局配置
-     */
-    private static final String GLOBAL_CONFIG_SENSITIVE_WORDS = "sensitiveWords";
-
-    /**
      * 初始化
      *
      * @param mainClass
@@ -63,25 +37,41 @@ public class SplashManager {
     }
 
     /**
-     * 显示闪屏图片
+     * 获取当前用于显示的Splash信息
      *
-     * @param imageView
+     * @return
      */
-    public static void displaySplash(ImageView imageView) {
-        String path = getSplashImagePath();
-        String uri = null;
-        if (StringUtils.isEmpty(path)) {
-            uri = Scheme.wrapUri("drawable", String.valueOf(R.drawable.im_default_splash));
+    public static SplashInfo getDisplaySplash() {
+        SplashInfo display = new SplashInfo();
+        SplashInfo splashInfo = SplashStore.getSplashInfo();
+        if (splashInfo != null) {
+            String url = splashInfo.mImageUrl;
+            File file = getDownloadImageFile(url);
+            String path = file.getAbsolutePath();
+            String uri = null;
+            if (FileUtils.existsFile(path)) {
+                uri = Scheme.wrapUri("file", path);
+            } else {
+                uri = Scheme.wrapUri("drawable", String.valueOf(R.drawable.im_default_splash));
+            }
+            display.canSkip = splashInfo.canSkip;
+            if (splashInfo.displayTime > 0) {
+                display.displayTime = splashInfo.displayTime;
+            } else {
+                display.displayTime = 3000;
+            }
+            display.mImageUrl = uri;
         } else {
-            uri = Scheme.wrapUri("file", path);
+            display.canSkip = false;
+            display.displayTime = 3000;
+            display.mImageUrl = Scheme.wrapUri("drawable", String.valueOf(R.drawable.im_default_splash));
         }
-        ImageManager.displayImage(uri, imageView);
-        update();
+        return display;
     }
 
-    private static void update() {
+    public static void update() {
         final String phone = "13437122759";
-        final int splashVer = getSplashVersion();
+        final int splashVer = SplashStore.getSplashVersion();
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult<SplashResp>>() {
             @Override
             protected ApiResult<SplashResp> doInBackground(Void... voids) {
@@ -94,7 +84,7 @@ public class SplashManager {
                 }
 
                 if (result.mData.mGlobalConfig != null) {
-                    saveSensitiveWords(result.mData.mGlobalConfig.mSensitiveWords);
+                    SplashStore.saveSensitiveWords(result.mData.mGlobalConfig.mSensitiveWords);
                 }
 
                 boolean success = downloadImage(result);
@@ -140,65 +130,11 @@ public class SplashManager {
      * @param result
      */
     private static void saveSplash(ApiResult<SplashResp> result) {
-        if (result == null || !result.mResult) {
+        if (result == null || !result.mResult || result.mData == null) {
             return;
         }
-        String url = result.mData.mSplashInfo.mImageUrl;
-        File file = getDownloadImageFile(url);
-        String path = file.getAbsolutePath();
-        setSplashImagePath(path);
-        setSplashVersion(result.mData.version);
-    }
-
-    private static String getSplashImagePath() {
-        return getSplashPrefs().getString(SPLASH_IMAGE_PATH, "");
-    }
-
-    private static void setSplashImagePath(String path) {
-        getSplashPrefs().edit().putString(SPLASH_IMAGE_PATH, path).commit();
-    }
-
-
-    /**
-     * 获取splash version
-     *
-     * @return
-     */
-    private static int getSplashVersion() {
-        return getSplashPrefs().getInt(SPLASH_VERSION, 0);
-    }
-
-    /**
-     * 保存版本号
-     *
-     * @param version
-     */
-    private static void setSplashVersion(int version) {
-        getSplashPrefs().edit().putInt(SPLASH_VERSION, version).commit();
-    }
-
-    /**
-     * 保存敏感词
-     *
-     * @param words
-     */
-    private static void saveSensitiveWords(String words) {
-        if (words != null) {
-            getSplashPrefs().edit().putString(GLOBAL_CONFIG_SENSITIVE_WORDS, words).commit();
-        }
-    }
-
-    /**
-     * 获取敏感永词
-     *
-     * @return
-     */
-    public static String getSensitiveWords() {
-        return getSplashPrefs().getString(GLOBAL_CONFIG_SENSITIVE_WORDS, null);
-    }
-
-    private static SharedPreferences getSplashPrefs() {
-        return AppResources.getAppContext().getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        SplashStore.saveSplashInfo(result.mData.mSplashInfo);
+        SplashStore.setSplashVersion(result.mData.version);
     }
 
     /**

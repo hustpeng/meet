@@ -17,11 +17,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.permissions.PermissionArrayAction;
 import com.agmbat.android.permissions.Permissions;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.R;
+import com.agmbat.text.StringUtils;
+import com.nostra13.universalimageloader.core.download.Scheme;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +39,7 @@ public class SplashActivity extends Activity {
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
+            mHandler.removeCallbacks(mRunnable);
             entryMainPager();
         }
     };
@@ -48,6 +53,11 @@ public class SplashActivity extends Activity {
      * 跳过button
      */
     private TextView mSkipButton;
+
+    /**
+     * splash 显示时长
+     */
+    private long mSplashShowTime = 3000;
 
 
     @Override
@@ -77,7 +87,7 @@ public class SplashActivity extends Activity {
                     if (mViewPager.isShown()) {
                         // 如果显示了引导页面, 则不处理
                     } else {
-                        mHandler.postDelayed(mRunnable, 3000);
+                        mHandler.postDelayed(mRunnable, mSplashShowTime);
                     }
                 } else {
                     showNoPermissionDialog();
@@ -123,10 +133,26 @@ public class SplashActivity extends Activity {
     private void showSplash() {
         mViewPager.setVisibility(View.GONE);
         mSplashImageView.setVisibility(View.VISIBLE);
-        mSkipButton.setVisibility(View.INVISIBLE);
+
+        mSkipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHandler.removeCallbacks(mRunnable);
+                entryMainPager();
+            }
+        });
 
         mSplashImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        SplashManager.displaySplash(mSplashImageView);
+
+        SplashInfo splashInfo = SplashManager.getDisplaySplash();
+        ImageManager.displayImage(splashInfo.mImageUrl, mSplashImageView);
+        if (splashInfo.canSkip) {
+            mSkipButton.setVisibility(View.VISIBLE);
+        } else {
+            mSkipButton.setVisibility(View.INVISIBLE);
+        }
+        mSplashShowTime = splashInfo.displayTime;
+        SplashManager.update();
     }
 
     /**

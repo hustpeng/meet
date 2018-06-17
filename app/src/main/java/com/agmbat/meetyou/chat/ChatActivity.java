@@ -35,10 +35,10 @@ import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
+import com.agmbat.imsdk.remotefile.FileApiResult;
 import com.agmbat.imsdk.remotefile.OnFileUploadListener;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
-import com.agmbat.imsdk.remotefile.FileApiResult;
-import com.agmbat.imsdk.splash.SplashManager;
+import com.agmbat.imsdk.splash.SplashStore;
 import com.agmbat.input.InputController;
 import com.agmbat.input.InputView;
 import com.agmbat.input.OnInputListener;
@@ -287,7 +287,7 @@ public class ChatActivity extends Activity implements OnInputListener {
      * @return
      */
     private boolean hasSensitiveWords(String content) {
-        String worlds = SplashManager.getSensitiveWords();
+        String worlds = SplashStore.getSensitiveWords();
         List<String> worldList = TagText.parseTagList(worlds);
         for (String world : worldList) {
             if (content.contains(world)) {

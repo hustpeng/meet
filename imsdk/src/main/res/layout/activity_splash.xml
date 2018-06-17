@@ -22,9 +22,12 @@
         android:layout_gravity="right|top"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/bg_jump_ad"
         android:gravity="center"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
         android:text="跳过"
         android:textColor="#ffffffff"
-        android:textSize="20sp" />
+        android:textSize="14sp" />
 
 </FrameLayout>

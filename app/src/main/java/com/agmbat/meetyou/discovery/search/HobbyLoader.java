@@ -41,7 +41,6 @@ public class HobbyLoader implements DiscoveryLoader {
     /**
      * 找玩伴
      *
-     * @param current   当前用户信息
      * @param pageIndex
      * @return
      */
