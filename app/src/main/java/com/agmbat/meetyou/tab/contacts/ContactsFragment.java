@@ -108,6 +108,9 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * 点击右上角+
+     */
     @OnClick(R.id.title_btn_add)
     void onClickAdd() {
         Intent intent = new Intent(getActivity(), SearchUserActivity.class);

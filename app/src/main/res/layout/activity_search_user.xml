@@ -76,60 +76,106 @@
 
 
     <LinearLayout
-        android:id="@+id/btn_search"
+        android:id="@+id/btn_search_user"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="56dp"
+        android:background="#ffffffff"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="14dp"
+        android:paddingRight="15dp"
         android:visibility="gone">
 
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="7dp"
+            android:background="#ff529f50"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_search_user" />
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="#ffffffff"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="14dp"
-            android:paddingRight="15dp">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_centerVertical="true"
-                android:layout_marginBottom="7dp"
-                android:layout_marginTop="7dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_search_item" />
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+                android:layout_marginLeft="10dp"
+                android:singleLine="true"
+                android:text="搜索用户"
+                android:textColor="#464646"
+                android:textSize="14sp"
+                android:visibility="visible" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:singleLine="true"
-                    android:text="搜索"
-                    android:textColor="#464646"
-                    android:textSize="14sp"
-                    android:visibility="visible" />
+            <TextView
+                android:id="@+id/search_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:singleLine="true"
+                android:textColor="#45C01A"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/search_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:singleLine="true"
-                    android:textColor="#45C01A"
-                    android:textSize="12sp" />
-            </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#ccc" />
+
+    <LinearLayout
+        android:id="@+id/btn_search_group"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#ffffffff"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="14dp"
+        android:paddingRight="15dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="7dp"
+            android:background="#ff529f50"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_search_circle" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:singleLine="true"
+                android:text="搜索群"
+                android:textColor="#464646"
+                android:textSize="14sp"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/search_text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:singleLine="true"
+                android:textColor="#45C01A"
+                android:textSize="12sp" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#ccc" />
     </LinearLayout>
 </LinearLayout>

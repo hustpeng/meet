@@ -40,11 +40,23 @@ public class SearchUserActivity extends Activity {
     @BindView(R.id.search_result_tips)
     RelativeLayout mNoResultTipView;
 
-    @BindView(R.id.btn_search)
-    LinearLayout mSearchButton;
+    /**
+     * 搜索用户
+     */
+    @BindView(R.id.btn_search_user)
+    LinearLayout mSearchUserButton;
+
+    /**
+     * 搜索群
+     */
+    @BindView(R.id.btn_search_group)
+    LinearLayout mSearchGroupButton;
 
     @BindView(R.id.search_text)
     TextView mSearchTextView;
+
+    @BindView(R.id.search_text2)
+    TextView mSearchTex2tView;
 
     /**
      * loading对话框
@@ -81,7 +93,10 @@ public class SearchUserActivity extends Activity {
         finish();
     }
 
-    @OnClick(R.id.btn_search)
+    /**
+     * 点击搜索用户
+     */
+    @OnClick(R.id.btn_search_user)
     void onClickSearch() {
         String content = mEditText.getText().toString().trim();
         if (TextUtils.isEmpty(content)) {
@@ -104,7 +119,40 @@ public class SearchUserActivity extends Activity {
                     ContactInfo contactInfo = result.mData;
                     if (contactInfo == null) {
                         mNoResultTipView.setVisibility(View.VISIBLE);
-                        mSearchButton.setVisibility(View.GONE);
+                        mSearchUserButton.setVisibility(View.GONE);
+                    } else {
+                        ViewUserHelper.openStrangerDetail(SearchUserActivity.this, contactInfo);
+                    }
+                }
+            }
+
+        });
+    }
+
+    @OnClick(R.id.btn_search_group)
+    void onClickSearchGroup() {
+        String content = mEditText.getText().toString().trim();
+        if (TextUtils.isEmpty(content)) {
+            ToastUtil.showToast("内容不能为空");
+            return;
+        }
+        if (content.length() < 4) {
+            ToastUtil.showToast("请输入最少4个数字");
+            return;
+        }
+        showLoadingDialog();
+
+        // 搜索用户
+        SearchUserManager.searchUser(content, new OnSearchUserListener() {
+            @Override
+            public void onSearchUser(SearchUserResult result) {
+                hideLoadingDialog();
+                ToastUtil.showToast(result.mErrorMsg);
+                if (result.mResult) {
+                    ContactInfo contactInfo = result.mData;
+                    if (contactInfo == null) {
+                        mNoResultTipView.setVisibility(View.VISIBLE);
+                        mSearchUserButton.setVisibility(View.GONE);
                     } else {
                         ViewUserHelper.openStrangerDetail(SearchUserActivity.this, contactInfo);
                     }
@@ -146,16 +194,24 @@ public class SearchUserActivity extends Activity {
             String content = mEditText.getText().toString().trim();
             mNoResultTipView.setVisibility(View.GONE);
             if (content.length() >= 4) {
-                mSearchButton.setVisibility(View.VISIBLE);
+                mSearchUserButton.setVisibility(View.VISIBLE);
                 mSearchTextView.setText(content);
+
+                mSearchGroupButton.setVisibility(View.VISIBLE);
+                mSearchTex2tView.setText(content);
             } else {
-                mSearchButton.setVisibility(View.GONE);
+                mSearchUserButton.setVisibility(View.GONE);
+                mSearchGroupButton.setVisibility(View.GONE);
+            }
+
+            if (content.length() == 11) {
+                // 如果为手机号, 则显示搜索用户
+                mSearchGroupButton.setVisibility(View.GONE);
             }
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-
         }
     }
 }
