@@ -16,6 +16,7 @@ import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.DiscoveryHelper;
 import com.agmbat.meetyou.discovery.meeting.MeetingActivity;
+import com.agmbat.meetyou.discovery.search.GroupSearchActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -86,5 +87,13 @@ public class DiscoveryFragment extends Fragment {
     @OnClick(R.id.btn_discovery_meeting)
     void onClickMeeting() {
         getActivity().startActivity(new Intent(getActivity(), MeetingActivity.class));
+    }
+
+    /**
+     * 点击找群组
+     */
+    @OnClick(R.id.btn_search_group)
+    void onClickSearchGroup() {
+        getActivity().startActivity(new Intent(getActivity(), GroupSearchActivity.class));
     }
 }

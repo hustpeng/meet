@@ -119,6 +119,7 @@
     <string name="discovery_search_user">综合搜索会员</string>
     <string name="filter_confirm">确定</string>
     <string name="discovery_meeting">聚会活动</string>
+    <string name="discovery_search_group">找群组</string>
 
     <!-- 联系人 -->
     <string name="contacts_recently">最近</string>
@@ -153,4 +154,5 @@
     <string name="report_user_problem">举报内容(必填)</string>
     <string name="report_user_hint">请描述举报内容</string>
     <string name="report_user_image">上传举报截图(选填)</string>
+
 </resources>

@@ -40,7 +40,7 @@ public class MeetingItemView extends FrameLayout {
         if (item.enableSignup) {
             text = "正在报名中";
         } else {
-            text = "未开始报名";
+            text = "";
         }
         mEnableSignupView.setText(text);
     }
