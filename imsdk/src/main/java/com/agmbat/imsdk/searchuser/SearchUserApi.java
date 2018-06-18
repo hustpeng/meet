@@ -9,6 +9,9 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
+/**
+ * 搜索相关api
+ */
 public class SearchUserApi {
 
     /**
@@ -75,4 +78,65 @@ public class SearchUserApi {
         return apiResult;
     }
 
+
+    /**
+     * 查找指定群：
+     * GET
+     * https://{DOMAIN}/egret/v1/discovery/searchcircle.api?uid=<>&ticket=<ticket>&im_uid=<>&keyword=<>&sign=<sign>
+     * <p>
+     * 参数名	Required?	格式	意义
+     * uid	Yes	String	phone
+     * ticket	Yes	String	The auth ticket
+     * keyword	No	String	群名，但im_uid与keyword不能同时为空
+     * sign	Yes	String	API调用签名
+     * <p>
+     * 返回内容如下：
+     * <p>
+     * {
+     * "result": true,
+     * "count": 1,
+     * "pages": 1,
+     * "resp": [
+     * {
+     * "cover": "",
+     * "category_name": "娱乐",
+     * "owner_name": "特工007",
+     * "description": "",
+     * "im_uid": 1002,
+     * "name": "android技术交流",
+     * "is_hot": 0,
+     * "category_id": 4,
+     * "owner_jid": "16671001488@yuan520.com",
+     * "jid": "1002@circle.yuan520.com",
+     * "member_num": 1
+     * }
+     * ]
+     * }
+     * <p>
+     *
+     * @param uid    用户11位手机号码，不含区号
+     * @param ticket The auth ticket
+     * @param imUid  群ID，例如1002
+     * @return
+     */
+    public static SearchUserResult searchGroup(String uid, String ticket, String imUid) {
+        String apiName = "searchcircle";
+        HttpRequester.Builder builder = new HttpRequester.Builder();
+        builder.baseUrl(Api.getBaseDiscoveryUrl(apiName));
+        builder.method("GET");
+        builder.urlParam("uid", uid);
+        builder.urlParam("ticket", ticket);
+        builder.urlParam("im_uid", imUid);
+        builder.urlParam("keyword", "");
+        builder.urlParam("sign", Api.getSign(apiName, uid));
+        HttpRequester requester = builder.build();
+        String text = requester.requestAsString();
+        if (StringUtils.isEmpty(text)) {
+            return null;
+        }
+        Type jsonType = new TypeToken<SearchUserResult>() {
+        }.getType();
+        SearchUserResult apiResult = GsonHelper.fromJson(text, jsonType);
+        return apiResult;
+    }
 }

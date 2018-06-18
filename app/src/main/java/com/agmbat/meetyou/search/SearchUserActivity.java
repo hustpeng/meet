@@ -143,7 +143,7 @@ public class SearchUserActivity extends Activity {
         showLoadingDialog();
 
         // 搜索用户
-        SearchUserManager.searchUser(content, new OnSearchUserListener() {
+        SearchUserManager.searchGroup(content, new OnSearchUserListener() {
             @Override
             public void onSearchUser(SearchUserResult result) {
                 hideLoadingDialog();
@@ -154,7 +154,7 @@ public class SearchUserActivity extends Activity {
                         mNoResultTipView.setVisibility(View.VISIBLE);
                         mSearchUserButton.setVisibility(View.GONE);
                     } else {
-                        ViewUserHelper.openStrangerDetail(SearchUserActivity.this, contactInfo);
+//                        ViewUserHelper.openStrangerDetail(SearchUserActivity.this, contactInfo);
                     }
                 }
             }

@@ -121,6 +121,7 @@ public class TokenManager extends Xepmodule {
             setTo(tokenServer);
         }
 
+        @Override
         public String getChildElementXML() {
             return new StringBuffer()
                     .append("<")
@@ -181,6 +182,7 @@ public class TokenManager extends Xepmodule {
     }
 
     private class GetTokenResultListener implements PacketListener {
+        @Override
         public void processPacket(Packet packet) {
             String packetIdString = packet.getPacketID();
             XepQueryInfo queryInfo = getQueryInfo(packetIdString);
