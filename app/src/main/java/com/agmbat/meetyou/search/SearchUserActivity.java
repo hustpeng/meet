@@ -25,6 +25,7 @@ import com.agmbat.imsdk.search.user.SearchUserResult;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.group.GroupInfoActivity;
+import com.agmbat.meetyou.group.GroupInfoHelper;
 
 import java.util.List;
 
@@ -167,7 +168,8 @@ public class SearchUserActivity extends Activity {
                         mSearchUserButton.setVisibility(View.GONE);
                         mSearchGroupButton.setVisibility(View.GONE);
                     } else {
-                        startActivity(new Intent(SearchUserActivity.this, GroupInfoActivity.class));
+                        GroupInfo groupInfo = list.get(0);
+                        GroupInfoHelper.openGroupDetail(SearchUserActivity.this, groupInfo);
                     }
                 }
             }

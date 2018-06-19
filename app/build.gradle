@@ -67,5 +67,5 @@ dependencies {
     compile project(':imsdk')
 
     // 正式包不需要引用debugger工程
-//    compile project(':debugger')
+    compile project(':debugger')
 }

@@ -65,13 +65,20 @@ public class GroupInfo {
     /**
      * 群jid
      */
+    @SerializedName("jid")
     public String jid;
+
+    /**
+     * 群名称
+     */
+    @SerializedName("name")
+    public String name;
 
     /**
      * 是否热门
      */
     @SerializedName("is_hot")
-    public boolean isHot;
+    public int isHot;
 
     /**
      * 群成员数量
