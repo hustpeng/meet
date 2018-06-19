@@ -9,14 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.DiscoveryHelper;
 import com.agmbat.meetyou.discovery.meeting.MeetingActivity;
-import com.agmbat.meetyou.discovery.search.GroupSearchActivity;
+import com.agmbat.meetyou.group.GroupSearchActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;

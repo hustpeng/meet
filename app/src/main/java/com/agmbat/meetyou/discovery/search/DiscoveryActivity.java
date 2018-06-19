@@ -58,7 +58,6 @@ public class DiscoveryActivity extends Activity {
         mLoader = DiscoveryHelper.getLoader(getIntent());
         mTitleView.setText(mLoader.getName());
 
-
         mPageDataLoader = new DiscoveryPageLoader(this);
         mPageDataLoader.setupViews(findViewById(android.R.id.content));
 

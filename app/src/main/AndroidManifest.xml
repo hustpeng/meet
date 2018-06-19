@@ -141,7 +141,7 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.agmbat.meetyou.discovery.search.GroupSearchActivity"
+            android:name="com.agmbat.meetyou.group.GroupSearchActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity

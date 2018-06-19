@@ -1,7 +1,10 @@
 package com.agmbat.imsdk.search.group;
 
 import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.search.group.GroupInfo;
+import com.agmbat.pagedataloader.PageData;
+import com.agmbat.pagedataloader.PageDataLoader;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -28,11 +31,36 @@ import java.util.List;
  * ]
  * }
  */
-public class SearchGroupResult extends ApiResult<List<GroupInfo>> {
+public class SearchGroupResult extends ApiResult<List<GroupInfo>> implements PageData<GroupInfo> {
 
     @SerializedName("pages")
     public int pages;
 
     @SerializedName("count")
     public int count;
+
+    /**
+     * 当前page num
+     */
+    public int mPageNum;
+
+    @Override
+    public boolean isSuccess() {
+        return mResult;
+    }
+
+    @Override
+    public List<GroupInfo> getDataList() {
+        return mData;
+    }
+
+    @Override
+    public int getPageNum() {
+        return pages;
+    }
+
+    @Override
+    public boolean hasNextPageData() {
+        return PageDataLoader.hasNextPage(count, 20, mPageNum);
+    }
 }

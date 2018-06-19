@@ -33,6 +33,7 @@ dependencies {
     compile "com.disbts:adatabase:3.8.4"
     compile "com.disbts:dom4j:1.6.1"
     compile "com.disbts:baidumap:${BAIDUMAP_VERSION}@aar"
+    compile 'com.disbts:pagedataloader:3.5.7@aar'
 
     compile project(':asmack')
     compile 'com.google.code.gson:gson:2.8.0'
