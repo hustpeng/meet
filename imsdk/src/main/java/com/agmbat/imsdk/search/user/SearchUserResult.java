@@ -1,4 +1,4 @@
-package com.agmbat.imsdk.searchuser;
+package com.agmbat.imsdk.search.user;
 
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;

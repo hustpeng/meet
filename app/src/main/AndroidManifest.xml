@@ -145,6 +145,10 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.agmbat.meetyou.group.GroupInfoActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.agmbat.meetyou.settings.AboutActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />

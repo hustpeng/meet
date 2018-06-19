@@ -15,15 +15,18 @@ import android.widget.TextView;
 
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
-import com.agmbat.imsdk.feedback.FeedbackManager;
-import com.agmbat.imsdk.feedback.OnFeedbackListener;
-import com.agmbat.imsdk.searchuser.OnSearchUserListener;
-import com.agmbat.imsdk.searchuser.SearchUserManager;
-import com.agmbat.imsdk.searchuser.SearchUserResult;
+import com.agmbat.imsdk.search.group.GroupInfo;
+import com.agmbat.imsdk.search.group.OnSearchGroupListener;
+import com.agmbat.imsdk.search.user.OnSearchUserListener;
+import com.agmbat.imsdk.search.group.SearchGroupResult;
+import com.agmbat.imsdk.search.SearchManager;
+import com.agmbat.imsdk.search.user.SearchUserResult;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.group.GroupInfoActivity;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +42,12 @@ public class SearchUserActivity extends Activity {
 
     @BindView(R.id.search_result_tips)
     RelativeLayout mNoResultTipView;
+
+    /**
+     * 没有结果的显示的文本
+     */
+    @BindView(R.id.search_result_tips_text)
+    TextView mNoResultTipTextView;
 
     /**
      * 搜索用户
@@ -110,7 +119,7 @@ public class SearchUserActivity extends Activity {
         showLoadingDialog();
 
         // 搜索用户
-        SearchUserManager.searchUser(content, new OnSearchUserListener() {
+        SearchManager.searchUser(content, new OnSearchUserListener() {
             @Override
             public void onSearchUser(SearchUserResult result) {
                 hideLoadingDialog();
@@ -119,7 +128,9 @@ public class SearchUserActivity extends Activity {
                     ContactInfo contactInfo = result.mData;
                     if (contactInfo == null) {
                         mNoResultTipView.setVisibility(View.VISIBLE);
+                        mNoResultTipTextView.setText("该用户不存在");
                         mSearchUserButton.setVisibility(View.GONE);
+                        mSearchGroupButton.setVisibility(View.GONE);
                     } else {
                         ViewUserHelper.openStrangerDetail(SearchUserActivity.this, contactInfo);
                     }
@@ -142,23 +153,24 @@ public class SearchUserActivity extends Activity {
         }
         showLoadingDialog();
 
-        // 搜索用户
-        SearchUserManager.searchGroup(content, new OnSearchUserListener() {
+        // 搜索群
+        SearchManager.searchGroup(content, new OnSearchGroupListener() {
             @Override
-            public void onSearchUser(SearchUserResult result) {
+            public void onSearchGroup(SearchGroupResult result) {
                 hideLoadingDialog();
                 ToastUtil.showToast(result.mErrorMsg);
                 if (result.mResult) {
-                    ContactInfo contactInfo = result.mData;
-                    if (contactInfo == null) {
+                    List<GroupInfo> list = result.mData;
+                    if (list == null || list.size() == 0) {
                         mNoResultTipView.setVisibility(View.VISIBLE);
+                        mNoResultTipTextView.setText("该群不存在");
                         mSearchUserButton.setVisibility(View.GONE);
+                        mSearchGroupButton.setVisibility(View.GONE);
                     } else {
-//                        ViewUserHelper.openStrangerDetail(SearchUserActivity.this, contactInfo);
+                        startActivity(new Intent(SearchUserActivity.this, GroupInfoActivity.class));
                     }
                 }
             }
-
         });
     }
 

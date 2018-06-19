@@ -1,4 +1,4 @@
-package com.agmbat.imsdk.searchuser;
+package com.agmbat.imsdk.search.user;
 
 /**
  * 搜索用户监听器

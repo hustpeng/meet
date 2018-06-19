@@ -23,9 +23,9 @@ import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ContactDeleteEvent;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
-import com.agmbat.imsdk.searchuser.OnSearchUserListener;
-import com.agmbat.imsdk.searchuser.SearchUserManager;
-import com.agmbat.imsdk.searchuser.SearchUserResult;
+import com.agmbat.imsdk.search.user.OnSearchUserListener;
+import com.agmbat.imsdk.search.SearchManager;
+import com.agmbat.imsdk.search.user.SearchUserResult;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.log.Debug;
 import com.agmbat.log.Log;
@@ -42,7 +42,6 @@ import com.agmbat.swipemenulist.SwipeMenuItem;
 import com.agmbat.swipemenulist.SwipeMenuListView;
 import com.agmbat.zxing.OnScanListener;
 import com.agmbat.zxing.ScannerHelper;
-import com.google.zxing.client.android.CaptureActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -244,7 +243,7 @@ public class MsgFragment extends Fragment {
      */
     private void searchUser(String uid) {
         showLoadingDialog();
-        SearchUserManager.searchUser(uid, new OnSearchUserListener() {
+        SearchManager.searchUser(uid, new OnSearchUserListener() {
             @Override
             public void onSearchUser(SearchUserResult result) {
                 hideLoadingDialog();

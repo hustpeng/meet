@@ -1,7 +1,8 @@
-package com.agmbat.imsdk.searchuser;
+package com.agmbat.imsdk.search;
 
 import com.agmbat.imsdk.api.Api;
-import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.imsdk.search.group.SearchGroupResult;
+import com.agmbat.imsdk.search.user.SearchUserResult;
 import com.agmbat.net.HttpRequester;
 import com.agmbat.server.GsonHelper;
 import com.agmbat.text.StringUtils;
@@ -12,7 +13,7 @@ import java.lang.reflect.Type;
 /**
  * 搜索相关api
  */
-public class SearchUserApi {
+public class SearchApi {
 
     /**
      * 查找指定用户（通过im_uid或手机号查找用户）：
@@ -85,41 +86,16 @@ public class SearchUserApi {
      * https://{DOMAIN}/egret/v1/discovery/searchcircle.api?uid=<>&ticket=<ticket>&im_uid=<>&keyword=<>&sign=<sign>
      * <p>
      * 参数名	Required?	格式	意义
-     * uid	Yes	String	phone
-     * ticket	Yes	String	The auth ticket
      * keyword	No	String	群名，但im_uid与keyword不能同时为空
-     * sign	Yes	String	API调用签名
      * <p>
      * 返回内容如下：
-     * <p>
-     * {
-     * "result": true,
-     * "count": 1,
-     * "pages": 1,
-     * "resp": [
-     * {
-     * "cover": "",
-     * "category_name": "娱乐",
-     * "owner_name": "特工007",
-     * "description": "",
-     * "im_uid": 1002,
-     * "name": "android技术交流",
-     * "is_hot": 0,
-     * "category_id": 4,
-     * "owner_jid": "16671001488@yuan520.com",
-     * "jid": "1002@circle.yuan520.com",
-     * "member_num": 1
-     * }
-     * ]
-     * }
-     * <p>
      *
      * @param uid    用户11位手机号码，不含区号
      * @param ticket The auth ticket
      * @param imUid  群ID，例如1002
      * @return
      */
-    public static SearchUserResult searchGroup(String uid, String ticket, String imUid) {
+    public static SearchGroupResult searchGroup(String uid, String ticket, String imUid) {
         String apiName = "searchcircle";
         HttpRequester.Builder builder = new HttpRequester.Builder();
         builder.baseUrl(Api.getBaseDiscoveryUrl(apiName));
@@ -134,9 +110,9 @@ public class SearchUserApi {
         if (StringUtils.isEmpty(text)) {
             return null;
         }
-        Type jsonType = new TypeToken<SearchUserResult>() {
+        Type jsonType = new TypeToken<SearchGroupResult>() {
         }.getType();
-        SearchUserResult apiResult = GsonHelper.fromJson(text, jsonType);
+        SearchGroupResult apiResult = GsonHelper.fromJson(text, jsonType);
         return apiResult;
     }
 }
