@@ -1,17 +1,35 @@
 package com.agmbat.meetyou;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.agmbat.android.image.ImageManager;
+import com.agmbat.android.utils.AppUtils;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.chat.body.Body;
+import com.agmbat.imsdk.chat.body.BodyParser;
+import com.agmbat.imsdk.chat.body.ImageBody;
+import com.agmbat.imsdk.chat.body.TextBody;
+import com.agmbat.imsdk.chat.body.UrlBody;
+import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
+import com.agmbat.imsdk.imevent.ReceiveSysMessageEvent;
+import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;
 import com.agmbat.meetyou.tab.discovery.DiscoveryFragment;
 import com.agmbat.meetyou.tab.msg.MsgFragment;
 import com.agmbat.meetyou.tab.profile.ProfileFragment;
 import com.agmbat.tab.TabManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smackx.message.MessageObject;
 
 /**
  * 主Tab界面
@@ -26,11 +44,13 @@ public class MainTabActivity extends FragmentActivity {
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_maintab);
         setupViews();
+        EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -58,6 +78,43 @@ public class MainTabActivity extends FragmentActivity {
         tv.setText(getText(textId));
         tv.setCompoundDrawablesWithIntrinsicBounds(0, imageId, 0, 0);
         return v;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ReceiveSysMessageEvent event) {
+        MessageObject msg = event.getMessageObject();
+        final Body body = BodyParser.parse(msg.getBody());
+        if (body instanceof TextBody) {
+            TextBody textBody = (TextBody) body;
+            // 如果是文本消息, 则显示文本
+            ISAlertDialog dialog = new ISAlertDialog(this);
+            dialog.setTitle("系统消息");
+            dialog.setMessage(textBody.getContent());
+            dialog.setPositiveButton("确定", null);
+            dialog.show();
+        } else if (body instanceof UrlBody) {
+            final UrlBody urlBody = (UrlBody) body;
+            ISAlertDialog dialog = new ISAlertDialog(this);
+            dialog.setTitle("系统消息");
+            dialog.setMessage(urlBody.getContent());
+            dialog.setPositiveButton("打开", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    AppUtils.openBrowser(MainTabActivity.this, urlBody.getContent());
+                }
+            });
+            dialog.setNegativeButton("取消", null);
+            dialog.show();
+        } else if (body instanceof ImageBody) {
+            ImageBody imageBody = (ImageBody) body;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("系统消息");
+            ImageView view = new ImageView(this);
+            ImageManager.displayImage(imageBody.getFileUrl(), view);
+            builder.setView(view);
+            builder.setPositiveButton("确定", null);
+            builder.create().show();
+        }
     }
 
 }

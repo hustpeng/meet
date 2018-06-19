@@ -7,6 +7,7 @@ import com.agmbat.imsdk.asmack.api.FetchContactInfoRunnable;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
+import com.agmbat.imsdk.imevent.ReceiveSysMessageEvent;
 import com.agmbat.log.Debug;
 
 import org.greenrobot.eventbus.EventBus;
@@ -167,7 +168,11 @@ public class MessageManager extends Xepmodule {
                 @Override
                 public void run() {
                     addMessage(messageObject.getSenderJid(), messageObject);
-                    EventBus.getDefault().post(new ReceiveMessageEvent(messageObject));
+                    if (isSystemMessage(messageObject)) {
+                        EventBus.getDefault().post(new ReceiveSysMessageEvent(messageObject));
+                    } else {
+                        EventBus.getDefault().post(new ReceiveMessageEvent(messageObject));
+                    }
                 }
             });
             sendChatStates(messageObject.getMsgId(), sendMsgState, messageObject.getSenderJid());
@@ -577,7 +582,6 @@ public class MessageManager extends Xepmodule {
         return jid;
     }
 
-
     /**
      * 判断消息是否是当前用户发送的
      *
@@ -589,6 +593,16 @@ public class MessageManager extends Xepmodule {
         return messageObject.getSenderJid().equals(loginUserJid);
     }
 
+    /**
+     * 是否为系统消息
+     *
+     * @return
+     */
+    public static boolean isSystemMessage(MessageObject messageObject) {
+        String jid = getTalkJid(messageObject);
+        String userName = XmppStringUtils.parseName(jid);
+        return ("support".equals(userName) || "system".equals(userName));
+    }
 
     /**
      * 保证所有聊天中的用户存在
@@ -648,4 +662,6 @@ public class MessageManager extends Xepmodule {
             runnable.run();
         }
     }
+
+
 }

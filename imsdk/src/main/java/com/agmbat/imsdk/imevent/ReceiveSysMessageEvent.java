@@ -3,13 +3,13 @@ package com.agmbat.imsdk.imevent;
 import org.jivesoftware.smackx.message.MessageObject;
 
 /**
- * 收到聊天消息事件
+ * 收到系统消息事件
  */
-public class ReceiveMessageEvent {
+public class ReceiveSysMessageEvent {
 
     private MessageObject mMessageObject;
 
-    public ReceiveMessageEvent(MessageObject object) {
+    public ReceiveSysMessageEvent(MessageObject object) {
         mMessageObject = object;
     }
 
