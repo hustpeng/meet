@@ -7,7 +7,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="48.0dip"
+        android:layout_height="48dip"
         android:background="#ff232325">
 
         <ImageView
@@ -24,6 +24,15 @@
             android:text="群信息"
             android:textColor="#ffffffff"
             android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/title_btn_more"
+            android:layout_width="48dip"
+            android:layout_height="48dip"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="5dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_friend_more" />
 
     </FrameLayout>
 

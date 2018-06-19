@@ -17,7 +17,7 @@ import java.lang.reflect.Type;
  */
 public class SearchApi {
 
-    private static final boolean MOCK_API = true;
+    private static final boolean MOCK_API = false;
 
     /**
      * 查找指定用户（通过im_uid或手机号查找用户）：

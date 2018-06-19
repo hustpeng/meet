@@ -1,8 +1,10 @@
 package com.agmbat.meetyou.group;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,6 +12,11 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.search.group.GroupInfo;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.search.ReportUserActivity;
+import com.agmbat.meetyou.search.ViewUserHelper;
+import com.agmbat.menu.MenuInfo;
+import com.agmbat.menu.OnClickMenuListener;
+import com.agmbat.menu.PopupMenu;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -19,14 +26,16 @@ import butterknife.OnClick;
  */
 public class GroupInfoActivity extends Activity {
 
+    private GroupInfo mGroupInfo;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_group_info);
         ButterKnife.bind(this);
-        GroupInfo groupInfo = GroupInfoHelper.getGroupInfo(getIntent());
-        setupViews(groupInfo);
+        mGroupInfo = GroupInfoHelper.getGroupInfo(getIntent());
+        setupViews(mGroupInfo);
     }
 
     @Override
@@ -68,4 +77,35 @@ public class GroupInfoActivity extends Activity {
         TextView memberNumView = (TextView) findViewById(R.id.member_num);
         memberNumView.setText(String.valueOf(groupInfo.memberNum));
     }
+
+    /**
+     * 点击标题栏中的more
+     */
+    @OnClick(R.id.title_btn_more)
+    void onClickMore(View view) {
+        PopupMenu popupMenu = new PopupMenu(this);
+
+        MenuInfo reportUser = new MenuInfo();
+        reportUser.setTitle(getString(R.string.report_user));
+        reportUser.setOnClickMenuListener(new OnClickMenuListener() {
+            @Override
+            public void onClick(MenuInfo menu, int index) {
+                reportGroup();
+            }
+        });
+        popupMenu.addItem(reportUser);
+
+        View v = (View) view.getParent();
+        popupMenu.show(v);
+    }
+
+    /**
+     * 举报群
+     */
+    private void reportGroup() {
+        Intent intent = new Intent(this, ReportGroupActivity.class);
+        intent.putExtra(ViewUserHelper.KEY_USER_INFO, mGroupInfo.jid);
+        startActivity(intent);
+    }
+
 }
