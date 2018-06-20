@@ -18,6 +18,7 @@ import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.helper.AvatarHelper;
 
 import org.jivesoftware.smackx.message.MessageObject;
 
@@ -53,7 +54,7 @@ public class RecentMsgView extends LinearLayout {
             mNickNameView.setText(contactInfo.getNickName());
             mMessageView.setVisibility(View.VISIBLE);
             mLastMsgTimeView.setVisibility(View.VISIBLE);
-            ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+            ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
         }
 //
 //        ChatMessage msg = recentChat.getLastChatMessage();

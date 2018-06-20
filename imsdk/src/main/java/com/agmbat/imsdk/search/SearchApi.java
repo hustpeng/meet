@@ -126,7 +126,6 @@ public class SearchApi {
     }
 
     /**
-     * 查找指定群：
      * 获取所有的群分类：
      * GET
      * https://{DOMAIN}/egret/v1/discovery/circlecategories.api?uid=<>&ticket=<ticket>&sign=<sign>

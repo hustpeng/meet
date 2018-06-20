@@ -38,6 +38,7 @@ import com.agmbat.map.LocationObject;
 import com.agmbat.map.Maps;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.component.ViewImageActivity;
+import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.time.DurationFormat;
 import com.agmbat.time.TimeUtils;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -90,7 +91,7 @@ public abstract class ItemView extends LinearLayout {
         String senderJid = msg.getSenderJid();
         ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(senderJid);
         if (contactInfo != null) {
-            ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+            ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
         } else {
             Debug.printStackTrace();
         }

@@ -7,10 +7,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
-import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.search.group.GroupInfo;
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.helper.GenderHelper;
+import com.agmbat.meetyou.helper.AvatarHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,15 +19,23 @@ import butterknife.ButterKnife;
  */
 public class GroupView extends LinearLayout {
 
+    /**
+     * 群头像
+     */
     @BindView(R.id.avatar)
     ImageView mAvatarView;
 
+    /**
+     * 群名称
+     */
     @BindView(R.id.nickname)
     TextView mNickNameView;
 
-    @BindView(R.id.last_message)
-    TextView mMessageView;
-
+    /**
+     * 群描述
+     */
+    @BindView(R.id.description)
+    TextView mDescriptionView;
 
     public GroupView(Context context) {
         super(context);
@@ -38,9 +45,9 @@ public class GroupView extends LinearLayout {
 
     public void update(GroupInfo groupInfo) {
         mNickNameView.setText(groupInfo.name);
-        mMessageView.setText(groupInfo.description);
+        mDescriptionView.setText(groupInfo.description);
         String uri = groupInfo.cover;
-        ImageManager.displayImage(uri, mAvatarView, ImageManager.getCircleOptions());
+        ImageManager.displayImage(uri, mAvatarView, AvatarHelper.getGroupOptions());
     }
 
 }

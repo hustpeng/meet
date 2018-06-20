@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
 
 import butterknife.BindView;
@@ -47,7 +48,7 @@ public class ContactView extends LinearLayout {
         mGenderView.setImageResource(GenderHelper.getIconRes(contactInfo.getGender()));
         mLastMsgTimeView.setVisibility(View.GONE);
         String uri = contactInfo.getAvatar();
-        ImageManager.displayImage(uri, mAvatarView, ImageManager.getCircleOptions());
+        ImageManager.displayImage(uri, mAvatarView, AvatarHelper.getOptions());
     }
 
 }

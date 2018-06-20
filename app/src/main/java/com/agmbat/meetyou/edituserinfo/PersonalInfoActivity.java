@@ -13,6 +13,7 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
 import com.agmbat.picker.NumberPicker;
 import com.agmbat.picker.helper.PickerHelper;
@@ -161,7 +162,7 @@ public class PersonalInfoActivity extends Activity {
         if (!user.isValid()) {
             return;
         }
-        ImageManager.displayImage(user.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+        ImageManager.displayImage(user.getAvatar(), mAvatarView, AvatarHelper.getOptions());
         mNickNameView.setText(user.getNickname());
         mGenderView.setText(GenderHelper.getName(user.getGender()));
         mBirthYearView.setText(String.valueOf(user.getBirthYear()));

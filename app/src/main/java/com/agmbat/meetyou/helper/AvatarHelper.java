@@ -7,24 +7,61 @@ import com.nostra13.universalimageloader.core.display.CircleBitmapDisplayer;
 public class AvatarHelper {
 
     /**
-     * 图片显示参数
+     * 用户头像显示参数
      */
     private static DisplayImageOptions sOptions = null;
 
+    /**
+     * 群头像显示参数
+     */
+    private static DisplayImageOptions sGroupOptions = null;
+
     public static DisplayImageOptions getOptions() {
         if (sOptions == null) {
-            DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
-            // builder.showImageOnLoading(R.drawable.ic_stub);
-            int drawableId = R.drawable.ic_default_avatar;
-            builder.showImageForEmptyUri(drawableId);
-            builder.showImageOnFail(drawableId);
-            builder.cacheInMemory(true);
-            builder.cacheOnDisk(true);
-            builder.considerExifParams(false);
-//            builder.displayer(new SimpleBitmapDisplayer()); // new RoundedBitmapDisplayer(20)
-            builder.displayer(new CircleBitmapDisplayer()); // new RoundedBitmapDisplayer(20)
-            sOptions = builder.build();
+            sOptions = buildUserOptions();
         }
         return sOptions;
+    }
+
+
+    /**
+     * 获取头像群显示参数
+     *
+     * @return
+     */
+    public static DisplayImageOptions getGroupOptions() {
+        if (sGroupOptions == null) {
+            sGroupOptions = buildGroupOptions();
+        }
+        return sGroupOptions;
+    }
+
+    /**
+     * 创建头像群显示参数
+     *
+     * @return
+     */
+    private static DisplayImageOptions buildGroupOptions() {
+        return buildOptions(R.drawable.ic_default_circle_avatar);
+    }
+
+    /**
+     * 创建用户显头像显示参数
+     *
+     * @return
+     */
+    private static DisplayImageOptions buildUserOptions() {
+        return buildOptions(R.drawable.ic_default_avatar);
+    }
+
+    private static DisplayImageOptions buildOptions(int defaultDrawableId) {
+        DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
+        builder.showImageForEmptyUri(defaultDrawableId);
+        builder.showImageOnFail(defaultDrawableId);
+        builder.cacheInMemory(true);
+        builder.cacheOnDisk(true);
+        builder.considerExifParams(false);
+        builder.displayer(new CircleBitmapDisplayer());
+        return builder.build();
     }
 }

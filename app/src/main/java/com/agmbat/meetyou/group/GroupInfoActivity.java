@@ -12,6 +12,7 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.search.group.GroupInfo;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.search.ReportUserActivity;
 import com.agmbat.meetyou.search.ViewUserHelper;
 import com.agmbat.menu.MenuInfo;
@@ -54,7 +55,7 @@ public class GroupInfoActivity extends Activity {
 
     private void setupViews(GroupInfo groupInfo) {
         ImageView avatarView = (ImageView) findViewById(R.id.avatar);
-        ImageManager.displayImage(groupInfo.cover, avatarView);
+        ImageManager.displayImage(groupInfo.cover, avatarView, AvatarHelper.getGroupOptions());
 
         TextView nickNameView = (TextView) findViewById(R.id.nickname);
         nickNameView.setText(groupInfo.name);

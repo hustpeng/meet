@@ -14,6 +14,7 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
 import com.google.zxing.client.android.encode.QRCodeEncoder;
 
@@ -97,7 +98,7 @@ public class QRCodeCardActivity extends Activity {
         Bitmap bitmap = QRCodeEncoder.encode(text, dimension);
         mQrCodeView.setImageBitmap(bitmap);
         mNickNameView.setText(user.getNickname());
-        ImageManager.displayImage(user.getAvatar(), mAvatarView, ImageManager.getCircleOptions());
+        ImageManager.displayImage(user.getAvatar(), mAvatarView, AvatarHelper.getOptions());
         mGenderView.setImageResource(GenderHelper.getIconRes(user.getGender()));
     }
 
