@@ -98,7 +98,7 @@ public class AccountHelper {
             getCodeResult.mErrorMsg = "网络请求失败!";
             return getCodeResult;
         }
-        if(!verificationCodeResult.mData){
+        if (!verificationCodeResult.mData) {
             getCodeResult.mResult = false;
             getCodeResult.mErrorMsg = "此账号未注册!";
             return getCodeResult;
@@ -108,15 +108,15 @@ public class AccountHelper {
         return getCodeResult;
     }
 
+
     /**
-     * 请求注册逻辑
+     * 检测sms
      *
-     * @param registerInfo
+     * @param userName
+     * @param verificationCode
      * @return
      */
-    public static ApiResult requestRegister(RegisterInfo registerInfo) {
-        String userName = registerInfo.getUserName();
-        String verificationCode = registerInfo.getVerificationCode();
+    public static ApiResult checkSms(String userName, String verificationCode) {
         ApiResult registerResult = new ApiResult();
         if (ImAccountManager.DEBUG_CHECK_SMS) {
             ApiResult<Boolean> result = AccountApi.checkSms(userName, verificationCode);
@@ -130,6 +130,23 @@ public class AccountHelper {
                 registerResult.mErrorMsg = "验证码错误!";
                 return registerResult;
             }
+        }
+        registerResult.mResult = true;
+        return registerResult;
+    }
+
+    /**
+     * 请求注册逻辑
+     *
+     * @param registerInfo
+     * @return
+     */
+    public static ApiResult requestRegister(RegisterInfo registerInfo) {
+        String userName = registerInfo.getUserName();
+        String verificationCode = registerInfo.getVerificationCode();
+        ApiResult registerResult = checkSms(userName, verificationCode);
+        if (!registerResult.mResult) {
+            return registerResult;
         }
         boolean success = false;
         try {

@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,6 +31,9 @@ import com.agmbat.text.StringParser;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -44,6 +48,12 @@ public class RegisterActivity extends Activity {
      */
     @BindView(R.id.btn_register)
     Button mRegisterButton;
+
+    /**
+     * 下一步Button
+     */
+    @BindView(R.id.btn_next)
+    Button mNextButton;
 
     /**
      * 获取验证码控件
@@ -93,6 +103,13 @@ public class RegisterActivity extends Activity {
     @BindView(R.id.input_invite_code)
     EditText mInviteCodeView;
 
+
+    @BindView(R.id.page1)
+    View mPage1View;
+
+    @BindView(R.id.page2)
+    View mPage2View;
+
     /**
      * 注册Loading框
      */
@@ -128,6 +145,7 @@ public class RegisterActivity extends Activity {
         mPasswordView.addTextChangedListener(new TextChange());
         mGenderView.setText(GenderHelper.female());
         mBirthYearView.setText("1990");
+        showPage1();
     }
 
     @Override
@@ -136,14 +154,76 @@ public class RegisterActivity extends Activity {
         cancelTimer();
     }
 
+    @Override
+    public void onBackPressed() {
+        onClickBack();
+    }
 
     /**
      * 点击返回键
      */
     @OnClick(R.id.title_btn_back)
     void onClickBack() {
+        if (mPage2View.isShown()) {
+            showPage1();
+            return;
+        }
         finish();
     }
+
+
+    /**
+     * 缓存已请求的code
+     */
+    private Map<String, String> mCacheCode = new HashMap<>();
+
+    @OnClick(R.id.btn_next)
+    void onClickNext() {
+        final String name = mUserNameView.getText().toString();
+        final String password = mPasswordView.getText().toString();
+        String verificationCode = mVerificationCodeView.getText().toString();
+
+        if (ImAccountManager.DEBUG_CHECK_SMS && !PhoneNumberUtil.isValidPhoneNumber(name)) {
+            ToastUtil.showToastLong("请使用手机号码注册账户！");
+            return;
+        }
+        if (ImAccountManager.DEBUG_CHECK_SMS && TextUtils.isEmpty(verificationCode)) {
+            ToastUtil.showToastLong("请填写手机号码，并获取验证码！");
+            return;
+        }
+
+        if (verificationCode.length() != 4) {
+            ToastUtil.showToastLong("请填正确的验证码！");
+            return;
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            ToastUtil.showToastLong("请输入密码！");
+            return;
+        }
+
+        String code = mCacheCode.get(name);
+        if (verificationCode.equals(code)) {
+            showPage2();
+        } else {
+            showDialog();
+            ImAccountManager.verificationCode(name, verificationCode, new ImAccountManager.OnVerificationCodeListener() {
+                @Override
+                public void onVerificationCode(ApiResult result) {
+                    dismissDialog();
+                    if (result.mResult) {
+                        mCacheCode.put(name, password);
+                        showPage2();
+                    } else {
+                        mRegisterButton.setEnabled(true);
+                        mGetVerificationCodeButton.setEnabled(true);
+                    }
+                    ToastUtil.showToastLong(result.mErrorMsg);
+                }
+            });
+        }
+    }
+
 
     /**
      * 选择性别
@@ -272,8 +352,10 @@ public class RegisterActivity extends Activity {
         boolean passwordValid = mPasswordView.getText().length() > 0;
         if (verificationCodeValid & userNameValid & passwordValid) {
             mRegisterButton.setEnabled(true);
+            mNextButton.setEnabled(true);
         } else {
             mRegisterButton.setEnabled(false);
+            mNextButton.setEnabled(false);
         }
     }
 
@@ -333,7 +415,7 @@ public class RegisterActivity extends Activity {
         if (mLoadingDialog == null) {
             mLoadingDialog = new ISLoadingDialog(this);
             mLoadingDialog.setCancelable(false);
-            mLoadingDialog.setMessage("正在注册...");
+            mLoadingDialog.setMessage("正在处理, 请稍候...");
         }
         mLoadingDialog.show();
     }
@@ -342,4 +424,13 @@ public class RegisterActivity extends Activity {
         UiUtils.dismissDialogSafely(mLoadingDialog);
     }
 
+    private void showPage1() {
+        mPage1View.setVisibility(View.VISIBLE);
+        mPage2View.setVisibility(View.INVISIBLE);
+    }
+
+    private void showPage2() {
+        mPage1View.setVisibility(View.INVISIBLE);
+        mPage2View.setVisibility(View.VISIBLE);
+    }
 }

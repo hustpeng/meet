@@ -20,6 +20,8 @@ import com.agmbat.imsdk.imevent.ContactGroupLoadEvent;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.group.CreateGroupActivity;
+import com.agmbat.meetyou.group.GroupListActivity;
 import com.agmbat.meetyou.search.NewFriendActivity;
 import com.agmbat.meetyou.search.SearchUserActivity;
 import com.agmbat.meetyou.search.ViewUserHelper;
@@ -87,7 +89,19 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         headerView.findViewById(R.id.btn_group_chat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CreateGroupActivity.class);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 
+            }
+        });
+
+        headerView.findViewById(R.id.btn_my_group).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), GroupListActivity.class);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
         mListView.addHeaderView(headerView);

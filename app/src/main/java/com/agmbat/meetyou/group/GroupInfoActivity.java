@@ -72,9 +72,6 @@ public class GroupInfoActivity extends Activity {
         TextView imUidView = (TextView) findViewById(R.id.im_uid);
         imUidView.setText(String.valueOf(groupInfo.imUid));
 
-        TextView isHotView = (TextView) findViewById(R.id.is_hot);
-        isHotView.setText(groupInfo.isHot == 1 ? "是" : "否");
-
         TextView memberNumView = (TextView) findViewById(R.id.member_num);
         memberNumView.setText(String.valueOf(groupInfo.memberNum));
     }

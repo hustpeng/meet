@@ -67,5 +67,31 @@
             android:textSize="16.0dip" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/btn_my_group"
+        android:layout_width="fill_parent"
+        android:layout_height="55.0dip"
+        android:background="@drawable/im_setting_item"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="15dip"
+        android:paddingRight="4.0dip">
+
+        <ImageView
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:src="@drawable/im_ic_group_chat" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="我的群组"
+            android:textColor="#ff000000"
+            android:textSize="16.0dip" />
+    </LinearLayout>
 
 </LinearLayout>

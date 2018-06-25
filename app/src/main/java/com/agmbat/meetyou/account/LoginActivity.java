@@ -55,8 +55,8 @@ public class LoginActivity extends FragmentActivity {
         mUserNameView.addTextChangedListener(new TextChange());
         mPasswordView.addTextChangedListener(new TextChange());
         // for test
-        mUserNameView.setText("13437122759");
-        mPasswordView.setText("a123123");
+//        mUserNameView.setText("13437122759");
+//        mPasswordView.setText("a123123");
 
         String username = AccountDebug.getUserName();
         if (!TextUtils.isEmpty(username)) {
@@ -109,16 +109,16 @@ public class LoginActivity extends FragmentActivity {
      */
     private void login() {
         showLoadingDialog();
-        String userName = mUserNameView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        final String userName = mUserNameView.getText().toString();
+        final String password = mPasswordView.getText().toString();
 
-        AccountDebug.saveAccount(userName, password);
         ImAccountManager.login(userName, password, new ImAccountManager.OnLoginListener() {
             @Override
             public void onLogin(ApiResult result) {
                 hideLoadingDialog();
                 ToastUtil.showToastLong(result.mErrorMsg);
                 if (result.mResult) {
+                    AccountDebug.saveAccount(userName, password);
                     finish();
                     startActivity(new Intent(LoginActivity.this, MainTabActivity.class));
                 }

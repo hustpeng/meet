@@ -31,6 +31,13 @@ public class ImAccountManager {
     }
 
     /**
+     * 验证验证码是否正解
+     */
+    public interface OnVerificationCodeListener {
+        public void onVerificationCode(ApiResult result);
+    }
+
+    /**
      * 修改密码回调
      */
     public interface OnChangePasswordListener {
@@ -101,6 +108,30 @@ public class ImAccountManager {
                 super.onPostExecute(result);
                 if (l != null) {
                     l.onGetVerificationCode(result);
+                }
+            }
+        });
+    }
+
+    /**
+     * 验证验证码
+     *
+     * @param userName
+     * @param code
+     * @param l
+     */
+    public static void verificationCode(final String userName, final String code, final OnVerificationCodeListener l) {
+        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult>() {
+            @Override
+            protected ApiResult doInBackground(Void... voids) {
+                return AccountHelper.checkSms(userName, code);
+            }
+
+            @Override
+            protected void onPostExecute(ApiResult result) {
+                super.onPostExecute(result);
+                if (l != null) {
+                    l.onVerificationCode(result);
                 }
             }
         });

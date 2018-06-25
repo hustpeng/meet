@@ -231,40 +231,6 @@
                     android:layout_height="50dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="是否热门"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/is_hot"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:drawablePadding="10dp"
-                    android:gravity="center_vertical"
-                    android:textColor="#969696"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1.0dip"
-                android:background="#ffeeeeee" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/im_setting_item"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
                     android:text="群成员数量"
                     android:textColor="#000000"
                     android:textSize="16sp" />
