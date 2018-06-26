@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.agmbat.android.AppResources;
+import com.agmbat.android.utils.AppUtils;
 import com.agmbat.imsdk.account.RegisterInfo;
 import com.agmbat.imsdk.asmack.roster.RosterManager;
 import com.agmbat.imsdk.util.AppConfigUtils;
@@ -184,7 +185,7 @@ public class XMPPManager {
         SmackConfiguration.setPacketReplyTimeout(30000);// 所有跟服务器的延迟请求时间
         SmackConfiguration.setKeepAliveInterval(120000);// 设置心跳时间间隔2分钟
         ConnectionConfiguration config = new ConnectionConfiguration(host, port, serverName);
-        config.setDebuggerEnabled(true);
+        config.setDebuggerEnabled(AppUtils.debuggable());
         config.setSendPresence(true);
         config.setSecurityMode(SecurityMode.disabled);
         config.setCompressionEnabled(false);

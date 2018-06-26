@@ -28,49 +28,26 @@
 -dontoptimize
 #-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 
--keep public class * extends android.app.Activity
--keep public class * extends android.app.Application
--keep public class * extends android.app.Service
--keep public class * extends android.content.BroadcastReceiver
--keep public class * extends android.content.ContentProvider
--keep public class * extends android.app.backup.BackupAgentHelper
--keep public class * extends android.preference.Preference
--keep public class com.android.vending.licensing.ILicensingService
-
-# ignore gson
--keepclassmembers class * implements java.io.Serializable {
-    static final long serialVersionUID;
-    private static final java.io.ObjectStreamField[] serialPersistentFields;
-    private void writeObject(java.io.ObjectOutputStream);
-    private void readObject(java.io.ObjectInputStream);
-    java.lang.Object writeReplace();
-    java.lang.Object readResolve();
-}
--keep public class * implements java.io.Serializable {*;}
 -keepattributes Signature
 -keepattributes *Annotation*
--keep class sun.misc.Unsafe { *; }
 
 ##第一句的意思是隐藏源文件的名字，并且在堆栈信息中源文件名字被替换为SourceFile这个名字，当然SourceFile也可以使用别的字符串比如a
 ##第二句是堆栈信息中保留行号和SourceFile名字
 # 将.class信息中的类名重新定义为"Proguard"字符串
 -renamesourcefileattribute Proguard
+
 # 并保留源文件名为"Proguard"字符串，而非原始的类名 并保留行号
 -keepattributes SourceFile,LineNumberTable
 
 -keepattributes JavascriptInterface
--keepattributes *Annotation*
-
--dontwarn android.support.v4.**
--keep class android.support.v4.** { *; }
--keep interface android.support.v4.app.** { *; }
--keep public class * extends android.support.v4.**
--keep public class * extends android.app.Fragment
-
 
 -dontwarn com.tencent.mm.**
 -keep class com.tencent.mm.sdk.openapi.WXMediaMessage {*;}
 -keep class com.tencent.mm.sdk.openapi.** implements com.tencent.mm.sdk.openapi.WXMediaMessage$IMediaObject {*;}
+
+# 不混淆微信sdk
+-dontwarn    com.tencent.mm.*
+-keep class  com.tencent.mm.** { *;}
 
 
 -keepclasseswithmembernames class * {
@@ -98,28 +75,13 @@
   public static final android.os.Parcelable$Creator *;
 }
 
-#百度地图
--keep class com.baidu.a.a.a.** {*;}
--keep class com.baidu.android.bbalbs.common.** {*;}
--keep class com.baidu.lbsapi.auth.** {*;}
--keep class com.baidu.location.** {*;}
--keep class com.baidu.mapapi.** {*;}
--keep class com.baidu.platform.** {*;}
--keep class com.baidu.vi.** {*;}
--keep class vi.com.** {*;}
--dontwarn com.baidu.**
 
 # 不混淆org.apache.http
 -dontwarn    org.apache.http.*
 -keep class  org.apache.http.** { *;}
 
-# 不混淆微信sdk
--dontwarn    com.tencent.mm.*
--keep class  com.tencent.mm.** { *;}
-
-
 # eventbus
--keepattributes *Annotation*
+
 -keepclassmembers class ** {
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
@@ -139,3 +101,17 @@
 -keep class com.facebook.rebound.** { *; }
 
 
+# dom4j
+-keep class org.dom4j.** { *; }
+
+-keep class de.measite.smack.AndroidDebugger { *; }
+
+-keep class com.agmbat.meetyou.group.CircleGroup { *; }
+-keep class com.agmbat.imsdk.asmack.roster.ContactGroup { *; }
+-keep class com.agmbat.imsdk.asmack.roster.ContactInfo { *; }
+-keep class com.agmbat.imsdk.asmack.roster.FriendRequest { *; }
+
+
+# 百度地图
+-keep class com.baidu.** {*;}
+-keep class mapsdkvi.com.** {*;}
