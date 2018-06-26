@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.agmbat.android.AppResources;
+import com.agmbat.android.SysResources;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
@@ -359,7 +360,7 @@ public class MsgFragment extends Fragment {
         openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
                 0xCE)));
         // set item width
-        openItem.setWidth((int) AppResources.dipToPixel(90));
+        openItem.setWidth((int) SysResources.dipToPixel(90));
         // set item title
         openItem.setTitle("Open");
         // set item title fontsize
@@ -380,7 +381,7 @@ public class MsgFragment extends Fragment {
         // set item background
         deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9, 0x3F, 0x25)));
         // set item width
-        deleteItem.setWidth((int) AppResources.dipToPixel(90));
+        deleteItem.setWidth((int) SysResources.dipToPixel(90));
         deleteItem.setTitle("删除");
         deleteItem.setTitleColor(Color.WHITE);
         deleteItem.setTitleSize(18);

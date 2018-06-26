@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.agmbat.android.AppResources;
+import com.agmbat.android.SysResources;
 import com.agmbat.android.utils.PhoneUtils;
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.tag.TagView;
@@ -48,17 +49,17 @@ public class TagSelectedView extends LinearLayout {
     public void setTagList(List<String> tagList) {
         int screenWidth = PhoneUtils.getScreenSize().x;
 
-        int divWidth = (int) (5 * AppResources.dipToPixel(8));
+        int divWidth = (int) (5 * SysResources.dipToPixel(8));
         int itemWidth = (screenWidth - divWidth) / 4;
-        int itemHeight = (int) AppResources.dipToPixel(28);
+        int itemHeight = (int) SysResources.dipToPixel(28);
         LayoutParams itemParams = new LayoutParams(itemWidth, itemHeight);
-        int margin = (int) AppResources.dipToPixel(4);
+        int margin = (int) SysResources.dipToPixel(4);
         itemParams.leftMargin = margin;
         itemParams.rightMargin = margin;
 
         LinearLayout lineContent = new LinearLayout(getContext());
         LayoutParams lineParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        int padding = (int) AppResources.dipToPixel(4);
+        int padding = (int) SysResources.dipToPixel(4);
         lineContent.setPadding(padding, padding, padding, padding);
         addView(lineContent, lineParams);
 

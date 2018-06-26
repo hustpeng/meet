@@ -45,8 +45,9 @@ dependencies {
     compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
     compile "com.disbts:jutils:${JUTILS_VERSION}"
     compile "com.disbts:jhttp:${JHTTP_VERSION}"
+    compile "com.disbts:crashreport:4.2.0@aar"
     compile "com.disbts:universal-image-loader:1.9.7"
-    compile "com.disbts:widget:3.5.1@aar"
+    compile "com.disbts:widget:4.2.0@aar"
     compile "com.disbts:jhttp:3.5.6"
     compile 'com.disbts:tab:3.5.2@aar'
     compile 'com.disbts:swipemenulist:3.5.2@aar'
@@ -56,7 +57,7 @@ dependencies {
     compile "com.disbts:photoview:3.5.7@aar"
     compile "com.disbts:isdialog:3.9.0@aar"
     compile "com.disbts:wheelpicker:3.9.0@aar"
-    compile "com.disbts:wxshare:3.9.0@aar"
+    compile "com.disbts:wxshare:4.2.0@aar"
     compile "com.disbts:inputview:4.0.3@aar"
     compile "com.disbts:inputvoice:4.0.3@aar"
     compile "com.disbts:emoji:4.0.1@aar"

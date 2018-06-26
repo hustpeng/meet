@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.agmbat.android.AppResources;
+import com.agmbat.android.SysResources;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.media.AudioPlayer;
 import com.agmbat.android.task.AsyncTask;
@@ -54,8 +55,8 @@ import java.util.List;
 
 public abstract class ItemView extends LinearLayout {
 
-    private static final int BASE_WIDTH = (int) AppResources.dipToPixel(80);
-    private static final int AUDIO_MAX_WIDTH = (int) AppResources.dipToPixel(200);
+    private static final int BASE_WIDTH = (int) SysResources.dipToPixel(80);
+    private static final int AUDIO_MAX_WIDTH = (int) SysResources.dipToPixel(200);
 
     public ImageView mAvatarView;
     public TextView mChatContentView;

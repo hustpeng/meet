@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.agmbat.android.AppResources;
+import com.agmbat.android.SysResources;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
@@ -60,7 +61,7 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
             public void create(SwipeMenu menu) {
                 SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
                 deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9, 0x3F, 0x25)));
-                deleteItem.setWidth((int) AppResources.dipToPixel(90));
+                deleteItem.setWidth((int) SysResources.dipToPixel(90));
                 deleteItem.setTitle("删除");
                 menu.addMenuItem(deleteItem);
             }
