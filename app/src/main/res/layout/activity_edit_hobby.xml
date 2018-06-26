@@ -36,7 +36,7 @@
             android:textColor="#ffffff" />
     </FrameLayout>
 
-    <com.agmbat.picker.tag.CategoryTagPickerView
+    <com.agmbat.tagpicker.CategoryTagPickerView
         android:id="@+id/picker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

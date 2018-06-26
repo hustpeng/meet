@@ -11,9 +11,9 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.meetyou.R;
-import com.agmbat.picker.tag.CategoryTag;
-import com.agmbat.picker.tag.CategoryTagPickerView;
 import com.agmbat.server.GsonHelper;
+import com.agmbat.tagpicker.CategoryTag;
+import com.agmbat.tagpicker.CategoryTagPickerView;
 import com.agmbat.text.TagText;
 import com.google.gson.reflect.TypeToken;
 

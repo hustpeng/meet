@@ -9,11 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.agmbat.android.AppResources;
 import com.agmbat.android.SysResources;
 import com.agmbat.android.utils.PhoneUtils;
 import com.agmbat.meetyou.R;
-import com.agmbat.picker.tag.TagView;
+import com.agmbat.tagpicker.TagView;
 
 import java.util.List;
 

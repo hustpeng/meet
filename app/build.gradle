@@ -27,6 +27,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
@@ -49,18 +52,19 @@ dependencies {
     compile "com.disbts:universal-image-loader:1.9.7"
     compile "com.disbts:widget:4.2.0@aar"
     compile "com.disbts:jhttp:3.5.6"
-    compile 'com.disbts:tab:3.5.2@aar'
+    compile 'com.disbts:tab:4.2.0@aar'
     compile 'com.disbts:swipemenulist:3.5.2@aar'
     compile "com.disbts:pulltorefresh:3.5.5@aar"
     compile 'com.disbts:pagedataloader:3.5.7@aar'
     compile "com.disbts:imagepicker:4.1.8@aar"
     compile "com.disbts:photoview:3.5.7@aar"
-    compile "com.disbts:isdialog:3.9.0@aar"
-    compile "com.disbts:wheelpicker:3.9.0@aar"
+    compile "com.disbts:isdialog:4.2.0@aar"
+    compile "com.disbts:wheelpicker:4.2.0@aar"
+    compile "com.disbts:tagpicker:4.2.0@aar"
     compile "com.disbts:wxshare:4.2.0@aar"
-    compile "com.disbts:inputview:4.0.3@aar"
+    compile "com.disbts:inputview:4.2.0@aar"
     compile "com.disbts:inputvoice:4.0.3@aar"
-    compile "com.disbts:emoji:4.0.1@aar"
+    compile "com.disbts:emoji:4.2.0@aar"
     compile 'com.disbts:browser:4.1.7@aar'
 
     compile "com.disbts:baidumap:${BAIDUMAP_VERSION}@aar"
@@ -79,5 +83,5 @@ dependencies {
     compile project(':imsdk')
 
     // 正式包不需要引用debugger工程
-    compile project(':debugger')
+//    compile project(':debugger')
 }
