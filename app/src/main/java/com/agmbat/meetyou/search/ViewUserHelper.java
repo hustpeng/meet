@@ -60,6 +60,13 @@ public class ViewUserHelper {
         openDetail(context, contactInfo, TYPE_VERIFY);
     }
 
+    /**
+     * 打开用户信息界面
+     *
+     * @param context
+     * @param contactInfo
+     * @param type
+     */
     private static void openDetail(Context context, ContactInfo contactInfo, int type) {
         XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
         Intent intent = new Intent(context, UserInfoActivity.class);
@@ -86,5 +93,14 @@ public class ViewUserHelper {
             return new VerifyBusinessHandler(contactInfo);
         }
         return null;
+    }
+
+    /**
+     * 设置Intent中的参数为联系人
+     *
+     * @param intent
+     */
+    public static void setContactType(Intent intent) {
+        intent.putExtra(KEY_TYPE, TYPE_CONTACTS);
     }
 }

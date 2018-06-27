@@ -17,6 +17,7 @@ import com.agmbat.android.SysResources;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.imsdk.imevent.ContactOnAddEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.tab.contacts.ContactsView;
@@ -28,6 +29,7 @@ import com.agmbat.swipemenulist.SwipeMenuListView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 import java.util.List;
 
@@ -63,6 +65,8 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
                 deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9, 0x3F, 0x25)));
                 deleteItem.setWidth((int) SysResources.dipToPixel(90));
                 deleteItem.setTitle("删除");
+                deleteItem.setTitleColor(Color.WHITE);
+                deleteItem.setTitleSize(16);
                 menu.addMenuItem(deleteItem);
             }
         };
@@ -104,7 +108,13 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ContactInfo info = (ContactInfo) parent.getItemAtPosition(position);
-        ViewUserHelper.openVerifyDetail(this, info);
+        String jid = info.getBareJid();
+        if (XMPPManager.getInstance().getRosterManager().isFriend(jid)) {
+            info = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(jid);
+            ViewUserHelper.openContactDetail(this, info);
+        } else {
+            ViewUserHelper.openVerifyDetail(this, info);
+        }
     }
 
     /**
@@ -114,6 +124,17 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(PresenceSubscribeEvent event) {
+        FriendAdapter adapter = (FriendAdapter) mListView.getAdapter();
+        adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 收到通过验证好友
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ContactOnAddEvent event) {
         FriendAdapter adapter = (FriendAdapter) mListView.getAdapter();
         adapter.notifyDataSetChanged();
     }
@@ -135,6 +156,7 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
             view.update(contactInfo);
             return convertView;
         }
+
 
     }
 }

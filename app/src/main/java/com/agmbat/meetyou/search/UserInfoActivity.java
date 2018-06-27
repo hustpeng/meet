@@ -13,6 +13,7 @@ import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.imsdk.imevent.ContactOnAddEvent;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
@@ -21,6 +22,8 @@ import com.agmbat.meetyou.helper.UserInfoDisplay;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.menu.PopupMenu;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +56,13 @@ public class UserInfoActivity extends Activity {
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_user_info);
         ButterKnife.bind(this);
+        setup();
+    }
+
+    /**
+     * 设置界面显示
+     */
+    private void setup() {
         mBusinessHandler = ViewUserHelper.getBusinessHandler(getIntent());
         mBusinessHandler.setupViews(findViewById(android.R.id.content));
         mContactInfo = mBusinessHandler.getContactInfo();
@@ -128,6 +138,10 @@ public class UserInfoActivity extends Activity {
     @OnClick(R.id.btn_pass_validation)
     void onClickPassValidation() {
         XMPPManager.getInstance().getRosterManager().acceptFriend(mContactInfo);
+        ViewUserHelper.setContactType(getIntent());
+        // 重置界面显示
+        setup();
+        EventBus.getDefault().post(new ContactOnAddEvent(mContactInfo.getBareJid()));
     }
 
     /**
@@ -309,12 +323,6 @@ public class UserInfoActivity extends Activity {
 //        });
 //    }
 //
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        unRegisterBR();
-//    }
-//
 //    private void loadError(Throwable throwable) {
 //        hideMaterialDialog();
 //        LogUtils.sf(throwable.getLocalizedMessage());
@@ -326,56 +334,4 @@ public class UserInfoActivity extends Activity {
 //        jumpToActivity(intent);
 //    }
 //
-//    private void showMenu() {
-//        mRlMenu.setVisibility(View.VISIBLE);
-//        TranslateAnimation ta = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1, Animation.RELATIVE_TO_SELF, 0);
-//        ta.setDuration(200);
-//        mSvMenu.startAnimation(ta);
-//    }
-//
-//    private void hideMenu() {
-//        TranslateAnimation ta = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1);
-//        ta.setAnimationListener(new Animation.AnimationListener() {
-//            @Override
-//            public void onAnimationStart(Animation animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-//                mRlMenu.setVisibility(View.GONE);
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animation animation) {
-//
-//            }
-//        });
-//        ta.setDuration(200);
-//        mSvMenu.startAnimation(ta);
-//    }
-//
-//    private void registerBR() {
-//        BroadcastManager.getInstance(this).register(AppConst.CHANGE_INFO_FOR_USER_INFO, new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                mUserInfo = DBManager.getInstance().getUserInfo(mUserInfo.getUserId());
-//                initData();
-//            }
-//        });
-//    }
-//
-//    private void unRegisterBR() {
-//        BroadcastManager.getInstance(this).unregister(AppConst.CHANGE_INFO_FOR_USER_INFO);
-//    }
-//
-//    @Override
-//    protected BasePresenter createPresenter() {
-//        return null;
-//    }
-//
-//    @Override
-//    protected int provideContentViewId() {
-//        return R.layout.activity_user_info;
-//    }
 }

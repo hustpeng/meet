@@ -1,13 +1,12 @@
 package com.agmbat.imsdk.imevent;
 
 /**
- * 删除联系人事件
+ * 验证添加联系人成功事件
  */
-public class ContactDeleteEvent {
-
+public class ContactOnAddEvent {
     private String mJid;
 
-    public ContactDeleteEvent(String jid) {
+    public ContactOnAddEvent(String jid) {
         mJid = jid;
     }
 

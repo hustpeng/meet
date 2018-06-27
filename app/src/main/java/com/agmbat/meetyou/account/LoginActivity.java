@@ -13,6 +13,7 @@ import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
@@ -120,6 +121,8 @@ public class LoginActivity extends FragmentActivity {
                 if (result.mResult) {
                     AccountDebug.saveAccount(userName, password);
                     finish();
+                    // 每次登陆成功,重置一次数据
+                    XMPPManager.getInstance().getRosterManager().resetData();
                     startActivity(new Intent(LoginActivity.this, MainTabActivity.class));
                 }
             }

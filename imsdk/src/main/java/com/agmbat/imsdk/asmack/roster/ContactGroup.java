@@ -30,7 +30,7 @@ public class ContactGroup {
     /**
      * 分组列表
      */
-    private List<ContactInfo> mContacts = new ArrayList<ContactInfo>();
+    private List<ContactInfo> mContactList = new ArrayList<ContactInfo>();
 
     /**
      * 提供无参构造函数, 用于数据库访问
@@ -64,46 +64,56 @@ public class ContactGroup {
     }
 
     public void setContactList(List<ContactInfo> contacts) {
-        mContacts = contacts;
+        mContactList = contacts;
     }
 
     public List<ContactInfo> getContactList() {
-        return mContacts;
+        return mContactList;
     }
 
     public void addContact(ContactInfo contactInfo) {
-        if (contactInfo != null && !mContacts.contains(contactInfo)) {
-            mContacts.add(contactInfo);
+        if (contactInfo != null && !mContactList.contains(contactInfo)) {
+            mContactList.add(contactInfo);
         }
     }
 
+    /**
+     * 判断是否包含给定的用户
+     *
+     * @param jid
+     * @return
+     */
+    public boolean containsContact(String jid) {
+        return RosterHelper.findContactInfo(jid, mContactList) != null;
+    }
+
     public boolean containsContact(ContactInfo contactInfo) {
-        return mContacts.contains(contactInfo);
+        return mContactList.contains(contactInfo);
     }
 
     public int getContactCount() {
-        return mContacts.size();
+        return mContactList.size();
     }
 
     public ContactInfo getContactAt(int index) {
-        return mContacts.get(index);
+        return mContactList.get(index);
     }
 
     public void updateContact(ContactInfo contactInfo) {
-        int index = mContacts.indexOf(contactInfo);
-        mContacts.set(index, contactInfo);
+        int index = mContactList.indexOf(contactInfo);
+        mContactList.set(index, contactInfo);
     }
 
     public void removeContact(ContactInfo contactInfo) {
-        mContacts.remove(contactInfo);
+        mContactList.remove(contactInfo);
     }
 
     public void removeContactAt(int index) {
-        mContacts.remove(index);
+        mContactList.remove(index);
     }
 
     public void removeAllContact() {
-        mContacts.clear();
+        mContactList.clear();
     }
 
     /**

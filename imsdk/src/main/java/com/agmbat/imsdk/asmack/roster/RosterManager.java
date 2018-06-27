@@ -766,6 +766,17 @@ public class RosterManager {
     }
 
     /**
+     * 判断定的jid是否为好友
+     *
+     * @param jid
+     * @return
+     */
+    public boolean isFriend(String jid) {
+        ContactGroup group = getFriendGroup();
+        return group.containsContact(jid);
+    }
+
+    /**
      * 添加申请用户列表, 有新的朋友添加我为好友
      *
      * @param willToAdd
