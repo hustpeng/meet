@@ -1,16 +1,17 @@
 package org.jivesoftware.smackx.visitor;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.provider.BaseColumns;
 
+import com.agmbat.android.AppResources;
 import com.agmbat.sql.DataType;
 import com.agmbat.sql.Param;
 import com.agmbat.sql.TableSqlBuilder;
 
-import org.jivesoftware.smackx.db.DataContentProvider;
+import org.jivesoftware.smackx.db.DatabaseHelper;
 
 import java.util.ArrayList;
 
@@ -20,20 +21,6 @@ public class VisitorRecordDBStoreProvider {
         return "visitor_record";
     }
 
-    static final Uri getContentUri() {
-        return Uri.parse("content://" + DataContentProvider.AUTHORITY + "/" + getTableName()
-                + "?" + DataContentProvider.URI_PARAMETER_NOTIFY + "=true");
-    }
-
-    static final Uri getContentUriNoNotify() {
-        return Uri.parse("content://" + DataContentProvider.AUTHORITY + "/" + getTableName()
-                + "?" + DataContentProvider.URI_PARAMETER_NOTIFY + "=false");
-    }
-
-    static Uri getContentUri(final long id, final boolean notify) {
-        return Uri.parse("content://" + DataContentProvider.AUTHORITY + "/" + getTableName()
-                + "/" + id + "?" + DataContentProvider.URI_PARAMETER_NOTIFY + "=" + notify);
-    }
 
     public interface Columns extends BaseColumns {
         public static final String WHO_VISITOR_JID = "who_visitor_jid";
@@ -62,30 +49,30 @@ public class VisitorRecordDBStoreProvider {
         return values;
     }
 
-    private Context mContext;
 
-    public VisitorRecordDBStoreProvider(Context context) {
-        mContext = context;
+    private DatabaseHelper mOpenHelper;
+
+    public VisitorRecordDBStoreProvider() {
+        mOpenHelper = new DatabaseHelper(AppResources.getAppContext());
     }
 
     public int delete(String selection, String[] selectionArgs) {
-        int ret = -1;
-        try {
-            ret = mContext.getContentResolver().delete(getContentUri(), selection, selectionArgs);
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-
-        return ret;
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        return db.delete(getTableName(), selection, selectionArgs);
     }
 
     public ArrayList<VisitorRecordObject> query(String[] projection, String selection,
                                                 String[] selectionArgs, String sortOrder) {
+
         ArrayList<VisitorRecordObject> array = new ArrayList<VisitorRecordObject>();
 
         Cursor cursor = null;
         try {
-            cursor = mContext.getContentResolver().query(getContentUri(), projection, selection, selectionArgs, sortOrder);
+            SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+            qb.setTables(getTableName());
+            SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+
+            cursor = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 
             final int whoVisitorJidIndex = cursor.getColumnIndex(Columns.WHO_VISITOR_JID);
             final int visitorWhoJidIndex = cursor.getColumnIndex(Columns.VISITOR_WHO_JID);
@@ -108,30 +95,20 @@ public class VisitorRecordDBStoreProvider {
                 cursor.close();
             }
         }
-
         return array;
     }
 
-    public Uri insert(VisitorRecordObject t) {
-        Uri ret = null;
-        try {
-            ret = mContext.getContentResolver().insert(getContentUri(), VisitorRecordDBStoreProvider.onAddToDatabase(t, new ContentValues()));
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-
-        return ret;
+    public void insert(VisitorRecordObject t) {
+        ContentValues values = new ContentValues();
+        onAddToDatabase(t, values);
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        db.insert(getTableName(), null, values);
     }
 
     public int update(VisitorRecordObject t, String selection, String[] selectionArgs) {
-        int ret = -1;
-        try {
-            ret = mContext.getContentResolver().update(getContentUri(), VisitorRecordDBStoreProvider.onAddToDatabase(t, new ContentValues()),
-                    selection, selectionArgs);
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-
-        return ret;
+        ContentValues values = VisitorRecordDBStoreProvider.onAddToDatabase(t, new ContentValues());
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int count = db.update(getTableName(), values, selection, selectionArgs);
+        return count;
     }
 }
