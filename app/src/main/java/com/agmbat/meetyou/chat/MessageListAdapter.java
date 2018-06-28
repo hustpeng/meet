@@ -9,6 +9,9 @@ import org.jivesoftware.smackx.message.MessageObject;
 
 import java.util.List;
 
+/**
+ * 聊天界面adapter
+ */
 public class MessageListAdapter extends ArrayAdapter<MessageObject> {
 
     public MessageListAdapter(Context context, List<MessageObject> messages) {
@@ -22,8 +25,29 @@ public class MessageListAdapter extends ArrayAdapter<MessageObject> {
         }
         MessageObject message = getItem(position);
         MessageView view = (MessageView) convertView;
-        view.update(message);
+        MessageObject prevMessage = null;
+        if (position > 0) {
+            prevMessage = getItem(position - 1);
+        }
+        boolean isShowTime = isShowTime(message, prevMessage);
+        view.update(message, isShowTime);
         return convertView;
+    }
+
+    /**
+     * 是否显示时间
+     *
+     * @param messageObject
+     * @param prevMessage
+     * @return
+     */
+    private boolean isShowTime(MessageObject messageObject, MessageObject prevMessage) {
+        if (prevMessage == null) {
+            return true;
+        }
+        long current = messageObject.getDate();
+        long prev = prevMessage.getDate();
+        return (current - prev > (5 * 60 * 1000));
     }
 
 }

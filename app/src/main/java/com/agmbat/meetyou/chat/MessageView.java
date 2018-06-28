@@ -21,15 +21,15 @@ public class MessageView extends FrameLayout {
         addView(mToView);
     }
 
-    public void update(MessageObject msg) {
+    public void update(MessageObject msg, boolean showTime) {
         if (MessageManager.isToOthers(msg)) {
             mFromView.setVisibility(View.GONE);
             mToView.setVisibility(View.VISIBLE);
-            mToView.update(msg);
+            mToView.update(msg, showTime);
         } else {
             mToView.setVisibility(View.GONE);
             mFromView.setVisibility(View.VISIBLE);
-            mFromView.update(msg);
+            mFromView.update(msg, showTime);
         }
     }
 

@@ -6,9 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.agmbat.android.media.AudioPlayer;
 import com.agmbat.meetyou.R;
 import com.agmbat.menu.MenuInfo;
 

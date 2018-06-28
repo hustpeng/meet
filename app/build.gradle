@@ -56,7 +56,7 @@ dependencies {
     compile 'com.disbts:swipemenulist:3.5.2@aar'
     compile "com.disbts:pulltorefresh:3.5.5@aar"
     compile 'com.disbts:pagedataloader:3.5.7@aar'
-    compile "com.disbts:imagepicker:4.1.8@aar"
+    compile "com.disbts:imagepicker:4.2.0@aar"
     compile "com.disbts:photoview:3.5.7@aar"
     compile "com.disbts:isdialog:4.2.0@aar"
     compile "com.disbts:wheelpicker:4.2.0@aar"

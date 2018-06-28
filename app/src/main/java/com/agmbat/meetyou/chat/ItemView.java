@@ -58,10 +58,25 @@ public abstract class ItemView extends LinearLayout {
     private static final int BASE_WIDTH = (int) SysResources.dipToPixel(80);
     private static final int AUDIO_MAX_WIDTH = (int) SysResources.dipToPixel(200);
 
-    public ImageView mAvatarView;
-    public TextView mChatContentView;
-    public ImageView mBodyImage;
-    public TextView mTimeView;
+    /**
+     * 用户头像
+     */
+    protected ImageView mAvatarView;
+
+    /**
+     * 文本内容
+     */
+    protected TextView mChatContentView;
+
+    /**
+     * 图片
+     */
+    protected ImageView mBodyImage;
+
+    /**
+     * 时间
+     */
+    protected TextView mTimeView;
 
     public ItemView(Context context) {
         super(context);
@@ -76,12 +91,24 @@ public abstract class ItemView extends LinearLayout {
 
     protected abstract void setupViews();
 
-    public void update(MessageObject msg) {
+    /**
+     * 更新消息显示
+     *
+     * @param msg
+     * @param showTime
+     */
+    public void update(MessageObject msg, boolean showTime) {
         setupViews();
         setAvatar(msg);
         setMessageBody(msg);
-        mTimeView.setText(TimeUtils.formatDateTime(msg.getDate()));
+        if (showTime) {
+            mTimeView.setVisibility(View.VISIBLE);
+            mTimeView.setText(TimeUtils.formatDateTime(msg.getDate()));
+        } else {
+            mTimeView.setVisibility(View.GONE);
+        }
     }
+
 
     /**
      * 设置头像

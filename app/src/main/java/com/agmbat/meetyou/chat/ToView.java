@@ -45,7 +45,6 @@ public class ToView extends ItemView {
 
     @Override
     protected void setupViews() {
-        mChatContentView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
     }
 
 }

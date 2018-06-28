@@ -45,7 +45,6 @@ public class FromView extends ItemView {
 
     @Override
     protected void setupViews() {
-        mChatContentView.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
     }
 
 
