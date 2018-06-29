@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.appupdate.AppVersionHelper;
 import com.agmbat.meetyou.R;
 
 import butterknife.ButterKnife;
@@ -48,4 +49,14 @@ public class AboutActivity extends Activity {
     void onClickFeedback() {
         startActivity(new Intent(this, FeedbackActivity.class));
     }
+
+    /**
+     * 点击检查更新
+     */
+    @OnClick(R.id.check_update)
+    void onClickCheckUpdate() {
+        AppVersionHelper.checkVersion(this);
+    }
+
+
 }

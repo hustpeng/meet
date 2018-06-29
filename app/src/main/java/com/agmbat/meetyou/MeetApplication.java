@@ -7,9 +7,11 @@ import android.os.StrictMode;
 import com.agmbat.android.AppResources;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.app.ActivityStack;
+import com.agmbat.appupdate.AppVersionHelper;
 import com.agmbat.crashreport.CrashReporter;
 import com.agmbat.imsdk.splash.SplashManager;
 import com.agmbat.meetyou.account.LoginActivity;
+import com.agmbat.meetyou.checkupdate.UpdateApi;
 import com.baidu.mapapi.SDKInitializer;
 
 public class MeetApplication extends Application {
@@ -24,6 +26,8 @@ public class MeetApplication extends Application {
         ImageManager.initImageLoader(this);
         SplashManager.init(LoginActivity.class.getName());
         SDKInitializer.initialize(this);
+        AppVersionHelper.setAppVersionInfoRequester(new UpdateApi());
+
     }
 
     private void initPhotoError() {

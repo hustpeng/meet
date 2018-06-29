@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.agmbat.android.SysResources;
-import com.agmbat.android.utils.PhoneUtils;
+import com.agmbat.android.utils.DeviceUtils;
 import com.agmbat.meetyou.R;
 import com.agmbat.tagpicker.TagView;
 
@@ -46,7 +46,7 @@ public class TagSelectedView extends LinearLayout {
      * @param tagList
      */
     public void setTagList(List<String> tagList) {
-        int screenWidth = PhoneUtils.getScreenSize().x;
+        int screenWidth = DeviceUtils.getScreenSize().x;
 
         int divWidth = (int) (5 * SysResources.dipToPixel(8));
         int itemWidth = (screenWidth - divWidth) / 4;

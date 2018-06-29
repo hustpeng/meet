@@ -63,6 +63,7 @@ dependencies {
     compile "com.disbts:tagpicker:4.2.0@aar"
     compile "com.disbts:wxshare:4.2.0@aar"
     compile "com.disbts:inputview:4.2.0@aar"
+    compile "com.disbts:appupdate:4.2.0@aar"
     compile "com.disbts:inputvoice:4.0.3@aar"
     compile "com.disbts:emoji:4.2.0@aar"
     compile 'com.disbts:browser:4.1.7@aar'

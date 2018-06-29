@@ -1,7 +1,7 @@
 package com.agmbat.imsdk.feedback;
 
 import com.agmbat.android.utils.ApkUtils;
-import com.agmbat.android.utils.PhoneUtils;
+import com.agmbat.android.utils.DeviceUtils;
 import com.agmbat.imsdk.api.Api;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.net.HttpRequester;
@@ -41,9 +41,9 @@ public class FeedbackApi {
         builder.postParam("content", content);
         builder.postParam("photo_url", photoUrl);
         // 设备类型，例如aphone，apad
-        builder.postParam("devicetype", PhoneUtils.getDeviceModel());
+        builder.postParam("devicetype", DeviceUtils.getDeviceModel());
         // OS版本
-        builder.postParam("osver", PhoneUtils.getAndroidVersion());
+        builder.postParam("osver", DeviceUtils.getAndroidVersion());
         // Integer	APP的版本号
         builder.postParam("appver", String.valueOf(ApkUtils.getVersionCode()));
         builder.postParam("sign", Api.getSign(apiName, uid));

@@ -97,6 +97,7 @@
 
 
         <TextView
+            android:id="@+id/check_update"
             android:layout_width="match_parent"
             android:layout_height="51dp"
             android:background="@drawable/im_setting_item"

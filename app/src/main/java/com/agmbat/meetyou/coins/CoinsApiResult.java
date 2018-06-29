@@ -7,6 +7,27 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/**
+ * //    {
+ * //        "result":true, //true  API调用成功，否则调用失败
+ * //            "balance":300,     //余额
+ * //            "records": 3,      //总记录数
+ * //            "resp":
+ * //      [
+ * //        {
+ * //            "summary":"邀请好友",
+ * //                "coins"：100,
+ * //                "time": 1517884200
+ * //        }
+ * //                     …
+ * //        {
+ * //            "summary":"报名成功",
+ * //                "coins"：100,
+ * //                "time": 1517459400
+ * //        }
+ * //       ]
+ * //    }
+ */
 public class CoinsApiResult extends ApiResult<List<CoinsRecords>> implements PageData<CoinsRecords> {
 
     /**

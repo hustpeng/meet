@@ -26,27 +26,6 @@ public class CoinsApi {
      * <p>
      * GET
      * https://{DOMAIN}/egret/v1/user/coins.api?uid=<phone>&ticket=<ticket>&pageindex=<>&sign=<sign>
-     * <p>
-     * //    返回内容如下：
-     * //    {
-     * //        "result":true, //true  API调用成功，否则调用失败
-     * //            "balance":300,     //余额
-     * //            "records": 3,      //总记录数
-     * //            "resp":
-     * //      [
-     * //        {
-     * //            "summary":"邀请好友",
-     * //                "coins"：100,
-     * //                "time": 1517884200
-     * //        }
-     * //                     …
-     * //        {
-     * //            "summary":"报名成功",
-     * //                "coins"：100,
-     * //                "time": 1517459400
-     * //        }
-     * //       ]
-     * //    }
      *
      * @param uid       用户11位手机号码，不含区号
      * @param ticket    The auth ticket

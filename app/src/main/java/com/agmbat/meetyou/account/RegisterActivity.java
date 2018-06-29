@@ -421,7 +421,7 @@ public class RegisterActivity extends Activity {
     }
 
     private void dismissDialog() {
-        UiUtils.dismissDialogSafely(mLoadingDialog);
+        UiUtils.dismissDialog(mLoadingDialog);
     }
 
     private void showPage1() {
