@@ -49,24 +49,9 @@ public class MessageManager extends Xepmodule {
      */
     private Map<String, List<MessageObject>> mMessageMap = new HashMap<>();
 
-    public MessageManager(final Connection connection) {
-        this.xmppConnection = connection;
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            @Override
-            public void connectionCreated(Connection connection) {
-                connection.addConnectionListener(myConnectionListener);
-                connection.addPacketListener(messagePacketListener, messagePacketFilter);
-            }
-        });
-        listeners = new CopyOnWriteArrayList<MessageListener>();
-        messageStorage = new MessageStorage();
-        correctMessagesStatus();
-    }
-
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {
-
         }
 
         @Override
@@ -82,31 +67,11 @@ public class MessageManager extends Xepmodule {
         }
     };
 
-    public void addListener(MessageListener listener) {
-        if (!listeners.contains(listener)) {
-            listeners.add(listener);
-        }
-    }
-
-    public void removeListener(MessageListener listener) {
-        listeners.remove(listener);
-    }
-
-    public boolean willInsertReceivedMsg(MessageObject messageObject) {
-        for (MessageListener listener : listeners) {
-            if (listener.willInsertReceivedMsg(messageObject)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private PacketFilter messagePacketFilter = new PacketFilter() {
         public boolean accept(Packet packet) {
             if (!(packet instanceof Message)) {
                 return false;
             }
-
             Type messageType = ((Message) packet).getType();
             // the Type.normal msg is filter in VisitorManager.java
             return messageType == Type.chat/*
@@ -115,7 +80,6 @@ public class MessageManager extends Xepmodule {
              */;
         }
     };
-
     private PacketListener messagePacketListener = new PacketListener() {
 
         @Override
@@ -152,7 +116,6 @@ public class MessageManager extends Xepmodule {
                             messageStorage.updateMsg(targetMessage);
                         }
                     } else if ("composing".equals(elementName)) {
-
                     }
                 }
                 return;
@@ -178,6 +141,39 @@ public class MessageManager extends Xepmodule {
             sendChatStates(messageObject.getMsgId(), sendMsgState, messageObject.getSenderJid());
         }
     };
+
+    public MessageManager(final Connection connection) {
+        this.xmppConnection = connection;
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(myConnectionListener);
+                connection.addPacketListener(messagePacketListener, messagePacketFilter);
+            }
+        });
+        listeners = new CopyOnWriteArrayList<MessageListener>();
+        messageStorage = new MessageStorage();
+        correctMessagesStatus();
+    }
+
+    public void addListener(MessageListener listener) {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
+
+    public void removeListener(MessageListener listener) {
+        listeners.remove(listener);
+    }
+
+    public boolean willInsertReceivedMsg(MessageObject messageObject) {
+        for (MessageListener listener : listeners) {
+            if (listener.willInsertReceivedMsg(messageObject)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void sendChatStates(String msgId, String state, String toJid) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
