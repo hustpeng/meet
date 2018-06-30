@@ -11,6 +11,7 @@ import android.widget.EditText;
 
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.account.AccountPrefs;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
@@ -59,11 +60,11 @@ public class LoginActivity extends FragmentActivity {
 //        mUserNameView.setText("13437122759");
 //        mPasswordView.setText("a123123");
 
-        String username = AccountDebug.getUserName();
+        String username = AccountPrefs.getUserName();
         if (!TextUtils.isEmpty(username)) {
             mUserNameView.setText(username);
         }
-        String password = AccountDebug.getPassword();
+        String password = AccountPrefs.getPassword();
         if (!TextUtils.isEmpty(password)) {
             mPasswordView.setText(password);
         }
@@ -119,11 +120,11 @@ public class LoginActivity extends FragmentActivity {
                 hideLoadingDialog();
                 ToastUtil.showToastLong(result.mErrorMsg);
                 if (result.mResult) {
-                    AccountDebug.saveAccount(userName, password);
-                    finish();
+                    AccountPrefs.saveAccount(userName, password);
                     // 每次登陆成功,重置一次数据
                     XMPPManager.getInstance().getRosterManager().resetData();
                     startActivity(new Intent(LoginActivity.this, MainTabActivity.class));
+                    finish();
                 }
             }
         });

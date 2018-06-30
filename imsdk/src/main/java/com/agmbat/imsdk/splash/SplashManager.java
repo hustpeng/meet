@@ -1,9 +1,12 @@
 package com.agmbat.imsdk.splash;
 
+import android.text.TextUtils;
+
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.file.FileUtils;
 import com.agmbat.imsdk.R;
+import com.agmbat.imsdk.account.AccountPrefs;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.mgr.UserFileManager;
 import com.agmbat.net.HttpUtils;
@@ -70,7 +73,10 @@ public class SplashManager {
     }
 
     public static void update() {
-        final String phone = "13437122759";
+        final String phone = AccountPrefs.getLastLoginUserName();
+        if (TextUtils.isEmpty(phone)) {
+            return;
+        }
         final int splashVer = SplashStore.getSplashVersion();
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, ApiResult<SplashResp>>() {
             @Override
@@ -82,11 +88,9 @@ public class SplashManager {
                 if (result.mData == null) {
                     return null;
                 }
-
                 if (result.mData.mGlobalConfig != null) {
                     SplashStore.saveSensitiveWords(result.mData.mGlobalConfig.mSensitiveWords);
                 }
-
                 boolean success = downloadImage(result);
                 if (success) {
                     return result;

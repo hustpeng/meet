@@ -22,10 +22,7 @@ import com.agmbat.android.permissions.PermissionArrayAction;
 import com.agmbat.android.permissions.Permissions;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.R;
-import com.agmbat.text.StringUtils;
-import com.nostra13.universalimageloader.core.download.Scheme;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -229,7 +226,7 @@ public class SplashActivity extends Activity {
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             // 引导页进入的Button
             TextView entryButton = (TextView) view.findViewById(R.id.btn_entry);
-            if (position == 2) {
+            if (position == getCount() - 1) {
                 entryButton.setVisibility(View.VISIBLE);
                 entryButton.setOnClickListener(mOnEntryListener);
             } else {
