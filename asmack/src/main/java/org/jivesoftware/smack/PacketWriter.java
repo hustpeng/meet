@@ -20,7 +20,9 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smackx.ping.PingExtension;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -36,7 +38,7 @@ import java.util.concurrent.BlockingQueue;
  * @see Connection#addPacketInterceptor
  * @see Connection#addPacketSendingListener
  */
-class PacketWriter {
+public class PacketWriter {
 
     private Thread writerThread;
     private Thread keepAliveThread;
@@ -288,7 +290,11 @@ class PacketWriter {
                     // Send heartbeat if no packet has been sent to the server for a given time
                     if (System.currentTimeMillis() - lastActive >= delay) {
                         try {
-                            writer.write(" ");
+                            PingExtension pingExtension = new PingExtension();
+                            pingExtension.setTo(connection.getServiceName());
+                            pingExtension.setType(IQ.Type.GET);
+                            // "<iq to='172.16.2.76' id='c2s1' type='get' <ping xmlns='urn:xmpp:ping'/></iq>"
+                            writer.write(pingExtension.toXML());
                             writer.flush();
                         } catch (Exception e) {
                             // Do nothing

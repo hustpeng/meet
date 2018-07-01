@@ -14,9 +14,14 @@ import com.agmbat.log.Log;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
+import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.provider.PrivacyProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.XmppStringUtils;
@@ -39,6 +44,8 @@ import org.jivesoftware.smackx.paid.PaidManager;
 import org.jivesoftware.smackx.paid.PaidPageInfoProvider;
 import org.jivesoftware.smackx.permit.PermitManager;
 import org.jivesoftware.smackx.permit.PermitProvider;
+import org.jivesoftware.smackx.ping.PingExtension;
+import org.jivesoftware.smackx.ping.PingProvider;
 import org.jivesoftware.smackx.token.TokenManager;
 import org.jivesoftware.smackx.token.TokenProvider;
 import org.jivesoftware.smackx.vcard.VCardManager;
@@ -52,6 +59,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class XMPPManager {
+
+    private static final String TAG = "XMPPManager";
 
     private static XMPPManager sInstance;
 
@@ -90,6 +99,29 @@ public class XMPPManager {
      */
     private static final String HOST = "47.106.77.125";
     private static final String TIGASE_SERVER = "yuan520.com";
+
+
+    /**
+     * Listener for Ping request. It will respond with a Pong.
+     */
+    private final PacketListener mPingListener = new PacketListener() {
+
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof PingExtension) {
+                PingExtension pingExtension = (PingExtension) packet;
+                Log.i(TAG, "Response to the ping package...");
+                if (pingExtension.getType() == IQ.Type.GET) {
+                    PingExtension pong = new PingExtension();
+                    pong.setType(IQ.Type.RESULT);
+                    pong.setTo(pingExtension.getFrom());
+                    pong.setPacketID(pingExtension.getPacketID());
+                    xmppConnection.sendPacket(pong);
+                }
+            }
+        }
+
+    };
 
     public static synchronized XMPPManager getInstance() {
         if (sInstance == null) {
@@ -136,6 +168,10 @@ public class XMPPManager {
                 }
             }
         });
+
+        PacketFilter filter = new PacketTypeFilter(PingExtension.class);
+        xmppConnection.addPacketListener(mPingListener, filter);
+
         // TODO 登录时导致线程开启两次
 //        reconnectionManager.autoLogin();
     }
@@ -156,6 +192,11 @@ public class XMPPManager {
                 new TokenProvider());
         pm.addIQProvider(VisitorMeProvider.elementName(), VisitorMeProvider.namespace(),
                 new VisitorMeProvider());
+
+        // Ping provider
+        pm.addIQProvider(PingExtension.ELEMENT, PingExtension.NAMESPACE, new PingProvider());
+
+        // vCard
         pm.addIQProvider(VCardProvider.elementName(), VCardProvider.namespace(),
                 new VCardProvider());
         pm.addIQProvider(VCardExtendProvider.elementName(), VCardExtendProvider.namespace(),
