@@ -6,6 +6,7 @@ import android.os.StrictMode;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.android.image.ImageManager;
+import com.agmbat.android.utils.ThreadUtil;
 import com.agmbat.app.ActivityStack;
 import com.agmbat.appupdate.AppVersionHelper;
 import com.agmbat.crashreport.CrashReporter;
@@ -27,7 +28,9 @@ public class MeetApplication extends Application {
         SplashManager.init(LoginActivity.class.getName());
         SDKInitializer.initialize(this);
         AppVersionHelper.setAppVersionInfoRequester(new UpdateApi());
-
+        if (ThreadUtil.isOnMainProcess(this)) {
+            ConnectionReceiver.register(this);
+        }
     }
 
     private void initPhotoError() {
