@@ -22,7 +22,6 @@ import com.agmbat.emoji.res.DefXhsEmoticons;
 import com.agmbat.file.FileUtils;
 import com.agmbat.filepicker.FilePicker;
 import com.agmbat.filepicker.OnPickFileListener;
-import com.agmbat.http.HttpUtils;
 import com.agmbat.imagepicker.ImagePickerHelper;
 import com.agmbat.imagepicker.OnPickImageListener;
 import com.agmbat.imagepicker.OnPickMultiImageListener;
@@ -52,6 +51,7 @@ import com.agmbat.map.Maps;
 import com.agmbat.meetyou.R;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
+import com.agmbat.net.HttpUtils;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
 import com.agmbat.text.TagText;
 

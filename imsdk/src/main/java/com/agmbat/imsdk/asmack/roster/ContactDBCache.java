@@ -5,6 +5,7 @@ import com.agmbat.db.DbManager;
 import com.agmbat.imsdk.asmack.roster.ContactGroup;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.db.MeetDatabase;
+import com.agmbat.log.Debug;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +62,10 @@ public class ContactDBCache {
      */
     public static List<ContactGroup> getGroupList() {
         DbManager db = MeetDatabase.getInstance().getDatabase();
+        if (db == null) {
+            Debug.printStackTrace();
+            return new ArrayList<>();
+        }
         try {
             List<ContactInfo> contactInfoList = db.selector(ContactInfo.class).findAll();
             return RosterHelper.toGroupList(contactInfoList);

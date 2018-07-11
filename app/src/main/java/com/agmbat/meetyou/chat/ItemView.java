@@ -15,6 +15,7 @@ import com.agmbat.android.media.AudioPlayer;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.android.utils.AppUtils;
+import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.app.AppFileManager;
 import com.agmbat.baidumap.MapConfig;
@@ -170,16 +171,41 @@ public abstract class ItemView extends LinearLayout {
             public void onClick(View v) {
                 File file = fileBody.getFile();
                 if (file == null || !file.exists()) {
-                    // 下载文件
-                    File downloadFile = new File(XmppFileManager.getChatFileDir(), fileBody.getFileName());
-                    HttpUtils.downloadFile(fileBody.getUrl(), downloadFile);
-                    fileBody.setFile(downloadFile);
+                    downloadFile(fileBody);
                 } else {
                     AppUtils.openFile(getContext(), file);
                 }
             }
         });
         mChatContentView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param fileBody
+     */
+    private void downloadFile(final FileBody fileBody) {
+        final File downloadFile = new File(XmppFileManager.getChatFileDir(), fileBody.getFileName());
+        // 下载文件
+        AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                return HttpUtils.downloadFile(fileBody.getUrl(), downloadFile);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+                if (result) {
+                    fileBody.setFile(downloadFile);
+                    AppUtils.openFile(getContext(), downloadFile);
+                } else {
+                    ToastUtil.showToast("文件下载失败!");
+                }
+            }
+        });
+
     }
 
     private void setFriendBody(final FriendBody friendBody) {

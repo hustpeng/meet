@@ -48,7 +48,6 @@ dependencies {
     compile "com.disbts:crashreport:4.2.0@aar"
     compile "com.disbts:universal-image-loader:1.9.7"
 
-    compile "com.disbts:jhttp:3.5.6"
     compile 'com.disbts:tab:4.2.0@aar'
     compile 'com.disbts:swipemenulist:3.5.2@aar'
     compile "com.disbts:pulltorefresh:3.5.5@aar"
