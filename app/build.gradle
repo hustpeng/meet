@@ -79,7 +79,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile project(':imsdk')
 
-    compile('com.agmbat:filepicker:1.0.0') {
+    compile('com.agmbat:filepicker:1.0.2') {
         exclude group: 'com.agmbat', module: 'jutils'
         exclude group: 'com.agmbat', module: 'commonkit'
     }
