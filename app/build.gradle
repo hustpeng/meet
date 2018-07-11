@@ -45,10 +45,9 @@ dependencies {
 
     compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
     compile "com.disbts:jutils:${JUTILS_VERSION}"
-    compile "com.disbts:jhttp:${JHTTP_VERSION}"
     compile "com.disbts:crashreport:4.2.0@aar"
     compile "com.disbts:universal-image-loader:1.9.7"
-    compile "com.disbts:widget:4.2.0@aar"
+
     compile "com.disbts:jhttp:3.5.6"
     compile 'com.disbts:tab:4.2.0@aar'
     compile 'com.disbts:swipemenulist:3.5.2@aar'
@@ -61,9 +60,9 @@ dependencies {
     compile "com.disbts:tagpicker:4.2.0@aar"
     compile "com.disbts:wxshare:4.2.0@aar"
     compile "com.disbts:appupdate:4.2.0@aar"
-    compile "com.disbts:inputview:4.2.1@aar"
+
     compile "com.disbts:inputvoice:4.2.1@aar"
-    compile "com.disbts:emoji:4.2.0@aar"
+    compile "com.disbts:emoji:4.2.2@aar"
     compile 'com.disbts:browser:4.1.7@aar'
 
     compile "com.disbts:baidumap:${BAIDUMAP_VERSION}@aar"
@@ -80,6 +79,21 @@ dependencies {
     }
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile project(':imsdk')
+
+    compile('com.agmbat:filepicker:1.0.0') {
+        exclude group: 'com.agmbat', module: 'jutils'
+        exclude group: 'com.agmbat', module: 'commonkit'
+    }
+
+    compile('com.agmbat:widget:1.0.1') {
+        exclude group: 'com.agmbat', module: 'jutils'
+        exclude group: 'com.agmbat', module: 'commonkit'
+    }
+
+    compile('com.agmbat:inputview:1.0.1') {
+        exclude group: 'com.agmbat', module: 'jutils'
+        exclude group: 'com.agmbat', module: 'commonkit'
+    }
 
     // 正式包不需要引用debugger工程
 //    compile project(':debugger')

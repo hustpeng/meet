@@ -44,7 +44,7 @@ public class RemoteFileManager {
 
 
     /**
-     * 上传音频文件
+     * 上传文件
      *
      * @param file
      * @param l

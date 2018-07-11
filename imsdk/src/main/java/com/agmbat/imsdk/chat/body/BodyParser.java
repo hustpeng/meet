@@ -77,6 +77,12 @@ public class BodyParser {
             contactInfo.setBareJid(jid);
             return new FriendBody(contactInfo);
         }
+
+        if (bodyType == BodyType.FILE) {
+            String url = XmlUtils.getNodeValue(bodyText, "url");
+            String fileName = XmlUtils.getNodeValue(bodyText, "fileName");
+            return new FileBody(url, fileName);
+        }
         return new TextBody(bodyText);
     }
 

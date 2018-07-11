@@ -2,8 +2,8 @@ package com.agmbat.imsdk.chat.body;
 
 import com.agmbat.android.sysprovider.LocalImage;
 import com.agmbat.android.utils.XmlUtils;
-import com.agmbat.http.HttpUtils;
 import com.agmbat.imsdk.mgr.XmppFileManager;
+import com.agmbat.net.HttpUtils;
 import com.agmbat.text.StringParser;
 
 import java.io.File;

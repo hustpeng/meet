@@ -20,6 +20,8 @@ import com.agmbat.emoji.panel.p2.EmojiPanelConfig;
 import com.agmbat.emoji.res.DefEmoticons;
 import com.agmbat.emoji.res.DefXhsEmoticons;
 import com.agmbat.file.FileUtils;
+import com.agmbat.filepicker.FilePicker;
+import com.agmbat.filepicker.OnPickFileListener;
 import com.agmbat.http.HttpUtils;
 import com.agmbat.imagepicker.ImagePickerHelper;
 import com.agmbat.imagepicker.OnPickImageListener;
@@ -29,6 +31,7 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
+import com.agmbat.imsdk.chat.body.FileBody;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
@@ -403,22 +406,35 @@ public class ChatActivity extends Activity implements OnInputListener {
         });
     }
 
-    public static final int REQUEST_CODE_SELECT_FILE = 24;
-
     /**
      * 选择文件
      */
     private void selectFileFromLocal() {
-        Intent intent = null;
-        if (Build.VERSION.SDK_INT < 19) {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("*/*");
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-        } else {
-            intent = new Intent(Intent.ACTION_PICK,
-                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        }
-        startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
+        FilePicker.pickFile(this, new OnPickFileListener() {
+            @Override
+            public void onPick(File file) {
+                sendFile(file);
+            }
+        });
     }
 
+    /**
+     * 发送文件
+     *
+     * @param file
+     */
+    private void sendFile(final File file) {
+        RemoteFileManager.uploadTempFile(file, new OnFileUploadListener() {
+            @Override
+            public void onUpload(FileApiResult apiResult) {
+                if (apiResult.mResult) {
+                    String url = apiResult.url;
+                    Body body = new FileBody(url, file.getName(), file);
+                    sendMessage(body);
+                } else {
+                    ToastUtil.showToast("发送文件失败!");
+                }
+            }
+        });
+    }
 }

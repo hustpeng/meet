@@ -23,6 +23,10 @@ allprojects {
                 password "${MAVEN_PASSWORD}"
             }
         }
+
+        maven {
+            url "https://dl.bintray.com/mayimchen/maven"
+        }
         google()
         jcenter()
     }

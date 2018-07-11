@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.agmbat.android.AppResources;
 import com.agmbat.android.SysResources;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.media.AudioPlayer;
@@ -20,13 +19,13 @@ import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.app.AppFileManager;
 import com.agmbat.baidumap.MapConfig;
 import com.agmbat.emoji.display.EmojiDisplay;
-import com.agmbat.http.HttpUtils;
 import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.BodyParser;
+import com.agmbat.imsdk.chat.body.FileBody;
 import com.agmbat.imsdk.chat.body.FireBody;
 import com.agmbat.imsdk.chat.body.FriendBody;
 import com.agmbat.imsdk.chat.body.ImageBody;
@@ -40,6 +39,7 @@ import com.agmbat.map.Maps;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.component.ViewImageActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
+import com.agmbat.net.HttpUtils;
 import com.agmbat.time.DurationFormat;
 import com.agmbat.time.TimeUtils;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -152,7 +152,34 @@ public abstract class ItemView extends LinearLayout {
         } else if (body instanceof FriendBody) {
             FriendBody friendBody = (FriendBody) body;
             setFriendBody(friendBody);
+        } else if (body instanceof FileBody) {
+            FileBody fileBody = (FileBody) body;
+            setFileBody(fileBody);
         }
+    }
+
+    private void setFileBody(final FileBody fileBody) {
+        mBodyImage.setVisibility(View.GONE);
+        ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mChatContentView.setVisibility(View.VISIBLE);
+        mChatContentView.setText("文件:" + fileBody.getFileName());
+
+        mChatContentView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File file = fileBody.getFile();
+                if (file == null || !file.exists()) {
+                    // 下载文件
+                    File downloadFile = new File(XmppFileManager.getChatFileDir(), fileBody.getFileName());
+                    HttpUtils.downloadFile(fileBody.getUrl(), downloadFile);
+                    fileBody.setFile(downloadFile);
+                } else {
+                    AppUtils.openFile(getContext(), file);
+                }
+            }
+        });
+        mChatContentView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
 
     private void setFriendBody(final FriendBody friendBody) {

@@ -3,7 +3,7 @@ package com.agmbat.imsdk.mgr;
 import android.os.Environment;
 
 import com.agmbat.app.AppFileManager;
-import com.agmbat.http.HttpUtils;
+import com.agmbat.net.HttpUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +23,10 @@ public class XmppFileManager {
 
     public static File getRecordFile(String url) {
         return new File(AppFileManager.getRecordDir(), HttpUtils.getFileNameFromUrl(url));
+    }
+
+    public static File getChatFileDir() {
+        return AppFileManager.getExternalCacheDir("chatFile");
     }
 
     public static File getImageDir() {
