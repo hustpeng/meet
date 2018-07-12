@@ -7,6 +7,10 @@ public class FindServerObject implements ICacheStoreObject {
 
     private String tokenServer;
     private String paidServer;
+
+    /**
+     * 通过发现服务获取circle服务器地址
+     */
     private String circleServer;
 
     @Override

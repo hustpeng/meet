@@ -74,6 +74,7 @@ public abstract class IQ extends Packet {
         }
     }
 
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<iq ");

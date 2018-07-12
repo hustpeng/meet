@@ -27,6 +27,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.block.BlockManager;
 import org.jivesoftware.smackx.block.BlockProvider;
+import org.jivesoftware.smackx.circle.CircleManager;
 import org.jivesoftware.smackx.favoritedme.FavoritedMeManager;
 import org.jivesoftware.smackx.favoritedme.FavoritedMeProvider;
 import org.jivesoftware.smackx.favorites.FavoritesManager;
@@ -82,6 +83,7 @@ public class XMPPManager {
     private LocationAutoSync locationAutoSync;
     private ReconnectionManager reconnectionManager;
 
+    private CircleManager circleManager;
     /**
      * 好友列表管理
      */
@@ -151,6 +153,7 @@ public class XMPPManager {
         paidManager = new PaidManager(xmppConnection);
 
         mRosterManager = new RosterManager(xmppConnection, xmppConnection.getRoster());
+        circleManager = new CircleManager(xmppConnection);
 
         locationHelper = new LocationHelper();
         locationAutoSync = new LocationAutoSync();
@@ -162,8 +165,10 @@ public class XMPPManager {
                 findServerManager.removeListener(this);
 
                 getTokenManager().setTokenServer(HOST);
+                getCircleManager().setCircleServer(HOST);
                 if (serverObject != null) {
                     getTokenManager().setTokenServer(serverObject.getTokenServer());
+                    getCircleManager().setCircleServer(serverObject.getCircleServer());
                     getPaidManager().setPaidServer(serverObject.getPaidServer());
                 }
             }
@@ -175,6 +180,7 @@ public class XMPPManager {
         // TODO 登录时导致线程开启两次
 //        reconnectionManager.autoLogin();
     }
+
 
     private void configureProviderManager() {
         ProviderManager pm = ProviderManager.getInstance();
@@ -357,6 +363,10 @@ public class XMPPManager {
 
     public TokenManager getTokenManager() {
         return tokenManager;
+    }
+
+    public CircleManager getCircleManager() {
+        return circleManager;
     }
 
     public LocateManager getLocateManager() {
