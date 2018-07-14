@@ -1,11 +1,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.agmbat.android.commonkit">
+    package="com.disbts.android.acommon">
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <uses-permission android:name="android.permission.REAL_GET_TASKS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
     <application>
+
+        <!-- android 权限管理-->
+        <activity
+            android:name="com.agmbat.android.permissions.RequestPermissionActivity"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <!--  中转Activity -->
         <activity
             android:name="com.agmbat.android.transit.TransitActivity"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
     </application>
+
 </manifest>
