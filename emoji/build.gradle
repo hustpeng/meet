@@ -24,7 +24,7 @@ dependencies {
     compile project(":inputview")
 
     compile "com.agmbat:universal-image-loader:1.9.7"
+    compile project(':commonkit')
+    compile project(':jutils')
 
-    compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
-    compile "com.disbts:jutils:${JUTILS_VERSION}"
 }

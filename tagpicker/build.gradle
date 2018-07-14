@@ -22,7 +22,6 @@ dependencies {
     compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.google.code.gson:gson:${GSON_VERSION}"
-
-    compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
-    compile "com.disbts:jutils:${JUTILS_VERSION}"
+    compile project(':commonkit')
+    compile project(':jutils')
 }

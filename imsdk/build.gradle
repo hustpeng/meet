@@ -25,12 +25,12 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
-    compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
-    compile "com.disbts:jutils:${JUTILS_VERSION}"
+
+    compile project(':commonkit')
+    compile project(':jutils')
 
     compile "com.agmbat:universal-image-loader:1.9.7"
 
-    compile "com.disbts:dom4j:1.6.1"
 
     compile project(':asmack')
     compile project(':pagedataloader')

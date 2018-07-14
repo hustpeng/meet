@@ -23,6 +23,6 @@ dependencies {
     compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
 //    compile project(":library:commonkit")
 
-    compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
-    compile "com.disbts:jutils:${JUTILS_VERSION}"
+    compile project(':commonkit')
+    compile project(':jutils')
 }

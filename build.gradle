@@ -17,14 +17,6 @@ buildscript {
 allprojects {
     repositories {
         maven {
-            url "http://maven.agmbat.com:9080/repository/maven-releases/"
-            credentials {
-                username "${MAVEN_USER_NAME}"
-                password "${MAVEN_PASSWORD}"
-            }
-        }
-
-        maven {
             url "https://dl.bintray.com/mayimchen/maven"
         }
         google()

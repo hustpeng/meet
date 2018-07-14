@@ -18,6 +18,6 @@ android {
 }
 
 dependencies {
-    compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
-    compile "com.disbts:jutils:${JUTILS_VERSION}"
+    compile project(':commonkit')
+    compile project(':jutils')
 }

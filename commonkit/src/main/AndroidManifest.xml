@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.agmbat.android.commonkit">
+
+    <application>
+        <!--  中转Activity -->
+        <activity
+            android:name="com.agmbat.android.transit.TransitActivity"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+    </application>
+</manifest>

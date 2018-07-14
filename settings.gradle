@@ -2,6 +2,8 @@ include ':app'
 include ':imsdk'
 include ':asmack'
 
+include ':commonkit'
+include ':jutils'
 
 include ':photoview'
 include ':imagepicker'

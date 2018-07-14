@@ -24,9 +24,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-//    compile project(":library:commonkit")
     compile project(":pulltorefresh")
-
-    compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
-    compile "com.disbts:jutils:${JUTILS_VERSION}"
+    compile project(':commonkit')
+    compile project(':jutils')
 }

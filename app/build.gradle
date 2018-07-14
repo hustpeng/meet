@@ -44,8 +44,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:${SUPPORT_V7_VERSION}"
 
     compile "com.agmbat:universal-image-loader:1.9.7"
-    compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
-    compile "com.disbts:jutils:${JUTILS_VERSION}"
+
 
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.greenrobot:eventbus:3.0.0'
@@ -61,6 +60,8 @@ dependencies {
     compile project(':zxing-core')
     compile project(':zxing-android-core')
     compile project(':imsdk')
+    compile project(':commonkit')
+    compile project(':jutils')
     compile project(':imagepicker')
     compile project(':tab')
     compile project(':crashreport')

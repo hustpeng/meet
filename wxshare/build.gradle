@@ -21,8 +21,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-//    compile project(":library:commonkit")
-    compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
-    compile "com.disbts:jutils:${JUTILS_VERSION}"
     compile project(':isdialog')
+    compile project(':commonkit')
+    compile project(':jutils')
 }

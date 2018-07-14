@@ -25,7 +25,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
     compile 'com.facebook.rebound:rebound:0.3.8'
-
-    compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
-    compile "com.disbts:jutils:${JUTILS_VERSION}"
+    compile project(':commonkit')
+    compile project(':jutils')
 }

@@ -25,5 +25,6 @@ dependencies {
     compile "com.android.support:recyclerview-v7:${SUPPORT_V7_VERSION}"
     compile "com.agmbat:universal-image-loader:1.9.7"
     compile project(':photoview')
-    compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
+    compile project(':commonkit')
+    compile project(':jutils')
 }
