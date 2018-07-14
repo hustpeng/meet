@@ -73,6 +73,7 @@ dependencies {
     compile project(':inputvoice')
     compile project(':emoji')
     compile project(':baidumap')
+    compile project(':widget')
 
 
     // 正式包不需要引用debugger工程
