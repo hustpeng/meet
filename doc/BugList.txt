@@ -69,3 +69,11 @@
 2. 与微信一样，如果已登陆，则自动登陆， 如果没网则提示网络错误都可以操作
 
 1. 重写tagpicker
+
+
+WEB管理控制台：
+https://www.xmpp.org.cn/console/login.jsp
+
+登录名admin 密码P@ssw0rd
+
+IP 47.106.77.125
