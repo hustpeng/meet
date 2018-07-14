@@ -1,0 +1,16 @@
+{
+  "default": {
+    "name": "单身",
+    "value": 0
+  },
+  "option": [
+    {
+      "name": "单身",
+      "value": 0
+    },
+    {
+      "name": "非单身",
+      "value": 1
+    }
+  ]
+}

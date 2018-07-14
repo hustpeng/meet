@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ptr_text_color">#ff8b8b8b</color>
+
+    <dimen name="indicator_right_padding">10dp</dimen>
+    <dimen name="indicator_corner_radius">12dp</dimen>
+    <dimen name="indicator_internal_padding">4dp</dimen>
+    <dimen name="header_footer_left_right_padding">24dp</dimen>
+    <dimen name="header_footer_top_bottom_padding">12dp</dimen>
+
+    <string name="ptr_pull_label">下拉刷新…</string>
+    <string name="ptr_release_label">放开以刷新…</string>
+    <string name="ptr_refreshing_label">正在载入…</string>
+    <string name="ptr_refresh_complete_label">更新完成</string>
+
+    <!-- Just use standard Pull Down String when pulling up. These can be set for languages which require it -->
+    <string name="ptr_from_bottom_pull_label">@string/ptr_pull_label</string>
+    <string name="ptr_from_bottom_release_label">@string/ptr_release_label</string>
+    <string name="ptr_from_bottom_refreshing_label">@string/ptr_refreshing_label</string>
+    <string name="ptr_from_bottom_refresh_complete_label">@string/ptr_refresh_complete_label</string>
+
+</resources>

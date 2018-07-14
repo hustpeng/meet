@@ -46,13 +46,6 @@ dependencies {
     compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
     compile "com.disbts:jutils:${JUTILS_VERSION}"
 
-    compile "com.disbts:pulltorefresh:3.5.5@aar"
-    compile 'com.disbts:pagedataloader:3.5.7@aar'
-
-    compile "com.disbts:wheelpicker:4.2.0@aar"
-    compile "com.disbts:tagpicker:4.2.0@aar"
-    compile "com.disbts:appupdate:4.2.0@aar"
-
     compile "com.disbts:inputvoice:4.2.1@aar"
     compile "com.disbts:emoji:4.2.2@aar"
     compile 'com.disbts:browser:4.1.7@aar'
@@ -76,6 +69,13 @@ dependencies {
     compile project(':imagepicker')
     compile project(':tab')
     compile project(':crashreport')
+    compile project(':pagedataloader')
+    compile project(':swipemenulist')
+    compile project(':pulltorefresh')
+    compile project(':filepicker')
+    compile project(':wheelpicker')
+    compile project(':tagpicker')
+    compile project(':appupdate')
 
     compile('com.agmbat:widget:1.0.1') {
         exclude group: 'com.agmbat', module: 'jutils'

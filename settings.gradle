@@ -12,6 +12,10 @@ include ':tab'
 include ':filepicker'
 include ':crashreport'
 include ':swipemenulist'
-
+include ':pulltorefresh'
+include ':pagedataloader'
+include ':tagpicker'
+include ':wheelpicker'
+include ':appupdate'
 // 辅助或已不使用的类
 include ':debugger'

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ui-pagedataloader</string>
+    <string name="page_data_loader_error">获取数据失败,</string>
+    <string name="page_data_loader_retry">再试一次</string>
+    <string name="page_data_loader_empty">没有数据</string>
+    <string name="page_data_loader_loading">加载中...</string>
+
+    <string name="page_data_loader_no_network_msg">当前没有网络连接，请连接后重试</string>
+    <string name="page_data_loader_network_time_out_msg">网络连接失败，请重试</string>
+
+</resources>

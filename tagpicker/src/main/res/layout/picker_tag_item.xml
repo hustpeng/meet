@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.agmbat.tagpicker.TagView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/picker_tag_item"
+    android:textColor="@drawable/picker_tag_item_color" />

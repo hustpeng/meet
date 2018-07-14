@@ -1,0 +1,20 @@
+{
+  "default": {
+    "name": "保密",
+    "value": 2
+  },
+  "option": [
+    {
+      "name": "有自住房",
+      "value": 0
+    },
+    {
+      "name": "无自住房",
+      "value": 1
+    },
+    {
+      "name": "保密",
+      "value": 2
+    }
+  ]
+}

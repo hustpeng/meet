@@ -1,0 +1,16 @@
+{
+  "default": {
+    "name": "女",
+    "value": 0
+  },
+  "option": [
+    {
+      "name": "男",
+      "value": 1
+    },
+    {
+      "name": "女",
+      "value": 0
+    }
+  ]
+}

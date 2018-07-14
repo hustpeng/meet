@@ -1,0 +1,16 @@
+{
+  "default": {
+    "name": "已购",
+    "value": 1
+  },
+  "option": [
+    {
+      "name": "未购",
+      "value": 0
+    },
+    {
+      "name": "已购",
+      "value": 1
+    }
+  ]
+}
