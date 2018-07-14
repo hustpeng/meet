@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.agmbat.crashreport">
+
+    <application>
+        <activity
+            android:name="com.agmbat.crashreport.CrashReportDialog"
+            android:configChanges="keyboardHidden|orientation"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog" />
+    </application>
+
+</manifest>

@@ -9,6 +9,9 @@ include ':imagepicker'
 include ':wxshare'
 include ':isdialog'
 include ':tab'
+include ':filepicker'
+include ':crashreport'
+include ':swipemenulist'
 
 // 辅助或已不使用的类
 include ':debugger'

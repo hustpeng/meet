@@ -46,7 +46,6 @@ dependencies {
     compile "com.disbts:commonkit:${COMMONKIT_VERSION}@aar"
     compile "com.disbts:jutils:${JUTILS_VERSION}"
 
-    compile 'com.disbts:swipemenulist:3.5.2@aar'
     compile "com.disbts:pulltorefresh:3.5.5@aar"
     compile 'com.disbts:pagedataloader:3.5.7@aar'
 
@@ -58,7 +57,7 @@ dependencies {
     compile "com.disbts:emoji:4.2.2@aar"
     compile 'com.disbts:browser:4.1.7@aar'
 
-    compile "com.disbts:baidumap:${BAIDUMAP_VERSION}@aar"2
+    compile "com.disbts:baidumap:${BAIDUMAP_VERSION}@aar"
     compile 'com.disbts:zxing-core:4.1.8'
     compile 'com.disbts:zxing-android-core:4.1.8@aar'
 
@@ -76,11 +75,7 @@ dependencies {
     compile project(':imsdk')
     compile project(':imagepicker')
     compile project(':tab')
-
-    compile('com.agmbat:filepicker:1.0.2') {
-        exclude group: 'com.agmbat', module: 'jutils'
-        exclude group: 'com.agmbat', module: 'commonkit'
-    }
+    compile project(':crashreport')
 
     compile('com.agmbat:widget:1.0.1') {
         exclude group: 'com.agmbat', module: 'jutils'
@@ -92,10 +87,6 @@ dependencies {
         exclude group: 'com.agmbat', module: 'commonkit'
     }
 
-    compile('com.agmbat:crashreport:1.0.1') {
-        exclude group: 'com.agmbat', module: 'jutils'
-        exclude group: 'com.agmbat', module: 'commonkit'
-    }
 
     // 正式包不需要引用debugger工程
 //    compile project(':debugger')
