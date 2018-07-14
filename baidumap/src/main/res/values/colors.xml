@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--标题栏颜色-->
+    <color name="actionBarColor">#393A3E</color>
+    <!--标题栏点击背景色-->
+    <color name="actionBarPreColor">#303135</color>
+
+    <!--列表默认颜色-->
+    <color name="itemNorColor">#FFFEFFFF</color>
+    <!--列表点击颜色-->
+    <color name="itemPreColor">#EEEEEE</color>
+
+</resources>

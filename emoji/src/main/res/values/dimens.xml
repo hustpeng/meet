@@ -1,0 +1,7 @@
+<resources>
+
+    <dimen name="emoji_icon_size">32dip</dimen>
+    <dimen name="bar_tool_btn_width">56dp</dimen>
+    <dimen name="item_emoticon_size_default">32dp</dimen>
+    <dimen name="item_emoticon_size_big">60dp</dimen>
+</resources>

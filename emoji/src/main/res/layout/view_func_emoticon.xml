@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.6dp"
+        android:background="#CFCFCF" />
+
+    <com.agmbat.emoji.panel.p2.EmoticonsFuncView
+        android:id="@+id/view_epv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/view_eiv"
+        android:orientation="vertical" />
+
+    <com.agmbat.emoji.panel.p2.EmoticonsIndicatorView
+        android:id="@+id/view_eiv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/view_spit"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp" />
+
+    <View
+        android:id="@+id/view_spit"
+        android:layout_width="match_parent"
+        android:layout_height="0.6dp"
+        android:layout_above="@+id/view_etv"
+        android:background="#CFCFCF" />
+
+
+    <com.agmbat.emoji.panel.p2.EmoticonsToolBarView
+        android:id="@+id/view_etv"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" />
+</RelativeLayout>

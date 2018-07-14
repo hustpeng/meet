@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="MMFooter">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">49.0dip</item>
+    </style>
+
+    <style name="MMEditText">
+        <item name="android:textSize">@dimen/NormalTextSize</item>
+        <item name="android:textColor">@color/normal_text_color</item>
+        <item name="android:textColorHint">@color/hint_color_white_bg</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@drawable/edittext_bg_selector</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="ChattingUIWordCount">
+        <item name="android:textSize">13.0dip</item>
+        <item name="android:textColor">#ff000000</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+</resources>

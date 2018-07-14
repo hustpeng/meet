@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="SmallPadding">8.0dip</dimen>
+    <dimen name="ChattingFootPaddingBottom">7.5dip</dimen>
+    <dimen name="ChattingFootSwitcherWidth">48.0dip</dimen>
+    <dimen name="ChattingFootSendMargin">3.0dip</dimen>
+    <dimen name="ChattingFootEditMaxHeigh">80.0dip</dimen>
+    <dimen name="ChattingFootEditMinHeigh">28.0dip</dimen>
+    <dimen name="ChattingFootVoiceHeight">34.0dip</dimen>
+    <dimen name="NormalTextSize">16.0dip</dimen>
+    <dimen name="ChattingFootSendHeight">32.0dip</dimen>
+    <dimen name="ChattingFootSendMinWidth">44.0dip</dimen>
+    <dimen name="HintTextSize">14.0dip</dimen>
+    <dimen name="ChattingFootSmallerPadding">4.0dip</dimen>
+
+</resources>

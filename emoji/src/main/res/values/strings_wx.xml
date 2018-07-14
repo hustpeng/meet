@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="chatfooter_presstorcd">按住 说话</string>
+    <string name="chatfooter_releasetofinish">松开 结束</string>
+    <string name="chatfooter_SpeakerON">使用听筒模式</string>
+    <string name="chatfooter_SpeakerOff">使用扬声器模式</string>
+    <string name="chatfooter_SpeakerOff_now">当前为听筒播放模式</string>
+
+    <string name="chatfooter_getting">获取中...</string>
+    <string name="chat_footer_switch_mode_btn">语音说话与键盘输入切换</string>
+    <string name="chat_footer_switch_mode_voice_btn">切换到按住说话</string>
+    <string name="chat_footer_switch_mode_keybord_btn">切换到键盘</string>
+    <string name="chat_footer_send_edt">输入框</string>
+    <string name="chat_footer_smiley_btn">表情</string>
+    <string name="chat_footer_app_btn">更多</string>
+    <string name="chatting_send">发送</string>
+    <string name="chatting_copy">复制</string>
+    <string name="chatting_expose">投诉</string>
+    <string name="chatting_long_click_menu_delete_msg">删除消息</string>
+    <string name="chatting_long_click_menu_delete_img">删除图片</string>
+    <string name="chatting_long_click_menu_delete_voice">删除语音</string>
+    <string name="chatting_long_click_menu_delete_video">删除视频</string>
+    <string name="chatting_long_click_menu_save_video">保存视频</string>
+    <string name="chatting_long_click_menu_set_ring">设置为手机铃声</string>
+    <string name="chatting_long_click_menu_voice_trans">转换为文字（仅普通话）</string>
+    <string name="chatting_long_click_menu_copy_msg">复制消息</string>
+    <string name="chatting_long_click_menu_delete_emoji">删除表情</string>
+    <string name="chatting_long_click_menu_save_emoji">保存表情</string>
+    <string name="chatting_long_click_menu_resend_msg_img">重新发送</string>
+    <string name="chatting_long_click_menu_revoke_msg">撤回</string>
+    <string name="chatting_long_click_menu_more">更多</string>
+    <string name="chatting_long_click_menu_translate">翻译</string>
+    <string name="chatting_long_click_menu_switch_original">原文</string>
+    <string name="chatting_revoke_msg_loading">正在撤回消息</string>
+    <string name="chatting_revoke_msg_dialog_msg">无论对方是否已读，撤回这条消息？</string>
+    <string name="chatting_revoke_msg_dialog_failure">系统繁忙，请稍后再试</string>
+    <string name="chatting_revoke_msg_dialog_confirm">确定</string>
+    <string name="chatting_revoke_msg_tips">你撤回了一条消息</string>
+    <string name="chatting_send_video_local">从手机相册选择</string>
+    <string name="chatting_send_video_weixin">拍摄视频</string>
+    <string name="chatting_context_menu_image">从相册选择</string>
+    <string name="chatting_context_menu_take_picture">拍照</string>
+    <string name="chatting_toast_sdk_fail">请插入SD卡</string>
+    <string name="chatting_status_typing">对方正在输入...</string>
+    <string name="chatting_status_voice_typing">对方正在讲话...</string>
+    <string name="chatting_addcontact_btn">添加</string>
+    <string name="chatting_getimg_fail_tip">图片拉取失败</string>
+    <string name="chatting_recent_image_bubble_tip">你可能要发送的照片：</string>
+    <string name="chatting_empty_message_cant_be_sent">不能发送空白消息</string>
+    <string name="chatting_translate_tips_title">如何翻译文字消息</string>
+    <string name="chatting_translate_tips_content">长按文字消息后选择“翻译”，该消息的语言会被翻译成系统语言。</string>
+    <string name="chatting_fav">收藏</string>
+
+    <color name="footer_text_color">#ff7f7f7f</color>
+    <color name="normal_text_color">#ff353535</color>
+    <color name="hint_color_white_bg">#ffc5c5c5</color>
+
+</resources>
