@@ -29,14 +29,13 @@ dependencies {
     compile project(':commonkit')
     compile project(':jutils')
 
-    compile "com.agmbat:universal-image-loader:1.9.7"
-
 
     compile project(':asmack')
     compile project(':pagedataloader')
     compile project(':pulltorefresh')
     compile project(':baidumap')
     compile project(':adatabase')
+    compile project(':universal-image-loader')
 
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.greenrobot:eventbus:3.0.0'

@@ -30,7 +30,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
     compile project(':jutils')
-    compile "com.agmbat:universal-image-loader:1.9.7"
+    compile project(':universal-image-loader')
 }
 
 

@@ -43,12 +43,8 @@ dependencies {
     compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
     compile "com.android.support:recyclerview-v7:${SUPPORT_V7_VERSION}"
 
-    compile "com.agmbat:universal-image-loader:1.9.7"
-
-
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.greenrobot:eventbus:3.0.0'
-
 
 
     // butterknife库, 去掉其依赖库
@@ -77,11 +73,6 @@ dependencies {
     compile project(':inputvoice')
     compile project(':emoji')
     compile project(':baidumap')
-
-    compile('com.agmbat:widget:1.0.1') {
-        exclude group: 'com.agmbat', module: 'jutils'
-        exclude group: 'com.agmbat', module: 'commonkit'
-    }
 
 
     // 正式包不需要引用debugger工程

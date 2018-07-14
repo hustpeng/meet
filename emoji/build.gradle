@@ -23,8 +23,8 @@ dependencies {
     compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
     compile project(":inputview")
 
-    compile "com.agmbat:universal-image-loader:1.9.7"
     compile project(':commonkit')
     compile project(':jutils')
+    compile project(':universal-image-loader')
 
 }
