@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="PopupRightAboveAnimation">
+        <item name="android:windowEnterAnimation">@anim/quickaction_right_above_enter</item>
+        <item name="android:windowExitAnimation">@anim/quickaction_right_above_exit</item>
+    </style>
+
+    <style name="PopupRightBelowAnimation">
+        <item name="android:windowEnterAnimation">@anim/quickaction_right_below_enter</item>
+        <item name="android:windowExitAnimation">@anim/quickaction_right_below_exit</item>
+    </style>
+
+    <style name="PopupLeftAboveAnimation">
+        <item name="android:windowEnterAnimation">@anim/quickaction_left_above_enter</item>
+        <item name="android:windowExitAnimation">@anim/quickaction_left_above_exit</item>
+    </style>
+
+    <style name="PopupLeftBelowAnimation">
+        <item name="android:windowEnterAnimation">@anim/quickaction_left_below_enter</item>
+        <item name="android:windowExitAnimation">@anim/quickaction_left_below_exit</item>
+    </style>
+
+</resources>

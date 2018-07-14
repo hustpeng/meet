@@ -2,8 +2,13 @@ include ':app'
 include ':imsdk'
 include ':asmack'
 
+
 include ':photoview'
 include ':imagepicker'
+
+include ':wxshare'
+include ':isdialog'
+include ':tab'
 
 // 辅助或已不使用的类
 include ':debugger'

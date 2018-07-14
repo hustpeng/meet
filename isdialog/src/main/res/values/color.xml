@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="alertdialog_line">#c6c6c6</color>
+    <color name="actionsheet_blue">#037bff</color>
+    <color name="actionsheet_red">#fd4a2e</color>
+    <color name="actionsheet_gray">#8f8f8f</color>
+
+    <drawable name="popup_list_divider">#ff3e3e3e</drawable>
+
+    <color name="grid_menu_item_pressed">#44999999</color>
+</resources>
