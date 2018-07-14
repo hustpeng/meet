@@ -52,8 +52,6 @@ dependencies {
     compile 'com.disbts:swipemenulist:3.5.2@aar'
     compile "com.disbts:pulltorefresh:3.5.5@aar"
     compile 'com.disbts:pagedataloader:3.5.7@aar'
-    compile "com.disbts:imagepicker:4.2.0@aar"
-    compile "com.disbts:photoview:3.5.7@aar"
 
     compile "com.disbts:wheelpicker:4.2.0@aar"
     compile "com.disbts:tagpicker:4.2.0@aar"
@@ -77,6 +75,7 @@ dependencies {
     }
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile project(':imsdk')
+    compile project(':imagepicker')
 
     compile('com.agmbat:filepicker:1.0.2') {
         exclude group: 'com.agmbat', module: 'jutils'
@@ -101,7 +100,7 @@ dependencies {
         exclude group: 'com.agmbat', module: 'jutils'
         exclude group: 'com.agmbat', module: 'commonkit'
     }
-    compile('com.agmbat:isdialog:1.0.0') {
+    compile('com.agmbat:isdialog:1.0.1') {
         exclude group: 'com.agmbat', module: 'jutils'
         exclude group: 'com.agmbat', module: 'commonkit'
     }
