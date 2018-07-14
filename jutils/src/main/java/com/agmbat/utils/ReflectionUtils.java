@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
 public class ReflectionUtils {
 
     /**
-     * 使用无参构造函数和指定的classLoader创建实例, 多用于插件加载
+     * 使用无参构造函数和指定的classLoader创建实例
      *
      * @param classLoader
      * @param className
@@ -30,8 +30,7 @@ public class ReflectionUtils {
     }
 
     /**
-     * 创建类实例,需要指定参数类型,如果不指定参数类型,会存在找不到构造函数的情况
-     * 存在继承关系,通过类实例获取的类型不能准确的匹配参数类型
+     * 创建类实例,需要指定参数类型,如果不指定参数类型，会存在找不到构造函数的情况,由于继承原因，通过类实例不能准确的匹配参数类型
      *
      * @param className
      * @param parameterTypes
@@ -256,7 +255,6 @@ public class ReflectionUtils {
      * @param elFieldName the name of field
      * @param value       the field value
      */
-    @Deprecated
     public static void setElFieldValue(Object object, String elFieldName, Object value) {
         String[] fieldNames = elFieldName.split("[.]");
         int length = fieldNames.length - 1;
@@ -277,7 +275,6 @@ public class ReflectionUtils {
      * @param elFieldName the name of field
      * @return the field value, possibly boxed
      */
-    @Deprecated
     public static Object getElFieldValue(Object object, String elFieldName) {
         String[] fieldNames = elFieldName.split("[.]");
         for (String fName : fieldNames) {
@@ -389,12 +386,6 @@ public class ReflectionUtils {
         return null;
     }
 
-    /**
-     * 获取参数类型
-     *
-     * @param type
-     * @return
-     */
     private static Type getType(ParameterizedType type) {
         Type cmpType = type.getActualTypeArguments()[0];
         if (cmpType instanceof ParameterizedType) {

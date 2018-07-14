@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
+ * <p>
+ * jutils
+ *
+ * @author mayimchen
+ * @since 2016-10-07
+ */
 package com.agmbat.text;
 
 import com.agmbat.log.Log;

@@ -1,7 +1,7 @@
 package com.agmbat.log;
 
-import com.agmbat.text.StringUtils;
 import com.agmbat.utils.Platform;
+import com.agmbat.text.StringUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -15,6 +15,11 @@ public class Log {
      * Priority constant for enable all loggings.
      */
     public static final int ALL = -1;
+
+    /**
+     * Priority constant for {@link #println(int, String, String)} or {@link #setFilterLevel(int)} methods; use Log.p.
+     */
+    public static final int PROFILE = 1;
 
     /**
      * Priority constant for {@link #println(int, String, String)} or {@link #setFilterLevel(int)} methods; use Log.v.

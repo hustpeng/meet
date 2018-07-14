@@ -1,26 +1,28 @@
+/**
+ * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
+ * <p>
+ * jhttp
+ *
+ * @author mayimchen
+ * @since 2016-10-16
+ */
 package com.agmbat.net;
 
 import com.agmbat.io.IoUtils;
 import com.agmbat.log.Log;
+import com.agmbat.text.StringUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
-/**
- * http请求类
- */
 public class HttpRequester {
 
     /**
@@ -33,14 +35,51 @@ public class HttpRequester {
      */
     private static final String COMPRESS_FORMAT_DEFLATE = "deflate";
 
-    /**
-     * 换行字符串
-     */
+
     private static final String LINE_FEED = "\r\n";
 
-    /**
-     * http请求的数据
-     */
+    private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
+    private static final String ENCODING_GZIP = "gzip";
+
+    private static final int SOCKET_BUUFER_SIZE = 8192; // 8k
+    private static final int SOCKET_TIMEOUT = 60 * 1000; // 60 seconds
+    private static final int CONNECTION_TIMEOUT = 20 * 1000; // 20 seconds
+    private static final int CONNECTION_MAX_IDLE = 15; // 15 seconds
+    private static final int IDLE_CHECK_INTERVAL = 5 * 1000; // 5 seconds
+    private static final int DEFAULT_ALIVE_DURATION = 15 * 1000; // 15 seconds
+
+
+    private static final String DEFAULT_USER_AGENT =
+            "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.8) Gecko/20100202 Firefox/3.5.8 GTB6";
+
+
+//    private static HttpParams createDefaultHttpParams() {
+//        final HttpParams params = new BasicHttpParams();
+//
+//        // Increase the connection count for the connection manager.
+//        ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(4));
+//
+//        // Turn off stale checking. Our connections break all the time anyway,
+//        // and it's not worth it to pay the penalty of checking every time.
+//        HttpConnectionParams.setStaleCheckingEnabled(params, false);
+//
+//        // Default connection and socket timeout of 20 seconds. Tweak to taste.
+//        HttpConnectionParams.setConnectionTimeout(params, CONNECTION_TIMEOUT);
+//        HttpConnectionParams.setSoTimeout(params, SOCKET_TIMEOUT);
+//        HttpConnectionParams.setSocketBufferSize(params, SOCKET_BUUFER_SIZE);
+//        // android-changed from AndroidHttpClient
+//        HttpProtocolParams.setUseExpectContinue(params, false);
+//        // Don't handle redirects -- return them to the caller. Our code
+//        // often wants to re-POST after a redirect, which we must do ourselves.
+//        HttpClientParams.setRedirecting(params, false);
+//        return params;
+//    }
+
+
+    public static String getDefaultUserAgent() {
+        return DEFAULT_USER_AGENT;
+    }
+
     private final HttpRequesterData mData;
 
     private HttpRequester(HttpRequesterData data) {

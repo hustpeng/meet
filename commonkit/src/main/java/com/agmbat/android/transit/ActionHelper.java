@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Action辅助类，用于定义打开Activity
+ * Action辅助类
  */
 public class ActionHelper {
 
@@ -23,7 +23,7 @@ public class ActionHelper {
     private static int sRequestCode = 153;
 
     /**
-     * 请求
+     * 获取位置
      *
      * @param context
      */

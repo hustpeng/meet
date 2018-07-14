@@ -1,14 +1,14 @@
 package com.agmbat.android.media;
 
-import com.agmbat.file.FileUtils;
-import com.agmbat.io.IoUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+
+import com.agmbat.file.FileUtils;
+import com.agmbat.io.IoUtils;
 
 public class AmrHelper {
 
@@ -31,7 +31,7 @@ public class AmrHelper {
             IoUtils.closeQuietly(fis);
             IoUtils.closeQuietly(fos);
         }
-        FileUtils.delete(path2);
+        FileUtils.deleteFileIfExist(path2);
     }
 
     // 得到amr的时长

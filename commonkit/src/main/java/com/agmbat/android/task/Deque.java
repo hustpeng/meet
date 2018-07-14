@@ -80,27 +80,27 @@ import java.util.Queue;
  * <td ALIGN=CENTER><b>Equivalent <tt>Deque</tt> Method</b></td>
  * </tr>
  * <tr>
- * <td>{@link Queue#add add(e)}</td>
+ * <td>{@link java.util.Queue#add add(e)}</td>
  * <td>{@link #addLast addLast(e)}</td>
  * </tr>
  * <tr>
- * <td>{@link Queue#offer offer(e)}</td>
+ * <td>{@link java.util.Queue#offer offer(e)}</td>
  * <td>{@link #offerLast offerLast(e)}</td>
  * </tr>
  * <tr>
- * <td>{@link Queue#remove remove()}</td>
+ * <td>{@link java.util.Queue#remove remove()}</td>
  * <td>{@link #removeFirst removeFirst()}</td>
  * </tr>
  * <tr>
- * <td>{@link Queue#poll poll()}</td>
+ * <td>{@link java.util.Queue#poll poll()}</td>
  * <td>{@link #pollFirst pollFirst()}</td>
  * </tr>
  * <tr>
- * <td>{@link Queue#element element()}</td>
+ * <td>{@link java.util.Queue#element element()}</td>
  * <td>{@link #getFirst getFirst()}</td>
  * </tr>
  * <tr>
- * <td>{@link Queue#peek peek()}</td>
+ * <td>{@link java.util.Queue#peek peek()}</td>
  * <td>{@link #peek peekFirst()}</td>
  * </tr>
  * </table>

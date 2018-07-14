@@ -767,7 +767,7 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
     public <T> T[] toArray(T[] a) {
         int size = size();
         if (a.length < size) {
-            a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+            a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
         }
         copyElements(a);
         if (a.length > size) {

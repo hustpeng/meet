@@ -38,8 +38,8 @@ public class SysResources {
      * 获取导航栏高度，有些没有虚拟导航栏的手机也能获取到，建议先判断是否有虚拟按键
      */
     public static int getNavigationBarHeight() {
-        int id = getSysIdentifier("navigation_bar_height", "dimen");
-        return id > 0 ? SYS_RES.getDimensionPixelSize(id) : 0;
+        int resourceId = getSysIdentifier("navigation_bar_height", "dimen");
+        return resourceId > 0 ? SYS_RES.getDimensionPixelSize(resourceId) : 0;
     }
 
     public static int getSysDrawableId(String name) {

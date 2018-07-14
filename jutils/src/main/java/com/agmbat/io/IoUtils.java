@@ -1,8 +1,5 @@
 package com.agmbat.io;
 
-import com.agmbat.file.FileUtils;
-import com.agmbat.text.StringUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -11,8 +8,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
+
+import com.agmbat.bit.BitUtil;
+import com.agmbat.file.FileUtils;
+import com.agmbat.text.StringUtils;
 
 /**
  * IO操作工具类
@@ -54,9 +57,9 @@ public class IoUtils {
     /**
      * 将InputStream转存到文件中
      *
-     * @param in      输入流
-     * @param outFile 输出文件
-     * @throws IOException If any error occurs during the copy.
+     * @param in
+     * @param outFile
+     * @throws IOException
      */
     public static void copyStream(InputStream in, File outFile) throws IOException {
         copyStream(in, outFile, 0, null);
@@ -206,6 +209,19 @@ public class IoUtils {
         return text;
     }
 
+    public static String loadContentSkipBoe(InputStream stream, String charsetName) throws IOException {
+        final byte[] boe = new byte[3];
+        stream.read(boe, 0, boe.length);
+        if (BitUtil.boeIsUtf8(boe)) {
+            charsetName = UTF_8;
+            stream.reset();
+        } else if (BitUtil.boeIsUnicode(boe)) {
+            charsetName = "Unicode";
+            stream.reset();
+            stream.skip(2);
+        }
+        return loadContent(stream, charsetName);
+    }
 
     /**
      * 将Stream转为byte数组
@@ -243,11 +259,6 @@ public class IoUtils {
     }
 
 
-    /**
-     * 关闭socket, 此方法定义在这的原因是低版本或其他平台的java中,ServerSocket未实现Closeable
-     *
-     * @param socket
-     */
     public static void closeQuietly(ServerSocket socket) {
         if (socket != null) {
             try {
@@ -258,11 +269,6 @@ public class IoUtils {
         }
     }
 
-    /**
-     * 关闭closeable
-     *
-     * @param closeable
-     */
     public static void closeQuietly(AutoCloseable closeable) {
         if (closeable != null) {
             try {
@@ -274,4 +280,19 @@ public class IoUtils {
     }
 
 
+    public static InputStreamReader newUtf8OrDefaultInputStreamReader(InputStream stream) {
+        try {
+            return new InputStreamReader(stream, com.agmbat.io.IoUtils.UTF_8);
+        } catch (UnsupportedEncodingException e) {
+            return new InputStreamReader(stream);
+        }
+    }
+
+    public static OutputStreamWriter newUtf8OrDefaultOutputStreamWriter(OutputStream stream) {
+        try {
+            return new OutputStreamWriter(stream, com.agmbat.io.IoUtils.UTF_8);
+        } catch (UnsupportedEncodingException e) {
+            return new OutputStreamWriter(stream);
+        }
+    }
 }

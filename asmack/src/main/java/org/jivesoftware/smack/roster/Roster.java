@@ -20,7 +20,7 @@
 
 package org.jivesoftware.smack.roster;
 
-import com.agmbat.debug.Debug;
+import com.agmbat.log.Debug;
 import com.agmbat.log.Log;
 
 import org.jivesoftware.smack.AbstractConnectionListener;

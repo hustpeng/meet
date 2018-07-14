@@ -15,6 +15,15 @@
  */
 package com.agmbat.android.sysprovider;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.agmbat.android.SystemManager;
+import com.agmbat.android.utils.AppUtils;
+
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -35,15 +44,7 @@ import android.provider.MediaStore.Video.VideoColumns;
 import android.util.Log;
 import android.view.View;
 
-import com.agmbat.android.SystemManager;
 import com.agmbat.android.image.BitmapUtils;
-import com.agmbat.android.utils.AppUtils;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SysProvider {
 

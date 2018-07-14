@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
+ *
+ * sql
+ *
+ * @author mayimchen
+ * @since 2016-12-17
+ */
 package com.agmbat.sql;
 
 import com.agmbat.text.StringUtils;
@@ -20,7 +28,7 @@ public class TableSqlBuilder {
         mBuilder = new StringBuilder();
     }
 
-    public TableSqlBuilder addColumn(String columnName, String dataType, String... params) {
+    public TableSqlBuilder addColumn(String columnName, String dataType, String...params) {
         if (mBuilder.length() > 0) {
             mBuilder.append(',');
         }
@@ -37,7 +45,7 @@ public class TableSqlBuilder {
         return this;
     }
 
-    public TableSqlBuilder primaryKey(String... columns) {
+    public TableSqlBuilder primaryKey(String...columns) {
         StringBuilder builder = new StringBuilder();
         for (String column : columns) {
             if (builder.length() > 0) {

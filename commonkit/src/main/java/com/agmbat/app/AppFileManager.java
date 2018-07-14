@@ -1,8 +1,6 @@
 package com.agmbat.app;
 
-import android.content.Context;
-import android.os.Environment;
-import android.text.TextUtils;
+import java.io.File;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.ApkUtils;
@@ -10,13 +8,13 @@ import com.agmbat.android.utils.StorageUtils;
 import com.agmbat.file.FileUtils;
 import com.agmbat.log.Log;
 
-import java.io.File;
+import android.content.Context;
+import android.os.Environment;
+import android.text.TextUtils;
 
 public class AppFileManager {
 
-    /**
-     * 获取应用在sdcard创建的cache目录
-     */
+    // 获取应用在sdcard创建的cache目录
     public static File getExternalCacheDir() {
         Context context = AppResources.getAppContext();
         File cacheDir = context.getExternalCacheDir();

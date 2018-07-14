@@ -40,7 +40,6 @@ public class Platform {
     public static boolean isAndroid() {
         if (isLinux()) {
             try {
-                // 通过class loader中是否有Android相关的类来确定环境
                 Class.forName("android.app.Application", false, ClassLoader.getSystemClassLoader());
                 return true;
             } catch (Exception e) {
@@ -50,7 +49,7 @@ public class Platform {
     }
 
     /**
-     * 判断当前是否运行在idea环境中, 此方法在不同版本上返回不了正确的值
+     * 判断当前是否运行在idea环境中
      *
      * @return
      */

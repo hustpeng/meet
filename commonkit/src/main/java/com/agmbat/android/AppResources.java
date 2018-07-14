@@ -1,23 +1,38 @@
 package com.agmbat.android;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
+
+import com.agmbat.file.ZipUtils;
+import com.agmbat.io.IoUtils;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.agmbat.io.IoUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 /**
  * 提供当前app的资源
@@ -29,11 +44,6 @@ public class AppResources {
     private static String sPackageName;
     private static AssetManager sAssetManager;
 
-    /**
-     * 初始化方法, 需要程序启动时调用
-     *
-     * @param context
-     */
     public static void init(Context context) {
         sAppContext = context.getApplicationContext();
         sRes = context.getResources();
@@ -313,12 +323,6 @@ public class AppResources {
         return null;
     }
 
-    /**
-     * 获取 asset 文件大小
-     *
-     * @param name
-     * @return
-     */
     public static long getAssetFileSize(String name) {
         InputStream is = openAssetFile(name);
         if (is != null) {
@@ -345,12 +349,6 @@ public class AppResources {
         return new BitmapDrawable(bitmap);
     }
 
-    /**
-     * 获取 assets 文件中图片
-     *
-     * @param assetPath
-     * @return
-     */
     public static Bitmap getAssetBitmap(String assetPath) {
         if (TextUtils.isEmpty(assetPath)) {
             return null;
@@ -372,31 +370,36 @@ public class AppResources {
             return null;
         }
         InputStream is = openAssetFile(assetPath);
-        return readAndClose(is);
+        if (is != null) {
+            try {
+                return IoUtils.loadContent(is);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                IoUtils.closeQuietly(is);
+            }
+        }
+        return null;
     }
 
-    /**
-     * 复制asset下的文件到指定位置
-     *
-     * @param name
-     * @param dest
-     * @return
-     */
     public static boolean copyAssetFile(String name, String dest) {
         return copyAssetFile(name, new File(dest));
     }
 
-
-    /**
-     * 复制asset下的文件到指定位置
-     *
-     * @param name
-     * @param file
-     * @return
-     */
     public static boolean copyAssetFile(String name, File file) {
         InputStream is = openAssetFile(name);
-        return copyAndClose(is, file);
+        if (is == null) {
+            return false;
+        }
+        try {
+            IoUtils.copyStream(is, file);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IoUtils.closeQuietly(is);
+        }
+        return false;
     }
 
     /**
@@ -416,43 +419,7 @@ public class AppResources {
      * @return The whole file in a string
      */
     public static String readRawFile(int resId) {
-        InputStream is = openRawResource(resId);
-        return readAndClose(is);
-    }
-
-    /**
-     * 复制raw下的文件到指定位置
-     *
-     * @param rawId
-     * @param outPath
-     * @return
-     */
-    public static boolean copyRawFile(int rawId, String outPath) {
-        return copyRawFile(rawId, new File(outPath));
-    }
-
-    /**
-     * 复制raw文件到指定文件
-     *
-     * @param rawId
-     * @param outFile
-     * @return
-     */
-    public static boolean copyRawFile(int rawId, File outFile) {
-        InputStream is = openRawResource(rawId);
-        return copyAndClose(is, outFile);
-    }
-
-    /**
-     * 读取流内容,并关闭流
-     *
-     * @param is
-     * @return
-     */
-    private static String readAndClose(InputStream is) {
-        if (is == null) {
-            return null;
-        }
+        InputStream is = sRes.openRawResource(resId);
         try {
             return IoUtils.loadContent(is);
         } catch (IOException e) {
@@ -463,19 +430,24 @@ public class AppResources {
         return null;
     }
 
+    public static boolean copyRawFile(int rawId, String dest) {
+        return copyRawFile(rawId, new File(dest));
+    }
+
     /**
-     * 复制流到文件,并关闭流
+     * 复制raw文件到指定文件
      *
-     * @param is
-     * @param outFile
+     * @param rawId
+     * @param file
      * @return
      */
-    private static boolean copyAndClose(InputStream is, File outFile) {
+    public static boolean copyRawFile(int rawId, File file) {
+        InputStream is = openRawResource(rawId);
         if (is == null) {
             return false;
         }
         try {
-            IoUtils.copyStream(is, outFile);
+            IoUtils.copyStream(is, file);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -484,4 +456,52 @@ public class AppResources {
         }
         return false;
     }
+
+    /**
+     * 读取apk中META-INF/下指定的文件
+     *
+     * @param path
+     * @return
+     */
+    public static String readMetaInfFile(String path) {
+        String sourceDir = sAppContext.getApplicationInfo().sourceDir;
+        String name = "META-INF/" + path;
+        return ZipUtils.readZipFileText(sourceDir, name);
+    }
+
+    /**
+     * Update the application locale based on the language
+     *
+     * @param language
+     */
+    public static void updateLocale(String language) {
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        sRes.updateConfiguration(configuration, sRes.getDisplayMetrics());
+    }
+
+    public static boolean isHardwareAccelerated(Canvas canvas) {
+        if (Build.VERSION.SDK_INT >= 11) {
+            try {
+                return (Boolean) Canvas.class.getDeclaredMethod("isHardwareAccelerated").invoke(canvas);
+            } catch (Exception e) {
+                // ignore exception
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 去掉ContentView中的前景色(黑色的阴影)
+     *
+     * @param activity
+     */
+    public static void disableContentForeground(Activity activity) {
+        FrameLayout content = (FrameLayout) activity.findViewById(android.R.id.content);
+        content.setForeground(null);
+    }
+
+
 }

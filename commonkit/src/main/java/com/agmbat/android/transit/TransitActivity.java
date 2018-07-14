@@ -8,7 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 /**
- * 中转的透明Activity, 并且还需要处理onActivityResult
+ * 中转的Activity, 并且还需要处理onActivityResult
  */
 public class TransitActivity extends Activity {
 

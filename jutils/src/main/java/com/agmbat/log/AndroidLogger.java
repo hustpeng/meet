@@ -9,9 +9,6 @@ import java.util.regex.Pattern;
  */
 public class AndroidLogger implements ILogger {
 
-    /**
-     * 分行
-     */
     private static final Pattern NEW_LINE_PATTERN = Pattern.compile("\r|\r\n|\n");
 
     @Override
@@ -24,6 +21,7 @@ public class AndroidLogger implements ILogger {
             printAndroidLog(priority, tag, message);
         }
     }
+
 
     /**
      * Low-level logging call.

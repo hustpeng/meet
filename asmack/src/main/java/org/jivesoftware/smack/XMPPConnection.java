@@ -21,7 +21,7 @@
 package org.jivesoftware.smack;
 
 
-import com.agmbat.debug.Debug;
+import com.agmbat.log.Debug;
 
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;

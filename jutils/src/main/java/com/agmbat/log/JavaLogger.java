@@ -77,6 +77,7 @@ public class JavaLogger implements ILogger {
 
         /**
          * Returns the {@link LogLevel} enum matching the specified letter.
+         * <p/>
          * The letter is passed as a {@link String} argument, but only the first character is used.
          *
          * @param letter the letter matching a <code>LogLevel</code> enum

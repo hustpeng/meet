@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
+ * <p>
+ * jhttp
+ *
+ * @author mayimchen
+ * @since 2016-10-16
+ */
 package com.agmbat.net;
 
 import com.agmbat.file.FileUtils;
@@ -179,5 +187,4 @@ public class HttpUtils {
         }
         return null;
     }
-
 }

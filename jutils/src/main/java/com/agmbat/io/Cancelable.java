@@ -8,7 +8,7 @@ public interface Cancelable {
     /**
      * 是否已经取消
      *
-     * @return true 已经取消
+     * @return
      */
     public boolean isCancelled();
 }

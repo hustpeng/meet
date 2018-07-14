@@ -1,9 +1,9 @@
 package com.agmbat.android.utils;
 
+import com.agmbat.android.AppResources;
+
 import android.content.Context;
 import android.widget.Toast;
-
-import com.agmbat.android.AppResources;
 
 /**
  * Toast工具类
@@ -25,7 +25,7 @@ public class ToastUtil {
      *
      * @param text
      */
-    public static void showToast(CharSequence text) {
+    public static void showToast(final CharSequence text) {
         final int duration;
         if (text.length() <= 15) {
             duration = Toast.LENGTH_SHORT;
@@ -35,19 +35,19 @@ public class ToastUtil {
         show(text, duration);
     }
 
-    public static void showToastLong(int resId) {
+    public static void showToastLong(final int resId) {
         show(resId, Toast.LENGTH_LONG);
     }
 
-    public static void showToastLong(CharSequence text) {
+    public static void showToastLong(final CharSequence text) {
         show(text, Toast.LENGTH_LONG);
     }
 
-    public static void showToastShort(int resId) {
+    public static void showToastShort(final int resId) {
         show(resId, Toast.LENGTH_SHORT);
     }
 
-    public static void showToastShort(CharSequence text) {
+    public static void showToastShort(final CharSequence text) {
         show(text, Toast.LENGTH_SHORT);
     }
 
@@ -58,7 +58,7 @@ public class ToastUtil {
      * @param length
      */
     private static void show(final CharSequence text, final int length) {
-        UiUtils.runOnUiThread(new Runnable() {
+        UiUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
                 showToastSafely(text, length);
@@ -73,7 +73,7 @@ public class ToastUtil {
      * @param length
      */
     private static void show(final int resId, final int length) {
-        UiUtils.runOnUiThread(new Runnable() {
+        UiUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
                 showToastSafely(resId, length);
@@ -85,12 +85,12 @@ public class ToastUtil {
      * 安全的显示toast
      *
      * @param text
-     * @param duration
+     * @param length
      */
-    private static void showToastSafely(final CharSequence text, final int duration) {
+    private static void showToastSafely(final CharSequence text, final int length) {
         try {
-            Context context = AppResources.getAppContext();
-            Toast.makeText(context, text, duration).show();
+            final Context context = AppResources.getAppContext();
+            Toast.makeText(context, text, length).show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -100,12 +100,12 @@ public class ToastUtil {
      * 安全的显示toast
      *
      * @param resId
-     * @param duration
+     * @param length
      */
-    private static void showToastSafely(final int resId, final int duration) {
+    private static void showToastSafely(final int resId, final int length) {
         try {
-            Context context = AppResources.getAppContext();
-            Toast.makeText(context, context.getText(resId), duration).show();
+            final Context context = AppResources.getAppContext();
+            Toast.makeText(context, context.getText(resId), length).show();
         } catch (Exception e) {
             e.printStackTrace();
         }

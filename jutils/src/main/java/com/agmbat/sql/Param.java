@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
+ * <p>
+ * sql
+ *
+ * @author mayimchen
+ * @since 2016-12-17
+ */
 package com.agmbat.sql;
 
 public class Param {
