@@ -7,6 +7,7 @@ import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.AppUtils;
 import com.agmbat.imsdk.account.RegisterInfo;
 import com.agmbat.imsdk.asmack.roster.RosterManager;
+import com.agmbat.imsdk.group.CreateGroupIQProvider;
 import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.imsdk.util.LocationAutoSync;
 import com.agmbat.imsdk.util.LocationHelper;
@@ -91,6 +92,8 @@ public class XMPPManager {
 
     // 47.106.77.125
     private static final String URL = "http://yuan520.com";
+
+    public static final String GROUP_CHAT_SERVER = "circle.yuan520.com";
 
     /**
      * 端口
@@ -217,6 +220,9 @@ public class XMPPManager {
                 new PaidAccountProvider());
         pm.addIQProvider(PaidPageInfoProvider.elementName(), PaidPageInfoProvider.namespace(),
                 new PaidPageInfoProvider());
+
+        //群相关
+        pm.addIQProvider(CreateGroupIQProvider.elementName(), CreateGroupIQProvider.namespace(), new CreateGroupIQProvider());
 
         pm.addExtensionProvider(MessageHtmlProvider.elementName(), MessageHtmlProvider.namespace(),
                 new MessageHtmlProvider());

@@ -1,7 +1,6 @@
 package com.agmbat.meetyou.edituserinfo;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -10,15 +9,11 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.file.FileUtils;
-import com.agmbat.imagepicker.ImagePicker;
 import com.agmbat.imagepicker.ImagePickerHelper;
 import com.agmbat.imagepicker.OnPickImageListener;
 import com.agmbat.imagepicker.PickerOption;
 import com.agmbat.imagepicker.bean.ImageItem;
-import com.agmbat.imagepicker.loader.UILImageLoader;
-import com.agmbat.imagepicker.ui.ImageGridActivity;
 import com.agmbat.imagepicker.view.CropImageView;
-import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.remotefile.FileApiResult;
@@ -36,10 +31,8 @@ import com.agmbat.photoview.PhotoView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smackx.vcard.VCardObject;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -183,7 +176,7 @@ public class EditAvatarActivity extends Activity {
         dialog.setMessage("正在上传头像...");
         dialog.setCancelable(false);
         dialog.show();
-        RemoteFileManager.uploadAvatarFile(path, new OnFileUploadListener() {
+        RemoteFileManager.uploadAvatarFile(path, "", new OnFileUploadListener() {
 
             @Override
             public void onUpload(FileApiResult apiResult) {

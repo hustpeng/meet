@@ -78,7 +78,7 @@ public class GroupSearchActivity extends Activity {
 
         mTagSelectedView.setOnSelectedListener(new TagSelectedView.OnSelectedListener() {
             @Override
-            public void onSelected(String tag) {
+            public void onSelected(int index, String tag) {
                 mPageDataLoader.loadData();
             }
         });
@@ -143,7 +143,7 @@ public class GroupSearchActivity extends Activity {
         mTagSelectedView.setSelectedTag(mGroupCategory.name);
         mTagSelectedView.setOnSelectedListener(new TagSelectedView.OnSelectedListener() {
             @Override
-            public void onSelected(String tag) {
+            public void onSelected(int index, String tag) {
                 mGroupCategory = findGroupCategory(tag);
             }
         });

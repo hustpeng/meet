@@ -69,11 +69,11 @@ public class RemoteFileManager {
 
     /**
      * 上传头像文件
-     *
      * @param path
+     * @param circleJid 如果是群头像，请传群ID，否则传空值
      * @param l
      */
-    public static void uploadAvatarFile(final String path, final OnFileUploadListener l) {
+    public static void uploadAvatarFile(final String path, final String circleJid, final OnFileUploadListener l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, FileApiResult>() {
             @Override
             protected FileApiResult doInBackground(Void... voids) {
@@ -83,7 +83,7 @@ public class RemoteFileManager {
                 File outFile = new File(UserFileManager.getCurImageDir(), name);
                 // 将头像大小调整为400x400
                 ImageUtils.resizeImage(file.getAbsolutePath(), outFile.getAbsolutePath(), 400, 400);
-                return requestUploadAvatar(outFile.getAbsolutePath());
+                return requestUploadAvatar(outFile.getAbsolutePath(), circleJid);
             }
 
             @Override
@@ -98,14 +98,15 @@ public class RemoteFileManager {
 
     /**
      * 上传图像文件
-     *
+     * @param path
+     * @param circleJid 如果是群头像，请传群ID，否则为空
      * @return
      */
-    private static FileApiResult requestUploadAvatar(String path) {
+    private static FileApiResult requestUploadAvatar(String path, String circleJid) {
         String phone = XMPPManager.getInstance().getConnectionUserName();
         String ticket = XMPPManager.getInstance().getTokenManager().getTokenRetry();
         String format = FileUtils.getExtension(path);
-        FileApiResult result = FileApi.uploadAvatar(phone, ticket, format, new File(path));
+        FileApiResult result = FileApi.uploadAvatar(phone, ticket, format, circleJid, new File(path));
         if (result == null) {
             result = new FileApiResult();
             result.mResult = false;

@@ -1,6 +1,8 @@
 package com.agmbat.meetyou.group;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
+import com.agmbat.android.task.DialogAsyncTask;
 import com.agmbat.android.utils.AppUtils;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
@@ -20,11 +23,24 @@ import com.agmbat.imagepicker.OnPickImageListener;
 import com.agmbat.imagepicker.PickerOption;
 import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.view.CropImageView;
+import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.group.CreateGroupIQ;
+import com.agmbat.imsdk.group.CreateGroupResultIQ;
+import com.agmbat.imsdk.remotefile.FileApiResult;
+import com.agmbat.imsdk.remotefile.OnFileUploadListener;
+import com.agmbat.imsdk.remotefile.RemoteFileManager;
 import com.agmbat.isdialog.ISAlertDialog;
+import com.agmbat.isdialog.ISLoadingDialog;
+import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.TagSelectedView;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.nostra13.universalimageloader.core.download.Scheme;
+
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Packet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,9 +109,9 @@ public class CreateGroupActivity extends Activity {
     private String mAvatarPath;
 
     /**
-     * 群类名称
+     * 索引
      */
-    private String mGroupCategory;
+    private int mSelectedGroupIndex;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,37 +120,79 @@ public class CreateGroupActivity extends Activity {
         setContentView(R.layout.activity_create_group);
         ButterKnife.bind(this);
         mCheckBox.setChecked(false);
-        mVerifyCheckbox.setChecked(true);
+        mVerifyCheckbox.setChecked(false);
 
         String uri = Scheme.wrapUri("drawable", String.valueOf(R.drawable.selector_image_add));
         ImageManager.displayImage(uri, mAvatarView, AvatarHelper.getGroupOptions());
 
-        List<String> tagList = new ArrayList<>();
-        tagList.add("单身");
-        tagList.add("已婚");
-        tagList.add("兴趣");
-        tagList.add("娱乐");
-        tagList.add("职场");
-        tagList.add("商务");
-        tagList.add("学习");
-        tagList.add("生活");
-        tagList.add("同城");
-        tagList.add("同乡");
-        tagList.add("同学");
-        tagList.add("战友");
-        tagList.add("其它");
-        mTagSelectedView.setTagList(tagList);
-        mTagSelectedView.setSelectedTag("其它");
         mTagSelectedView.setOnSelectedListener(new TagSelectedView.OnSelectedListener() {
             @Override
-            public void onSelected(String tag) {
-                mGroupCategory = tag;
+            public void onSelected(int index, String tag) {
+                mSelectedGroupIndex = index;
             }
         });
-
-
+        startLoadGroupTags();
         showPage1();
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupCreateListener, new PacketTypeFilter(CreateGroupResultIQ.class));
     }
+
+
+    private LoadGroupTagsTask mLoadGroupTagsTask;
+    private List<GroupTag> mGroupTags;
+
+    private void startLoadGroupTags() {
+        List<GroupTag> cachedGroupTags = GroupDBCache.getGroupTags();
+        if ((null == cachedGroupTags || cachedGroupTags.size() == 0)) {
+            if (null == mLoadGroupTagsTask) {
+                mLoadGroupTagsTask = new LoadGroupTagsTask(this);
+                mLoadGroupTagsTask.execute();
+            }
+        } else {
+            fillGroupTags(cachedGroupTags);
+        }
+    }
+
+
+    private class LoadGroupTagsTask extends DialogAsyncTask<Void, Void, List<GroupTag>> {
+
+        public LoadGroupTagsTask(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onPrepareDialog(ProgressDialog dialog) {
+            dialog.setMessage("加载群分类");
+        }
+
+        @Override
+        protected List<GroupTag> doInBackground(Void... voids) {
+            List<GroupTag> groupTags = GroupManager.requestAllGroupTags();
+            GroupDBCache.saveAllGroupTags(groupTags);
+            return groupTags;
+        }
+
+        @Override
+        protected void onPostExecute(List<GroupTag> groupTags) {
+            super.onPostExecute(groupTags);
+            mLoadGroupTagsTask = null;
+            if (null != groupTags) {
+                fillGroupTags(groupTags);
+            }
+        }
+    }
+
+    private void fillGroupTags(List<GroupTag> groupTags) {
+        List<String> tagsText = new ArrayList<>();
+        for (int i = 0; i < groupTags.size(); i++) {
+            tagsText.add(groupTags.get(i).getName());
+        }
+        mTagSelectedView.setTagList(tagsText);
+        if (groupTags.size() > 0) {
+            mTagSelectedView.setSelectedTag(groupTags.size() - 1);
+        }
+        mGroupTags = groupTags;
+    }
+
 
     @Override
     public void finish() {
@@ -216,8 +274,80 @@ public class CreateGroupActivity extends Activity {
 
     @OnClick(R.id.btn_create_group)
     void onClickCreateGroup() {
-
+        if (mSelectedGroupIndex < 0 || mSelectedGroupIndex >= mGroupTags.size()) {
+            ToastUtil.showToast("请选择一个群分类");
+            return;
+        }
+        showCreateProgressDialog();
+        GroupTag groupTag = mGroupTags.get(mSelectedGroupIndex);
+        CreateGroupIQ createGroupIQ = new CreateGroupIQ(mInputNicknameView.getText().toString(), mVerifyCheckbox.isChecked(), groupTag.getId());
+        createGroupIQ.setDescription(mInputDescriptionView.getText().toString());
+        createGroupIQ.setTo(XMPPManager.GROUP_CHAT_SERVER);
+        createGroupIQ.setType(IQ.Type.SET);
+        XMPPManager.getInstance().getXmppConnection().sendPacket(createGroupIQ);
     }
+
+    private ISLoadingDialog mCreateProgressDialog;
+
+    private void showCreateProgressDialog() {
+        if (null == mCreateProgressDialog || !mCreateProgressDialog.isShowing()) {
+            // 添加loading框
+            mCreateProgressDialog = new ISLoadingDialog(this);
+            mCreateProgressDialog.setMessage("正在创建群聊...");
+            mCreateProgressDialog.setCancelable(false);
+            mCreateProgressDialog.show();
+        }
+    }
+
+    private void dismissCreateProgressDialog() {
+        if (null != mCreateProgressDialog && mCreateProgressDialog.isShowing()) {
+            mCreateProgressDialog.dismiss();
+            mCreateProgressDialog = null;
+        }
+    }
+
+
+    /**
+     * 上传群头像
+     *
+     * @param path
+     */
+    private void uploadGroupAvatar(String path, String groupJid) {
+        RemoteFileManager.uploadAvatarFile(path, groupJid, new OnFileUploadListener() {
+
+            @Override
+            public void onUpload(FileApiResult apiResult) {
+                dismissCreateProgressDialog();
+                finish();
+                ToastUtil.showToast("成功创建群聊");
+                Log.d("Upload group avatar result: " + apiResult.mResult, ", errorMsg: " + apiResult.mErrorMsg);
+            }
+        });
+    }
+
+
+    private PacketListener mGroupCreateListener = new PacketListener() {
+
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof CreateGroupResultIQ) {
+                CreateGroupResultIQ createGroupIQ = (CreateGroupResultIQ) packet;
+                Log.d("Create group success, groupJid: " + createGroupIQ.getGroupJid());
+                if (TextUtils.isEmpty(createGroupIQ.getGroupJid())) {
+                    ToastUtil.showToast("群聊创建失败");
+                    return;
+                }
+
+                if (!TextUtils.isEmpty(mAvatarPath)) {
+                    uploadGroupAvatar(mAvatarPath, createGroupIQ.getGroupJid());
+                } else {
+                    dismissCreateProgressDialog();
+                    finish();
+                }
+            }
+        }
+    };
+
 
     private void showPage1() {
         mNextButton.setVisibility(View.VISIBLE);

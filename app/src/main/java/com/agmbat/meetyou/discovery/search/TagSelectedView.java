@@ -14,15 +14,17 @@ import com.agmbat.android.utils.DeviceUtils;
 import com.agmbat.meetyou.R;
 import com.agmbat.tagpicker.TagView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TagSelectedView extends LinearLayout {
 
     public interface OnSelectedListener {
-        public void onSelected(String tag);
+        public void onSelected(int index, String tag);
     }
 
     private String mSelectedTag;
+    private List<String> mTagList = new ArrayList<>();
 
     private OnSelectedListener mOnSelectedListener;
 
@@ -83,7 +85,9 @@ public class TagSelectedView extends LinearLayout {
                 lineContent.addView(tagView, itemParams);
             }
         }
+        mTagList = tagList;
     }
+
 
     /**
      * 设置选中的tag
@@ -107,8 +111,16 @@ public class TagSelectedView extends LinearLayout {
             tagView.setSelected(true);
         }
         if (mOnSelectedListener != null) {
-            mOnSelectedListener.onSelected(mSelectedTag);
+            int index = mTagList.indexOf(tag);
+            mOnSelectedListener.onSelected(index, mSelectedTag);
         }
+    }
+
+    public void setSelectedTag(int index){
+        if(index < 0 || index >= mTagList.size()){
+            return;
+        }
+        setSelectedTag(mTagList.get(index));
     }
 
     public void setOnSelectedListener(OnSelectedListener l) {

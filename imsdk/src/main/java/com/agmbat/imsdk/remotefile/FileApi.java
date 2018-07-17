@@ -23,7 +23,7 @@ public class FileApi {
      * uid	Yes	String	Phone
      * ticket	YES	String	The auth ticket
      * format	Yes	String	png,jpg,etc…, 不带”.”
-     * circle_jid	No	String	群JID，若是上传为群头像，则需提供该值
+     * circleJid	No	String	群JID，若是上传为群头像，则需提供该值
      * sign	Yes	String	API调用签名
      * POST BODY就是图片内容的字节数组。
      * 如果uid和ticket不匹配，返回403错误码。
@@ -35,9 +35,9 @@ public class FileApi {
      * "url":"http://……"//文件的url，调用者应当存储该url，以后用该url可以获取该文件
      * }
      */
-    public static FileApiResult uploadAvatar(String phone, String ticket, String format, File imageFile) {
+    public static FileApiResult uploadAvatar(String phone, String ticket, String format, String circleJid, File imageFile) {
         String apiName = "upload_avatar";
-        return uploadFile(apiName, phone, ticket, format, imageFile);
+        return uploadFile(apiName, phone, ticket, format, circleJid, imageFile);
     }
 
     /**
@@ -65,7 +65,7 @@ public class FileApi {
      */
     public static FileApiResult uploadTempFile(String uid, String ticket, String format, File file) {
         String apiName = "upload_temp";
-        return uploadFile(apiName, uid, ticket, format, file);
+        return uploadFile(apiName, uid, ticket, format, "", file);
     }
 
 
@@ -94,26 +94,28 @@ public class FileApi {
      */
     public static FileApiResult uploadCommonFile(String uid, String ticket, String format, File file) {
         String apiName = "upload_common";
-        return uploadFile(apiName, uid, ticket, format, file);
+        return uploadFile(apiName, uid, ticket, format, "", file);
     }
 
     /**
      * 上传文件
      *
-     * @param apiName api名称
-     * @param uid     Jabber id，no resource part
-     * @param ticket  The auth ticket
-     * @param format  png,jpg,etc…, 不带”.”
+     * @param apiName   api名称
+     * @param uid       Jabber id，no resource part
+     * @param ticket    The auth ticket
+     * @param format    png,jpg,etc…, 不带”.”
+     * @param circleJid 如果是群头像，请传群ID
      * @param file
      * @return
      */
-    private static FileApiResult uploadFile(String apiName, String uid, String ticket, String format, File file) {
+    private static FileApiResult uploadFile(String apiName, String uid, String ticket, String format, String circleJid, File file) {
         HttpRequester.Builder builder = new HttpRequester.Builder();
         builder.method("POST");
         builder.baseUrl(Api.getBaseUserUrl(apiName));
         builder.urlParam("uid", uid);
         builder.urlParam("ticket", ticket);
         builder.urlParam("format", format);
+        builder.urlParam("circle_jid", circleJid);
         builder.urlParam("sign", Api.getSign(apiName, uid));
         builder.addFilePart("file", file);
         HttpRequester requester = builder.build();

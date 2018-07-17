@@ -63,7 +63,7 @@ public class DiscoveryActivity extends Activity {
 
         mTagSelectedView.setOnSelectedListener(new TagSelectedView.OnSelectedListener() {
             @Override
-            public void onSelected(String tag) {
+            public void onSelected(int index, String tag) {
                 mPageDataLoader.loadData();
             }
         });
