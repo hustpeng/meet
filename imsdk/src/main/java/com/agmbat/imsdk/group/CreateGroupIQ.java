@@ -41,7 +41,7 @@ public class CreateGroupIQ extends IQ {
     @Override
     public String getChildElementXML() {
         StringBuilder builder = new StringBuilder();
-        builder.append("<query xmlns=\"http://jabber.org/protocol/muc#owner\">");
+        builder.append("<query xmlns=\"" + CreateGroupIQProvider.namespace() + "\">");
         builder.append("<x xmlns=\"jabber:x:data\" type=\"submit\">");
         builder.append("<field type=\"text-single\" var=\"muc#circleprofile_circle_name\" label=\"群名\"><value>" + groupName + "</value></field>");
         builder.append("<field type=\"text-single\"var=\"muc#circleprofile_headline\"label=\"群公告\"><value>" + notice + "</value></field>");

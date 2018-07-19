@@ -17,7 +17,7 @@ public class CreateGroupResultIQ extends IQ {
     @Override
     public String getChildElementXML() {
         StringBuilder builder = new StringBuilder();
-        builder.append("<query xmlns=\"http://jabber.org/protocol/muc#owner\">");
+        builder.append("<query xmlns=\"" + CreateGroupIQProvider.namespace() + "\">");
         builder.append("<circle jid=\"" + groupJid + "\"></circle>");
         builder.append("</query>");
         return builder.toString();

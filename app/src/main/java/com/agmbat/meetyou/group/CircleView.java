@@ -7,7 +7,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
-import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.AvatarHelper;
 
@@ -29,7 +28,7 @@ public class CircleView extends RelativeLayout {
     }
 
     public void update(CircleInfo contactInfo) {
-        mNickNameView.setText(contactInfo.getNickName());
+        mNickNameView.setText(contactInfo.getName());
         ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getGroupOptions());
     }
 

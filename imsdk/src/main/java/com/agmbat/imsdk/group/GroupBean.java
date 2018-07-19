@@ -1,6 +1,6 @@
-package com.agmbat.meetyou.group;
+package com.agmbat.imsdk.group;
 
-public class CircleInfo {
+public class GroupBean {
 
     private String groupJid;
 
@@ -11,6 +11,11 @@ public class CircleInfo {
     private String avatar;
 
     private String ownerJid;
+
+    public GroupBean(String groupJid, String name){
+        this.groupJid = groupJid;
+        this.name = name;
+    }
 
     public String getGroupJid() {
         return groupJid;

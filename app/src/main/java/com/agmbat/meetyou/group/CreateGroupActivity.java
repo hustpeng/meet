@@ -341,6 +341,7 @@ public class CreateGroupActivity extends Activity {
                 if (!TextUtils.isEmpty(mAvatarPath)) {
                     uploadGroupAvatar(mAvatarPath, createGroupIQ.getGroupJid());
                 } else {
+                    ToastUtil.showToast("成功创建群聊");
                     dismissCreateProgressDialog();
                     finish();
                 }

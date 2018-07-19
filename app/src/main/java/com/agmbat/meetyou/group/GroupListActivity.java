@@ -9,8 +9,17 @@ import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.group.GroupBean;
+import com.agmbat.imsdk.group.QueryGroupResultIQ;
+import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;
+
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smackx.circle.CircleListPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +60,10 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         mFriendsAdapter = new GroupAdapter(this, new ArrayList<CircleGroup>());
         mListView.setAdapter(mFriendsAdapter);
 
-        setState(STATE_LOADING);
         // 加载数据
-        new InitContactListTask().execute();
+        //new InitContactListTask().execute();
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mQueryGroupListener, new PacketTypeFilter(QueryGroupResultIQ.class));
+        queryGroupList();
     }
 
     @Override
@@ -61,6 +71,28 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         super.finish();
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
+
+    private void queryGroupList() {
+        setState(STATE_LOADING);
+        CircleListPacket circleListPacket = new CircleListPacket(XMPPManager.GROUP_CHAT_SERVER);
+        XMPPManager.getInstance().getXmppConnection().sendPacket(circleListPacket);
+    }
+
+
+    private PacketListener mQueryGroupListener = new PacketListener() {
+
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof QueryGroupResultIQ) {
+                QueryGroupResultIQ queryGroupResultIQ = (QueryGroupResultIQ) packet;
+                Log.d("Group size: " + queryGroupResultIQ.getGroups().size());
+
+                FillDataTask fillDataTask = new FillDataTask();
+                fillDataTask.execute(queryGroupResultIQ.getGroups());
+            }
+        }
+    };
+
 
     /**
      * 点击返回键
@@ -102,6 +134,20 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         }
     }
 
+    private class FillDataTask extends AsyncTask<List<GroupBean>, Void, List<CircleGroup>>{
+
+        @Override
+        protected List<CircleGroup> doInBackground(List<GroupBean>... lists) {
+            return initGroupList(lists[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<CircleGroup> circleGroups) {
+            fillData(circleGroups);
+        }
+
+    }
+
     private void setState(int state) {
         if (state == STATE_LOADING) {
             mProgressBar.setVisibility(View.VISIBLE);
@@ -112,57 +158,40 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         }
     }
 
-    private class InitContactListTask extends AsyncTask<Void, Void, List<CircleGroup>> {
-
-        @Override
-        protected void onPreExecute() {
-            setState(STATE_LOADING);
-        }
-
-        @Override
-        protected List<CircleGroup> doInBackground(Void... params) {
-            return initGroupList();
-        }
-
-        @Override
-        protected void onPostExecute(List<CircleGroup> groups) {
-            fillData(groups);
-            setState(STATE_LOAD_FINISH);
-        }
-
-    }
-
-    private List<CircleGroup> initGroupList() {
+    private List<CircleGroup> initGroupList(List<GroupBean> groupBeans) {
         List<CircleGroup> groups = new ArrayList<CircleGroup>();
 
-        CircleGroup friendGroup = new CircleGroup();
-        List<CircleInfo> friends = new ArrayList<>();
-        CircleInfo c1 = new CircleInfo();
-        c1.setNickName("群1");
-        friends.add(c1);
+        CircleGroup myCircleGroup = new CircleGroup();
+        List<CircleInfo> myCircles = new ArrayList<>();
+        myCircleGroup.setGroupName("我创建的群");
+        myCircleGroup.setContactList(myCircles);
 
-        CircleInfo c2 = new CircleInfo();
-        c2.setNickName("群2");
-        friends.add(c2);
+        CircleGroup otherCircleGroup = new CircleGroup();
+        List<CircleInfo> joinCircles = new ArrayList<>();
+        otherCircleGroup.setGroupName("我加入的群");
+        otherCircleGroup.setContactList(joinCircles);
 
-        friendGroup.setGroupName("我创建的群");
-        friendGroup.setContactList(friends);
+        String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
 
-        CircleGroup joinGroup = new CircleGroup();
-        List<CircleInfo> joinList = new ArrayList<>();
-        CircleInfo c3 = new CircleInfo();
-        c3.setNickName("群3");
-        joinList.add(c3);
+        for (int i = 0; i < groupBeans.size(); i++) {
+            GroupBean groupBean = groupBeans.get(i);
+            CircleInfo circleInfo = new CircleInfo();
+            circleInfo.setName(groupBean.getName());
+            circleInfo.setAvatar(groupBean.getAvatar());
+            circleInfo.setGroupJid(groupBean.getGroupJid());
+            circleInfo.setMembers(groupBean.getMembers());
+            circleInfo.setOwnerJid(groupBean.getOwnerJid());
 
-        CircleInfo c4 = new CircleInfo();
-        c4.setNickName("群4");
-        joinList.add(c4);
-
-        joinGroup.setContactList(joinList);
-        joinGroup.setGroupName("我加入的群");
-        groups.add(friendGroup);
-        groups.add(joinGroup);
+            if (myJid.equals(groupBean.getOwnerJid())) {
+                myCircles.add(circleInfo);
+            } else {
+                joinCircles.add(circleInfo);
+            }
+        }
+        groups.add(myCircleGroup);
+        groups.add(otherCircleGroup);
         return groups;
     }
+
 
 }
