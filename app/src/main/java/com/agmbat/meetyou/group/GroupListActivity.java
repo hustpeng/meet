@@ -1,7 +1,6 @@
 package com.agmbat.meetyou.group;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -16,6 +15,9 @@ import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
@@ -53,12 +55,13 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_group_list);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
 
+        mFriendsAdapter = new GroupAdapter(this, new ArrayList<CircleGroup>());
+        mListView.setAdapter(mFriendsAdapter);
         mListView.setOnChildClickListener(this);
         mListView.setOnGroupClickListener(this);
         mListView.setOnCreateContextMenuListener(this);
-        mFriendsAdapter = new GroupAdapter(this, new ArrayList<CircleGroup>());
-        mListView.setAdapter(mFriendsAdapter);
 
         // 加载数据
         //new InitContactListTask().execute();
@@ -78,17 +81,23 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         XMPPManager.getInstance().getXmppConnection().sendPacket(circleListPacket);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(CircleGroupEvent event) {
+        fillData(event.getCircleGroups());
+        setState(STATE_LOAD_FINISH);
+    }
+
 
     private PacketListener mQueryGroupListener = new PacketListener() {
 
         @Override
         public void processPacket(Packet packet) {
             if (packet instanceof QueryGroupResultIQ) {
-                QueryGroupResultIQ queryGroupResultIQ = (QueryGroupResultIQ) packet;
+                final QueryGroupResultIQ queryGroupResultIQ = (QueryGroupResultIQ) packet;
                 Log.d("Group size: " + queryGroupResultIQ.getGroups().size());
 
-                FillDataTask fillDataTask = new FillDataTask();
-                fillDataTask.execute(queryGroupResultIQ.getGroups());
+                //这里很奇怪，一定要用EventBus把值传给ListView才能刷新列表，使用AsyncTask或者Handler都不行。
+                EventBus.getDefault().post(new CircleGroupEvent(initGroupList(queryGroupResultIQ.getGroups())));
             }
         }
     };
@@ -134,19 +143,6 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         }
     }
 
-    private class FillDataTask extends AsyncTask<List<GroupBean>, Void, List<CircleGroup>>{
-
-        @Override
-        protected List<CircleGroup> doInBackground(List<GroupBean>... lists) {
-            return initGroupList(lists[0]);
-        }
-
-        @Override
-        protected void onPostExecute(List<CircleGroup> circleGroups) {
-            fillData(circleGroups);
-        }
-
-    }
 
     private void setState(int state) {
         if (state == STATE_LOADING) {
@@ -161,15 +157,8 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
     private List<CircleGroup> initGroupList(List<GroupBean> groupBeans) {
         List<CircleGroup> groups = new ArrayList<CircleGroup>();
 
-        CircleGroup myCircleGroup = new CircleGroup();
         List<CircleInfo> myCircles = new ArrayList<>();
-        myCircleGroup.setGroupName("我创建的群");
-        myCircleGroup.setContactList(myCircles);
-
-        CircleGroup otherCircleGroup = new CircleGroup();
         List<CircleInfo> joinCircles = new ArrayList<>();
-        otherCircleGroup.setGroupName("我加入的群");
-        otherCircleGroup.setContactList(joinCircles);
 
         String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
 
@@ -188,10 +177,23 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
                 joinCircles.add(circleInfo);
             }
         }
+
+        CircleGroup myCircleGroup = new CircleGroup();
+        myCircleGroup.setGroupName("我创建的群");
+        myCircleGroup.setContactList(myCircles);
         groups.add(myCircleGroup);
+
+
+        CircleGroup otherCircleGroup = new CircleGroup();
+        otherCircleGroup.setGroupName("我加入的群");
+        otherCircleGroup.setContactList(joinCircles);
         groups.add(otherCircleGroup);
         return groups;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }
