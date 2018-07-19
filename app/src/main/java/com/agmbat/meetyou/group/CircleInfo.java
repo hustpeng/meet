@@ -1,6 +1,8 @@
 package com.agmbat.meetyou.group;
 
-public class CircleInfo {
+import java.io.Serializable;
+
+public class CircleInfo implements Serializable {
 
     private String groupJid;
 

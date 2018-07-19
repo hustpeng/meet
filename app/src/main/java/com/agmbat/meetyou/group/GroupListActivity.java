@@ -13,6 +13,7 @@ import com.agmbat.imsdk.group.GroupBean;
 import com.agmbat.imsdk.group.QueryGroupResultIQ;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -113,7 +114,9 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        return false;
+        CircleInfo circleInfo = mFriendsAdapter.getChild(groupPosition, childPosition);
+        ChatActivity.openGroupChat(this, circleInfo);
+        return true;
     }
 
     @Override

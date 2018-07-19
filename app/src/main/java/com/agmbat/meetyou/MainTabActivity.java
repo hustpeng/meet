@@ -17,7 +17,6 @@ import com.agmbat.imsdk.chat.body.BodyParser;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
-import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.ReceiveSysMessageEvent;
 import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;

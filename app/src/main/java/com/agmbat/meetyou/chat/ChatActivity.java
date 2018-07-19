@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
@@ -41,6 +40,7 @@ import com.agmbat.imsdk.remotefile.FileApiResult;
 import com.agmbat.imsdk.remotefile.OnFileUploadListener;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
 import com.agmbat.imsdk.splash.SplashStore;
+import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.input.InputController;
 import com.agmbat.input.InputView;
 import com.agmbat.input.OnInputListener;
@@ -49,6 +49,7 @@ import com.agmbat.map.LocationCallback;
 import com.agmbat.map.LocationObject;
 import com.agmbat.map.Maps;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.group.CircleInfo;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.net.HttpUtils;
@@ -77,6 +78,12 @@ public class ChatActivity extends Activity implements OnInputListener {
      * key, 用于标识联系人
      */
     private static final String KEY_CONTACT = "contact";
+    private static final String KEY_GROUP = "group";
+
+    public static final String KEY_CHAT_TYPE = "chat_type";
+
+    public static final int TYPE_GROUP_CHAT = 1;
+    public static final int TYPE_SINGLE_CHAT = 0;
 
     /**
      * 显示名称的控件
@@ -106,6 +113,15 @@ public class ChatActivity extends Activity implements OnInputListener {
      * 参与聊天的联系人
      */
     private ContactInfo mParticipant;
+
+    /**
+     * 聊天群
+     */
+    private CircleInfo mCircleInfo;
+
+    private int mChatType;
+
+    private LoginUser mLoginUser;
 
     private InputController mInputController;
     private VoiceInputController mVoiceInputController;
@@ -146,7 +162,15 @@ public class ChatActivity extends Activity implements OnInputListener {
 
     public static void openChat(Context context, ContactInfo contactInfo) {
         Intent intent = new Intent(context, ChatActivity.class);
-        intent.putExtra(KEY_CONTACT, contactInfo.getBareJid());
+        intent.putExtra(KEY_CONTACT, contactInfo);
+        intent.putExtra(KEY_CHAT_TYPE, TYPE_SINGLE_CHAT);
+        context.startActivity(intent);
+    }
+
+    public static void openGroupChat(Context context, CircleInfo circleInfo) {
+        Intent intent = new Intent(context, ChatActivity.class);
+        intent.putExtra(KEY_GROUP, circleInfo);
+        intent.putExtra(KEY_CHAT_TYPE, TYPE_GROUP_CHAT);
         context.startActivity(intent);
     }
 
@@ -156,8 +180,16 @@ public class ChatActivity extends Activity implements OnInputListener {
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
-        String jid = getIntent().getStringExtra(KEY_CONTACT);
-        mParticipant = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(jid);
+
+        mChatType = getIntent().getIntExtra(KEY_CHAT_TYPE, TYPE_SINGLE_CHAT);
+        if (mChatType == TYPE_SINGLE_CHAT) {
+            ContactInfo contactInfo = (ContactInfo) getIntent().getSerializableExtra(KEY_CONTACT);
+            mParticipant = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(contactInfo.getBareJid());
+        } else if (mChatType == TYPE_GROUP_CHAT) {
+            mCircleInfo = (CircleInfo) getIntent().getSerializableExtra(KEY_GROUP);
+        }
+
+        mLoginUser = XMPPManager.getInstance().getRosterManager().getLoginUser();
         setupViews();
         EventBus.getDefault().register(this);
         AudioPlayer.getDefault().addListener(mOnPlayListener);
@@ -190,8 +222,11 @@ public class ChatActivity extends Activity implements OnInputListener {
     }
 
     private void setupViews() {
-        mNicknameView.setText(mParticipant.getNickName());
-
+        if (mChatType == TYPE_SINGLE_CHAT) {
+            mNicknameView.setText(mParticipant.getNickName());
+        } else if (mChatType == TYPE_GROUP_CHAT) {
+            mNicknameView.setText(mCircleInfo.getName());
+        }
         mInputController = new InputController(mInputView);
         mInputController.setOnInputListener(this);
         mVoiceInputController = new VoiceInputController(mInputView.getVoiceButton());
@@ -217,7 +252,13 @@ public class ChatActivity extends Activity implements OnInputListener {
 //                sendTextMsg(message);
 //            }
 //        });
-        List<MessageObject> chatMessages = XMPPManager.getInstance().getMessageManager().getMessageList(mParticipant.getBareJid());
+        String bareJid = "";
+        if (mChatType == TYPE_SINGLE_CHAT) {
+            bareJid = mParticipant.getBareJid();
+        } else if (mChatType == TYPE_GROUP_CHAT) {
+            bareJid = mCircleInfo.getGroupJid();
+        }
+        List<MessageObject> chatMessages = XMPPManager.getInstance().getMessageManager().getMessageList(bareJid);
         mAdapter = new MessageListAdapter(this, chatMessages);
         mPtrView.setAdapter(mAdapter);
     }
@@ -344,8 +385,15 @@ public class ChatActivity extends Activity implements OnInputListener {
      * @param body
      */
     private void sendMessage(Body body) {
+        String toJid = "";
+        if (mChatType == TYPE_SINGLE_CHAT) {
+            toJid = mParticipant.getBareJid();
+        } else if (mChatType == TYPE_GROUP_CHAT) {
+            toJid = mCircleInfo.getGroupJid();
+        }
+
         MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
-                .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), body.toXml());
+                .sendTextMessage(mChatType == TYPE_GROUP_CHAT, toJid, mLoginUser.getNickname(), body.toXml());
         mAdapter.notifyDataSetChanged();
         if (messageObject != null) {
             EventBus.getDefault().post(new SendMessageEvent(messageObject));
@@ -393,8 +441,15 @@ public class ChatActivity extends Activity implements OnInputListener {
                 if (apiResult.mResult) {
                     String url = apiResult.url;
                     Body body = new ImageBody(url, new ImageBody.Image());
+
+                    String toJid = "";
+                    if (mChatType == TYPE_SINGLE_CHAT) {
+                        toJid = mParticipant.getBareJid();
+                    } else if (mChatType == TYPE_GROUP_CHAT) {
+                        toJid = mCircleInfo.getGroupJid();
+                    }
                     MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
-                            .sendTextMessage(mParticipant.getBareJid(), mParticipant.getNickName(), body.toXml());
+                            .sendTextMessage(mChatType == TYPE_GROUP_CHAT, toJid, mLoginUser.getNickname(), body.toXml());
                     mAdapter.notifyDataSetChanged();
                     if (messageObject != null) {
                         EventBus.getDefault().post(new SendMessageEvent(messageObject));

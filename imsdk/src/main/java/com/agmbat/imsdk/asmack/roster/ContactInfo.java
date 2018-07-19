@@ -6,11 +6,13 @@ import com.google.gson.annotations.SerializedName;
 
 import org.jivesoftware.smack.util.XmppStringUtils;
 
+import java.io.Serializable;
+
 /**
  * 联系人
  */
 @Table(name = "contact")
-public class ContactInfo {
+public class ContactInfo implements Serializable {
 
     /**
      * 对应roster信息

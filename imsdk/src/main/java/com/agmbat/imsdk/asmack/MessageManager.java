@@ -74,7 +74,7 @@ public class MessageManager extends Xepmodule {
             }
             Type messageType = ((Message) packet).getType();
             // the Type.normal msg is filter in VisitorManager.java
-            return messageType == Type.chat/*
+            return messageType == Type.chat || messageType == Type.groupchat/*
              * || messageType ==
              * Message.Type.normal
              */;
@@ -229,7 +229,7 @@ public class MessageManager extends Xepmodule {
      * @param fromNickName
      * @param text
      */
-    public MessageObject sendTextMessage(String toJidString, String fromNickName, String text) {
+    public MessageObject sendTextMessage(boolean isGroupChat, String toJidString, String fromNickName, String text) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             return null;
         }
@@ -237,7 +237,11 @@ public class MessageManager extends Xepmodule {
             return null;
         }
         Message message = new Message();
-        message.setType(Type.chat);
+        if(isGroupChat) {
+            message.setType(Type.groupchat);
+        }else{
+            message.setType(Type.chat);
+        }
         message.setBody(text);
         message.setSubType(MessageSubType.text);
         message.setTo(toJidString);
