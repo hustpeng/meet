@@ -9,7 +9,7 @@ android {
         targetSdkVersion "${TARGET_SDK_VERSION}" as int
         versionCode 1
         versionName "1.0"
-
+        project.archivesBaseName = "meetyou"
         resConfigs "zh-rCN", "zh-rHK", "zh-rTW", "en"
 
         ndk {
@@ -53,6 +53,13 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    // Glide
+    compile "com.github.bumptech.glide:glide:3.7.0"
+
+    // 通过chrome方便查看数据库的工具
+    compile "com.facebook.stetho:stetho:1.3.1"
+
     compile project(':zxing-core')
     compile project(':zxing-android-core')
     compile project(':imsdk')

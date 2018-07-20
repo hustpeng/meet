@@ -63,16 +63,7 @@ public class GroupSearchActivity extends Activity {
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_group_search);
         ButterKnife.bind(this);
-        SearchManager.getGroupCategory(new OnGetGroupCategoryListener() {
-            @Override
-            public void onGetGroupCategory(GroupCategoryResult result) {
-                if (result.mResult) {
-                    updateCategory(result.mData);
-                }
-            }
-
-        });
-
+        loadGroupCategories();
         mPageDataLoader = new DiscoveryPageLoader(this);
         mPageDataLoader.setupViews(findViewById(android.R.id.content));
 
@@ -84,6 +75,24 @@ public class GroupSearchActivity extends Activity {
         });
 
 //        mPageDataLoader.loadData();
+    }
+
+    private void loadGroupCategories() {
+        List<GroupCategory> cachedGroupCategories = GroupDBCache.getGroupCategories();
+        if ((null == cachedGroupCategories || cachedGroupCategories.size() == 0)) {
+            SearchManager.getGroupCategory(new OnGetGroupCategoryListener() {
+                @Override
+                public void onGetGroupCategory(GroupCategoryResult result) {
+                    if (result.mResult && null != result.mData) {
+                        GroupDBCache.saveGroupCategories(result.mData);
+                        updateCategory(result.mData);
+                    }
+                }
+
+            });
+        } else {
+            updateCategory(cachedGroupCategories);
+        }
     }
 
     @Override
@@ -129,18 +138,18 @@ public class GroupSearchActivity extends Activity {
      */
     private void updateCategory(List<GroupCategory> list) {
         GroupCategory all = new GroupCategory();
-        all.id = 0;
-        all.name = "所有";
+        all.setId(0);
+        all.setName("所有");
         list.add(0, all);
         mGroupCategoryList = list;
         mGroupCategory = all;
         List<String> textList = new ArrayList<>();
         for (GroupCategory groupCategory : list) {
-            textList.add(groupCategory.name);
+            textList.add(groupCategory.getName());
         }
         mTagSelectedView.setVisibility(View.VISIBLE);
         mTagSelectedView.setTagList(textList);
-        mTagSelectedView.setSelectedTag(mGroupCategory.name);
+        mTagSelectedView.setSelectedTag(mGroupCategory.getName());
         mTagSelectedView.setOnSelectedListener(new TagSelectedView.OnSelectedListener() {
             @Override
             public void onSelected(int index, String tag) {
@@ -153,7 +162,7 @@ public class GroupSearchActivity extends Activity {
     private GroupCategory findGroupCategory(String name) {
         if (mGroupCategoryList != null) {
             for (GroupCategory groupCategory : mGroupCategoryList) {
-                if (groupCategory.name.equals(name)) {
+                if (groupCategory.getName().equals(name)) {
                     return groupCategory;
                 }
             }
@@ -177,7 +186,7 @@ public class GroupSearchActivity extends Activity {
             if (TextUtils.isEmpty(mKeyword) || mGroupCategory == null) {
                 return null;
             }
-            return SearchManager.searchGroupSync(mKeyword, mGroupCategory.id, page);
+            return SearchManager.searchGroupSync(mKeyword, mGroupCategory.getId(), page);
         }
 
         @Override

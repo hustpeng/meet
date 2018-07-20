@@ -1,8 +1,8 @@
 package com.agmbat.meetyou.group;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -13,8 +13,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.agmbat.android.image.ImageManager;
-import com.agmbat.android.task.DialogAsyncTask;
 import com.agmbat.android.utils.AppUtils;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
@@ -29,13 +27,16 @@ import com.agmbat.imsdk.group.CreateGroupResultIQ;
 import com.agmbat.imsdk.remotefile.FileApiResult;
 import com.agmbat.imsdk.remotefile.OnFileUploadListener;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
+import com.agmbat.imsdk.search.SearchManager;
+import com.agmbat.imsdk.search.group.GroupCategory;
+import com.agmbat.imsdk.search.group.GroupCategoryResult;
+import com.agmbat.imsdk.search.group.OnGetGroupCategoryListener;
 import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.TagSelectedView;
-import com.agmbat.meetyou.helper.AvatarHelper;
-import com.nostra13.universalimageloader.core.download.Scheme;
+import com.agmbat.meetyou.util.CircleDrawable;
 
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -122,66 +123,40 @@ public class CreateGroupActivity extends Activity {
         mCheckBox.setChecked(false);
         mVerifyCheckbox.setChecked(false);
 
-        String uri = Scheme.wrapUri("drawable", String.valueOf(R.drawable.selector_image_add));
-        ImageManager.displayImage(uri, mAvatarView, AvatarHelper.getGroupOptions());
-
         mTagSelectedView.setOnSelectedListener(new TagSelectedView.OnSelectedListener() {
             @Override
             public void onSelected(int index, String tag) {
                 mSelectedGroupIndex = index;
             }
         });
-        startLoadGroupTags();
+        loadGroupCategories();
         showPage1();
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupCreateListener, new PacketTypeFilter(CreateGroupResultIQ.class));
     }
 
 
-    private LoadGroupTagsTask mLoadGroupTagsTask;
-    private List<GroupTag> mGroupTags;
+    private List<GroupCategory> mGroupCategories;
 
-    private void startLoadGroupTags() {
-        List<GroupTag> cachedGroupTags = GroupDBCache.getGroupTags();
-        if ((null == cachedGroupTags || cachedGroupTags.size() == 0)) {
-            if (null == mLoadGroupTagsTask) {
-                mLoadGroupTagsTask = new LoadGroupTagsTask(this);
-                mLoadGroupTagsTask.execute();
-            }
+    private void loadGroupCategories() {
+        List<GroupCategory> cachedGroupCategories = GroupDBCache.getGroupCategories();
+        if ((null == cachedGroupCategories || cachedGroupCategories.size() == 0)) {
+            SearchManager.getGroupCategory(new OnGetGroupCategoryListener() {
+                @Override
+                public void onGetGroupCategory(GroupCategoryResult result) {
+                    if (result.mResult && null != result.mData) {
+                        GroupDBCache.saveGroupCategories(result.mData);
+                        fillGroupTags(result.mData);
+                    }
+                }
+
+            });
         } else {
-            fillGroupTags(cachedGroupTags);
+            fillGroupTags(cachedGroupCategories);
         }
     }
 
 
-    private class LoadGroupTagsTask extends DialogAsyncTask<Void, Void, List<GroupTag>> {
-
-        public LoadGroupTagsTask(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onPrepareDialog(ProgressDialog dialog) {
-            dialog.setMessage("加载群分类");
-        }
-
-        @Override
-        protected List<GroupTag> doInBackground(Void... voids) {
-            List<GroupTag> groupTags = GroupManager.requestAllGroupTags();
-            GroupDBCache.saveAllGroupTags(groupTags);
-            return groupTags;
-        }
-
-        @Override
-        protected void onPostExecute(List<GroupTag> groupTags) {
-            super.onPostExecute(groupTags);
-            mLoadGroupTagsTask = null;
-            if (null != groupTags) {
-                fillGroupTags(groupTags);
-            }
-        }
-    }
-
-    private void fillGroupTags(List<GroupTag> groupTags) {
+    private void fillGroupTags(List<GroupCategory> groupTags) {
         List<String> tagsText = new ArrayList<>();
         for (int i = 0; i < groupTags.size(); i++) {
             tagsText.add(groupTags.get(i).getName());
@@ -190,7 +165,7 @@ public class CreateGroupActivity extends Activity {
         if (groupTags.size() > 0) {
             mTagSelectedView.setSelectedTag(groupTags.size() - 1);
         }
-        mGroupTags = groupTags;
+        mGroupCategories = groupTags;
     }
 
 
@@ -265,8 +240,11 @@ public class CreateGroupActivity extends Activity {
             @Override
             public void onPickImage(ImageItem imageItem) {
                 mAvatarPath = imageItem.path;
-                String uri = Scheme.wrapUri("file", imageItem.path);
-                ImageManager.displayImage(uri, mAvatarView, AvatarHelper.getGroupOptions());
+                //String uri = Scheme.wrapUri("file", imageItem.path);
+                //ImageManager.displayImage(uri, mAvatarView, AvatarHelper.getGroupOptions());
+                Bitmap bitmap = BitmapFactory.decodeFile(imageItem.path);
+                mAvatarView.setImageDrawable(new CircleDrawable(bitmap));
+                //ImageUtil.loadCircleImage(getBaseContext(), mAvatarView, "",  );
             }
         });
     }
@@ -274,13 +252,13 @@ public class CreateGroupActivity extends Activity {
 
     @OnClick(R.id.btn_create_group)
     void onClickCreateGroup() {
-        if (mSelectedGroupIndex < 0 || mSelectedGroupIndex >= mGroupTags.size()) {
+        if (mSelectedGroupIndex < 0 || mSelectedGroupIndex >= mGroupCategories.size()) {
             ToastUtil.showToast("请选择一个群分类");
             return;
         }
         showCreateProgressDialog();
-        GroupTag groupTag = mGroupTags.get(mSelectedGroupIndex);
-        CreateGroupIQ createGroupIQ = new CreateGroupIQ(mInputNicknameView.getText().toString(), mVerifyCheckbox.isChecked(), groupTag.getId());
+        GroupCategory groupCategory = mGroupCategories.get(mSelectedGroupIndex);
+        CreateGroupIQ createGroupIQ = new CreateGroupIQ(mInputNicknameView.getText().toString(), mVerifyCheckbox.isChecked(), groupCategory.getId());
         createGroupIQ.setDescription(mInputDescriptionView.getText().toString());
         createGroupIQ.setTo(XMPPManager.GROUP_CHAT_SERVER);
         createGroupIQ.setType(IQ.Type.SET);

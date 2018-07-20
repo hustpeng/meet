@@ -14,12 +14,16 @@ import com.agmbat.imsdk.splash.SplashManager;
 import com.agmbat.meetyou.account.LoginActivity;
 import com.agmbat.meetyou.checkupdate.UpdateApi;
 import com.baidu.mapapi.SDKInitializer;
+import com.facebook.stetho.Stetho;
 
 public class MeetApplication extends Application {
+
+    private static Application sInstance;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        sInstance = this;
         initPhotoError();
         AppResources.init(this);
         ActivityStack.init(this);
@@ -31,6 +35,11 @@ public class MeetApplication extends Application {
         if (ThreadUtil.isOnMainProcess(this)) {
             ConnectionReceiver.register(this);
         }
+        initDatabaseBrowser();
+    }
+
+    public static Application getInstance(){
+        return sInstance;
     }
 
     private void initPhotoError() {
@@ -39,6 +48,18 @@ public class MeetApplication extends Application {
         StrictMode.setVmPolicy(builder.build());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             builder.detectFileUriExposure();
+        }
+    }
+
+    /**
+     * 这是一个可在chrome查看app数据库的开发工具
+     * 使用方法：
+     * 步骤一：引入依赖库 compile 'com.facebook.stetho:stetho:1.3.1'
+     * 步骤二：运行App, 打开Chrome输入chrome://inspect/#devices（推荐只在debug状态下初始化）
+     */
+    private void initDatabaseBrowser() {
+        if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this);
         }
     }
 }

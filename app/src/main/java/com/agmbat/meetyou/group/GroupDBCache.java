@@ -3,6 +3,7 @@ package com.agmbat.meetyou.group;
 import com.agmbat.db.DbException;
 import com.agmbat.db.DbManager;
 import com.agmbat.imsdk.db.MeetDatabase;
+import com.agmbat.imsdk.search.group.GroupCategory;
 import com.agmbat.log.Debug;
 
 import java.util.ArrayList;
@@ -15,14 +16,14 @@ public class GroupDBCache {
      *
      * @param groupTags
      */
-    public static void saveAllGroupTags(List<GroupTag> groupTags) {
+    public static void saveGroupCategories(List<GroupCategory> groupTags) {
         DbManager db = MeetDatabase.getInstance().getDatabase();
         if(null == db){
             return;
         }
         try {
-            db.delete(GroupTag.class);
-            for (GroupTag groupTag : groupTags) {
+            db.delete(GroupCategory.class);
+            for (GroupCategory groupTag : groupTags) {
                 db.save(groupTag);
             }
         } catch (DbException e) {
@@ -36,14 +37,14 @@ public class GroupDBCache {
      *
      * @return
      */
-    public static List<GroupTag> getGroupTags() {
+    public static List<GroupCategory> getGroupCategories() {
         DbManager db = MeetDatabase.getInstance().getDatabase();
         if (db == null) {
             Debug.printStackTrace();
             return new ArrayList<>();
         }
         try {
-            List<GroupTag> groupTags = db.selector(GroupTag.class).findAll();
+            List<GroupCategory> groupTags = db.selector(GroupCategory.class).findAll();
             return groupTags;
         } catch (DbException e) {
             e.printStackTrace();
