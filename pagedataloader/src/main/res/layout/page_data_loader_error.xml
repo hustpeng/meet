@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingLeft="15dip"
     android:paddingRight="15dip"
-    android:visibility="visible">
+    android:visibility="gone">
 
     <ImageView
         android:layout_width="wrap_content"

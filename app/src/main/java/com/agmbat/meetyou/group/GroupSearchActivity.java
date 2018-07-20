@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.agmbat.android.utils.KeyboardUtils;
 import com.agmbat.android.utils.ToastUtil;
@@ -40,6 +41,9 @@ public class GroupSearchActivity extends Activity {
 
     @BindView(R.id.tag_selected_view)
     TagSelectedView mTagSelectedView;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar mProgressBar;
 
     @BindView(R.id.input_text)
     EditText mEditText;
@@ -80,6 +84,8 @@ public class GroupSearchActivity extends Activity {
     private void loadGroupCategories() {
         List<GroupCategory> cachedGroupCategories = GroupDBCache.getGroupCategories();
         if ((null == cachedGroupCategories || cachedGroupCategories.size() == 0)) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mTagSelectedView.setVisibility(View.GONE);
             SearchManager.getGroupCategory(new OnGetGroupCategoryListener() {
                 @Override
                 public void onGetGroupCategory(GroupCategoryResult result) {
@@ -87,11 +93,15 @@ public class GroupSearchActivity extends Activity {
                         GroupDBCache.saveGroupCategories(result.mData);
                         updateCategory(result.mData);
                     }
+                    mProgressBar.setVisibility(View.GONE);
+                    mTagSelectedView.setVisibility(View.VISIBLE);
                 }
 
             });
         } else {
             updateCategory(cachedGroupCategories);
+            mProgressBar.setVisibility(View.GONE);
+            mTagSelectedView.setVisibility(View.VISIBLE);
         }
     }
 

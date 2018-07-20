@@ -73,11 +73,25 @@
             android:background="@drawable/shape_bottom_green" />
     </LinearLayout>
 
-    <com.agmbat.meetyou.discovery.search.TagSelectedView
-        android:id="@+id/tag_selected_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:layout_height="wrap_content">
+
+        <com.agmbat.meetyou.discovery.search.TagSelectedView
+            android:id="@+id/tag_selected_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"/>
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
