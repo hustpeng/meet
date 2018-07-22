@@ -155,4 +155,7 @@
     <string name="report_user_hint">请描述举报内容</string>
     <string name="report_user_image">上传举报截图(选填)</string>
 
+    <!-- 申请加群 -->
+    <string name="title_join_group">申请入群</string>
+
 </resources>

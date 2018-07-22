@@ -8,6 +8,7 @@ import com.agmbat.android.utils.AppUtils;
 import com.agmbat.imsdk.account.RegisterInfo;
 import com.agmbat.imsdk.asmack.roster.RosterManager;
 import com.agmbat.imsdk.group.CreateGroupIQProvider;
+import com.agmbat.imsdk.group.JoinGroupProvider;
 import com.agmbat.imsdk.group.QueryGroupIQProvider;
 import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.imsdk.util.LocationAutoSync;
@@ -225,6 +226,8 @@ public class XMPPManager {
         //群相关
         pm.addIQProvider(CreateGroupIQProvider.elementName(), CreateGroupIQProvider.namespace(), new CreateGroupIQProvider());
         pm.addIQProvider(QueryGroupIQProvider.elementName(), QueryGroupIQProvider.namespace(), new QueryGroupIQProvider());
+        pm.addIQProvider(JoinGroupProvider.elementName(), JoinGroupProvider.namespace(), new JoinGroupProvider());
+
 
         pm.addExtensionProvider(MessageHtmlProvider.elementName(), MessageHtmlProvider.namespace(),
                 new MessageHtmlProvider());

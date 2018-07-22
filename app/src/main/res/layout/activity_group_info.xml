@@ -252,6 +252,14 @@
                 android:layout_height="1.0dip"
                 android:background="#ffeeeeee" />
 
+
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:id="@+id/qr_code"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"/>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
