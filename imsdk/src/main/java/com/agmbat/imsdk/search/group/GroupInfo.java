@@ -2,6 +2,8 @@ package com.agmbat.imsdk.search.group;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * 群信息
  * {
@@ -18,7 +20,7 @@ import com.google.gson.annotations.SerializedName;
  * "member_num": 1
  * }
  */
-public class GroupInfo {
+public class GroupInfo implements Serializable {
 
     /**
      * 群头像

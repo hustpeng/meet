@@ -212,7 +212,7 @@ public class GroupSearchActivity extends Activity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             super.onItemClick(parent, view, position, id);
             GroupInfo contactInfo = (GroupInfo) parent.getItemAtPosition(position);
-            GroupInfoHelper.openGroupDetail(GroupSearchActivity.this, contactInfo);
+            GroupInfoActivity.launch(GroupSearchActivity.this, contactInfo);
         }
     }
 }

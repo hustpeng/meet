@@ -256,7 +256,9 @@ public class MessageStorage {
         values.put(Columns.MSG_HTML, obj.getHtml());
         values.put(Columns.MSG_IS_OUTGOING, obj.isOutgoing());
         values.put(Columns.MSG_ID, obj.getMsgId());
-        values.put(Columns.MSG_TYPE, obj.getMsgType().ordinal());
+        if(null != obj.getMsgType()) {
+            values.put(Columns.MSG_TYPE, obj.getMsgType().ordinal());
+        }
         values.put(Columns.MSG_STATUS, obj.getMsgStatus().ordinal());
         values.put(Columns.MSG_DATE, obj.getDate());
     }

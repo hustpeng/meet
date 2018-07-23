@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.agmbat.android.media.AmrHelper;
@@ -50,6 +51,7 @@ import com.agmbat.map.LocationObject;
 import com.agmbat.map.Maps;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.group.CircleInfo;
+import com.agmbat.meetyou.group.GroupInfoActivity;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.net.HttpUtils;
@@ -103,6 +105,9 @@ public class ChatActivity extends Activity implements OnInputListener {
      */
     @BindView(R.id.message_list)
     PullToRefreshListView mPtrView;
+
+    @BindView(R.id.btn_profile)
+    ImageView mBtnProfile;
 
     /**
      * 填充消息列表的adapter
@@ -216,7 +221,13 @@ public class ChatActivity extends Activity implements OnInputListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(ReceiveMessageEvent event) {
-        if (event.getMessageObject().getSenderJid().equals(mParticipant.getBareJid())) {
+        String participantJid = "";
+        if(mChatType == TYPE_SINGLE_CHAT){
+            participantJid =  mParticipant.getBareJid();
+        }else if(mChatType == TYPE_GROUP_CHAT){
+            participantJid = mCircleInfo.getGroupJid();
+        }
+        if (event.getMessageObject().getSenderJid().equals(participantJid)) {
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -491,5 +502,12 @@ public class ChatActivity extends Activity implements OnInputListener {
                 }
             }
         });
+    }
+
+    @OnClick(R.id.btn_profile)
+    void onClickProfile() {
+        if(mChatType == TYPE_GROUP_CHAT) {
+            GroupInfoActivity.launch(this, mCircleInfo.getGroupJid());
+        }
     }
 }

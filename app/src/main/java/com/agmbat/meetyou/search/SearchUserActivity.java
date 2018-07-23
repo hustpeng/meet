@@ -16,16 +16,15 @@ import android.widget.TextView;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.imsdk.search.SearchManager;
 import com.agmbat.imsdk.search.group.GroupInfo;
 import com.agmbat.imsdk.search.group.OnSearchGroupListener;
-import com.agmbat.imsdk.search.user.OnSearchUserListener;
 import com.agmbat.imsdk.search.group.SearchGroupResult;
-import com.agmbat.imsdk.search.SearchManager;
+import com.agmbat.imsdk.search.user.OnSearchUserListener;
 import com.agmbat.imsdk.search.user.SearchUserResult;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.group.GroupInfoActivity;
-import com.agmbat.meetyou.group.GroupInfoHelper;
 
 import java.util.List;
 
@@ -169,7 +168,7 @@ public class SearchUserActivity extends Activity {
                         mSearchGroupButton.setVisibility(View.GONE);
                     } else {
                         GroupInfo groupInfo = list.get(0);
-                        GroupInfoHelper.openGroupDetail(SearchUserActivity.this, groupInfo);
+                        GroupInfoActivity.launch(SearchUserActivity.this, groupInfo);
                     }
                 }
             }

@@ -242,8 +242,8 @@ public class MessageManager extends Xepmodule {
         }else{
             message.setType(Type.chat);
         }
-        message.setBody(text);
         message.setSubType(MessageSubType.text);
+        message.setBody(text);
         message.setTo(toJidString);
         message.setSenderNickName(fromNickName);
         message.setFrom(xmppConnection.getUser());
