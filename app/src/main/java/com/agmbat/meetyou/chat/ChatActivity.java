@@ -61,6 +61,7 @@ import com.agmbat.text.TagText;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.message.MessageObject;
 
 import java.io.File;
@@ -227,7 +228,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         }else if(mChatType == TYPE_GROUP_CHAT){
             participantJid = mCircleInfo.getGroupJid();
         }
-        if (event.getMessageObject().getSenderJid().equals(participantJid)) {
+        if (event.getMessageObject().getFromJid().equals(participantJid)) {
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -397,14 +398,17 @@ public class ChatActivity extends Activity implements OnInputListener {
      */
     private void sendMessage(Body body) {
         String toJid = "";
+        Message.Type chatType = null;
         if (mChatType == TYPE_SINGLE_CHAT) {
+            chatType = Message.Type.chat;
             toJid = mParticipant.getBareJid();
         } else if (mChatType == TYPE_GROUP_CHAT) {
+            chatType = Message.Type.groupchat;
             toJid = mCircleInfo.getGroupJid();
         }
 
         MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
-                .sendTextMessage(mChatType == TYPE_GROUP_CHAT, toJid, mLoginUser.getNickname(), body.toXml());
+                .sendTextMessage(chatType, toJid, mLoginUser.getNickname(), mLoginUser.getAvatar(), body.toXml());
         mAdapter.notifyDataSetChanged();
         if (messageObject != null) {
             EventBus.getDefault().post(new SendMessageEvent(messageObject));
@@ -454,13 +458,16 @@ public class ChatActivity extends Activity implements OnInputListener {
                     Body body = new ImageBody(url, new ImageBody.Image());
 
                     String toJid = "";
+                    Message.Type chatType = null;
                     if (mChatType == TYPE_SINGLE_CHAT) {
+                        chatType = Message.Type.chat;
                         toJid = mParticipant.getBareJid();
                     } else if (mChatType == TYPE_GROUP_CHAT) {
+                        chatType = Message.Type.groupchat;
                         toJid = mCircleInfo.getGroupJid();
                     }
                     MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
-                            .sendTextMessage(mChatType == TYPE_GROUP_CHAT, toJid, mLoginUser.getNickname(), body.toXml());
+                            .sendTextMessage(chatType, toJid, mLoginUser.getNickname(), mLoginUser.getAvatar(), body.toXml());
                     mAdapter.notifyDataSetChanged();
                     if (messageObject != null) {
                         EventBus.getDefault().post(new SendMessageEvent(messageObject));

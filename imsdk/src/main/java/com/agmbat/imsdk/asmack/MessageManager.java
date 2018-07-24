@@ -130,7 +130,7 @@ public class MessageManager extends Xepmodule {
             UiUtils.post(new Runnable() {
                 @Override
                 public void run() {
-                    addMessage(messageObject.getSenderJid(), messageObject);
+                    addMessage(messageObject.getFromJid(), messageObject);
                     if (isSystemMessage(messageObject)) {
                         EventBus.getDefault().post(new ReceiveSysMessageEvent(messageObject));
                     } else {
@@ -138,7 +138,7 @@ public class MessageManager extends Xepmodule {
                     }
                 }
             });
-            sendChatStates(messageObject.getMsgId(), sendMsgState, messageObject.getSenderJid());
+            sendChatStates(messageObject.getMsgId(), sendMsgState, messageObject.getFromJid());
         }
     };
 
@@ -193,8 +193,8 @@ public class MessageManager extends Xepmodule {
     private MessageObject phareMessageFromPacket(Message message) {
         MessageObject messageObject = new MessageObject();
         messageObject.setMsgId(message.getPacketID());
-        messageObject.setSenderJid(XmppStringUtils.parseBareAddress(message.getFrom()));
-        messageObject.setReceiverJid(XmppStringUtils.parseBareAddress(message.getTo()));
+        messageObject.setFromJid(XmppStringUtils.parseBareAddress(message.getFrom()));
+        messageObject.setToJid(XmppStringUtils.parseBareAddress(message.getTo()));
         messageObject.setMsgType(message.getSubType());
         messageObject.setBody(message.getBody());
         Date date = message.getDate();
@@ -203,7 +203,15 @@ public class MessageManager extends Xepmodule {
         } else {
             messageObject.setDate(date.getTime());
         }
+        messageObject.setChatType(message.getType());
+        if(message.getType() == Type.groupchat) {
+            messageObject.setSenderJid(XmppStringUtils.parseBareAddress(message.getSenderJid()));
+        }else {
+            messageObject.setSenderJid(XmppStringUtils.parseBareAddress(message.getFrom()));
+        }
         messageObject.setSenderNickName(message.getSenderNickName());
+        messageObject.setSenderAvatar(message.getSenderAvatar());
+
         if (messageObject.getMsgType() == MessageSubType.image
                 || messageObject.getMsgType() == MessageSubType.geoloc) {
             PacketExtension extension = message.getExtension(MessageHtmlProvider.elementName(),
@@ -212,7 +220,7 @@ public class MessageManager extends Xepmodule {
                 messageObject.setHtml(extension.toXML());
             }
         }
-        if (xmppConnection.getBareJid().equals(messageObject.getSenderJid())) {
+        if (xmppConnection.getBareJid().equals(messageObject.getFromJid())) {
             messageObject.setOutgoing(true);
             messageObject.setMsgStatus(MessageObjectStatus.SEND);
         } else {
@@ -226,10 +234,10 @@ public class MessageManager extends Xepmodule {
      * 发送文本消息
      *
      * @param toJidString
-     * @param fromNickName
+     * @param senderNickName
      * @param text
      */
-    public MessageObject sendTextMessage(boolean isGroupChat, String toJidString, String fromNickName, String text) {
+    public MessageObject sendTextMessage(Type chatType, String toJidString, String senderNickName, String senderAvatar, String text) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             return null;
         }
@@ -237,16 +245,13 @@ public class MessageManager extends Xepmodule {
             return null;
         }
         Message message = new Message();
-        if(isGroupChat) {
-            message.setType(Type.groupchat);
-        }else{
-            message.setType(Type.chat);
-        }
-        message.setSubType(MessageSubType.text);
+        message.setType(chatType);
         message.setBody(text);
+        message.setFrom(xmppConnection.getBareJid());
         message.setTo(toJidString);
-        message.setSenderNickName(fromNickName);
-        message.setFrom(xmppConnection.getUser());
+        message.setSenderJid(xmppConnection.getBareJid());
+        message.setSenderNickName(senderNickName);
+        message.setSenderAvatar(senderAvatar);
         xmppConnection.sendPacket(message);
         MessageObject messageObject = phareMessageFromPacket(message);
         messageStorage.insertMsg(messageObject);
@@ -263,7 +268,7 @@ public class MessageManager extends Xepmodule {
         if ((targetMessage != null) && (targetMessage.getMsgStatus() != MessageObjectStatus.READ)) {
             targetMessage.setMsgStatus(MessageObjectStatus.READ);
             messageStorage.updateMsg(targetMessage);
-            sendChatStates(targetMessage.getMsgId(), "read", targetMessage.getSenderJid());
+            sendChatStates(targetMessage.getMsgId(), "read", targetMessage.getFromJid());
         }
     }
 
@@ -289,7 +294,8 @@ public class MessageManager extends Xepmodule {
         messageObject.setMsgId(msgid);
         messageObject.setMsgType(type);
         messageObject.setMsgStatus(status);
-        messageObject.setReceiverJid(toJidString);
+        messageObject.setToJid(toJidString);
+        messageObject.setFromJid(xmppConnection.getBareJid());
         messageObject.setSenderJid(xmppConnection.getBareJid());
         messageObject.setSenderNickName(fromNickName);
         messageObject.setOutgoing(true);
@@ -311,7 +317,8 @@ public class MessageManager extends Xepmodule {
         messageObject.setMsgId(msgid);
         messageObject.setMsgType(MessageSubType.image);
         messageObject.setMsgStatus(MessageObjectStatus.UPLOADING);
-        messageObject.setReceiverJid(toJidString);
+        messageObject.setToJid(toJidString);
+        messageObject.setFromJid(xmppConnection.getBareJid());
         messageObject.setSenderJid(xmppConnection.getBareJid());
         messageObject.setSenderNickName(fromNickName);
         messageObject.setOutgoing(true);
@@ -366,7 +373,7 @@ public class MessageManager extends Xepmodule {
         message.setType(Type.chat);
         message.setBody(messageObject.getBody());
         message.setSubType(messageObject.getMsgType());
-        message.setTo(messageObject.getReceiverJid());
+        message.setTo(messageObject.getToJid());
         message.setSenderNickName(messageObject.getSenderNickName());
         message.setFrom(xmppConnection.getUser());
 
@@ -392,7 +399,7 @@ public class MessageManager extends Xepmodule {
         message.setType(Type.chat);
         message.setBody(messageObject.getBody());
         message.setSubType(messageObject.getMsgType());
-        message.setTo(messageObject.getReceiverJid());
+        message.setTo(messageObject.getToJid());
         message.setSenderNickName(messageObject.getSenderNickName());
         message.setFrom(xmppConnection.getUser());
 
@@ -451,7 +458,7 @@ public class MessageManager extends Xepmodule {
         for (MessageObject messageObject : list) {
             // 如果用户信息不存在, 则不显示此消息记录, 等同步服务器上的用户信息后, 可直接删除相关信息
             if (isToOthers(messageObject)) {
-                String receiverJid = messageObject.getReceiverJid();
+                String receiverJid = messageObject.getToJid();
                 // 如果数据库中没有此用户则直接删除与此用户相关的所有聊天记录
                 ContactInfo info = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(receiverJid);
                 if (info != null) {
@@ -461,7 +468,7 @@ public class MessageManager extends Xepmodule {
                     Debug.printStackTrace();
                 }
             } else {
-                String senderJid = messageObject.getSenderJid();
+                String senderJid = messageObject.getFromJid();
                 // 如果数据库中没有此用户则直接删除与此用户相关的所有聊天记录
                 ContactInfo info = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(senderJid);
                 if (info != null) {
@@ -575,9 +582,9 @@ public class MessageManager extends Xepmodule {
     public static String getTalkJid(MessageObject messageObject) {
         String jid = null;
         if (isToOthers(messageObject)) {
-            jid = messageObject.getReceiverJid();
+            jid = messageObject.getToJid();
         } else {
-            jid = messageObject.getSenderJid();
+            jid = messageObject.getFromJid();
         }
         return jid;
     }
@@ -590,7 +597,7 @@ public class MessageManager extends Xepmodule {
      */
     public static boolean isToOthers(MessageObject messageObject) {
         String loginUserJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
-        return messageObject.getSenderJid().equals(loginUserJid);
+        return messageObject.getFromJid().equals(loginUserJid);
     }
 
     /**
@@ -615,11 +622,11 @@ public class MessageManager extends Xepmodule {
         for (MessageObject messageObject : list) {
             // 如果用户信息不存在, 则不显示此消息记录, 等同步服务器上的用户信息后, 可直接删除相关信息
             if (isToOthers(messageObject)) {
-                String receiverJid = messageObject.getReceiverJid();
+                String receiverJid = messageObject.getToJid();
                 // 如果数据库中没有此用户则直接删除与此用户相关的所有聊天记录
                 ensureUser(receiverJid);
             } else {
-                String senderJid = messageObject.getSenderJid();
+                String senderJid = messageObject.getFromJid();
                 ensureUser(senderJid);
             }
         }
@@ -634,11 +641,11 @@ public class MessageManager extends Xepmodule {
     private void ensureMessageUser(MessageObject messageObject) {
         // 如果用户信息不存在, 则不显示此消息记录, 等同步服务器上的用户信息后, 可直接删除相关信息
         if (isToOthers(messageObject)) {
-            String receiverJid = messageObject.getReceiverJid();
+            String receiverJid = messageObject.getToJid();
             // 如果数据库中没有此用户则直接删除与此用户相关的所有聊天记录
             ensureUser(receiverJid);
         } else {
-            String senderJid = messageObject.getSenderJid();
+            String senderJid = messageObject.getFromJid();
             ensureUser(senderJid);
         }
     }

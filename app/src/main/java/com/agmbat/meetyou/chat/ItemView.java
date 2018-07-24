@@ -118,11 +118,13 @@ public abstract class ItemView extends LinearLayout {
      */
     private void setAvatar(MessageObject msg) {
         String senderJid = msg.getSenderJid();
-        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(senderJid);
-        if (contactInfo != null) {
-            ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
+        if (!TextUtils.isEmpty(msg.getSenderAvatar())) {
+            ImageManager.displayImage(msg.getSenderAvatar(), mAvatarView, AvatarHelper.getOptions());
         } else {
-            Debug.printStackTrace();
+            ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(senderJid);
+            if (contactInfo != null) {
+                ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
+            }
         }
     }
 

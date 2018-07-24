@@ -32,6 +32,8 @@ public class Message extends Packet {
     private Type type = Type.normal;
     private MessageSubType subType;
     private String senderNickName = null;
+    private String senderAvatar = "";
+    private String senderJid = "";
     private boolean isOffline = false;
     private String body = null;
     private Date date = null;
@@ -168,6 +170,22 @@ public class Message extends Packet {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getSenderAvatar() {
+        return senderAvatar;
+    }
+
+    public String getSenderJid() {
+        return senderJid;
+    }
+
+    public void setSenderJid(String senderJid) {
+        this.senderJid = senderJid;
+    }
+
+    public void setSenderAvatar(String senderAvatar) {
+        this.senderAvatar = senderAvatar;
     }
 
     /**

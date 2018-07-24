@@ -910,7 +910,7 @@ public class RosterManager {
         for (MessageObject messageObject : messageObjects) {
             // 如果用户信息不存在, 则不显示此消息记录, 等同步服务器上的用户信息后, 可直接删除相关信息
             if (MessageManager.isToOthers(messageObject)) {
-                String receiverJid = messageObject.getReceiverJid();
+                String receiverJid = messageObject.getToJid();
                 // 如果数据库中没有此用户则直接删除与此用户相关的所有聊天记录
                 ContactInfo info = RosterHelper.findContactInfo(receiverJid, newList);
                 if (info == null) {
@@ -920,7 +920,7 @@ public class RosterManager {
                     EventBus.getDefault().post(new ContactDeleteEvent(receiverJid));
                 }
             } else {
-                String senderJid = messageObject.getSenderJid();
+                String senderJid = messageObject.getFromJid();
                 ContactInfo info = RosterHelper.findContactInfo(senderJid, newList);
                 if (info == null) {
                     messageManager.deleteMessage(user, senderJid);

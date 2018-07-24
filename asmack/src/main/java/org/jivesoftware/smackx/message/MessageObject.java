@@ -22,6 +22,7 @@ package org.jivesoftware.smackx.message;
 
 import android.text.TextUtils;
 
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageSubType;
 
 import java.util.regex.Matcher;
@@ -31,6 +32,8 @@ import java.util.regex.Pattern;
  * 表示一条消息, ui显示与数据库存储
  */
 public class MessageObject {
+
+    private Message.Type chatType; //群聊、单聊等聊天类型
 
     /**
      * 发送者jid
@@ -43,9 +46,19 @@ public class MessageObject {
     private String senderNickName;
 
     /**
-     * 接收者
+     * 发送者头像
      */
-    private String receiverJid;
+    private String senderAvatar;
+
+    /**
+     * 消息来源
+     */
+    private String fromJid; // 如果是群聊：则是一个群组JID；如果是单聊：则是一个人的JID
+
+    /**
+     * 消息目的地
+     */
+    private String toJid; // 如果是群聊：则是一个群组JID；如果是单聊：则是一个人的JID
 
     /**
      * 消息内容
@@ -110,16 +123,32 @@ public class MessageObject {
         this.body = body;
     }
 
-    public String getReceiverJid() {
-        return receiverJid;
+    public String getToJid() {
+        return toJid;
     }
 
-    public void setReceiverJid(String receiverJid) {
-        this.receiverJid = receiverJid;
+    public void setToJid(String toJid) {
+        this.toJid = toJid;
     }
 
     public boolean isOutgoing() {
         return outgoing;
+    }
+
+    public String getSenderAvatar() {
+        return senderAvatar;
+    }
+
+    public String getFromJid() {
+        return fromJid;
+    }
+
+    public void setFromJid(String fromJid) {
+        this.fromJid = fromJid;
+    }
+
+    public void setSenderAvatar(String senderAvatar) {
+        this.senderAvatar = senderAvatar;
     }
 
     public void setOutgoing(boolean outgoing) {
@@ -132,6 +161,14 @@ public class MessageObject {
 
     public void setSenderNickName(String senderNickName) {
         this.senderNickName = senderNickName;
+    }
+
+    public Message.Type getChatType() {
+        return chatType;
+    }
+
+    public void setChatType(Message.Type chatType) {
+        this.chatType = chatType;
     }
 
     public String getHtml() {
