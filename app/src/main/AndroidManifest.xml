@@ -61,6 +61,12 @@
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
 
         <activity
+            android:name="com.agmbat.meetyou.group.GroupMembersActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustResize" />
+
+        <activity
             android:name="com.agmbat.meetyou.edituserinfo.PersonalInfoActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />

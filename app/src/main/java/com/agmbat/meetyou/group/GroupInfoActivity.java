@@ -90,7 +90,7 @@ public class GroupInfoActivity extends Activity {
         if (null != mGroupInfo) {
             setupViews(mGroupInfo);
             fillGroupQrCodeImage(mGroupInfo.jid);
-        } else if(!TextUtils.isEmpty(mGroupJid)){
+        } else if (!TextUtils.isEmpty(mGroupJid)) {
             QueryGroupInfoIQ queryGroupInfoIQ = new QueryGroupInfoIQ(mGroupJid);
             XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupInfoIQ);
             fillGroupQrCodeImage(mGroupJid);
@@ -130,7 +130,6 @@ public class GroupInfoActivity extends Activity {
         mGroupInfo.memberNum = result.getMembers();
         setupViews(mGroupInfo);
     }
-
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -240,5 +239,17 @@ public class GroupInfoActivity extends Activity {
         intent.putExtra(ViewUserHelper.KEY_USER_INFO, mGroupJid);
         startActivity(intent);
     }
+
+    @OnClick(R.id.item_member_num)
+    public void onClickMemberNum() {
+        GroupMembersActivity.launch(getBaseContext(), mGroupJid);
+    }
+
+
+    @OnClick(R.id.btn_quit_group)
+    public void onClickQuitBtn() {
+    }
+
+
 
 }
