@@ -16,10 +16,12 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.group.DismissGroupReply;
 import com.agmbat.imsdk.group.JoinGroupIQ;
 import com.agmbat.imsdk.group.JoinGroupReply;
 import com.agmbat.imsdk.group.QueryGroupInfoIQ;
 import com.agmbat.imsdk.group.QueryGroupInfoResultIQ;
+import com.agmbat.imsdk.group.QuitGroupReplay;
 import com.agmbat.imsdk.search.group.GroupInfo;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.AvatarHelper;
@@ -38,6 +40,8 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.XmppStringUtils;
+import org.jivesoftware.smackx.circle.DismissCirclePacket;
+import org.jivesoftware.smackx.circle.ExitCirclePacket;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +57,8 @@ public class GroupInfoActivity extends Activity {
 
     @BindView(R.id.qr_code)
     ImageView mQrCodeImageView;
+    @BindView(R.id.btn_quit_group)
+    TextView mBtnQuitGroup;
 
     private String mGroupJid;
     private GroupInfo mGroupInfo;
@@ -78,6 +84,8 @@ public class GroupInfoActivity extends Activity {
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mJoinGroupListener, new PacketTypeFilter(JoinGroupReply.class));
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mQuitGroupListener, new PacketTypeFilter(QuitGroupReplay.class));
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mDismissGroupListener, new PacketTypeFilter(DismissGroupReply.class));
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mQueryGroupInfoListener, new PacketTypeFilter(QueryGroupInfoResultIQ.class));
 
         Intent intent = getIntent();
@@ -106,6 +114,38 @@ public class GroupInfoActivity extends Activity {
             }
         }
     };
+
+    private PacketListener mQuitGroupListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof QuitGroupReplay) {
+                QuitGroupReplay quitGroupReplay = (QuitGroupReplay) packet;
+                if (quitGroupReplay.isSuccess()) {
+                    ToastUtil.showToast("退群成功");
+                    EventBus.getDefault().post(new QuitGroupEvent());
+                } else {
+                    ToastUtil.showToast("退群失败，请重试");
+                }
+            }
+        }
+    };
+
+    private PacketListener mDismissGroupListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof DismissGroupReply) {
+                DismissGroupReply dismissGroupReply = (DismissGroupReply) packet;
+                if (dismissGroupReply.isSuccess()) {
+                    ToastUtil.showToast("解散群成功");
+                    EventBus.getDefault().post(new QuitGroupEvent());
+                } else {
+                    ToastUtil.showToast("解散群失败，请重试");
+                }
+            }
+        }
+    };
+
+
 
     private PacketListener mQueryGroupInfoListener = new PacketListener() {
         @Override
@@ -141,6 +181,11 @@ public class GroupInfoActivity extends Activity {
         } else {
             ToastUtil.showToast("该群聊不存在");
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(QuitGroupEvent joinGroupReply) {
+        finish();
     }
 
     @Override
@@ -192,6 +237,14 @@ public class GroupInfoActivity extends Activity {
 
         TextView memberNumView = (TextView) findViewById(R.id.member_num);
         memberNumView.setText(String.valueOf(groupInfo.memberNum));
+
+        String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        String ownerJid = XmppStringUtils.parseBareAddress(mGroupInfo.ownerJid);
+        if(loginUser.equals(ownerJid)){
+            mBtnQuitGroup.setText(R.string.label_btn_dismiss_group);
+        }else{
+            mBtnQuitGroup.setText(R.string.label_btn_quit_group);
+        }
     }
 
     /**
@@ -248,8 +301,13 @@ public class GroupInfoActivity extends Activity {
 
     @OnClick(R.id.btn_quit_group)
     public void onClickQuitBtn() {
+        String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        String ownerJid = XmppStringUtils.parseBareAddress(mGroupInfo.ownerJid);
+        if (ownerJid.equals(loginUser)) { //如果是群主则执行解散群操作
+            XMPPManager.getInstance().getXmppConnection().sendPacket(new DismissCirclePacket(mGroupJid));
+        } else {
+            XMPPManager.getInstance().getXmppConnection().sendPacket(new ExitCirclePacket(mGroupJid));
+        }
     }
-
-
 
 }

@@ -139,6 +139,10 @@
     <string name="recent_chat_type_recommend">[推荐好友]</string>
     <string name="identity_authentication">身份认证</string>
 
+    <!-- 群信息界面 -->
+    <string name="label_btn_quit_group">退出群聊</string>
+    <string name="label_btn_dismiss_group">解散群聊</string>
+
     <!-- 用户反馈 -->
     <string name="feedback_tips">请添加问题描述,并大于3个字符</string>
     <string name="feedback_loading">正在提交反馈...</string>

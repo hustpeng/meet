@@ -1,7 +1,5 @@
 package com.agmbat.imsdk.group;
 
-import android.text.TextUtils;
-
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
@@ -24,22 +22,35 @@ public class JoinGroupProvider implements IQProvider {
         boolean done = false;
         String action = "";
         JoinGroupReply joinGroupReply = new JoinGroupReply();
+        QuitGroupReplay quitGroupReplay = new QuitGroupReplay();
+        DismissGroupReply dismissGroupReply = new DismissGroupReply();
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("action")) {
-                    action = geTagText(parser,"action");
-                }else if(parser.getName().equals("succeed")){
-                    if("applycircle".equals(action)){
-                        String succeedText = geTagText(parser,"succeed");
-                        boolean success = Boolean.parseBoolean(succeedText);
+                    action = geTagText(parser, "action");
+                } else if (parser.getName().equals("succeed")) {
+                    String succeedText = geTagText(parser, "succeed");
+                    boolean success = Boolean.parseBoolean(succeedText);
+                    if ("applycircle".equals(action)) {
                         joinGroupReply.setSuccess(success);
+                    } else if ("quitcircle".equals(action)) {
+                        quitGroupReplay.setSuccess(success);
+                    } else if ("dismisscircle".equals(action)) {
+                        dismissGroupReply.setSuccess(success);
                     }
-                }else if(parser.getName().equals("wait")){
-                    if("applycircle".equals(action)){
+                } else if (parser.getName().equals("wait")) {
+                    if ("applycircle".equals(action)) {
                         String waitText = geTagText(parser, "wait");
                         boolean wait = Boolean.parseBoolean(waitText);
                         joinGroupReply.setWaitForAgree(wait);
+                    }
+                } else if (parser.getName().equals("reason")) {
+                    String reason = geTagText(parser, "reason");
+                    if ("quitcircle".equals(action)) {
+                        quitGroupReplay.setReason(reason);
+                    } else if ("dismisscircle".equals(action)) {
+                        dismissGroupReply.setReason(reason);
                     }
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
@@ -48,7 +59,14 @@ public class JoinGroupProvider implements IQProvider {
                 }
             }
         }
-        return joinGroupReply;
+        if ("applycircle".equals(action)) {
+            return joinGroupReply;
+        } else if ("quitcircle".equals(action)) {
+            return quitGroupReplay;
+        } else if ("dismisscircle".equals(action)) {
+            return dismissGroupReply;
+        }
+        return null;
     }
 
     private String geTagText(XmlPullParser xmlPullParser, String tagName)

@@ -199,4 +199,11 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(QuitGroupEvent quitGroupEvent) {
+        //收到退出成功通知后，重新刷新列表
+        queryGroupList();
+    }
+
 }

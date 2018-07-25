@@ -52,6 +52,7 @@ import com.agmbat.map.Maps;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.group.CircleInfo;
 import com.agmbat.meetyou.group.GroupInfoActivity;
+import com.agmbat.meetyou.group.QuitGroupEvent;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.net.HttpUtils;
@@ -516,5 +517,10 @@ public class ChatActivity extends Activity implements OnInputListener {
         if(mChatType == TYPE_GROUP_CHAT) {
             GroupInfoActivity.launch(this, mCircleInfo.getGroupJid());
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(QuitGroupEvent joinGroupReply) {
+        finish();
     }
 }
