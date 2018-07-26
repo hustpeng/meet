@@ -146,7 +146,6 @@ public class GroupInfoActivity extends Activity {
     };
 
 
-
     private PacketListener mQueryGroupInfoListener = new PacketListener() {
         @Override
         public void processPacket(Packet packet) {
@@ -240,9 +239,9 @@ public class GroupInfoActivity extends Activity {
 
         String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
         String ownerJid = XmppStringUtils.parseBareAddress(mGroupInfo.ownerJid);
-        if(loginUser.equals(ownerJid)){
+        if (loginUser.equals(ownerJid)) {
             mBtnQuitGroup.setText(R.string.label_btn_dismiss_group);
-        }else{
+        } else {
             mBtnQuitGroup.setText(R.string.label_btn_quit_group);
         }
     }
@@ -262,23 +261,26 @@ public class GroupInfoActivity extends Activity {
                 reportGroup();
             }
         });
-
-        MenuInfo joinGroup = new MenuInfo();
-        joinGroup.setTitle(getString(R.string.title_join_group));
-        joinGroup.setOnClickMenuListener(new OnClickMenuListener() {
-            @Override
-            public void onClick(MenuInfo menu, int index) {
-                XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
-                String senderName = XmppStringUtils.parseName(xmppConnection.getUser());
-                JoinGroupIQ joinGroupIQ = new JoinGroupIQ(senderName);
-                joinGroupIQ.setType(IQ.Type.SET);
-                joinGroupIQ.setTo(mGroupJid);
-                xmppConnection.sendPacket(joinGroupIQ);
-            }
-        });
-
         popupMenu.addItem(reportUser);
-        popupMenu.addItem(joinGroup);
+
+        //群主看不到改选项
+        String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        if (mGroupInfo != null && !mGroupInfo.ownerJid.equals(loginUser)) {
+            MenuInfo joinGroup = new MenuInfo();
+            joinGroup.setTitle(getString(R.string.title_join_group));
+            joinGroup.setOnClickMenuListener(new OnClickMenuListener() {
+                @Override
+                public void onClick(MenuInfo menu, int index) {
+                    XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
+                    String senderName = XmppStringUtils.parseName(xmppConnection.getUser());
+                    JoinGroupIQ joinGroupIQ = new JoinGroupIQ(senderName);
+                    joinGroupIQ.setType(IQ.Type.SET);
+                    joinGroupIQ.setTo(mGroupJid);
+                    xmppConnection.sendPacket(joinGroupIQ);
+                }
+            });
+            popupMenu.addItem(joinGroup);
+        }
 
         View v = (View) view.getParent();
         popupMenu.show(v);
@@ -295,7 +297,10 @@ public class GroupInfoActivity extends Activity {
 
     @OnClick(R.id.item_member_num)
     public void onClickMemberNum() {
-        GroupMembersActivity.launch(getBaseContext(), mGroupJid);
+        if (null == mGroupInfo) {
+            return;
+        }
+        GroupMembersActivity.launch(getBaseContext(), mGroupJid, mGroupInfo.ownerJid);
     }
 
 

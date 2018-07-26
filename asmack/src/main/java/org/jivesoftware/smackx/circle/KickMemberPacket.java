@@ -18,6 +18,14 @@ public class KickMemberPacket extends Packet {
         setTo(circleServer);
     }
 
+    public void setMember(String memberJid){
+        this.member = memberJid;
+    }
+
+    public void setReason(String reason){
+        this.reason = reason;
+    }
+
     @Override
     public String getXmlns() {
         return "jabber:client";

@@ -39,6 +39,7 @@ import com.agmbat.meetyou.discovery.search.TagSelectedView;
 import com.agmbat.meetyou.util.CircleDrawable;
 
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -262,7 +263,10 @@ public class CreateGroupActivity extends Activity {
         createGroupIQ.setDescription(mInputDescriptionView.getText().toString());
         createGroupIQ.setTo(XMPPManager.GROUP_CHAT_SERVER);
         createGroupIQ.setType(IQ.Type.SET);
-        XMPPManager.getInstance().getXmppConnection().sendPacket(createGroupIQ);
+        XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
+        if (xmppConnection.isConnected()) {
+            xmppConnection.sendPacket(createGroupIQ);
+        }
     }
 
     private ISLoadingDialog mCreateProgressDialog;

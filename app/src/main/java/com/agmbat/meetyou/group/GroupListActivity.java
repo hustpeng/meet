@@ -2,10 +2,12 @@ package com.agmbat.meetyou.group;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
@@ -20,6 +22,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.circle.CircleListPacket;
@@ -44,11 +47,13 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
 
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
-
     @BindView(R.id.friend_list)
     ExpandableListView mListView;
+    @BindView(R.id.result)
+    TextView mResultTv;
 
     private GroupAdapter mFriendsAdapter;
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,8 +84,21 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
     private void queryGroupList() {
         setState(STATE_LOADING);
         CircleListPacket circleListPacket = new CircleListPacket(XMPPManager.GROUP_CHAT_SERVER);
-        XMPPManager.getInstance().getXmppConnection().sendPacket(circleListPacket);
+        XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
+        if (xmppConnection.isConnected()) {
+            xmppConnection.sendPacket(circleListPacket);
+        }
+        mHandler.postDelayed(mResultRunnable, 10000);
     }
+
+    private Runnable mResultRunnable = new Runnable(){
+
+        @Override
+        public void run() {
+            mResultTv.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+        }
+    };
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(CircleGroupEvent event) {
@@ -94,6 +112,7 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         @Override
         public void processPacket(Packet packet) {
             if (packet instanceof QueryGroupResultIQ) {
+                mHandler.removeCallbacks(mResultRunnable);
                 final QueryGroupResultIQ queryGroupResultIQ = (QueryGroupResultIQ) packet;
                 Log.d("Group size: " + queryGroupResultIQ.getGroups().size());
 

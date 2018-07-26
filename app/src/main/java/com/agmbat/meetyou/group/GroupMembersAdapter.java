@@ -51,4 +51,14 @@ public class GroupMembersAdapter extends BaseRecyclerAdapter<GroupMember, GroupM
         }
     }
 
+    public void removeMember(String jid) {
+        int count = getItemCount();
+        for (int i = 0; i < count; i++) {
+            if (getItem(i).getJid().equals(jid)) {
+                remove(i);
+                break;
+            }
+        }
+    }
+
 }

@@ -9,6 +9,7 @@ import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.ReceiveSysMessageEvent;
 import com.agmbat.log.Debug;
+import com.agmbat.log.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jivesoftware.smack.Connection;
@@ -85,6 +86,7 @@ public class MessageManager extends Xepmodule {
         @Override
         public void processPacket(Packet packet) {
             Message message = (Message) packet;
+            Log.d("SMACK: receive message: " + message.getBody());
             if (("http://jabber.org/protocol/muc#verify".equals(message.getXmlns()))
                     || ("http://jabber.org/protocol/muc#admin".equals(message.getXmlns()))
                     || ("http://jabber.org/protocol/muc#hotcircle".equals(message.getXmlns()))

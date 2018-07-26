@@ -2,6 +2,9 @@ package com.agmbat.imsdk.group;
 
 public class GroupMember {
 
+    public static final String ROLE_PARTICIPANT = "participant";
+    public static final String ROLE_OWNER = "owner";
+
     private String nickName;
 
     private String jid;
