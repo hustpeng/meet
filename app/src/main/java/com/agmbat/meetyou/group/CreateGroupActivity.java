@@ -121,6 +121,7 @@ public class CreateGroupActivity extends Activity {
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_create_group);
         ButterKnife.bind(this);
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupCreateListener, new PacketTypeFilter(CreateGroupResultIQ.class));
         mCheckBox.setChecked(false);
         mVerifyCheckbox.setChecked(false);
 
@@ -132,7 +133,6 @@ public class CreateGroupActivity extends Activity {
         });
         loadGroupCategories();
         showPage1();
-        XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupCreateListener, new PacketTypeFilter(CreateGroupResultIQ.class));
     }
 
 

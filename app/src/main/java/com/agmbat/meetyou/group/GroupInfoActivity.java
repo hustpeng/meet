@@ -59,6 +59,8 @@ public class GroupInfoActivity extends Activity {
     ImageView mQrCodeImageView;
     @BindView(R.id.btn_quit_group)
     TextView mBtnQuitGroup;
+    @BindView(R.id.btn_edit_group)
+    TextView mBtnEditGroup;
 
     private String mGroupJid;
     private GroupInfo mGroupInfo;
@@ -236,16 +238,21 @@ public class GroupInfoActivity extends Activity {
         memberNumView.setText(String.valueOf(groupInfo.memberNum));
 
         String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
+
+        //首先判断当前用户是否是组员，是群主或者一般成员才能看到退群/解散群按钮
         if(null == groupInfo.memberJids ||groupInfo.memberJids.isEmpty() || !groupInfo.memberJids.contains(loginUser)){//当前登录用户还不是群成员，隐藏按钮
             mBtnQuitGroup.setVisibility(View.GONE);
         }else {
             mBtnQuitGroup.setVisibility(View.VISIBLE);
-            String ownerJid = XmppStringUtils.parseBareAddress(mGroupInfo.ownerJid);
-            if (loginUser.equals(ownerJid)) { //如果是群主，则可以执行解散群的操作
-                mBtnQuitGroup.setText(R.string.label_btn_dismiss_group);
-            } else {
-                mBtnQuitGroup.setText(R.string.label_btn_quit_group);//一般用户只能执行退群操作
-            }
+        }
+
+        String ownerJid = XmppStringUtils.parseBareAddress(mGroupInfo.ownerJid);
+        if (loginUser.equals(ownerJid)) { //如果是群主，则可以执行解散群的操作
+            mBtnQuitGroup.setText(R.string.label_btn_dismiss_group);
+            mBtnEditGroup.setVisibility(View.VISIBLE);
+        } else {
+            mBtnQuitGroup.setText(R.string.label_btn_quit_group);//一般用户只能执行退群操作
+            mBtnEditGroup.setVisibility(View.GONE);
         }
     }
 
@@ -266,23 +273,25 @@ public class GroupInfoActivity extends Activity {
         });
         popupMenu.addItem(reportUser);
 
-        //群主看不到改选项
         String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
-        if (mGroupInfo != null && !mGroupInfo.ownerJid.equals(loginUser)) {
-            MenuInfo joinGroup = new MenuInfo();
-            joinGroup.setTitle(getString(R.string.title_join_group));
-            joinGroup.setOnClickMenuListener(new OnClickMenuListener() {
-                @Override
-                public void onClick(MenuInfo menu, int index) {
-                    XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
-                    String senderName = XmppStringUtils.parseName(xmppConnection.getUser());
-                    JoinGroupIQ joinGroupIQ = new JoinGroupIQ(senderName);
-                    joinGroupIQ.setType(IQ.Type.SET);
-                    joinGroupIQ.setTo(mGroupJid);
-                    xmppConnection.sendPacket(joinGroupIQ);
-                }
-            });
-            popupMenu.addItem(joinGroup);
+        if (mGroupInfo != null) {
+
+            if(!mGroupInfo.ownerJid.equals(loginUser)) { //普通用户才能看到申请入群
+                MenuInfo joinGroup = new MenuInfo();
+                joinGroup.setTitle(getString(R.string.title_join_group));
+                joinGroup.setOnClickMenuListener(new OnClickMenuListener() {
+                    @Override
+                    public void onClick(MenuInfo menu, int index) {
+                        XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
+                        String senderName = XmppStringUtils.parseName(xmppConnection.getUser());
+                        JoinGroupIQ joinGroupIQ = new JoinGroupIQ(senderName);
+                        joinGroupIQ.setType(IQ.Type.SET);
+                        joinGroupIQ.setTo(mGroupJid);
+                        xmppConnection.sendPacket(joinGroupIQ);
+                    }
+                });
+                popupMenu.addItem(joinGroup);
+            }
         }
 
         View v = (View) view.getParent();
@@ -318,4 +327,8 @@ public class GroupInfoActivity extends Activity {
         }
     }
 
+    @OnClick(R.id.btn_edit_group)
+    public void onClickEditGroupBtn() {
+        EditGroupActivity.launch(this, mGroupJid);
+    }
 }

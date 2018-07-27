@@ -8,6 +8,7 @@ import com.agmbat.android.utils.AppUtils;
 import com.agmbat.imsdk.account.RegisterInfo;
 import com.agmbat.imsdk.asmack.roster.RosterManager;
 import com.agmbat.imsdk.group.CreateGroupIQProvider;
+import com.agmbat.imsdk.group.GroupFormIQProvider;
 import com.agmbat.imsdk.group.JoinGroupProvider;
 import com.agmbat.imsdk.group.KickMemberProvider;
 import com.agmbat.imsdk.group.QueryGroupIQProvider;
@@ -231,6 +232,7 @@ public class XMPPManager {
         pm.addIQProvider(JoinGroupProvider.elementName(), JoinGroupProvider.namespace(), new JoinGroupProvider());
         pm.addIQProvider(QueryGroupMembersIQProvider.elementName(), QueryGroupMembersIQProvider.namespace(), new QueryGroupMembersIQProvider());
         pm.addIQProvider(KickMemberProvider.elementName(), KickMemberProvider.namespace(), new KickMemberProvider());
+        pm.addIQProvider(GroupFormIQProvider.elementName(), GroupFormIQProvider.namespace(), new GroupFormIQProvider());
 
 
         pm.addExtensionProvider(MessageHtmlProvider.elementName(), MessageHtmlProvider.namespace(),
