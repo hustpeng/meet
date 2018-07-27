@@ -3,6 +3,8 @@ package com.agmbat.imsdk.search.group;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 群信息
@@ -87,5 +89,8 @@ public class GroupInfo implements Serializable {
      */
     @SerializedName("member_num")
     public int memberNum;
+
+
+    public List<String> memberJids = new ArrayList<>();
 
 }

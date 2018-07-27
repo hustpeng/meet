@@ -39,7 +39,8 @@ public class QueryGroupIQProvider implements IQProvider {
         FindServerObject item = new FindServerObject();
         int messageType = -1;
         QueryGroupInfoResultIQ queryGroupInfoResultIQ = new QueryGroupInfoResultIQ();
-
+        List<String> memberJids = new ArrayList<>();
+        boolean hasMemberJids = false;
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
@@ -75,6 +76,9 @@ public class QueryGroupIQProvider implements IQProvider {
                         groupBean.setOwnerJid(owner);
                         groupBeans.add(groupBean);
                     }
+                    if(hasMemberJids){
+                        memberJids.add(parser.getAttributeValue("", "jid"));
+                    }
                 } else if (parser.getName().equals("profile")) {
                     messageType = MSG_TYPE_QUERY_GROUP_INFO;
                     String cover = parser.getAttributeValue("", "cover");
@@ -101,6 +105,8 @@ public class QueryGroupIQProvider implements IQProvider {
                 } else if (parser.getName().equals("description")) {
                     String description = geTagText(parser, "description");
                     queryGroupInfoResultIQ.setDescription(description);
+                } else if(parser.getName().equals("members")){
+                    hasMemberJids = true;
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("query")) {
@@ -117,6 +123,7 @@ public class QueryGroupIQProvider implements IQProvider {
             queryGroupResultIQ.setGroups(groupBeans);
             return queryGroupResultIQ;
         } else if (messageType == MSG_TYPE_QUERY_GROUP_INFO) {
+            queryGroupInfoResultIQ.setMemberJids(memberJids);
             return queryGroupInfoResultIQ;
         }
         return null;

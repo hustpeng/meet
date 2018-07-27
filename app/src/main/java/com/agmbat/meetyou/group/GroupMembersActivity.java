@@ -30,6 +30,7 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.circle.KickMemberPacket;
 
 import butterknife.BindView;
@@ -117,6 +118,7 @@ public class GroupMembersActivity extends Activity {
                         KickMemberPacket kickMemberPacket = new KickMemberPacket(mGroupJid);
                         kickMemberPacket.setMember(groupMember.getJid());
                         kickMemberPacket.setReason("Kick Out");
+                        kickMemberPacket.setFrom(xmppConnection.getBareJid());
                         xmppConnection.sendPacket(kickMemberPacket);
                     } else if (which == 1) {
                         TransOwnerIQ transOwnerIQ = new TransOwnerIQ(mGroupJid, groupMember.getJid());

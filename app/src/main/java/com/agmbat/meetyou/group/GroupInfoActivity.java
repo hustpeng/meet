@@ -91,18 +91,14 @@ public class GroupInfoActivity extends Activity {
         Intent intent = getIntent();
         if (intent.hasExtra(KEY_GROUP)) {
             mGroupInfo = (GroupInfo) intent.getSerializableExtra(KEY_GROUP);
+            setupViews(mGroupInfo);
+            mGroupJid = mGroupInfo.jid;
         } else if (intent.hasExtra(KEY_GROUP_JID)) {
             mGroupJid = intent.getStringExtra(KEY_GROUP_JID);
         }
-
-        if (null != mGroupInfo) {
-            setupViews(mGroupInfo);
-            fillGroupQrCodeImage(mGroupInfo.jid);
-        } else if (!TextUtils.isEmpty(mGroupJid)) {
-            QueryGroupInfoIQ queryGroupInfoIQ = new QueryGroupInfoIQ(mGroupJid);
-            XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupInfoIQ);
-            fillGroupQrCodeImage(mGroupJid);
-        }
+        QueryGroupInfoIQ queryGroupInfoIQ = new QueryGroupInfoIQ(mGroupJid);
+        XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupInfoIQ);
+        fillGroupQrCodeImage(mGroupJid);
     }
 
     private PacketListener mJoinGroupListener = new PacketListener() {
@@ -151,22 +147,24 @@ public class GroupInfoActivity extends Activity {
         public void processPacket(Packet packet) {
             if (packet instanceof QueryGroupInfoResultIQ) {
                 QueryGroupInfoResultIQ result = (QueryGroupInfoResultIQ) packet;
-                EventBus.getDefault().post(result);
+                GroupInfo groupInfo = new GroupInfo();
+                groupInfo.categoryName = result.getCategory();
+                groupInfo.cover = result.getAvatar();
+                groupInfo.description = result.getDescription();
+                groupInfo.jid = result.getGroupJid();
+                groupInfo.ownerJid = result.getOwner();
+                groupInfo.ownerName = XmppStringUtils.parseName(result.getOwner());
+                groupInfo.name = result.getName();
+                groupInfo.memberNum = result.getMembers();
+                groupInfo.memberJids = result.getMemberJids();
+                EventBus.getDefault().post(groupInfo);
             }
         }
     };
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(QueryGroupInfoResultIQ result) {
-        mGroupInfo = new GroupInfo();
-        mGroupInfo.categoryName = result.getCategory();
-        mGroupInfo.cover = result.getAvatar();
-        mGroupInfo.description = result.getDescription();
-        mGroupInfo.jid = result.getGroupJid();
-        mGroupInfo.ownerJid = result.getOwner();
-        mGroupInfo.ownerName = XmppStringUtils.parseName(result.getOwner());
-        mGroupInfo.name = result.getName();
-        mGroupInfo.memberNum = result.getMembers();
+    public void onEvent(GroupInfo result) {
+        mGroupInfo = result;
         setupViews(mGroupInfo);
     }
 
@@ -238,11 +236,16 @@ public class GroupInfoActivity extends Activity {
         memberNumView.setText(String.valueOf(groupInfo.memberNum));
 
         String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
-        String ownerJid = XmppStringUtils.parseBareAddress(mGroupInfo.ownerJid);
-        if (loginUser.equals(ownerJid)) {
-            mBtnQuitGroup.setText(R.string.label_btn_dismiss_group);
-        } else {
-            mBtnQuitGroup.setText(R.string.label_btn_quit_group);
+        if(null == groupInfo.memberJids ||groupInfo.memberJids.isEmpty() || !groupInfo.memberJids.contains(loginUser)){//当前登录用户还不是群成员，隐藏按钮
+            mBtnQuitGroup.setVisibility(View.GONE);
+        }else {
+            mBtnQuitGroup.setVisibility(View.VISIBLE);
+            String ownerJid = XmppStringUtils.parseBareAddress(mGroupInfo.ownerJid);
+            if (loginUser.equals(ownerJid)) { //如果是群主，则可以执行解散群的操作
+                mBtnQuitGroup.setText(R.string.label_btn_dismiss_group);
+            } else {
+                mBtnQuitGroup.setText(R.string.label_btn_quit_group);//一般用户只能执行退群操作
+            }
         }
     }
 
