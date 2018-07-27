@@ -111,35 +111,18 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/selector_common_item"
         android:gravity="center_vertical"
+        android:paddingLeft="5dp"
         android:text="@string/set_alias_and_tag" />
 
-    <LinearLayout
-        android:id="@+id/llArea"
+    <TextView
+        android:id="@+id/more_user_info"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="51dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/selector_common_item"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30px"
-            android:layout_weight="1.5"
-            android:text="@string/area"
-            android:textColor="#000000"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tvArea"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="4"
-            android:textColor="#7e7e7e"
-            android:textSize="16sp" />
-
-    </LinearLayout>
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:text="更多信息" />
 
     <View
         android:layout_width="match_parent"

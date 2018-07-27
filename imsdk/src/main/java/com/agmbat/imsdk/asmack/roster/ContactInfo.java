@@ -179,8 +179,22 @@ public class ContactInfo implements Serializable {
     @SerializedName("workarea")
     private String workarea;
 
+    public int getHeight() {
+        return height;
+    }
 
-    /****** 附近的人需要的字段 end   **************/
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
 
     public void setNickname(String nickname) {
         mNickname = nickname;
@@ -306,5 +320,133 @@ public class ContactInfo implements Serializable {
         }
         ContactInfo other = (ContactInfo) obj;
         return mBareJid.equals(other.mBareJid);
+    }
+
+    public int getWage() {
+        return wage;
+    }
+
+    public void setWage(int wage) {
+        this.wage = wage;
+    }
+
+    public int getEducation() {
+        return education;
+    }
+
+    public void setEducation(int education) {
+        this.education = education;
+    }
+
+    public int getMarriage() {
+        return marriage;
+    }
+
+    public void setMarriage(int marriage) {
+        this.marriage = marriage;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getDemand() {
+        return demand;
+    }
+
+    public void setDemand(String demand) {
+        this.demand = demand;
+    }
+
+    public String getCareer() {
+        return career;
+    }
+
+    public void setCareer(String career) {
+        this.career = career;
+    }
+
+    public int getCar() {
+        return car;
+    }
+
+    public void setCar(int car) {
+        this.car = car;
+    }
+
+    public String getBirthplace() {
+        return birthplace;
+    }
+
+    public void setBirthplace(String birthplace) {
+        this.birthplace = birthplace;
+    }
+
+    public int getBirth() {
+        return birth;
+    }
+
+    public void setBirth(int birth) {
+        this.birth = birth;
+    }
+
+    public String getHobby() {
+        return hobby;
+    }
+
+    public void setHobby(String hobby) {
+        this.hobby = hobby;
+    }
+
+    public int getHouse() {
+        return house;
+    }
+
+    public void setHouse(int house) {
+        this.house = house;
+    }
+
+    public int getIm_uid() {
+        return im_uid;
+    }
+
+    public void setIm_uid(int im_uid) {
+        this.im_uid = im_uid;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public String getIntroduce() {
+        return introduce;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
+    }
+
+    public String getResidence() {
+        return residence;
+    }
+
+    public void setResidence(String residence) {
+        this.residence = residence;
+    }
+
+    public String getWorkarea() {
+        return workarea;
+    }
+
+    public void setWorkarea(String workarea) {
+        this.workarea = workarea;
     }
 }

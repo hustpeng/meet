@@ -183,6 +183,10 @@
             android:name="com.agmbat.meetyou.component.MapActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.agmbat.meetyou.search.MoreUserInfoActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

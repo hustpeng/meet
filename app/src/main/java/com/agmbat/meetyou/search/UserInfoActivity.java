@@ -161,6 +161,11 @@ public class UserInfoActivity extends Activity {
         startActivity(intent);
     }
 
+    @OnClick(R.id.more_user_info)
+    void onClickMoreInfo() {
+        ViewUserHelper.viewContactInfoMore(this, mContactInfo);
+    }
+
     //    UserInfo mUserInfo;
 //
 //    @Bind(R.id.ibToolbarMore)

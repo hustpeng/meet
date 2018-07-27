@@ -31,6 +31,19 @@ public class ViewUserHelper {
     private static final int TYPE_VERIFY = 3;
 
     /**
+     * 查看用户详情
+     *
+     * @param context
+     * @param contactInfo
+     */
+    public static void viewContactInfoMore(Context context, ContactInfo contactInfo) {
+        XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
+        Intent intent = new Intent(context, MoreUserInfoActivity.class);
+        intent.putExtra(KEY_USER_INFO, contactInfo.getBareJid());
+        context.startActivity(intent);
+    }
+
+    /**
      * 查看联系人详情
      *
      * @param context
@@ -75,6 +88,12 @@ public class ViewUserHelper {
         context.startActivity(intent);
     }
 
+    public static ContactInfo getContactInfoFromIntent(Intent intent) {
+        String jid = intent.getStringExtra(KEY_USER_INFO);
+        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(jid);
+        return contactInfo;
+    }
+
     /**
      * 获取查看用户信息界面的处理
      *
@@ -82,8 +101,7 @@ public class ViewUserHelper {
      * @return
      */
     public static BusinessHandler getBusinessHandler(Intent intent) {
-        String jid = intent.getStringExtra(KEY_USER_INFO);
-        ContactInfo contactInfo = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(jid);
+        ContactInfo contactInfo = getContactInfoFromIntent(intent);
         int type = intent.getIntExtra(KEY_TYPE, 0);
         if (type == TYPE_CONTACTS) {
             return new ContactsBusinessHandler(contactInfo);
