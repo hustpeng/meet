@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.findserver.FindServerObject;
 import org.jivesoftware.smackx.findserver.FindServerPacket;
 import org.xmlpull.v1.XmlPullParser;
@@ -40,7 +41,6 @@ public class QueryGroupIQProvider implements IQProvider {
         int messageType = -1;
         QueryGroupInfoResultIQ queryGroupInfoResultIQ = new QueryGroupInfoResultIQ();
         List<String> memberJids = new ArrayList<>();
-        boolean hasMemberJids = false;
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
@@ -76,9 +76,6 @@ public class QueryGroupIQProvider implements IQProvider {
                         groupBean.setOwnerJid(owner);
                         groupBeans.add(groupBean);
                     }
-                    if(hasMemberJids){
-                        memberJids.add(parser.getAttributeValue("", "jid"));
-                    }
                 } else if (parser.getName().equals("profile")) {
                     messageType = MSG_TYPE_QUERY_GROUP_INFO;
                     String cover = parser.getAttributeValue("", "cover");
@@ -106,7 +103,20 @@ public class QueryGroupIQProvider implements IQProvider {
                     String description = geTagText(parser, "description");
                     queryGroupInfoResultIQ.setDescription(description);
                 } else if(parser.getName().equals("members")){
-                    hasMemberJids = true;
+                    boolean memberdone = false;
+                    while (!memberdone){
+                        int memberType = parser.next();
+                        if(memberType == XmlPullParser.START_TAG){
+                            if(parser.getName().equals("item")){
+                                String memberJid = parser.getAttributeValue("", "jid");
+                                memberJids.add(memberJid);
+                            }
+                        }else if(memberType == XmlPullParser.END_TAG){
+                            if(parser.getName().equals("members")){
+                                memberdone = true;
+                            }
+                        }
+                    }
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("query")) {

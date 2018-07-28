@@ -1,5 +1,6 @@
 package com.agmbat.imsdk.search.group;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -93,4 +94,9 @@ public class GroupInfo implements Serializable {
 
     public List<String> memberJids = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
 }

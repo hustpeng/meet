@@ -1,6 +1,7 @@
 package com.agmbat.meetyou.group;
 
 import com.agmbat.imsdk.search.group.GroupCategory;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -74,5 +75,11 @@ public class GroupForm {
 
     public void setCategories(List<GroupCategory> categories) {
         this.categories = categories;
+    }
+
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

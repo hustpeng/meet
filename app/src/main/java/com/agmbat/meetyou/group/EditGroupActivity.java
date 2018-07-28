@@ -18,6 +18,7 @@ import com.agmbat.imsdk.group.CreateGroupResultIQ;
 import com.agmbat.imsdk.group.GroupFormReply;
 import com.agmbat.imsdk.group.QueryGroupFormIQ;
 import com.agmbat.imsdk.search.group.GroupCategory;
+import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.TagSelectedView;
 import com.agmbat.meetyou.helper.AvatarHelper;
@@ -76,6 +77,7 @@ public class EditGroupActivity extends Activity {
         mGroupJid = getIntent().getStringExtra(EXTRA_GROUP_JID);
         setContentView(R.layout.activity_edit_group);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupFormListener, new PacketTypeFilter(GroupFormReply.class));
         XMPPManager.getInstance().getXmppConnection().sendPacket(new QueryGroupFormIQ(mGroupJid));
     }
@@ -105,6 +107,7 @@ public class EditGroupActivity extends Activity {
 
 
     private void fillGroupForm(GroupForm groupForm){
+        Log.d("Fill the group to form:" + groupForm.toString());
         if(!TextUtils.isEmpty(groupForm.getAvatar())){
             ImageManager.displayImage(groupForm.getAvatar(), mAvatarView, AvatarHelper.getGroupOptions());
         }
@@ -172,4 +175,10 @@ public class EditGroupActivity extends Activity {
         });
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

@@ -23,6 +23,7 @@ import com.agmbat.imsdk.group.QueryGroupInfoIQ;
 import com.agmbat.imsdk.group.QueryGroupInfoResultIQ;
 import com.agmbat.imsdk.group.QuitGroupReplay;
 import com.agmbat.imsdk.search.group.GroupInfo;
+import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.search.ViewUserHelper;
@@ -166,6 +167,7 @@ public class GroupInfoActivity extends Activity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(GroupInfo result) {
+        Log.d("Rcv group info: " + result.toString());
         mGroupInfo = result;
         setupViews(mGroupInfo);
     }
