@@ -102,20 +102,14 @@ public class QueryGroupIQProvider implements IQProvider {
                 } else if (parser.getName().equals("description")) {
                     String description = geTagText(parser, "description");
                     queryGroupInfoResultIQ.setDescription(description);
-                } else if(parser.getName().equals("members")){
-                    boolean memberdone = false;
-                    while (!memberdone){
-                        int memberType = parser.next();
-                        if(memberType == XmlPullParser.START_TAG){
-                            if(parser.getName().equals("item")){
-                                String memberJid = parser.getAttributeValue("", "jid");
-                                memberJids.add(memberJid);
-                            }
-                        }else if(memberType == XmlPullParser.END_TAG){
-                            if(parser.getName().equals("members")){
-                                memberdone = true;
-                            }
-                        }
+                } else if(parser.getName().equals("current_user")){
+                    parser.next();
+                    parser.next();
+                    String isMemberText = parser.getText();
+                    if("true".equals(isMemberText)){
+                        queryGroupInfoResultIQ.setGroupMember(true);
+                    }else{
+                        queryGroupInfoResultIQ.setGroupMember(false);
                     }
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
@@ -133,7 +127,6 @@ public class QueryGroupIQProvider implements IQProvider {
             queryGroupResultIQ.setGroups(groupBeans);
             return queryGroupResultIQ;
         } else if (messageType == MSG_TYPE_QUERY_GROUP_INFO) {
-            queryGroupInfoResultIQ.setMemberJids(memberJids);
             return queryGroupInfoResultIQ;
         }
         return null;

@@ -25,6 +25,11 @@ public class GroupFormIQProvider implements IQProvider {
     public IQ parseIQ(XmlPullParser parser) throws Exception {
         GroupFormReply groupFormReply = new GroupFormReply();
 
+        CreateGroupResultIQ createGroupResultIQ = new CreateGroupResultIQ();
+        UpdateGroupReply updateGroupReply = new UpdateGroupReply();
+        updateGroupReply.setSuccess(true);
+        boolean hasCircle = false;
+        boolean hasX = false;
         List<GroupCategory> groupCategories = new ArrayList<>();
         boolean done = false;
         // 判断事件是否到最后
@@ -77,7 +82,13 @@ public class GroupFormIQProvider implements IQProvider {
                             groupCategory.setId(Integer.parseInt(id));
                         }
                         groupCategories.add(groupCategory);
-                    }
+                    } else if(parser.getName().equals("x")){
+                        hasX = true;
+                    } else if (parser.getName().equals("circle")) {
+                        hasCircle = true;
+                        String jid = parser.getAttributeValue("", "jid");
+                        createGroupResultIQ.setGroupJid(jid);
+                     }
                     break;
                 // 判断当前事件是否为标签元素结束事件
                 case XmlPullParser.END_TAG:
@@ -87,7 +98,13 @@ public class GroupFormIQProvider implements IQProvider {
                     break;
             }
         }
-        groupFormReply.setCategories(groupCategories);
-        return groupFormReply;
+        if(hasX){
+            groupFormReply.setCategories(groupCategories);
+            return groupFormReply;
+        }else if(hasCircle){
+            return createGroupResultIQ;
+        }else{
+            return updateGroupReply;
+        }
     }
 }

@@ -24,7 +24,7 @@ public class QueryGroupInfoResultIQ extends IQ {
 
     private String description; //描述
 
-    private List<String> memberJids;
+    private boolean isGroupMember;
 
 
     @Override
@@ -105,11 +105,11 @@ public class QueryGroupInfoResultIQ extends IQ {
         this.description = description;
     }
 
-    public List<String> getMemberJids() {
-        return memberJids;
+    public boolean isGroupMember() {
+        return isGroupMember;
     }
 
-    public void setMemberJids(List<String> memberJids) {
-        this.memberJids = memberJids;
+    public void setGroupMember(boolean groupMember) {
+        isGroupMember = groupMember;
     }
 }

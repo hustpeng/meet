@@ -62,6 +62,8 @@ public class GroupInfoActivity extends Activity {
     TextView mBtnQuitGroup;
     @BindView(R.id.btn_edit_group)
     TextView mBtnEditGroup;
+    @BindView(R.id.btn_join_group)
+    TextView mBtnJoinGroup;
 
     private String mGroupJid;
     private GroupInfo mGroupInfo;
@@ -159,7 +161,7 @@ public class GroupInfoActivity extends Activity {
                 groupInfo.ownerName = XmppStringUtils.parseName(result.getOwner());
                 groupInfo.name = result.getName();
                 groupInfo.memberNum = result.getMembers();
-                groupInfo.memberJids = result.getMemberJids();
+                groupInfo.isGroupMember = result.isGroupMember();
                 EventBus.getDefault().post(groupInfo);
             }
         }
@@ -241,21 +243,28 @@ public class GroupInfoActivity extends Activity {
 
         String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
 
-        //首先判断当前用户是否是组员，是群主或者一般成员才能看到退群/解散群按钮
-        if(null == groupInfo.memberJids ||groupInfo.memberJids.isEmpty() || !groupInfo.memberJids.contains(loginUser)){//当前登录用户还不是群成员，隐藏按钮
+        if(!groupInfo.isGroupMember){//当前登录用户还不是群成员，只显示加群按钮
+            mBtnJoinGroup.setVisibility(View.VISIBLE);
             mBtnQuitGroup.setVisibility(View.GONE);
+            mBtnEditGroup.setVisibility(View.GONE);
         }else {
+            mBtnJoinGroup.setVisibility(View.GONE);
+            mBtnQuitGroup.setVisibility(View.VISIBLE);
+
+            String ownerJid = XmppStringUtils.parseBareAddress(mGroupInfo.ownerJid);
+            if (loginUser.equals(ownerJid)) { //如果是群主，则可以执行解散群的操作
+                mBtnQuitGroup.setText(R.string.label_btn_dismiss_group);
+                mBtnEditGroup.setVisibility(View.VISIBLE);
+            } else {
+                mBtnQuitGroup.setText(R.string.label_btn_quit_group);//一般用户只能执行退群操作
+                mBtnEditGroup.setVisibility(View.GONE);
+            }
+
+            mBtnJoinGroup.setVisibility(View.GONE);
             mBtnQuitGroup.setVisibility(View.VISIBLE);
         }
 
-        String ownerJid = XmppStringUtils.parseBareAddress(mGroupInfo.ownerJid);
-        if (loginUser.equals(ownerJid)) { //如果是群主，则可以执行解散群的操作
-            mBtnQuitGroup.setText(R.string.label_btn_dismiss_group);
-            mBtnEditGroup.setVisibility(View.VISIBLE);
-        } else {
-            mBtnQuitGroup.setText(R.string.label_btn_quit_group);//一般用户只能执行退群操作
-            mBtnEditGroup.setVisibility(View.GONE);
-        }
+
     }
 
     /**
@@ -274,28 +283,6 @@ public class GroupInfoActivity extends Activity {
             }
         });
         popupMenu.addItem(reportUser);
-
-        String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
-        if (mGroupInfo != null) {
-
-            if(!mGroupInfo.ownerJid.equals(loginUser)) { //普通用户才能看到申请入群
-                MenuInfo joinGroup = new MenuInfo();
-                joinGroup.setTitle(getString(R.string.title_join_group));
-                joinGroup.setOnClickMenuListener(new OnClickMenuListener() {
-                    @Override
-                    public void onClick(MenuInfo menu, int index) {
-                        XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
-                        String senderName = XmppStringUtils.parseName(xmppConnection.getUser());
-                        JoinGroupIQ joinGroupIQ = new JoinGroupIQ(senderName);
-                        joinGroupIQ.setType(IQ.Type.SET);
-                        joinGroupIQ.setTo(mGroupJid);
-                        xmppConnection.sendPacket(joinGroupIQ);
-                    }
-                });
-                popupMenu.addItem(joinGroup);
-            }
-        }
-
         View v = (View) view.getParent();
         popupMenu.show(v);
     }
@@ -332,5 +319,15 @@ public class GroupInfoActivity extends Activity {
     @OnClick(R.id.btn_edit_group)
     public void onClickEditGroupBtn() {
         EditGroupActivity.launch(this, mGroupJid);
+    }
+
+    @OnClick(R.id.btn_join_group)
+    public void onClickJoinGroupBtn(){
+        XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
+        String senderName = XmppStringUtils.parseName(xmppConnection.getUser());
+        JoinGroupIQ joinGroupIQ = new JoinGroupIQ(senderName);
+        joinGroupIQ.setType(IQ.Type.SET);
+        joinGroupIQ.setTo(mGroupJid);
+        xmppConnection.sendPacket(joinGroupIQ);
     }
 }

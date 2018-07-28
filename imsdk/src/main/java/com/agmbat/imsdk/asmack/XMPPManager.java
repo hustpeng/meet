@@ -227,7 +227,7 @@ public class XMPPManager {
                 new PaidPageInfoProvider());
 
         //群相关
-        pm.addIQProvider(CreateGroupIQProvider.elementName(), CreateGroupIQProvider.namespace(), new CreateGroupIQProvider());
+        //pm.addIQProvider(CreateGroupIQProvider.elementName(), CreateGroupIQProvider.namespace(), new CreateGroupIQProvider());
         pm.addIQProvider(QueryGroupIQProvider.elementName(), QueryGroupIQProvider.namespace(), new QueryGroupIQProvider());
         pm.addIQProvider(JoinGroupProvider.elementName(), JoinGroupProvider.namespace(), new JoinGroupProvider());
         pm.addIQProvider(QueryGroupMembersIQProvider.elementName(), QueryGroupMembersIQProvider.namespace(), new QueryGroupMembersIQProvider());

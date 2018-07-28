@@ -91,8 +91,8 @@ public class GroupInfo implements Serializable {
     @SerializedName("member_num")
     public int memberNum;
 
+    public boolean isGroupMember;
 
-    public List<String> memberJids = new ArrayList<>();
 
     @Override
     public String toString() {

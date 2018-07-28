@@ -48,6 +48,7 @@ public class TagSelectedView extends LinearLayout {
      * @param tagList
      */
     public void setTagList(List<String> tagList) {
+        removeAllViews();
         int screenWidth = DeviceUtils.getScreenSize().x;
 
         int divWidth = (int) (5 * SysResources.dipToPixel(8));

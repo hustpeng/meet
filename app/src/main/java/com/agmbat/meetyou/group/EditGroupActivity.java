@@ -8,16 +8,22 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import com.agmbat.android.image.ImageManager;
+import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imagepicker.ImagePickerHelper;
 import com.agmbat.imagepicker.OnPickImageListener;
 import com.agmbat.imagepicker.PickerOption;
 import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.view.CropImageView;
 import com.agmbat.imsdk.asmack.XMPPManager;
-import com.agmbat.imsdk.group.CreateGroupResultIQ;
 import com.agmbat.imsdk.group.GroupFormReply;
 import com.agmbat.imsdk.group.QueryGroupFormIQ;
+import com.agmbat.imsdk.group.UpdateGroupIQ;
+import com.agmbat.imsdk.group.UpdateGroupReply;
+import com.agmbat.imsdk.remotefile.FileApiResult;
+import com.agmbat.imsdk.remotefile.OnFileUploadListener;
+import com.agmbat.imsdk.remotefile.RemoteFileManager;
 import com.agmbat.imsdk.search.group.GroupCategory;
+import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.TagSelectedView;
@@ -27,8 +33,8 @@ import com.agmbat.meetyou.util.CircleDrawable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,11 +57,11 @@ public class EditGroupActivity extends Activity {
     @BindView(R.id.avatar)
     ImageView mAvatarView;
     @BindView(R.id.name_input)
-    TextView mGroupNameTv;
+    EditText mGroupNameTv;
     @BindView(R.id.headline_input)
-    TextView mHeadlineTv;
+    EditText mHeadlineTv;
     @BindView(R.id.description_input)
-    TextView mDescriptionTv;
+    EditText mDescriptionTv;
     @BindView(R.id.verify_check)
     CheckBox mVerifyCheckBox;
     @BindView(R.id.tag_selected_view)
@@ -79,7 +85,9 @@ public class EditGroupActivity extends Activity {
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupFormListener, new PacketTypeFilter(GroupFormReply.class));
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mUpdateGroupListener, new PacketTypeFilter(UpdateGroupReply.class));
         XMPPManager.getInstance().getXmppConnection().sendPacket(new QueryGroupFormIQ(mGroupJid));
+
     }
 
     private PacketListener mGroupFormListener = new PacketListener() {
@@ -100,6 +108,22 @@ public class EditGroupActivity extends Activity {
         }
     };
 
+    private PacketListener mUpdateGroupListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if(packet instanceof UpdateGroupReply){
+                UpdateGroupReply updateGroupReply = (UpdateGroupReply) packet;
+                dismissUpdateProgressDialog();
+                if(updateGroupReply.isSuccess()){
+                    ToastUtil.showToast("修改成功");
+                    finish();
+                }else{
+                    ToastUtil.showToast("修改失败");
+                }
+            }
+        }
+    };
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(GroupForm groupForm) {
         fillGroupForm(groupForm);
@@ -116,7 +140,7 @@ public class EditGroupActivity extends Activity {
         mDescriptionTv.setText(groupForm.getDescription());
         mVerifyCheckBox.setChecked(groupForm.isNeedVerify());
 
-        List<GroupCategory> categories = groupForm.getCategories();
+        final List<GroupCategory> categories = groupForm.getCategories();
         List<String> categoryTags = new ArrayList<>();
         String selectedTag = "";
         for (int i = 0; i < categories.size(); i++) {
@@ -130,10 +154,13 @@ public class EditGroupActivity extends Activity {
         mCategorysView.setOnSelectedListener(new TagSelectedView.OnSelectedListener() {
             @Override
             public void onSelected(int index, String tag) {
+                mCategoryId = categories.get(index).getId();
             }
         });
         mCategorysView.setSelectedTag(selectedTag);
     }
+
+    private int mCategoryId;
 
     @OnClick(R.id.title_btn_back)
     void onClickBack() {
@@ -142,6 +169,22 @@ public class EditGroupActivity extends Activity {
 
     @OnClick(R.id.title_btn_next)
     void onClickSave() {
+        showUpdateProgressDialog();
+        if(!TextUtils.isEmpty(mAvatarPath)){
+            uploadGroupAvatar(mAvatarPath, mGroupJid);
+        }else{
+            sendUpdatePacket();
+        }
+    }
+
+    private void sendUpdatePacket(){
+        UpdateGroupIQ updateGroupIQ = new UpdateGroupIQ(mGroupJid);
+        updateGroupIQ.setGroupName(mGroupNameTv.getText().toString());
+        updateGroupIQ.setHeadline(mHeadlineTv.getText().toString());
+        updateGroupIQ.setDescription(mDescriptionTv.getText().toString());
+        updateGroupIQ.setCategoryId(mCategoryId);
+        updateGroupIQ.setNeedVerify(mVerifyCheckBox.isChecked());
+        XMPPManager.getInstance().getXmppConnection().sendPacket(updateGroupIQ);
     }
 
     private String mAvatarPath;
@@ -175,6 +218,41 @@ public class EditGroupActivity extends Activity {
         });
     }
 
+
+    /**
+     * 上传群头像
+     *
+     * @param path
+     */
+    private void uploadGroupAvatar(String path, String groupJid) {
+        RemoteFileManager.uploadAvatarFile(path, groupJid, new OnFileUploadListener() {
+
+            @Override
+            public void onUpload(FileApiResult apiResult) {
+                Log.d("Upload group avatar result: " + apiResult.mResult, ", errorMsg: " + apiResult.mErrorMsg);
+                sendUpdatePacket();
+            }
+        });
+    }
+
+    private ISLoadingDialog mUpdateProgressDialog;
+
+    private void showUpdateProgressDialog() {
+        if (null == mUpdateProgressDialog || !mUpdateProgressDialog.isShowing()) {
+            // 添加loading框
+            mUpdateProgressDialog = new ISLoadingDialog(this);
+            mUpdateProgressDialog.setMessage("正在保存...");
+            mUpdateProgressDialog.setCancelable(true);
+            mUpdateProgressDialog.show();
+        }
+    }
+
+    private void dismissUpdateProgressDialog() {
+        if (null != mUpdateProgressDialog && mUpdateProgressDialog.isShowing()) {
+            mUpdateProgressDialog.dismiss();
+            mUpdateProgressDialog = null;
+        }
+    }
 
     @Override
     protected void onDestroy() {

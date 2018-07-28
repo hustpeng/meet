@@ -17,21 +17,29 @@ public class CreateGroupIQProvider implements IQProvider {
     @Override
     public IQ parseIQ(XmlPullParser parser) throws Exception {
         CreateGroupResultIQ createGroupResultIQ = new CreateGroupResultIQ();
+        UpdateGroupReply updateGroupReply = new UpdateGroupReply();
+        updateGroupReply.setSuccess(true);
+        boolean hasCircle = false;
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("circle")) {
+                    hasCircle = true;
                     String jid = parser.getAttributeValue("", "jid");
                     createGroupResultIQ.setGroupJid(jid);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("circle")) {
+                if (parser.getName().equals("query")) {
                     done = true;
                 }
             }
         }
-        return createGroupResultIQ;
+        if(hasCircle){
+            return createGroupResultIQ;
+        }else{
+            return updateGroupReply;
+        }
 
     }
 }
