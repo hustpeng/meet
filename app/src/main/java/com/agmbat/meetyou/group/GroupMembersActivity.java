@@ -23,6 +23,7 @@ import com.agmbat.imsdk.group.QueryGroupMembersIQ;
 import com.agmbat.imsdk.group.QueryGroupMembersResultIQ;
 import com.agmbat.imsdk.group.TransOwnerIQ;
 import com.agmbat.imsdk.group.TransOwnerReply;
+import com.agmbat.imsdk.mgr.XmppFileManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.widget.OnRecyclerViewItemClickListener;
 
@@ -184,5 +185,13 @@ public class GroupMembersActivity extends Activity {
     @OnClick(R.id.title_btn_back)
     public void onClickBack() {
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        XMPPManager.getInstance().getXmppConnection().removePacketListener(mKickMembersListener);
+        XMPPManager.getInstance().getXmppConnection().removePacketListener(mTransOwnerListener);
+        XMPPManager.getInstance().getXmppConnection().removePacketListener(mGroupMembersListener);
     }
 }

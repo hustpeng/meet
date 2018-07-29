@@ -345,4 +345,10 @@ public class CreateGroupActivity extends Activity {
         mPage1.setVisibility(View.INVISIBLE);
         mPage2.setVisibility(View.VISIBLE);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        XMPPManager.getInstance().getXmppConnection().removePacketListener(mGroupCreateListener);
+    }
 }

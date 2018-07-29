@@ -203,6 +203,8 @@ public class GroupInfoActivity extends Activity {
         EventBus.getDefault().unregister(this);
         XMPPManager.getInstance().getXmppConnection().removePacketListener(mJoinGroupListener);
         XMPPManager.getInstance().getXmppConnection().removePacketListener(mQueryGroupInfoListener);
+        XMPPManager.getInstance().getXmppConnection().removePacketListener(mQuitGroupListener);
+        XMPPManager.getInstance().getXmppConnection().removePacketListener(mDismissGroupListener);
     }
 
     private void fillGroupQrCodeImage(String groupJid) {

@@ -217,6 +217,7 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        XMPPManager.getInstance().getXmppConnection().removePacketListener(mQueryGroupListener);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

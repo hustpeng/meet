@@ -258,5 +258,7 @@ public class EditGroupActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        XMPPManager.getInstance().getXmppConnection().removePacketListener(mGroupFormListener);
+        XMPPManager.getInstance().getXmppConnection().removePacketListener(mUpdateGroupListener);
     }
 }
