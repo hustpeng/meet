@@ -55,6 +55,21 @@ public class GroupInfoActivity extends Activity {
     public static final String KEY_GROUP = "group";
     public static final String KEY_GROUP_JID = "group_jid";
 
+    @BindView(R.id.avatar)
+    ImageView mAvatarView;
+    @BindView(R.id.nickname)
+    TextView mNickNameTv;
+    @BindView(R.id.category_name)
+    TextView mCategoryTv;
+    @BindView(R.id.owner_name)
+    TextView mOwnerNameTv;
+    @BindView(R.id.description)
+    TextView mDescriptionTv;
+    @BindView(R.id.im_uid)
+    TextView mGroupIdTv;
+    @BindView(R.id.member_num)
+    TextView mMemberNumTv;
+
     @BindView(R.id.qr_code)
     ImageView mQrCodeImageView;
     @BindView(R.id.btn_quit_group)
@@ -235,29 +250,13 @@ public class GroupInfoActivity extends Activity {
     }
 
     private void setupViews(GroupInfo groupInfo) {
-        ImageView avatarView = (ImageView) findViewById(R.id.avatar);
-        ImageManager.displayImage(groupInfo.cover, avatarView, AvatarHelper.getGroupOptions());
-
-        TextView nickNameView = (TextView) findViewById(R.id.nickname);
-        nickNameView.setText(groupInfo.name);
-
-        TextView categoryNameView = (TextView) findViewById(R.id.category_name);
-        categoryNameView.setText(groupInfo.categoryName);
-
-        TextView ownerNameView = (TextView) findViewById(R.id.owner_name);
-        ownerNameView.setText(groupInfo.ownerName);
-
-        TextView descriptionView = (TextView) findViewById(R.id.description);
-        descriptionView.setText(groupInfo.description);
-
-        TextView imUidView = (TextView) findViewById(R.id.im_uid);
-        imUidView.setText(String.valueOf(groupInfo.imUid));
-
-        TextView memberNumView = (TextView) findViewById(R.id.member_num);
-        memberNumView.setText(String.valueOf(groupInfo.memberNum));
-
-        String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
-
+        ImageManager.displayImage(groupInfo.cover, mAvatarView, AvatarHelper.getGroupOptions());
+        mNickNameTv.setText(groupInfo.name);
+        mCategoryTv.setText(groupInfo.categoryName);
+        mOwnerNameTv.setText(groupInfo.ownerName);
+        mDescriptionTv.setText(groupInfo.description);
+        mGroupIdTv.setText(XmppStringUtils.parseName(groupInfo.jid));
+        mMemberNumTv.setText(String.valueOf(groupInfo.memberNum));
         if(!groupInfo.isGroupMember){//当前登录用户还不是群成员，只显示加群按钮
             mBtnJoinGroup.setVisibility(View.VISIBLE);
             mBtnQuitGroup.setVisibility(View.GONE);
@@ -265,7 +264,7 @@ public class GroupInfoActivity extends Activity {
         }else {
             mBtnJoinGroup.setVisibility(View.GONE);
             mBtnQuitGroup.setVisibility(View.VISIBLE);
-
+            String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
             String ownerJid = XmppStringUtils.parseBareAddress(mGroupInfo.ownerJid);
             if (loginUser.equals(ownerJid)) { //如果是群主，则可以执行解散群的操作
                 mBtnQuitGroup.setText(R.string.label_btn_dismiss_group);
@@ -278,8 +277,6 @@ public class GroupInfoActivity extends Activity {
             mBtnJoinGroup.setVisibility(View.GONE);
             mBtnQuitGroup.setVisibility(View.VISIBLE);
         }
-
-
     }
 
     /**

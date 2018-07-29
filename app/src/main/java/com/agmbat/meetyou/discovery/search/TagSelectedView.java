@@ -90,6 +90,19 @@ public class TagSelectedView extends LinearLayout {
     }
 
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            ViewGroup line =(ViewGroup) getChildAt(i);
+            int childCount = line.getChildCount();
+            for (int j = 0; j < childCount; j++) {
+                View view = line.getChildAt(j);
+                view.setEnabled(enabled);
+            }
+        }
+    }
+
     /**
      * 设置选中的tag
      *
@@ -113,7 +126,7 @@ public class TagSelectedView extends LinearLayout {
         }
         if (mOnSelectedListener != null) {
             int index = mTagList.indexOf(tag);
-            mOnSelectedListener.onSelected(index, mSelectedTag);
+                mOnSelectedListener.onSelected(index, mSelectedTag);
         }
     }
 

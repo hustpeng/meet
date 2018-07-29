@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import com.agmbat.android.SysResources;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imagepicker.ImagePickerHelper;
@@ -169,6 +170,7 @@ public class EditGroupActivity extends Activity {
             }
         });
         mCategorysView.setSelectedTag(selectedTag);
+        mCategorysView.setEnabled(false);
     }
 
     private int mCategoryId;
@@ -209,8 +211,8 @@ public class EditGroupActivity extends Activity {
         params.setStyle(CropImageView.Style.RECTANGLE); //裁剪框的形状
         params.setFocusWidth(800); //裁剪框的宽度。单位像素（圆形自动取宽高最小值）
         params.setFocusHeight(800); //裁剪框的高度。单位像素（圆形自动取宽高最小值）
-        params.setOutPutX(200);//保存文件的宽度。单位像素
-        params.setOutPutY(200);//保存文件的高度。单位像素 }
+        params.setOutPutX((int) SysResources.dipToPixel(150));//保存文件的宽度。单位像素
+        params.setOutPutY((int) SysResources.dipToPixel(150));//保存文件的高度。单位像素 }
 
         PickerOption option = new PickerOption();
         option.setShowCamera(false);

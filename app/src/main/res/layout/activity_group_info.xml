@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
@@ -108,7 +109,8 @@
                     android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:textColor="#969696"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:text="交友"/>
 
             </LinearLayout>
 
@@ -142,7 +144,8 @@
                     android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:textColor="#969696"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:text="浪里個浪"/>
 
             </LinearLayout>
 
@@ -175,7 +178,8 @@
                     android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:textColor="#969696"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:text="这是群描述"/>
 
             </LinearLayout>
 
@@ -209,7 +213,8 @@
                     android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:textColor="#969696"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:text="1020"/>
 
             </LinearLayout>
 
@@ -243,7 +248,8 @@
                     android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:textColor="#969696"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:text="3"/>
 
             </LinearLayout>
 
@@ -272,6 +278,7 @@
                 android:background="@drawable/shape_user_info_send_msg"
                 android:gravity="center"
                 android:text="加入群聊"
+                android:visibility="gone"
                 android:textColor="@color/white" />
 
             <TextView
@@ -285,6 +292,7 @@
                 android:background="@drawable/shape_user_info_send_msg"
                 android:gravity="center"
                 android:text="退出群聊"
+                android:visibility="gone"
                 android:textColor="@color/white" />
 
             <TextView
@@ -298,6 +306,7 @@
                 android:background="@drawable/shape_user_info_send_msg"
                 android:gravity="center"
                 android:text="编辑群信息"
+                android:visibility="gone"
                 android:textColor="@color/white"
                 />
 

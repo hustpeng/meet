@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.agmbat.android.utils.KeyboardUtils;
 import com.agmbat.android.utils.ToastUtil;
@@ -70,13 +71,6 @@ public class GroupSearchActivity extends Activity {
         loadGroupCategories();
         mPageDataLoader = new DiscoveryPageLoader(this);
         mPageDataLoader.setupViews(findViewById(android.R.id.content));
-
-        mTagSelectedView.setOnSelectedListener(new TagSelectedView.OnSelectedListener() {
-            @Override
-            public void onSelected(int index, String tag) {
-                mPageDataLoader.loadData();
-            }
-        });
 
 //        mPageDataLoader.loadData();
     }
@@ -164,6 +158,9 @@ public class GroupSearchActivity extends Activity {
             @Override
             public void onSelected(int index, String tag) {
                 mGroupCategory = findGroupCategory(tag);
+                if(!TextUtils.isEmpty(mKeyword)){
+                    mPageDataLoader.loadData();
+                }
             }
         });
     }

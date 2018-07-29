@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,7 +20,12 @@ import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.imsdk.imevent.ReceiveSysMessageEvent;
+import com.agmbat.imsdk.search.SearchManager;
+import com.agmbat.imsdk.search.group.GroupCategory;
+import com.agmbat.imsdk.search.group.GroupCategoryResult;
+import com.agmbat.imsdk.search.group.OnGetGroupCategoryListener;
 import com.agmbat.isdialog.ISAlertDialog;
+import com.agmbat.meetyou.group.GroupDBCache;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;
 import com.agmbat.meetyou.tab.discovery.DiscoveryFragment;
 import com.agmbat.meetyou.tab.msg.MsgFragment;
@@ -30,12 +37,16 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smackx.message.MessageObject;
 
+import java.util.List;
+
 /**
  * 主Tab界面
  */
 public class MainTabActivity extends FragmentActivity {
 
     public static final int TAB_INDEX_MSG = 0;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +55,7 @@ public class MainTabActivity extends FragmentActivity {
         setContentView(R.layout.activity_maintab);
         setupViews();
         EventBus.getDefault().register(this);
+        mHandler.postDelayed(mInitRunnable, 2000);
     }
 
     @Override
@@ -115,5 +127,24 @@ public class MainTabActivity extends FragmentActivity {
             builder.create().show();
         }
     }
+
+    private Runnable mInitRunnable = new Runnable() {
+        @Override
+        public void run() {
+            //预先下载群分类
+            List<GroupCategory> cachedGroupCategories = GroupDBCache.getGroupCategories();
+            if ((null == cachedGroupCategories || cachedGroupCategories.size() == 0)) {
+                SearchManager.getGroupCategory(new OnGetGroupCategoryListener() {
+                    @Override
+                    public void onGetGroupCategory(GroupCategoryResult result) {
+                        if (result.mResult && null != result.mData) {
+                            GroupDBCache.saveGroupCategories(result.mData);
+                        }
+                    }
+
+                });
+            }
+        }
+    };
 
 }
