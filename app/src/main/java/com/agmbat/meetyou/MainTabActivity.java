@@ -55,7 +55,7 @@ public class MainTabActivity extends FragmentActivity {
         setContentView(R.layout.activity_maintab);
         setupViews();
         EventBus.getDefault().register(this);
-        mHandler.postDelayed(mInitRunnable, 2000);
+        mHandler.postDelayed(mInitRunnable, 1500);
     }
 
     @Override
