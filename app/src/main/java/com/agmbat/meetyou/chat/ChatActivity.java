@@ -25,6 +25,7 @@ import com.agmbat.filepicker.OnPickFileListener;
 import com.agmbat.imagepicker.ImagePickerHelper;
 import com.agmbat.imagepicker.OnPickImageListener;
 import com.agmbat.imagepicker.OnPickMultiImageListener;
+import com.agmbat.imagepicker.bean.ImageFolder;
 import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
@@ -51,6 +52,7 @@ import com.agmbat.map.LocationObject;
 import com.agmbat.map.Maps;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.group.CircleInfo;
+import com.agmbat.meetyou.group.EditGroupEvent;
 import com.agmbat.meetyou.group.GroupInfoActivity;
 import com.agmbat.meetyou.group.RemoveGroupEvent;
 import com.agmbat.menu.MenuInfo;
@@ -520,7 +522,19 @@ public class ChatActivity extends Activity implements OnInputListener {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(RemoveGroupEvent joinGroupReply) {
+    public void onEvent(RemoveGroupEvent removeGroupEvent) {
         finish();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(EditGroupEvent editGroupEvent) {
+        //收到群修改成功通知后，重新刷新列表
+        if (mChatType == TYPE_GROUP_CHAT) {
+            if(editGroupEvent.getGroupJid().equals(mCircleInfo.getGroupJid())){
+                mNicknameView.setText(editGroupEvent.getGroupName());
+                mCircleInfo.setName(editGroupEvent.getGroupName());
+                mCircleInfo.setAvatar(editGroupEvent.getAvatar());
+            }
+        }
     }
 }

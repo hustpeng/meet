@@ -221,9 +221,16 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(RemoveGroupEvent quitGroupEvent) {
+    public void onEvent(RemoveGroupEvent removeGroupEvent) {
         //收到退出成功通知后，重新刷新列表
         queryGroupList();
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(EditGroupEvent editGroupEvent) {
+        //收到群修改成功通知后，重新刷新列表
+        queryGroupList();
+    }
+
 
 }

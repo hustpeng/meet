@@ -118,6 +118,14 @@ public class EditGroupActivity extends Activity {
                 dismissUpdateProgressDialog();
                 if(updateGroupReply.isSuccess()){
                     ToastUtil.showToast("修改成功");
+                    EditGroupEvent editGroupEvent = new EditGroupEvent(mGroupJid);
+                    editGroupEvent.setAvatar(mAvatarUrl);
+                    editGroupEvent.setGroupName(mGroupNameTv.getText().toString());
+                    editGroupEvent.setHeadline(mHeadlineTv.getText().toString());
+                    editGroupEvent.setDescription(mDescriptionTv.getText().toString());
+                    editGroupEvent.setNeedVerify(mVerifyCheckBox.isChecked());
+                    editGroupEvent.setCategoryId(mCategoryId);
+                    EventBus.getDefault().post(editGroupEvent);
                     finish();
                 }else{
                     ToastUtil.showToast("修改失败");
@@ -136,7 +144,7 @@ public class EditGroupActivity extends Activity {
         mAvatarUrl = groupForm.getAvatar();
         Log.d("Fill the group to form:" + groupForm.toString());
         if(!TextUtils.isEmpty(mAvatarUrl)){
-            ImageManager.displayImage(groupForm.getAvatar(), mAvatarView, AvatarHelper.getGroupOptions());
+            ImageManager.displayImage(mAvatarUrl, mAvatarView, AvatarHelper.getGroupOptions());
         }
         mGroupNameTv.setText(groupForm.getName());
         mHeadlineTv.setText(groupForm.getHeadline());
@@ -233,6 +241,9 @@ public class EditGroupActivity extends Activity {
             @Override
             public void onUpload(FileApiResult apiResult) {
                 Log.d("Upload group avatar result: " + apiResult.mResult + "url: " + apiResult.url + ", errorMsg: " + apiResult.mErrorMsg);
+                if(apiResult.mResult) {
+                    mAvatarUrl = apiResult.url;
+                }
                 sendUpdatePacket(apiResult.url);
             }
         });

@@ -100,9 +100,13 @@ public class GroupInfoActivity extends Activity {
         } else if (intent.hasExtra(KEY_GROUP_JID)) {
             mGroupJid = intent.getStringExtra(KEY_GROUP_JID);
         }
+        fillGroupQrCodeImage(mGroupJid);
+        loadGroupInfo();
+    }
+
+    private void loadGroupInfo(){
         QueryGroupInfoIQ queryGroupInfoIQ = new QueryGroupInfoIQ(mGroupJid);
         XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupInfoIQ);
-        fillGroupQrCodeImage(mGroupJid);
     }
 
     private PacketListener mJoinGroupListener = new PacketListener() {
@@ -122,7 +126,7 @@ public class GroupInfoActivity extends Activity {
                 QuitGroupReplay quitGroupReplay = (QuitGroupReplay) packet;
                 if (quitGroupReplay.isSuccess()) {
                     ToastUtil.showToast("退群成功");
-                    EventBus.getDefault().post(new RemoveGroupEvent());
+                    EventBus.getDefault().post(new RemoveGroupEvent(mGroupJid));
                 } else {
                     ToastUtil.showToast("退群失败，请重试");
                 }
@@ -137,7 +141,7 @@ public class GroupInfoActivity extends Activity {
                 DismissGroupReply dismissGroupReply = (DismissGroupReply) packet;
                 if (dismissGroupReply.isSuccess()) {
                     ToastUtil.showToast("解散群成功");
-                    EventBus.getDefault().post(new RemoveGroupEvent());
+                    EventBus.getDefault().post(new RemoveGroupEvent(mGroupJid));
                 } else {
                     ToastUtil.showToast("解散群失败，请重试");
                 }
@@ -186,8 +190,18 @@ public class GroupInfoActivity extends Activity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(RemoveGroupEvent joinGroupReply) {
-        finish();
+    public void onEvent(RemoveGroupEvent removeGroupEvent) {
+        if(removeGroupEvent.getGroupJid().equals(mGroupJid)) {
+            finish();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(EditGroupEvent editGroupEvent) {
+        //收到群修改成功通知后，刷新群信息
+        if(editGroupEvent.getGroupJid().equals(mGroupJid)){
+            loadGroupInfo();
+        }
     }
 
     @Override
