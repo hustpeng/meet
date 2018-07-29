@@ -68,6 +68,8 @@ public class EditGroupActivity extends Activity {
     TagSelectedView mCategorysView;
 
     private String mGroupJid;
+    private String mAvatarPath;
+    private String mAvatarUrl;
 
     public static void launch(Context context, String groupJid){
         Intent intent = new Intent(context, EditGroupActivity.class);
@@ -131,8 +133,9 @@ public class EditGroupActivity extends Activity {
 
 
     private void fillGroupForm(GroupForm groupForm){
+        mAvatarUrl = groupForm.getAvatar();
         Log.d("Fill the group to form:" + groupForm.toString());
-        if(!TextUtils.isEmpty(groupForm.getAvatar())){
+        if(!TextUtils.isEmpty(mAvatarUrl)){
             ImageManager.displayImage(groupForm.getAvatar(), mAvatarView, AvatarHelper.getGroupOptions());
         }
         mGroupNameTv.setText(groupForm.getName());
@@ -173,21 +176,21 @@ public class EditGroupActivity extends Activity {
         if(!TextUtils.isEmpty(mAvatarPath)){
             uploadGroupAvatar(mAvatarPath, mGroupJid);
         }else{
-            sendUpdatePacket();
+            sendUpdatePacket(mAvatarUrl);
         }
     }
 
-    private void sendUpdatePacket(){
+    private void sendUpdatePacket(String avatarUrl){
         UpdateGroupIQ updateGroupIQ = new UpdateGroupIQ(mGroupJid);
         updateGroupIQ.setGroupName(mGroupNameTv.getText().toString());
         updateGroupIQ.setHeadline(mHeadlineTv.getText().toString());
         updateGroupIQ.setDescription(mDescriptionTv.getText().toString());
         updateGroupIQ.setCategoryId(mCategoryId);
         updateGroupIQ.setNeedVerify(mVerifyCheckBox.isChecked());
+        updateGroupIQ.setAvatar(avatarUrl);
         XMPPManager.getInstance().getXmppConnection().sendPacket(updateGroupIQ);
     }
 
-    private String mAvatarPath;
 
     /**
      * 点击头像, 添加群头像
@@ -229,8 +232,8 @@ public class EditGroupActivity extends Activity {
 
             @Override
             public void onUpload(FileApiResult apiResult) {
-                Log.d("Upload group avatar result: " + apiResult.mResult, ", errorMsg: " + apiResult.mErrorMsg);
-                sendUpdatePacket();
+                Log.d("Upload group avatar result: " + apiResult.mResult + "url: " + apiResult.url + ", errorMsg: " + apiResult.mErrorMsg);
+                sendUpdatePacket(apiResult.url);
             }
         });
     }

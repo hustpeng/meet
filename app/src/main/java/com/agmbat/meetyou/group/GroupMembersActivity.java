@@ -20,18 +20,20 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.group.GroupMember;
 import com.agmbat.imsdk.group.KickMemberReply;
 import com.agmbat.imsdk.group.QueryGroupMembersIQ;
-import com.agmbat.imsdk.group.QueryGroupMembersResultIQ;
+import com.agmbat.imsdk.group.QueryGroupMembersReply;
 import com.agmbat.imsdk.group.TransOwnerIQ;
 import com.agmbat.imsdk.group.TransOwnerReply;
-import com.agmbat.imsdk.mgr.XmppFileManager;
+import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.widget.OnRecyclerViewItemClickListener;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.circle.KickMemberPacket;
 
 import butterknife.BindView;
@@ -70,7 +72,8 @@ public class GroupMembersActivity extends Activity {
         mOwnerJid = getIntent().getStringExtra(EXTRA_OWNER_JID);
         setContentView(R.layout.activity_group_members);
         ButterKnife.bind(this);
-        XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupMembersListener, new PacketTypeFilter(QueryGroupMembersResultIQ.class));
+        EventBus.getDefault().register(this);
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupMembersListener, new PacketTypeFilter(QueryGroupMembersReply.class));
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mKickMembersListener, new PacketTypeFilter(KickMemberReply.class));
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mTransOwnerListener, new PacketTypeFilter(TransOwnerReply.class));
         initContentView();
@@ -152,13 +155,14 @@ public class GroupMembersActivity extends Activity {
     private PacketListener mGroupMembersListener = new PacketListener() {
         @Override
         public void processPacket(Packet packet) {
-            if (packet instanceof QueryGroupMembersResultIQ) {
-                QueryGroupMembersResultIQ resultIQ = (QueryGroupMembersResultIQ) packet;
-                mGroupMemberAdapter.setAll(resultIQ.getGroupMembers());
-                mProgressBar.setVisibility(View.GONE);
+            if (packet instanceof QueryGroupMembersReply) {
+                QueryGroupMembersReply resultIQ = (QueryGroupMembersReply) packet;
+                EventBus.getDefault().post(resultIQ);
             }
         }
     };
+
+
 
     private PacketListener mKickMembersListener = new PacketListener() {
         @Override
@@ -182,6 +186,13 @@ public class GroupMembersActivity extends Activity {
     };
 
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(QueryGroupMembersReply groupMembersReply) {
+        Log.d("Rcv group members: " + groupMembersReply.getGroupMembers().size());
+        mGroupMemberAdapter.setAll(groupMembersReply.getGroupMembers());
+        mProgressBar.setVisibility(View.GONE);
+    }
+
     @OnClick(R.id.title_btn_back)
     public void onClickBack() {
         finish();
@@ -190,6 +201,7 @@ public class GroupMembersActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         XMPPManager.getInstance().getXmppConnection().removePacketListener(mKickMembersListener);
         XMPPManager.getInstance().getXmppConnection().removePacketListener(mTransOwnerListener);
         XMPPManager.getInstance().getXmppConnection().removePacketListener(mGroupMembersListener);

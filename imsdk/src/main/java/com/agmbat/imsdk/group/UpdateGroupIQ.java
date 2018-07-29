@@ -14,6 +14,8 @@ public class UpdateGroupIQ extends IQ {
 
     private int categoryId;
 
+    private String avatar;
+
     public UpdateGroupIQ(String groupJid){
         setTo(groupJid);
         setType(Type.SET);
@@ -28,7 +30,7 @@ public class UpdateGroupIQ extends IQ {
         builder.append("<field type=\"text-single\" var=\"muc#circleprofile_circle_name\" label=\"群名\"><value>"+groupName+"</value></field>");
         builder.append("<field type=\"text-single\" var=\"muc#circleprofile_headline\" label=\"群公告\"><value>"+headline+"</value></field>");
         builder.append("<field type=\"text-single\" var=\"muc#circleprofile_description\" label=\"群描述\"><value>"+description+"</value></field>");
-        //builder.append("<field type=\"text-single\" var=\"muc#circleprofile_cover\" label=\"群头像\"><value>" + avatar +"</value></field>");
+        builder.append("<field type=\"text-single\" var=\"muc#circleprofile_cover\" label=\"群头像\"><value>" + avatar +"</value></field>");
         builder.append("<field type=\"boolean\" var=\"muc#circleprofile_is_verify\" label=\"加入群是否需要管理员审核\"><value>"+ (needVerify ? 1:0)+"</value></field>");
         builder.append("<field type=\"list-single\" var=\"muc#circleprofile_category_id\" label=\"群分类\"><value>"+categoryId+"</value></field>");
         builder.append("</x>");
@@ -74,5 +76,13 @@ public class UpdateGroupIQ extends IQ {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

@@ -52,7 +52,7 @@ import com.agmbat.map.Maps;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.group.CircleInfo;
 import com.agmbat.meetyou.group.GroupInfoActivity;
-import com.agmbat.meetyou.group.QuitGroupEvent;
+import com.agmbat.meetyou.group.RemoveGroupEvent;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.net.HttpUtils;
@@ -520,7 +520,7 @@ public class ChatActivity extends Activity implements OnInputListener {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(QuitGroupEvent joinGroupReply) {
+    public void onEvent(RemoveGroupEvent joinGroupReply) {
         finish();
     }
 }

@@ -38,7 +38,7 @@ public class QueryGroupMembersIQProvider implements IQProvider {
                 }
             }
         }
-        QueryGroupMembersResultIQ queryGroupMembersResultIQ = new QueryGroupMembersResultIQ();
+        QueryGroupMembersReply queryGroupMembersResultIQ = new QueryGroupMembersReply();
         queryGroupMembersResultIQ.setGroupMembers(groupMembers);
         return queryGroupMembersResultIQ;
     }

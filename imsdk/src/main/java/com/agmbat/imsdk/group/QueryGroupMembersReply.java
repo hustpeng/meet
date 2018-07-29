@@ -4,7 +4,7 @@ import org.jivesoftware.smack.packet.IQ;
 
 import java.util.List;
 
-public class QueryGroupMembersResultIQ extends IQ {
+public class QueryGroupMembersReply extends IQ {
 
     private List<GroupMember> mGroupMembers;
 

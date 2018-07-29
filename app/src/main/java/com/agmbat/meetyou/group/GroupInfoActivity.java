@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -123,7 +122,7 @@ public class GroupInfoActivity extends Activity {
                 QuitGroupReplay quitGroupReplay = (QuitGroupReplay) packet;
                 if (quitGroupReplay.isSuccess()) {
                     ToastUtil.showToast("退群成功");
-                    EventBus.getDefault().post(new QuitGroupEvent());
+                    EventBus.getDefault().post(new RemoveGroupEvent());
                 } else {
                     ToastUtil.showToast("退群失败，请重试");
                 }
@@ -138,7 +137,7 @@ public class GroupInfoActivity extends Activity {
                 DismissGroupReply dismissGroupReply = (DismissGroupReply) packet;
                 if (dismissGroupReply.isSuccess()) {
                     ToastUtil.showToast("解散群成功");
-                    EventBus.getDefault().post(new QuitGroupEvent());
+                    EventBus.getDefault().post(new RemoveGroupEvent());
                 } else {
                     ToastUtil.showToast("解散群失败，请重试");
                 }
@@ -187,7 +186,7 @@ public class GroupInfoActivity extends Activity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(QuitGroupEvent joinGroupReply) {
+    public void onEvent(RemoveGroupEvent joinGroupReply) {
         finish();
     }
 
