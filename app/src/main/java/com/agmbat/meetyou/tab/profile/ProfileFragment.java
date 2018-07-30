@@ -20,15 +20,16 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.log.Debug;
-import com.agmbat.meetyou.account.LoginActivity;
-import com.agmbat.meetyou.settings.AboutActivity;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.ChangePasswordActivity;
+import com.agmbat.meetyou.account.LoginActivity;
 import com.agmbat.meetyou.coins.CoinsActivity;
+import com.agmbat.meetyou.edituserinfo.PersonalInfoActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
+import com.agmbat.meetyou.settings.AboutActivity;
 import com.agmbat.meetyou.settings.IdentityAuthenticationActivity;
-import com.agmbat.meetyou.edituserinfo.PersonalInfoActivity;
+import com.agmbat.meetyou.util.ResourceUtil;
 import com.agmbat.wxshare.ShareContent;
 import com.agmbat.wxshare.WXShare;
 
@@ -172,7 +173,7 @@ public class ProfileFragment extends Fragment {
         }
         mNickNameView.setText(user.getNickname());
         ImageManager.displayImage(user.getAvatar(), mAvatarView, AvatarHelper.getOptions());
-        mUserNameView.setText(getString(R.string.id_name_format) + " " + user.getUserName());
+        mUserNameView.setText(ResourceUtil.getString(R.string.id_name_format, user.getImUid()));
         mGenderView.setImageResource(GenderHelper.getIconRes(user.getGender()));
     }
 

@@ -3,6 +3,8 @@ package com.agmbat.imsdk.user;
 import org.jivesoftware.smackx.vcard.VCardObject;
 import org.jivesoftware.smackx.vcardextend.VCardExtendObject;
 
+import java.util.Calendar;
+
 /**
  * 当前已登陆的用户信息, 可读也可以修改上传到服务器
  */
@@ -52,8 +54,8 @@ public class LoginUser {
     }
 
     public int getAge() {
-        // TODO 用当前份减去出生年份
-        return 2018 - mVCardObject.getBirthYear();
+        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+        return thisYear - mVCardObject.getBirthYear();
     }
 
     /**
@@ -68,6 +70,12 @@ public class LoginUser {
     public String getAvatar() {
         return mVCardObject.getAvatar();
     }
+
+
+    public int getImUid() {
+        return mVCardObject.getImUid();
+    }
+
 
     public String getDemand() {
         return mVCardExtendObject.getDemand();
