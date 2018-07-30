@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff5f5f5"
     android:orientation="vertical">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48.0dip"
         android:background="#ff232325">
@@ -14,18 +15,33 @@
             android:id="@+id/title_btn_back"
             android:layout_width="40dp"
             android:layout_height="22dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_title_back" />
 
         <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:text="@string/my_coins"
             android:textColor="#ffffffff"
             android:textSize="20sp" />
 
-    </FrameLayout>
+        <com.agmbat.meetyou.widget.StarsView
+            android:id="@+id/grade_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/title"
+            app:count="0"
+            app:size="15dp"
+            app:spacing="2dp"
+            app:star="@drawable/ic_star" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

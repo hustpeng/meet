@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="StarsView">
+        <attr name="star" format="reference" />
+        <attr name="spacing" format="reference|dimension" />
+        <attr name="count" format="reference|integer" />
+        <attr name="size" format="reference|dimension" />
+    </declare-styleable>
+
+</resources>

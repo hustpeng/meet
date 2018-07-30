@@ -1,6 +1,7 @@
 package com.agmbat.meetyou.coins;
 
 import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.imsdk.asmack.roster.AuthStatus;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 import com.google.gson.annotations.SerializedName;
@@ -28,7 +29,7 @@ import java.util.List;
  * //       ]
  * //    }
  */
-public class CoinsApiResult extends ApiResult<List<CoinsRecords>> implements PageData<CoinsRecords> {
+public class CoinsApiResult extends ApiResult<List<CoinsRecords>> implements PageData<CoinsRecords>, AuthStatus {
 
     /**
      * 余额
@@ -46,6 +47,18 @@ public class CoinsApiResult extends ApiResult<List<CoinsRecords>> implements Pag
      * 当前page num
      */
     public int mPageNum;
+
+    /**
+     * 用户认证状态，详见AuthStatus
+     */
+    @SerializedName("auth")
+    public int mAuthStatus;
+
+    /**
+     * 会员等级（范围从0-5）
+     */
+    @SerializedName("grade")
+    public int mGrade;
 
     @Override
     public boolean isSuccess() {

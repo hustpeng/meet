@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.widget.StarsView;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 
@@ -23,6 +24,9 @@ public class CoinsActivity extends Activity {
 
     @BindView(R.id.my_coins)
     TextView mCoinsView;
+
+    @BindView(R.id.grade_view)
+    StarsView mStarsView;
 
     private CoinsLoader mPageLoader;
 
@@ -67,6 +71,7 @@ public class CoinsActivity extends Activity {
             CoinsApiResult apiResult = (CoinsApiResult) data;
             mCoinsView.setVisibility(View.VISIBLE);
             mCoinsView.setText(String.valueOf(apiResult.mBalance));
+            mStarsView.setStarsCount(apiResult.mGrade);
             return new CoinsListAdapter(context, data.getDataList());
         }
 

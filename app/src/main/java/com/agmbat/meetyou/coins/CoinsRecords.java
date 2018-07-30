@@ -7,6 +7,8 @@ import com.google.gson.annotations.SerializedName;
  */
 public class CoinsRecords {
 
+    public int id;
+
     @SerializedName("summary")
     public String summary;
 
