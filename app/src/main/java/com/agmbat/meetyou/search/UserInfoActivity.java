@@ -22,6 +22,7 @@ import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
 import com.agmbat.meetyou.helper.UserInfoDisplay;
+import com.agmbat.meetyou.util.ResourceUtil;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.menu.PopupMenu;
@@ -48,8 +49,8 @@ public class UserInfoActivity extends Activity {
     @BindView(R.id.auth_status)
     ImageView mAuthView;
 
-    @BindView(R.id.username)
-    TextView mUserNameView;
+    @BindView(R.id.im_uid)
+    TextView mImUidView;
 
     @BindView(R.id.label_gender)
     TextView mGenderTv;
@@ -101,7 +102,7 @@ public class UserInfoActivity extends Activity {
                 ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
                 mNickNameView.setText(contactInfo.getNickName());
                 String displayName = UserInfoDisplay.getDisplayUserName(contactInfo.getUserName());
-                mUserNameView.setText(getString(R.string.id_name_format) + " " + contactInfo.getImUid());
+                mImUidView.setText(ResourceUtil.getString(R.string.id_name_format, contactInfo.getImUid()));
 
                 mAuthView.setImageResource(GenderHelper.getIconRes(contactInfo.getGender()));
                 int thisYear = Calendar.getInstance().get(Calendar.YEAR);

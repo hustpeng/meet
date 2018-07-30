@@ -33,7 +33,7 @@
     <string name="input_old_password">请填写旧密码</string>
     <string name="change_password_processing">正在处理中&#8230;</string>
     <string name="id_name">遇缘号</string>
-    <string name="id_name_format">遇缘号:</string>
+    <string name="id_name_format">遇缘号: %d</string>
 
     <!-- 重置密码-->
     <string name="reset_password">重置密码</string>
