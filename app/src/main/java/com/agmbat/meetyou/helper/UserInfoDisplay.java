@@ -2,6 +2,9 @@ package com.agmbat.meetyou.helper;
 
 import android.text.TextUtils;
 
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.meetyou.R;
+
 /**
  * 用户信息显示处理
  */
@@ -24,5 +27,20 @@ public class UserInfoDisplay {
             return username;
         }
         return username.substring(0, 7) + "^-^" + username.substring(10);
+    }
+
+    /**
+     * 获取用户认证状态图标
+     * @param authStatus
+     * @return
+     */
+    public static int getAuthStatusIcon(int authStatus) {
+        int iconRes = 0;
+        if (authStatus == ContactInfo.AUTH_STATE_AUTHENTICATED) {
+            iconRes = R.drawable.ic_v;
+        } else if (authStatus == ContactInfo.AUTH_STATE_SENIOR) {
+            iconRes = R.drawable.ic_crown;
+        }
+        return iconRes;
     }
 }

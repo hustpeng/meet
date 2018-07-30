@@ -21,6 +21,9 @@ public class UserHelper {
             contactInfo.setNickname(vCardObject.getNickname());
             contactInfo.setAvatar(vCardObject.getAvatar());
             contactInfo.setGender(vCardObject.getGender());
+            contactInfo.setAuthStatus(vCardObject.getAuth());
+            contactInfo.setImUid(vCardObject.getImUid());
+            contactInfo.setBirth(vCardObject.getBirthYear());
         }
     }
 

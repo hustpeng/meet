@@ -12,8 +12,11 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
+import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ContactOnAddEvent;
+import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
@@ -24,6 +27,8 @@ import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.menu.PopupMenu;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,11 +45,17 @@ public class UserInfoActivity extends Activity {
     @BindView(R.id.nickname)
     TextView mNickNameView;
 
-    @BindView(R.id.gender)
-    ImageView mGenderView;
+    @BindView(R.id.auth_status)
+    ImageView mAuthView;
 
     @BindView(R.id.username)
     TextView mUserNameView;
+
+    @BindView(R.id.label_gender)
+    TextView mGenderTv;
+
+    @BindView(R.id.age)
+    TextView mAgeTv;
 
     private ContactInfo mContactInfo;
 
@@ -57,6 +68,14 @@ public class UserInfoActivity extends Activity {
         setContentView(R.layout.activity_user_info);
         ButterKnife.bind(this);
         setup();
+        XMPPApi.fetchContactInfo(mContactInfo.getBareJid(), new OnFetchContactListener() {
+            @Override
+            public void onFetchContactInfo(ContactInfo contactInfo) {
+                Log.d("Update contact from xmpp api");
+                mContactInfo.apply(contactInfo);
+                fillViews(mContactInfo);
+            }
+        });
     }
 
     /**
@@ -71,11 +90,27 @@ public class UserInfoActivity extends Activity {
             finish();
             return;
         }
-        ImageManager.displayImage(mContactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
-        mNickNameView.setText(mContactInfo.getNickName());
-        mGenderView.setImageResource(GenderHelper.getIconRes(mContactInfo.getGender()));
-        String displayName = UserInfoDisplay.getDisplayUserName(mContactInfo.getUserName());
-        mUserNameView.setText(getString(R.string.id_name_format) + " " + displayName);
+        fillViews(mContactInfo);
+    }
+
+
+    private void fillViews(final ContactInfo contactInfo) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
+                mNickNameView.setText(contactInfo.getNickName());
+                String displayName = UserInfoDisplay.getDisplayUserName(contactInfo.getUserName());
+                mUserNameView.setText(getString(R.string.id_name_format) + " " + contactInfo.getImUid());
+
+                mAuthView.setImageResource(GenderHelper.getIconRes(contactInfo.getGender()));
+                int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+                mAgeTv.setText(String.valueOf(thisYear - contactInfo.getBirth()));
+                mGenderTv.setText(GenderHelper.getName(contactInfo.getGender()));
+                mAuthView.setImageResource(UserInfoDisplay.getAuthStatusIcon(contactInfo.getAuthStatus()));
+            }
+        });
+
     }
 
     @Override

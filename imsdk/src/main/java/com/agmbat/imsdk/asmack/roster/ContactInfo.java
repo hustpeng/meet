@@ -34,6 +34,13 @@ public class ContactInfo implements Serializable {
      */
     public static final int ROSTER_SUBSCRIBE_OTHER = 7;
 
+
+    public static final int AUTH_STATE_NOT_SUBMIT = -1; //未提交认证资料
+    public static final int AUTH_STATE_SUBMITED = 0; //已提交认证资料待审核
+    public static final int AUTH_STATE_AUTHENTICATED = 1; //已认证会员
+    public static final int AUTH_STATE_DENIED = 2; //认证未通过（即被拒绝）
+    public static final int AUTH_STATE_SENIOR = 3; //高级会员
+
     /**
      * 此id为数据库存储id值
      */
@@ -80,6 +87,12 @@ public class ContactInfo implements Serializable {
     @SerializedName("gender")
     private int mGender;
 
+    /**
+     * 用户号（Meet项目特殊字段）
+     */
+    @Column(name = "im_uid")
+    @SerializedName("im_uid")
+    private int mImUid;
 
     /**
      * 与当前好友的关系
@@ -151,9 +164,6 @@ public class ContactInfo implements Serializable {
 
     @SerializedName("house")
     private int house;
-
-    @SerializedName("im_uid")
-    private int im_uid;
 
     @SerializedName("industry")
     private String industry;
@@ -240,6 +250,22 @@ public class ContactInfo implements Serializable {
         return mGender;
     }
 
+    public int getImUid() {
+        return mImUid;
+    }
+
+    public void setImUid(int imUid) {
+        mImUid = imUid;
+    }
+
+    public int getAuthStatus() {
+        return mAuthStatus;
+    }
+
+    public void setAuthStatus(int authStatus) {
+        this.mAuthStatus = authStatus;
+    }
+
     /**
      * 获取用户名称,登录帐号名称
      *
@@ -269,6 +295,9 @@ public class ContactInfo implements Serializable {
         mRemark = contactInfo.mRemark;
         mAvatar = contactInfo.mAvatar;
         mGender = contactInfo.mGender;
+        birth = contactInfo.getBirth();
+        mAuthStatus = contactInfo.getAuthStatus();
+        mImUid = contactInfo.getImUid();
     }
 
     /**
@@ -408,14 +437,6 @@ public class ContactInfo implements Serializable {
 
     public void setHouse(int house) {
         this.house = house;
-    }
-
-    public int getIm_uid() {
-        return im_uid;
-    }
-
-    public void setIm_uid(int im_uid) {
-        this.im_uid = im_uid;
     }
 
     public String getIndustry() {

@@ -33,6 +33,17 @@ public class VCardObject implements ICacheStoreObject {
     public static final String KEY_AVATAR = "avatar";
 
     /**
+     * 系统用户ID（Meet项目特殊字段）
+     */
+    public static final String KEY_IM_UID = "im_uid";
+
+    /**
+     * 是否认证用户（Meet项目特殊字段）
+     */
+    public static final String KEY_AUTH = "auth";
+
+
+    /**
      * 用户id
      */
     private String jid;
@@ -56,6 +67,16 @@ public class VCardObject implements ICacheStoreObject {
      * 头像url
      */
     private String avatar;
+
+    /**
+     * 系统用户ID
+     */
+    private int imUid;
+
+    /**
+     * 用户认证状态
+     */
+    private int auth;
 
     private String status;
     private Date update_date;
@@ -108,6 +129,22 @@ public class VCardObject implements ICacheStoreObject {
             return "";
         }
         return jid;
+    }
+
+    public int getImUid() {
+        return imUid;
+    }
+
+    public void setImUid(int imUid) {
+        this.imUid = imUid;
+    }
+
+    public int getAuth() {
+        return auth;
+    }
+
+    public void setAuth(int auth) {
+        this.auth = auth;
     }
 
     /**
