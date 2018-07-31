@@ -15,6 +15,7 @@ import com.agmbat.imsdk.account.AccountPrefs;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
@@ -60,11 +61,11 @@ public class LoginActivity extends FragmentActivity {
 //        mUserNameView.setText("13437122759");
 //        mPasswordView.setText("a123123");
 
-        String username = AccountPrefs.getUserName();
+        String username = AppConfigUtils.getUserName(getBaseContext());
         if (!TextUtils.isEmpty(username)) {
             mUserNameView.setText(username);
         }
-        String password = AccountPrefs.getPassword();
+        String password = AppConfigUtils.getPassword(getBaseContext());
         if (!TextUtils.isEmpty(password)) {
             mPasswordView.setText(password);
         }
@@ -120,7 +121,7 @@ public class LoginActivity extends FragmentActivity {
                 hideLoadingDialog();
                 ToastUtil.showToastLong(result.mErrorMsg);
                 if (result.mResult) {
-                    AccountPrefs.saveAccount(userName, password);
+                    //AccountPrefs.saveAccount(userName, password);
                     // 每次登陆成功,重置一次数据
                     XMPPManager.getInstance().getRosterManager().resetData();
                     startActivity(new Intent(LoginActivity.this, MainTabActivity.class));

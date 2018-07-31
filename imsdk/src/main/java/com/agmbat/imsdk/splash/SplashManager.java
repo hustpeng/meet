@@ -2,6 +2,8 @@ package com.agmbat.imsdk.splash;
 
 import android.text.TextUtils;
 
+import com.agmbat.android.AppResources;
+import com.agmbat.android.SysResources;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.file.FileUtils;
@@ -9,6 +11,7 @@ import com.agmbat.imsdk.R;
 import com.agmbat.imsdk.account.AccountPrefs;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.mgr.UserFileManager;
+import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.net.HttpUtils;
 import com.agmbat.security.SecurityUtil;
 import com.agmbat.text.StringUtils;
@@ -73,7 +76,8 @@ public class SplashManager {
     }
 
     public static void update() {
-        final String phone = AccountPrefs.getLastLoginUserName();
+        //final String phone = AccountPrefs.getLastLoginUserName();
+        final String phone = AppConfigUtils.getUserName(AppResources.getAppContext());
         if (TextUtils.isEmpty(phone)) {
             return;
         }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
+import com.agmbat.android.utils.NetworkUtil;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.log.Log;
 
@@ -15,7 +16,10 @@ public class ConnectionReceiver extends BroadcastReceiver {
 
     private static ConnectionReceiver sReceiver = new ConnectionReceiver();
 
+    private static boolean mPreConnected;
+
     public static void register(Context context) {
+        mPreConnected = NetworkUtil.isNetworkAvailable();
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         context.registerReceiver(sReceiver, filter);
@@ -32,9 +36,10 @@ public class ConnectionReceiver extends BroadcastReceiver {
             // 处理手机的网络断开广播
             Log.i(TAG, "Connectivity change...");
             boolean connected = !intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-            if (connected) {
+            if (connected && !mPreConnected) {
                 XMPPManager.getInstance().getReconnectionManager().autoLogin();
             }
+            mPreConnected = connected;
         }
     }
 }
