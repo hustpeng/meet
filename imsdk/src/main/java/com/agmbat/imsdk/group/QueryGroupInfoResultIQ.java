@@ -2,8 +2,6 @@ package com.agmbat.imsdk.group;
 
 import org.jivesoftware.smack.packet.IQ;
 
-import java.util.List;
-
 public class QueryGroupInfoResultIQ extends IQ {
 
     private String groupJid;
@@ -25,6 +23,8 @@ public class QueryGroupInfoResultIQ extends IQ {
     private String description; //描述
 
     private boolean isGroupMember;
+
+    private String ownerNickName;
 
 
     @Override
@@ -111,5 +111,13 @@ public class QueryGroupInfoResultIQ extends IQ {
 
     public void setGroupMember(boolean groupMember) {
         isGroupMember = groupMember;
+    }
+
+    public String getOwnerNickName() {
+        return ownerNickName;
+    }
+
+    public void setOwnerNickName(String ownerNickName) {
+        this.ownerNickName = ownerNickName;
     }
 }

@@ -176,7 +176,7 @@ public class GroupInfoActivity extends Activity {
                 groupInfo.description = result.getDescription();
                 groupInfo.jid = result.getGroupJid();
                 groupInfo.ownerJid = result.getOwner();
-                groupInfo.ownerName = XmppStringUtils.parseName(result.getOwner());
+                groupInfo.ownerName = result.getOwnerNickName();
                 groupInfo.name = result.getName();
                 groupInfo.memberNum = result.getMembers();
                 groupInfo.isGroupMember = result.isGroupMember();

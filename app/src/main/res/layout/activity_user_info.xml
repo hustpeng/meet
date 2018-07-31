@@ -107,64 +107,71 @@
         </LinearLayout>
     </LinearLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/selector_common_item"
-        android:gravity="center_vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/selector_common_item"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:text="性别"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/label_gender"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="4"
+                android:textColor="#7e7e7e"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
             android:layout_marginLeft="15dp"
-            android:layout_weight="1"
-            android:text="性别"
-            android:textColor="#000000"
-            android:textSize="16sp" />
+            android:layout_marginRight="15dp"
+            android:background="#D2D2D2" />
 
-        <TextView
-            android:id="@+id/label_gender"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="4"
-            android:textColor="#7e7e7e"
-            android:textSize="16sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/selector_common_item"
+            android:gravity="center_vertical">
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:text="年龄"
+                android:textColor="#000000"
+                android:textSize="16sp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:background="#D2D2D2" />
+            <TextView
+                android:id="@+id/age"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="4"
+                android:textColor="#7e7e7e"
+                android:textSize="16sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@drawable/selector_common_item"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="1"
-            android:text="年龄"
-            android:textColor="#000000"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/age"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="4"
-            android:textColor="#7e7e7e"
-            android:textSize="16sp" />
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -175,8 +182,10 @@
         android:layout_height="51dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/selector_common_item"
+        android:drawableRight="@drawable/ic_arrow_right"
         android:gravity="center_vertical"
-        android:paddingLeft="5dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:text="@string/set_alias_and_tag" />
 
     <TextView
@@ -185,43 +194,12 @@
         android:layout_height="51dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/selector_common_item"
+        android:drawableRight="@drawable/ic_arrow_right"
         android:gravity="center_vertical"
-        android:paddingLeft="5dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:text="更多信息" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:background="#D2D2D2" />
-
-    <LinearLayout
-        android:id="@+id/llSignature"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@drawable/selector_common_item"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="1"
-            android:text="@string/personal_signature"
-            android:textColor="#000000"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tvSignature"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="4"
-            android:textColor="#7e7e7e"
-            android:textSize="16sp" />
-
-    </LinearLayout>
 
     <Button
         android:id="@+id/btn_chat"

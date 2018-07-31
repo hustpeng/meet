@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.findserver.FindServerObject;
 import org.jivesoftware.smackx.findserver.FindServerPacket;
 import org.xmlpull.v1.XmlPullParser;
@@ -40,7 +39,6 @@ public class QueryGroupIQProvider implements IQProvider {
         FindServerObject item = new FindServerObject();
         int messageType = -1;
         QueryGroupInfoResultIQ queryGroupInfoResultIQ = new QueryGroupInfoResultIQ();
-        List<String> memberJids = new ArrayList<>();
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
@@ -85,6 +83,7 @@ public class QueryGroupIQProvider implements IQProvider {
                     String category = parser.getAttributeValue("", "category");
                     String jid = parser.getAttributeValue("", "jid");
                     String verify = parser.getAttributeValue("", "verify");
+                    String ownerNickName = parser.getAttributeValue("", "owner_nickname");
 
                     queryGroupInfoResultIQ.setAvatar(cover);
                     if (!TextUtils.isEmpty(membersText) && TextUtils.isDigitsOnly(membersText)) {
@@ -95,6 +94,7 @@ public class QueryGroupIQProvider implements IQProvider {
                     queryGroupInfoResultIQ.setCategory(category);
                     queryGroupInfoResultIQ.setGroupJid(jid);
                     queryGroupInfoResultIQ.setNeedVerify("1".endsWith(verify));
+                    queryGroupInfoResultIQ.setOwnerNickName(ownerNickName);
 
                 } else if (parser.getName().equals("headline")) {
                     String headline = geTagText(parser, "headline");

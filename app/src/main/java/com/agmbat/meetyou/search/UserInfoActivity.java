@@ -202,6 +202,12 @@ public class UserInfoActivity extends Activity {
         ViewUserHelper.viewContactInfoMore(this, mContactInfo);
     }
 
+    @OnClick(R.id.oivAliasAndTag)
+    void onClickAliasAndTag() {
+        
+    }
+
+
     //    UserInfo mUserInfo;
 //
 //    @Bind(R.id.ibToolbarMore)
