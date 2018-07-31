@@ -1,4 +1,4 @@
-package com.agmbat.imsdk.splash;
+package com.agmbat.meetyou.splash;
 
 import android.content.Context;
 import android.content.SharedPreferences;

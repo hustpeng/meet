@@ -31,6 +31,17 @@
             android:value="TTFdGMPcwEX5qcZK6kEKS0MckfrjmmUg" />
 
         <activity
+            android:name="com.agmbat.meetyou.splash.SplashActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name="com.agmbat.meetyou.account.LoginActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />

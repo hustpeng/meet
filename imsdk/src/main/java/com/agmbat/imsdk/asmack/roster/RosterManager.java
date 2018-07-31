@@ -197,6 +197,7 @@ public class RosterManager {
                 connection.addConnectionListener(new ConnectionListener() {
                     @Override
                     public void loginSuccessful() {
+                        Log.d("Refresh roster after login success");
                         // 登陆成功后刷新登陆用户信息
                         refreshLoginUserInfo();
                         // 登录成功后重新刷新一次Roster
@@ -270,7 +271,9 @@ public class RosterManager {
         boolean success = false;
         try {
             RosterEntry entry = mRoster.getEntry(contact.getBareJid());
-            mRoster.removeEntry(entry);
+            if(null != entry) {
+                mRoster.removeEntry(entry);
+            }
             success = true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -601,6 +604,7 @@ public class RosterManager {
                     super.run();
                     // 下面方法会阻塞[包处理]回调线程
                     final List<ContactInfo> contactInfoList = new ArrayList<>();
+                    Log.d("SMACK:　RCV roster size: " + list.size());
                     for (RosterPacketItem item : list) {
                         ContactInfo info = RosterHelper.loadContactInfo(item.getUser());
                         info.setLocalUpdateTime(System.currentTimeMillis());
@@ -748,10 +752,10 @@ public class RosterManager {
                 }
 
                 mLoginUser = user;
-                EventBus.getDefault().post(new LoginUserUpdateEvent(mLoginUser));
                 UiUtils.post(new Runnable() {
                     @Override
                     public void run() {
+                        EventBus.getDefault().post(new LoginUserUpdateEvent(mLoginUser));
                         ContactInfo contactInfo = new ContactInfo();
                         contactInfo.setBareJid(mLoginUser.getJid());
                         contactInfo.setAvatar(mLoginUser.getAvatar());

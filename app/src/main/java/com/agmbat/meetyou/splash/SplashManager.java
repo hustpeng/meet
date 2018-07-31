@@ -1,14 +1,12 @@
-package com.agmbat.imsdk.splash;
+package com.agmbat.meetyou.splash;
 
 import android.text.TextUtils;
 
 import com.agmbat.android.AppResources;
-import com.agmbat.android.SysResources;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.file.FileUtils;
 import com.agmbat.imsdk.R;
-import com.agmbat.imsdk.account.AccountPrefs;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.mgr.UserFileManager;
 import com.agmbat.imsdk.util.AppConfigUtils;

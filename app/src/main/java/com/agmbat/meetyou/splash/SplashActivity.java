@@ -1,4 +1,4 @@
-package com.agmbat.imsdk.splash;
+package com.agmbat.meetyou.splash;
 
 import android.Manifest;
 import android.app.Activity;
@@ -21,9 +21,15 @@ import android.widget.TextView;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.permissions.PermissionArrayAction;
 import com.agmbat.android.permissions.Permissions;
+import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.R;
+import com.agmbat.imsdk.account.ImAccountManager;
+import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.util.AppConfigUtils;
+import com.agmbat.meetyou.MainTabActivity;
+import com.agmbat.meetyou.account.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,10 +180,26 @@ public class SplashActivity extends Activity {
      * 进入主页面
      */
     private void entryMainPager() {
-        Intent intent = new Intent();
-        intent.setClassName(getPackageName(), SplashManager.getMainClassName());
-        startActivity(intent);
-        finish();
+        String userName = AppConfigUtils.getUserName(getBaseContext());
+        String password = AppConfigUtils.getPassword(getBaseContext());
+        if(TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)){
+            Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            ImAccountManager.login(userName, password, new ImAccountManager.OnLoginListener() {
+                @Override
+                public void onLogin(ApiResult result) {
+                    if (result.mResult) {
+                        //AccountPrefs.saveAccount(userName, password);
+                        // 每次登陆成功,重置一次数据
+                        XMPPManager.getInstance().getRosterManager().resetData();
+                        startActivity(new Intent(getBaseContext(), MainTabActivity.class));
+                        finish();
+                    }
+                }
+            });
+        }
     }
 
     /**

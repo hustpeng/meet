@@ -1,4 +1,4 @@
-package com.agmbat.imsdk.splash;
+package com.agmbat.meetyou.splash;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.ApkUtils;
