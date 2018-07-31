@@ -16,6 +16,7 @@ public class StrangerBusinessHandler extends BusinessHandler {
 
     @Override
     public void setupViews(View view) {
+        view.findViewById(R.id.setup_alias).setVisibility(View.GONE);
         view.findViewById(R.id.btn_chat).setVisibility(View.GONE);
         view.findViewById(R.id.btn_pass_validation).setVisibility(View.GONE);
     }

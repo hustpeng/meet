@@ -1,10 +1,13 @@
 package com.agmbat.meetyou.search;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -58,8 +61,10 @@ public class UserInfoActivity extends Activity {
     @BindView(R.id.age)
     TextView mAgeTv;
 
-    private ContactInfo mContactInfo;
+    @BindView(R.id.setup_alias)
+    TextView mAliasTv;
 
+    private ContactInfo mContactInfo;
     private BusinessHandler mBusinessHandler;
 
     @Override
@@ -202,9 +207,19 @@ public class UserInfoActivity extends Activity {
         ViewUserHelper.viewContactInfoMore(this, mContactInfo);
     }
 
-    @OnClick(R.id.oivAliasAndTag)
-    void onClickAliasAndTag() {
-        
+    @OnClick(R.id.setup_alias)
+    void onClickSetupAlias() {
+        final EditText aliasInput = new EditText(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("设置备注").setView(aliasInput)
+                .setNegativeButton("取消", null);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                aliasInput.getText().toString();
+            }
+        });
+        builder.show();
     }
 
 

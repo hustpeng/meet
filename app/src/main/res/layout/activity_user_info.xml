@@ -177,7 +177,7 @@
 
 
     <TextView
-        android:id="@+id/oivAliasAndTag"
+        android:id="@+id/setup_alias"
         android:layout_width="match_parent"
         android:layout_height="51dp"
         android:layout_marginTop="20dp"

@@ -11,24 +11,24 @@ import com.agmbat.imsdk.asmack.roster.ContactInfo;
  */
 public class ViewUserHelper {
 
-    private static final String KEY_TYPE = "type";
+    public static final String KEY_TYPE = "type";
 
     public static final String KEY_USER_INFO = "userInfo";
 
     /**
      * 从联系页面进入, 查看联系人信息
      */
-    private static final int TYPE_CONTACTS = 1;
+    public static final int TYPE_CONTACTS = 1;
 
     /**
      * 陌生人页面进入
      */
-    private static final int TYPE_STRANGER = 2;
+    public static final int TYPE_STRANGER = 2;
 
     /**
      * 申请者信息
      */
-    private static final int TYPE_VERIFY = 3;
+    public static final int TYPE_VERIFY = 3;
 
     /**
      * 查看用户详情
