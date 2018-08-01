@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.AppUtils;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.asmack.roster.RosterManager;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.BodyParser;
 import com.agmbat.imsdk.chat.body.ImageBody;
@@ -35,6 +37,7 @@ import com.agmbat.tab.TabManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.message.MessageObject;
 
 import java.util.List;

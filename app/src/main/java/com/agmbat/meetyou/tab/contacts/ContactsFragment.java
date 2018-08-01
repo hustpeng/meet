@@ -19,6 +19,7 @@ import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ContactGroupLoadEvent;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
+import com.agmbat.imsdk.util.VLog;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.group.CreateGroupActivity;
 import com.agmbat.meetyou.group.GroupListActivity;
@@ -60,6 +61,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
+        XMPPManager.getInstance().getRosterManager().reloadRoster();
     }
 
     @Override
@@ -150,6 +152,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(ContactGroupLoadEvent event) {
+        VLog.d("Receive contacts load event: GroupSize=" + event.getDataList().size());
         fillData(event.getDataList());
         setState(STATE_LOAD_FINISH);
     }
@@ -161,6 +164,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(ContactListUpdateEvent event) {
+        VLog.d("Receive contacts update event: GroupSize=" + event.getList().size());
         mFriendsAdapter.clear();
         mFriendsAdapter.addAll(event.getList());
         mFriendsAdapter.notifyDataSetChanged();

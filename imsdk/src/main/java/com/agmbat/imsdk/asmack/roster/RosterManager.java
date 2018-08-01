@@ -17,6 +17,7 @@ import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribedEvent;
 import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.imsdk.util.VLog;
 import com.agmbat.log.Debug;
 import com.agmbat.log.Log;
 
@@ -122,6 +123,11 @@ public class RosterManager {
             mFriendRequestList.clear();
         }
         mContactMemCache.clear();
+        mRoster.cleanup();
+    }
+
+    public void reloadRoster(){
+        mRoster.reload();
     }
 
     /**
@@ -197,7 +203,7 @@ public class RosterManager {
                 connection.addConnectionListener(new ConnectionListener() {
                     @Override
                     public void loginSuccessful() {
-                        Log.d("Refresh roster after login success");
+                        VLog.d("Refresh roster after login success");
                         // 登陆成功后刷新登陆用户信息
                         refreshLoginUserInfo();
                         // 登录成功后重新刷新一次Roster
@@ -604,7 +610,7 @@ public class RosterManager {
                     super.run();
                     // 下面方法会阻塞[包处理]回调线程
                     final List<ContactInfo> contactInfoList = new ArrayList<>();
-                    Log.d("SMACK:　RCV roster size: " + list.size());
+                    VLog.d("RCV roster size: " + list.size());
                     for (RosterPacketItem item : list) {
                         ContactInfo info = RosterHelper.loadContactInfo(item.getUser());
                         info.setLocalUpdateTime(System.currentTimeMillis());
@@ -627,7 +633,7 @@ public class RosterManager {
 
                             // 将列表同步到数据库中
                             ContactDBCache.saveAndClearOldList(contactInfoList);
-
+                            VLog.d("Load contacts from server: " + contactInfoList.size());
                             clearMessage(contactInfoList);
                             EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));
                         }
@@ -700,7 +706,6 @@ public class RosterManager {
             EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));
             return;
         }
-        mCacheLoaded = true;
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, List<ContactGroup>>() {
             @Override
             protected List<ContactGroup> doInBackground(Void... voids) {
@@ -711,8 +716,10 @@ public class RosterManager {
             protected void onPostExecute(List<ContactGroup> result) {
                 super.onPostExecute(result);
                 if (!mNetworkLoaded) {
+                    mGroupList.clear();
                     mGroupList.addAll(result);
                     addGroupListToMemCache(result);
+                    mCacheLoaded = true;
                     EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));
                 }
             }
@@ -727,13 +734,13 @@ public class RosterManager {
             EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));
             return;
         }
-        mCacheLoaded = true;
         if (!mNetworkLoaded) {
             // 当网络没有加载的时候, 才去更新缓存数据
             List<ContactGroup> result = ContactDBCache.getGroupList();
             mGroupList.clear();
             mGroupList.addAll(result);
             addGroupListToMemCache(result);
+            mCacheLoaded = true;
             EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));
         }
     }
@@ -761,7 +768,7 @@ public class RosterManager {
                         contactInfo.setAvatar(mLoginUser.getAvatar());
                         contactInfo.setNickname(mLoginUser.getNickname());
                         contactInfo.setGender(mLoginUser.getGender());
-                        XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
+                        addContactToMemCache(contactInfo);
                     }
                 });
             }
