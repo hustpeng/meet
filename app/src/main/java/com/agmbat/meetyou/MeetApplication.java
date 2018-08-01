@@ -10,6 +10,7 @@ import com.agmbat.android.utils.ThreadUtil;
 import com.agmbat.app.ActivityStack;
 import com.agmbat.appupdate.AppVersionHelper;
 import com.agmbat.crashreport.CrashReporter;
+import com.agmbat.imsdk.util.VLog;
 import com.agmbat.meetyou.splash.SplashManager;
 import com.agmbat.meetyou.account.LoginActivity;
 import com.agmbat.meetyou.checkupdate.UpdateApi;
@@ -24,6 +25,8 @@ public class MeetApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
+        VLog.setDebug(BuildConfig.DEBUG);
+        VLog.setTag("Meet");
         initPhotoError();
         AppResources.init(this);
         ActivityStack.init(this);
