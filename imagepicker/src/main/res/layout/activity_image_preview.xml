@@ -3,13 +3,13 @@
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000">
+    android:background="#000000">
 
     <com.agmbat.imagepicker.view.ViewPagerFixed
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000" />
+        android:background="#000000" />
 
     <include
         android:id="@+id/top_bar"
@@ -59,6 +59,6 @@
             android:id="@+id/margin_bottom"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="#000" />
+            android:background="#000000" />
     </LinearLayout>
 </RelativeLayout>

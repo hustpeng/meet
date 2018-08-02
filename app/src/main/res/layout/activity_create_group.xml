@@ -93,7 +93,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="90dp"
                         android:layout_weight="1.0"
-                        android:background="#00000000"
+                        android:background="#000000"
                         android:singleLine="true" />
 
                     <View
