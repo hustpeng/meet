@@ -23,6 +23,9 @@ package org.jivesoftware.smack;
 
 import com.agmbat.log.Debug;
 
+import org.apache.harmony.javax.security.auth.callback.Callback;
+import org.apache.harmony.javax.security.auth.callback.CallbackHandler;
+import org.apache.harmony.javax.security.auth.callback.PasswordCallback;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
@@ -30,16 +33,15 @@ import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.util.XmppStringUtils;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
-
-import org.apache.harmony.javax.security.auth.callback.Callback;
-import org.apache.harmony.javax.security.auth.callback.CallbackHandler;
-import org.apache.harmony.javax.security.auth.callback.PasswordCallback;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.Socket;
@@ -48,6 +50,11 @@ import java.security.KeyStore;
 import java.security.Provider;
 import java.security.Security;
 import java.util.Collection;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
 
 /**
  * Creates a socket connection to a XMPP server. This is the default connection
@@ -344,7 +351,7 @@ public class XMPPConnection extends Connection {
             }
         }
 
-        if (!config.isRosterLoadedAtLogin()) {
+        if (config.isRosterLoadedAtLogin()) {
             roster.reload();
         }
         // If this is the first time the user has asked for the roster after calling

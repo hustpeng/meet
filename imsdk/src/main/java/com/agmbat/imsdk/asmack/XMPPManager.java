@@ -7,7 +7,6 @@ import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.AppUtils;
 import com.agmbat.imsdk.account.RegisterInfo;
 import com.agmbat.imsdk.asmack.roster.RosterManager;
-import com.agmbat.imsdk.group.CreateGroupIQProvider;
 import com.agmbat.imsdk.group.GroupFormIQProvider;
 import com.agmbat.imsdk.group.JoinGroupProvider;
 import com.agmbat.imsdk.group.KickMemberProvider;

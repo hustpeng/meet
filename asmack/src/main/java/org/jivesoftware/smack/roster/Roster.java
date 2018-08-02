@@ -84,7 +84,7 @@ public class Roster {
     // The roster is marked as initialized when at least a single roster packet
     // has been received and processed.
     public boolean rosterInitialized = false;
-    private final PresencePacketListener presencePacketListener;
+    private PresencePacketListener presencePacketListener;
 
     private SubscriptionMode subscriptionMode = getDefaultSubscriptionMode();
 
@@ -131,13 +131,6 @@ public class Roster {
         entries = new ConcurrentHashMap<String, RosterEntry>();
         rosterListeners = new CopyOnWriteArrayList<RosterListener>();
         presenceMap = new ConcurrentHashMap<String, Map<String, Presence>>();
-        // Listen for any roster packets.
-        PacketFilter rosterFilter = new PacketTypeFilter(RosterPacket.class);
-        connection.addPacketListener(new RosterPacketListener(), rosterFilter);
-        // Listen for any presence packets.
-        PacketFilter presenceFilter = new PacketTypeFilter(Presence.class);
-        presencePacketListener = new PresencePacketListener();
-        connection.addPacketListener(presencePacketListener, presenceFilter);
 
         // Listen for connection events
         final ConnectionListener connectionListener = new AbstractConnectionListener() {
@@ -154,6 +147,16 @@ public class Roster {
                 setOfflinePresences();
             }
 
+            @Override
+            public void loginSuccessful() {
+                // Listen for any roster packets.
+                PacketFilter rosterFilter = new PacketTypeFilter(RosterPacket.class);
+                connection.addPacketListener(new RosterPacketListener(), rosterFilter);
+                // Listen for any presence packets.
+                PacketFilter presenceFilter = new PacketTypeFilter(Presence.class);
+                presencePacketListener = new PresencePacketListener();
+                connection.addPacketListener(presencePacketListener, presenceFilter);
+            }
         };
 
         // if not connected add listener after successful login

@@ -59,18 +59,20 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        VLog.d("onCreate");
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        XMPPManager.getInstance().getRosterManager().reloadRoster();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        VLog.d("onCreateView");
         return inflater.inflate(R.layout.tab_fragment_contacts, null);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        VLog.d("onViewCreated");
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         View headerView = View.inflate(getActivity(), R.layout.layout_head_friend, null);
@@ -114,6 +116,12 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         mListView.setAdapter(mFriendsAdapter);
 
         setState(STATE_LOADING);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        VLog.d("onResume");
         // 加载数据
         XMPPManager.getInstance().getRosterManager().loadContactGroupFromDB();
     }

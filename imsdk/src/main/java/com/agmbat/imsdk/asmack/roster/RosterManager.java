@@ -104,8 +104,6 @@ public class RosterManager {
     public RosterManager(Connection connection, Roster roster) {
         mRoster = roster;
         roster.setSubscriptionMode(SubscriptionMode.manual);
-        Log.i("Delete", "Subscription mode change to : " + roster.getSubscriptionMode());
-        roster.addRosterListener(mRosterListener);
         mConnection = connection;
         mGroupList = new ArrayList<>();
         registerLoginEvent();
@@ -123,10 +121,10 @@ public class RosterManager {
             mFriendRequestList.clear();
         }
         mContactMemCache.clear();
-        mRoster.cleanup();
     }
 
-    public void reloadRoster(){
+    public void reloadRoster() {
+        VLog.d("Reload roster start");
         mRoster.reload();
     }
 
@@ -199,19 +197,24 @@ public class RosterManager {
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
 
             @Override
-            public void connectionCreated(Connection connection) {
+            public void connectionCreated(final Connection connection) {
+                VLog.d("connectionCreated: " + Connection.getConnectionCreationListeners().size());
                 connection.addConnectionListener(new ConnectionListener() {
                     @Override
                     public void loginSuccessful() {
                         VLog.d("Refresh roster after login success");
+                        mRoster.addRosterListener(mRosterListener);
                         // 登陆成功后刷新登陆用户信息
                         refreshLoginUserInfo();
                         // 登录成功后重新刷新一次Roster
-                        mRoster.reload();
+                        reloadRoster();
                     }
 
                     @Override
                     public void connectionClosed() {
+                        mRoster.removeRosterListener(mRosterListener);
+                        connection.removeConnectionListener(this);
+
                     }
 
                     @Override
@@ -219,6 +222,7 @@ public class RosterManager {
                     }
                 });
             }
+
         });
     }
 
@@ -277,7 +281,7 @@ public class RosterManager {
         boolean success = false;
         try {
             RosterEntry entry = mRoster.getEntry(contact.getBareJid());
-            if(null != entry) {
+            if (null != entry) {
                 mRoster.removeEntry(entry);
             }
             success = true;

@@ -490,7 +490,7 @@ public abstract class Connection {
      *
      * @return a collection of listeners interested on new connections.
      */
-    protected static Collection<ConnectionCreationListener> getConnectionCreationListeners() {
+    public static Collection<ConnectionCreationListener> getConnectionCreationListeners() {
         return Collections.unmodifiableCollection(connectionEstablishedListeners);
     }
 
