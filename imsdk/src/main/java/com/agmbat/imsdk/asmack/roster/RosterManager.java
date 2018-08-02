@@ -756,7 +756,7 @@ public class RosterManager {
         String loginUserJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
         XMPPApi.fetchLoginUser(loginUserJid, new OnFetchLoginUserListener() {
             @Override
-            public void onFetchLoginUser(LoginUser user) {
+            public void onFetchLoginUser(final LoginUser user) {
                 if (!user.isValid()) {
                     Debug.printStackTrace();
                     return;
@@ -768,10 +768,7 @@ public class RosterManager {
                     public void run() {
                         EventBus.getDefault().post(new LoginUserUpdateEvent(mLoginUser));
                         ContactInfo contactInfo = new ContactInfo();
-                        contactInfo.setBareJid(mLoginUser.getJid());
-                        contactInfo.setAvatar(mLoginUser.getAvatar());
-                        contactInfo.setNickname(mLoginUser.getNickname());
-                        contactInfo.setGender(mLoginUser.getGender());
+                        contactInfo.apply(user);
                         addContactToMemCache(contactInfo);
                     }
                 });
@@ -779,6 +776,7 @@ public class RosterManager {
 
         });
     }
+
 
     /**
      * 判断定的jid是否为好友

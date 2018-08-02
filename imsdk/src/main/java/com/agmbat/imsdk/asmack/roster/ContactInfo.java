@@ -2,6 +2,7 @@ package com.agmbat.imsdk.asmack.roster;
 
 import com.agmbat.db.annotation.Column;
 import com.agmbat.db.annotation.Table;
+import com.agmbat.imsdk.user.LoginUser;
 import com.google.gson.annotations.SerializedName;
 
 import org.jivesoftware.smack.util.XmppStringUtils;
@@ -278,7 +279,7 @@ public class ContactInfo implements Serializable, AuthStatus {
     }
 
     /**
-     * 更新联系人信息
+     * 更新联系人基本信息
      *
      * @param contactInfo
      */
@@ -292,6 +293,37 @@ public class ContactInfo implements Serializable, AuthStatus {
         birth = contactInfo.getBirth();
         mAuthStatus = contactInfo.getAuthStatus();
         mImUid = contactInfo.getImUid();
+    }
+
+
+    /**
+     * 加载更多信息
+     * @param user
+     */
+    public void apply(LoginUser user){
+        setAuthStatus(user.getAuth());
+        setAvatar(user.getAvatar());
+        setBareJid(user.getJid());
+        setBirth(user.getBirthYear());
+        setBirthplace(user.getBirthplace());
+        setCar(user.getCar());
+        setCareer(user.getCareer());
+        setDemand(user.getDemand());
+        setEducation(user.getEducation());
+        setGender(user.getGender());
+        setHeight(user.getHeight());
+        setHobby(user.getHobby());
+        setHouse(user.getHouse());
+        setImUid(user.getImUid());
+        setIndustry(user.getIndustry());
+        setIntroduce(user.getIntroduce());
+        setMarriage(user.getMarriage());
+        setNickname(user.getNickname());
+        setResidence(user.getResidence());
+        setStatus(user.getStatus());
+        setWage(user.getWage());
+        setWeight(user.getWeight());
+        setWorkarea(user.getWorkarea());
     }
 
     /**

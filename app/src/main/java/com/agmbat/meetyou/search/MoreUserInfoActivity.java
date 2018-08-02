@@ -6,8 +6,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
 
+import com.agmbat.android.utils.UiUtils;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.asmack.api.OnFetchLoginUserListener;
+import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.imsdk.asmack.roster.RosterManager;
+import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
+import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.log.Debug;
 import com.agmbat.meetyou.R;
 import com.agmbat.picker.address.Address;
 import com.agmbat.picker.helper.CarItem;
@@ -15,6 +23,8 @@ import com.agmbat.picker.helper.EducationItem;
 import com.agmbat.picker.helper.HouseItem;
 import com.agmbat.picker.helper.MarriageItem;
 import com.agmbat.picker.helper.WageItem;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,30 +35,51 @@ import butterknife.OnClick;
  */
 public class MoreUserInfoActivity extends Activity {
 
+    /**
+     * 身高
+     */
     @BindView(R.id.height)
     TextView mHeightView;
 
+    /**
+     * 体重
+     */
     @BindView(R.id.weight)
     TextView mWeightView;
 
+    /**
+     * 月薪
+     */
     @BindView(R.id.wage)
     TextView mWageView;
 
+    /**
+     * 学历
+     */
     @BindView(R.id.education)
     TextView mEducationView;
 
+    /**
+     * 婚姻状况
+     */
     @BindView(R.id.marriage)
     TextView mMarriageView;
 
     /**
-     * 修改签名
+     * 个性签名
      */
     @BindView(R.id.signature)
     TextView mSignatureView;
 
+    /**
+     * 择友要求
+     */
     @BindView(R.id.demand)
     TextView mDemandView;
 
+    /**
+     * 兴趣爱好
+     */
     @BindView(R.id.hobby)
     TextView mHobbyView;
 
@@ -63,6 +94,7 @@ public class MoreUserInfoActivity extends Activity {
      */
     @BindView(R.id.workarea)
     TextView mWorkareaView;
+
     /**
      * 籍贯
      */
@@ -93,6 +125,9 @@ public class MoreUserInfoActivity extends Activity {
     @BindView(R.id.industry)
     TextView mIndustryView;
 
+    /**
+     * 职业
+     */
     @BindView(R.id.career)
     TextView mCareerView;
 
@@ -104,6 +139,29 @@ public class MoreUserInfoActivity extends Activity {
         ButterKnife.bind(this);
         ContactInfo contactInfo = ViewUserHelper.getContactInfoFromIntent(getIntent());
         update(contactInfo);
+        loadMoreUserInfo(contactInfo.getBareJid());
+    }
+
+    private void loadMoreUserInfo(String jid){
+        XMPPApi.fetchLoginUser(jid, new OnFetchLoginUserListener() {
+            @Override
+            public void onFetchLoginUser(final LoginUser user) {
+                if (!user.isValid()) {
+                    Debug.printStackTrace();
+                    return;
+                }
+                final ContactInfo contactInfo = new ContactInfo();
+                contactInfo.apply(user);
+                XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
+                UiUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        update(contactInfo);
+                    }
+                });
+            }
+
+        });
     }
 
     @Override

@@ -49,6 +49,10 @@ public class LoginUser {
         return mVCardObject.getGender();
     }
 
+    public int getAuth(){
+       return mVCardObject.getAuth();
+    }
+
     public void setGender(int gender) {
         mVCardObject.setGender(gender);
     }
