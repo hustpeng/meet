@@ -10,7 +10,9 @@ import com.agmbat.android.utils.ThreadUtil;
 import com.agmbat.app.ActivityStack;
 import com.agmbat.appupdate.AppVersionHelper;
 import com.agmbat.crashreport.CrashReporter;
+import com.agmbat.imsdk.settings.MeetNotificationManager;
 import com.agmbat.imsdk.util.VLog;
+import com.agmbat.meetyou.splash.SplashActivity;
 import com.agmbat.meetyou.splash.SplashManager;
 import com.agmbat.meetyou.account.LoginActivity;
 import com.agmbat.meetyou.checkupdate.UpdateApi;
@@ -33,6 +35,7 @@ public class MeetApplication extends Application {
         CrashReporter.init(this);
         ImageManager.initImageLoader(this);
         SplashManager.init(LoginActivity.class.getName());
+        MeetNotificationManager.init(this).configNewMsgEntrance(SplashActivity.class.getName());
         SDKInitializer.initialize(this);
         AppVersionHelper.setAppVersionInfoRequester(new UpdateApi());
         if (ThreadUtil.isOnMainProcess(this)) {

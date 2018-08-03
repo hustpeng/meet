@@ -59,6 +59,7 @@ public class MainTabActivity extends FragmentActivity {
         mHandler.postDelayed(mInitRunnable, 1500);
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

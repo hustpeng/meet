@@ -8,6 +8,7 @@ import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.ReceiveSysMessageEvent;
+import com.agmbat.imsdk.settings.MeetNotificationManager;
 import com.agmbat.log.Debug;
 import com.agmbat.log.Log;
 
@@ -133,6 +134,7 @@ public class MessageManager extends Xepmodule {
                 @Override
                 public void run() {
                     addMessage(messageObject.getFromJid(), messageObject);
+                    MeetNotificationManager.getInstance().notifyMessageReceived(messageObject);
                     if (isSystemMessage(messageObject)) {
                         EventBus.getDefault().post(new ReceiveSysMessageEvent(messageObject));
                     } else {
@@ -175,6 +177,12 @@ public class MessageManager extends Xepmodule {
             }
         }
         return false;
+    }
+
+    public void notifyReceiveNewMsg(MessageObject messageObject){
+        for (MessageListener listener : listeners) {
+            listener.didReceiveNewMsg(messageObject);
+        }
     }
 
     private void sendChatStates(String msgId, String state, String toJid) {

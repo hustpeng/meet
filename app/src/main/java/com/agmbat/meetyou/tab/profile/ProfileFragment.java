@@ -29,6 +29,7 @@ import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
 import com.agmbat.meetyou.settings.AboutActivity;
 import com.agmbat.meetyou.settings.IdentityAuthenticationActivity;
+import com.agmbat.meetyou.settings.NotificationSettingActivity;
 import com.agmbat.meetyou.util.ResourceUtil;
 import com.agmbat.wxshare.ShareContent;
 import com.agmbat.wxshare.WXShare;
@@ -120,6 +121,13 @@ public class ProfileFragment extends Fragment {
     void onClickChangePassword() {
         startActivity(new Intent(getActivity(), ChangePasswordActivity.class));
     }
+
+    @OnClick(R.id.btn_new_msg)
+    void onClickNewMsgSetting() {
+        NotificationSettingActivity.launch(getContext());
+    }
+
+
 
     @OnClick(R.id.btn_credits)
     void onClickCredits() {
