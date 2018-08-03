@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.appupdate.AppVersionHelper;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.util.SystemUtil;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -17,12 +20,20 @@ import butterknife.OnClick;
  */
 public class AboutActivity extends Activity {
 
+    @BindView(R.id.version)
+    TextView mVersionTv;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_about);
         ButterKnife.bind(this);
+        initContentView();
+    }
+
+    private void initContentView() {
+        mVersionTv.setText("版本号：" + SystemUtil.getAppVersion(this));
     }
 
     @Override
@@ -44,6 +55,12 @@ public class AboutActivity extends Activity {
     void onClickBack() {
         finish();
     }
+
+    @OnClick(R.id.visit_offical_web)
+    void onClickOfficalWeb() {
+        SystemUtil.openBrowser(this, "http://www.baidu.com");
+    }
+
 
     @OnClick(R.id.user_feedback)
     void onClickFeedback() {
