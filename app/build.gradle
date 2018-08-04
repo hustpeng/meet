@@ -78,7 +78,6 @@ dependencies {
     compile project(':browser')
     compile project(':inputview')
     compile project(':inputvoice')
-    compile project(':emoji')
     compile project(':baidumap')
     compile project(':widget')
 

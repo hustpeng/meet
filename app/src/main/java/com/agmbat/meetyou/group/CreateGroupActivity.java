@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.agmbat.android.SysResources;
+import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.AppUtils;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
@@ -37,7 +38,9 @@ import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.TagSelectedView;
+import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.util.CircleDrawable;
+import com.agmbat.meetyou.util.ImageUtil;
 import com.nostra13.universalimageloader.core.download.Scheme;
 
 import org.jivesoftware.smack.PacketListener;
@@ -243,11 +246,10 @@ public class CreateGroupActivity extends Activity {
             @Override
             public void onPickImage(ImageItem imageItem) {
                 mAvatarPath = imageItem.path;
-                //String uri = Scheme.wrapUri("file", imageItem.path);
-                //ImageManager.displayImage(uri, mAvatarView, AvatarHelper.getGroupOptions());
-                Bitmap bitmap = BitmapFactory.decodeFile(imageItem.path);
-                mAvatarView.setImageDrawable(new CircleDrawable(bitmap));
-                //ImageUtil.loadCircleImage(getBaseContext(), mAvatarView, "",  );
+                String uri = Scheme.wrapUri("file", imageItem.path);
+                ImageManager.displayImage(uri, mAvatarView, AvatarHelper.getGroupOptions());
+//                Bitmap bitmap = BitmapFactory.decodeFile(imageItem.path);
+//                mAvatarView.setImageDrawable(new CircleDrawable(bitmap));
             }
         });
     }

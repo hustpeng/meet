@@ -456,24 +456,8 @@ public class ChatActivity extends Activity implements OnInputListener {
             @Override
             public void onUpload(FileApiResult apiResult) {
                 if (apiResult.mResult) {
-                    String url = apiResult.url;
-                    Body body = new ImageBody(url, new ImageBody.Image());
-
-                    String toJid = "";
-                    Message.Type chatType = null;
-                    if (mChatType == TYPE_SINGLE_CHAT) {
-                        chatType = Message.Type.chat;
-                        toJid = mParticipant.getBareJid();
-                    } else if (mChatType == TYPE_GROUP_CHAT) {
-                        chatType = Message.Type.groupchat;
-                        toJid = mCircleInfo.getGroupJid();
-                    }
-                    MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
-                            .sendTextMessage(chatType, toJid, mLoginUser.getNickname(), mLoginUser.getAvatar(), body.toXml());
-                    mAdapter.notifyDataSetChanged();
-                    if (messageObject != null) {
-                        EventBus.getDefault().post(new SendMessageEvent(messageObject));
-                    }
+                    Body body = new ImageBody(apiResult.url, new ImageBody.Image());
+                    sendMessage(body);
                 } else {
                     ToastUtil.showToast("发送图片失败!");
                 }

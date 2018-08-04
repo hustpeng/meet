@@ -40,6 +40,7 @@ public class MeetApplication extends Application {
         AppVersionHelper.setAppVersionInfoRequester(new UpdateApi());
         if (ThreadUtil.isOnMainProcess(this)) {
             ConnectionReceiver.register(this);
+            MessageReceiver.register(this);
         }
         initDatabaseBrowser();
     }

@@ -25,13 +25,14 @@ import android.text.TextUtils;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageSubType;
 
+import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * 表示一条消息, ui显示与数据库存储
  */
-public class MessageObject {
+public class MessageObject implements Serializable {
 
     private Message.Type chatType; //群聊、单聊等聊天类型
 

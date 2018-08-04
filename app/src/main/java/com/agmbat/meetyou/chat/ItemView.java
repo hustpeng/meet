@@ -1,12 +1,14 @@
 package com.agmbat.meetyou.chat;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.text.Spannable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.agmbat.android.SysResources;
@@ -47,6 +49,8 @@ import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import org.jivesoftware.smackx.message.MessageObject;
 
@@ -79,6 +83,11 @@ public abstract class ItemView extends LinearLayout {
      */
     protected TextView mTimeView;
 
+    /**
+     * 进度条
+     */
+    protected ProgressBar mLoadingProgress;
+
     public ItemView(Context context) {
         super(context);
         View.inflate(context, getLayoutId(), this);
@@ -86,6 +95,7 @@ public abstract class ItemView extends LinearLayout {
         mChatContentView = (TextView) findViewById(R.id.chat_content);
         mTimeView = (TextView) findViewById(R.id.time);
         mBodyImage = (ImageView) findViewById(R.id.body_image);
+        mLoadingProgress = (ProgressBar) findViewById(R.id.loading_progress);
     }
 
     protected abstract int getLayoutId();
@@ -98,7 +108,7 @@ public abstract class ItemView extends LinearLayout {
      * @param msg
      * @param showTime
      */
-    public void update(MessageObject msg, boolean showTime) {
+    public void update(MessageObject msg, boolean showTime, boolean showLoading) {
         setupViews();
         setAvatar(msg);
         setMessageBody(msg);
@@ -167,7 +177,6 @@ public abstract class ItemView extends LinearLayout {
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         mChatContentView.setVisibility(View.VISIBLE);
         mChatContentView.setText("文件:" + fileBody.getFileName());
-
         mChatContentView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -296,14 +305,38 @@ public abstract class ItemView extends LinearLayout {
     private void setImageBody(final MessageObject msg, final ImageBody imageBody, final boolean isFire) {
         mBodyImage.setVisibility(View.VISIBLE);
         mChatContentView.setVisibility(View.GONE);
-        ImageManager.displayImage(imageBody.getFileUrl(), mBodyImage);
-        mBodyImage.setOnClickListener(new OnClickListener() {
+        if(TextUtils.isEmpty(imageBody.getFileUrl())){
+            mLoadingProgress.setVisibility(VISIBLE);
+        }else {
+            ImageManager.displayImage(imageBody.getFileUrl(), mBodyImage, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    mLoadingProgress.setVisibility(VISIBLE);
+                }
 
-            @Override
-            public void onClick(View v) {
-                ViewImageActivity.viewImage(getContext(), imageBody.getFileUrl());
-            }
-        });
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    mLoadingProgress.setVisibility(GONE);
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    mLoadingProgress.setVisibility(GONE);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+                    mLoadingProgress.setVisibility(GONE);
+                }
+            });
+            mBodyImage.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    ViewImageActivity.viewImage(getContext(), imageBody.getFileUrl());
+                }
+            });
+        }
     }
 
     /**
@@ -313,6 +346,7 @@ public abstract class ItemView extends LinearLayout {
      */
     private void setTextBody(TextBody body) {
         mBodyImage.setVisibility(View.GONE);
+        mLoadingProgress.setVisibility(View.GONE);
         ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         mChatContentView.setVisibility(View.VISIBLE);
@@ -332,6 +366,7 @@ public abstract class ItemView extends LinearLayout {
      */
     private void setUrlBody(final UrlBody body) {
         mBodyImage.setVisibility(View.GONE);
+        mLoadingProgress.setVisibility(View.GONE);
         ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         mChatContentView.setVisibility(View.VISIBLE);
@@ -350,6 +385,7 @@ public abstract class ItemView extends LinearLayout {
 
     private void setAudioBody(final TextView tv, AudioBody audioBody) {
         mBodyImage.setVisibility(View.GONE);
+        mLoadingProgress.setVisibility(GONE);
         mChatContentView.setVisibility(View.VISIBLE);
         tv.setText(DurationFormat.formatDurationShort(audioBody.getDuration()));
         ViewGroup.LayoutParams params = tv.getLayoutParams();
@@ -368,17 +404,24 @@ public abstract class ItemView extends LinearLayout {
                 AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, Boolean>() {
 
                     @Override
+                    protected void onPreExecute() {
+                        mLoadingProgress.setVisibility(VISIBLE);
+                    }
+
+                    @Override
                     protected Boolean doInBackground(Void... arg0) {
                         return HttpUtils.downloadFile(url, file);
                     }
 
                     @Override
                     protected void onPostExecute(Boolean result) {
+                        mLoadingProgress.setVisibility(GONE);
                         setAudioPlayTextView(tv, file.getAbsolutePath());
                     }
                 });
             }
         } else {
+            mLoadingProgress.setVisibility(VISIBLE);
             setAudioPlayTextView(tv, url);
         }
     }
