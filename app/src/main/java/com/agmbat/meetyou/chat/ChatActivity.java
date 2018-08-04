@@ -324,6 +324,10 @@ public class ChatActivity extends Activity implements OnInputListener {
     }
 
     private void getLocation() {
+        //先发送空消息
+        LocationObject locationObject = new LocationObject();
+        final Body emptyBody = new LocationBody(locationObject);
+        final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
         Maps.getLocation(this, new LocationCallback() {
             @Override
             public void callback(LocationObject location) {
@@ -333,7 +337,9 @@ public class ChatActivity extends Activity implements OnInputListener {
                 }
                 mInputController.reset();
                 LocationBody body = new LocationBody(location);
-                sendMessage(body);
+                if(null != emptyMessage) {
+                    sendMessage(body, true, emptyMessage.getMsgId());
+                }
             }
         });
     }
@@ -360,7 +366,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         if (type == OnInputListener.TYPE_TEXT) {
             if (UrlStringUtils.isValidUrl(content)) {
                 Body body = new UrlBody(content);
-                sendMessage(body);
+                sendMessage(body, true, "");
                 return;
             }
             // else  当前为文本消息
@@ -369,9 +375,12 @@ public class ChatActivity extends Activity implements OnInputListener {
                 return;
             }
             Body body = new TextBody(content);
-            sendMessage(body);
+            sendMessage(body, true, "");
         } else if (type == OnInputListener.TYPE_VOICE) {
             final String path = content;
+            //先发送空的消息
+            final Body emptyBody = new AudioBody("", 0);
+            final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
             RemoteFileManager.uploadTempFile(new File(path), new OnFileUploadListener() {
                 @Override
                 public void onUpload(FileApiResult apiResult) {
@@ -384,7 +393,9 @@ public class ChatActivity extends Activity implements OnInputListener {
 
                         long duration = AmrHelper.getAmrDuration(newFile);
                         Body body = new AudioBody(url, duration);
-                        sendMessage(body);
+                        if(null != emptyMessage) {
+                            sendMessage(body, true, emptyMessage.getMsgId());
+                        }
                     } else {
                         ToastUtil.showToast("发送语音失败!");
                     }
@@ -398,7 +409,7 @@ public class ChatActivity extends Activity implements OnInputListener {
      *
      * @param body
      */
-    private void sendMessage(Body body) {
+    private MessageObject sendMessage(Body body, boolean shouldSend, String updateMsgId) {
         String toJid = "";
         Message.Type chatType = null;
         if (mChatType == TYPE_SINGLE_CHAT) {
@@ -410,11 +421,12 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
 
         MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
-                .sendTextMessage(chatType, toJid, mLoginUser.getNickname(), mLoginUser.getAvatar(), body.toXml());
+                .sendTextMessage(chatType, toJid, mLoginUser.getNickname(), mLoginUser.getAvatar(), body, shouldSend, updateMsgId);
         mAdapter.notifyDataSetChanged();
         if (messageObject != null) {
             EventBus.getDefault().post(new SendMessageEvent(messageObject));
         }
+        return messageObject;
     }
 
     /**
@@ -452,12 +464,17 @@ public class ChatActivity extends Activity implements OnInputListener {
      * @param path
      */
     private void sendImage(final String path) {
+        //先发送空消息
+        Body emptyBody = new ImageBody("", new ImageBody.Image());
+        final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
         RemoteFileManager.uploadImageFile(new File(path), new OnFileUploadListener() {
             @Override
             public void onUpload(FileApiResult apiResult) {
                 if (apiResult.mResult) {
                     Body body = new ImageBody(apiResult.url, new ImageBody.Image());
-                    sendMessage(body);
+                    if(null != emptyMessage) {
+                        sendMessage(body, true, emptyMessage.getMsgId());
+                    }
                 } else {
                     ToastUtil.showToast("发送图片失败!");
                 }
@@ -483,13 +500,18 @@ public class ChatActivity extends Activity implements OnInputListener {
      * @param file
      */
     private void sendFile(final File file) {
+        //先发送空消息
+        final Body emptyBody = new FileBody("", file.getName(), file);
+        final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
         RemoteFileManager.uploadTempFile(file, new OnFileUploadListener() {
             @Override
             public void onUpload(FileApiResult apiResult) {
                 if (apiResult.mResult) {
                     String url = apiResult.url;
                     Body body = new FileBody(url, file.getName(), file);
-                    sendMessage(body);
+                    if(null != emptyMessage) {
+                        sendMessage(body, true, emptyMessage.getMsgId());
+                    }
                 } else {
                     ToastUtil.showToast("发送文件失败!");
                 }

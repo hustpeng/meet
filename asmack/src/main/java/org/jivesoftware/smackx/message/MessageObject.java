@@ -213,4 +213,12 @@ public class MessageObject implements Serializable {
     }
 
 
+    @Override
+    public boolean equals(Object obj) {
+        if(null != obj && obj instanceof MessageObject){
+            MessageObject input = (MessageObject)obj;
+            return input.getMsgId().equals(this.getMsgId());
+        }
+        return false;
+    }
 }

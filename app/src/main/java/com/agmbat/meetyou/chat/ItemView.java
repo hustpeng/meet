@@ -148,7 +148,7 @@ public abstract class ItemView extends LinearLayout {
             setUrlBody(urlBody);
         } else if (body instanceof AudioBody) {
             AudioBody audioBody = (AudioBody) body;
-            setAudioBody(mChatContentView, audioBody);
+            setAudioBody(audioBody);
         } else if (body instanceof FireBody) {
             FireBody fireBody = (FireBody) body;
             if (MessageManager.isToOthers(msg)) {
@@ -303,8 +303,9 @@ public abstract class ItemView extends LinearLayout {
      * @param isFire
      */
     private void setImageBody(final MessageObject msg, final ImageBody imageBody, final boolean isFire) {
-        mBodyImage.setVisibility(View.VISIBLE);
         mChatContentView.setVisibility(View.GONE);
+        mBodyImage.setVisibility(View.VISIBLE);
+        mBodyImage.setImageResource(0);
         if(TextUtils.isEmpty(imageBody.getFileUrl())){
             mLoadingProgress.setVisibility(VISIBLE);
         }else {
@@ -383,12 +384,12 @@ public abstract class ItemView extends LinearLayout {
     protected void setAudioDrawable(AudioBody body) {
     }
 
-    private void setAudioBody(final TextView tv, AudioBody audioBody) {
+    private void setAudioBody(AudioBody audioBody) {
         mBodyImage.setVisibility(View.GONE);
         mLoadingProgress.setVisibility(GONE);
         mChatContentView.setVisibility(View.VISIBLE);
-        tv.setText(DurationFormat.formatDurationShort(audioBody.getDuration()));
-        ViewGroup.LayoutParams params = tv.getLayoutParams();
+        mChatContentView.setText(DurationFormat.formatDurationShort(audioBody.getDuration()));
+        ViewGroup.LayoutParams params = mChatContentView.getLayoutParams();
         float percent = (audioBody.getDuration() / 60000.0f);
         if (percent > 1) {
             percent = 1;
@@ -399,7 +400,7 @@ public abstract class ItemView extends LinearLayout {
         if (url != null && url.startsWith("http")) {
             final File file = XmppFileManager.getRecordFile(url);
             if (file.exists()) {
-                setAudioPlayTextView(tv, file.getAbsolutePath());
+                setAudioPlayTextView(mChatContentView, file.getAbsolutePath());
             } else {
                 AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, Boolean>() {
 
@@ -416,13 +417,13 @@ public abstract class ItemView extends LinearLayout {
                     @Override
                     protected void onPostExecute(Boolean result) {
                         mLoadingProgress.setVisibility(GONE);
-                        setAudioPlayTextView(tv, file.getAbsolutePath());
+                        setAudioPlayTextView(mChatContentView, file.getAbsolutePath());
                     }
                 });
             }
         } else {
             mLoadingProgress.setVisibility(VISIBLE);
-            setAudioPlayTextView(tv, url);
+            setAudioPlayTextView(mChatContentView, url);
         }
     }
 

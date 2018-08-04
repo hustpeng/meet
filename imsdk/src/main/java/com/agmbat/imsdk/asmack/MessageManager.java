@@ -6,6 +6,7 @@ import com.agmbat.android.utils.UiUtils;
 import com.agmbat.imsdk.asmack.api.FetchContactInfoRunnable;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.ReceiveSysMessageEvent;
 import com.agmbat.imsdk.settings.MeetNotificationManager;
@@ -245,26 +246,38 @@ public class MessageManager extends Xepmodule {
      *
      * @param toJidString
      * @param senderNickName
-     * @param text
+     * @param body
      */
-    public MessageObject sendTextMessage(Type chatType, String toJidString, String senderNickName, String senderAvatar, String text) {
+    public MessageObject sendTextMessage(Type chatType, String toJidString, String senderNickName, String senderAvatar, Body body, boolean shouldSend, String updateMsgId) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             return null;
         }
-        if (TextUtils.isEmpty(text) || TextUtils.isEmpty(toJidString)) {
+        if (TextUtils.isEmpty(body.toXml()) || TextUtils.isEmpty(toJidString)) {
             return null;
         }
         Message message = new Message();
+        if(!TextUtils.isEmpty(updateMsgId)){
+            message.setPacketID(updateMsgId);
+        }else {
+            message.setPacketID(Packet.nextID());
+        }
         message.setType(chatType);
-        message.setBody(text);
+        message.setBody(body.toXml());
         message.setFrom(xmppConnection.getBareJid());
         message.setTo(toJidString);
         message.setSenderJid(xmppConnection.getBareJid());
         message.setSenderNickName(senderNickName);
         message.setSenderAvatar(senderAvatar);
-        xmppConnection.sendPacket(message);
+        if(shouldSend) {
+            xmppConnection.sendPacket(message);
+        }
         MessageObject messageObject = phareMessageFromPacket(message);
-        messageStorage.insertMsg(messageObject);
+        MessageObject existMsg = messageStorage.getMsg(message.getPacketID());
+        if(null == existMsg){
+            messageStorage.insertMsg(messageObject);
+        }else{
+            messageStorage.updateMsg(messageObject);
+        }
         addMessage(toJidString, messageObject);
         return messageObject;
     }
@@ -523,7 +536,12 @@ public class MessageManager extends Xepmodule {
             list = messageStorage.getMessages(user, jid);
             mMessageMap.put(jid, list);
         }
-        list.add(messageObject);
+        if(!list.contains(messageObject)){
+            list.add(messageObject);
+        }else{
+            int index = list.indexOf(messageObject);
+            list.set(index, messageObject);
+        }
     }
 
     /**
