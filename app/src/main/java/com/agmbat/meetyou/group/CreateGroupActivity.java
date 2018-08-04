@@ -38,6 +38,7 @@ import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.TagSelectedView;
 import com.agmbat.meetyou.util.CircleDrawable;
+import com.nostra13.universalimageloader.core.download.Scheme;
 
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
