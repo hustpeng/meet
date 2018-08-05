@@ -30,6 +30,7 @@ import com.agmbat.meetyou.helper.GenderHelper;
 import com.agmbat.meetyou.settings.AboutActivity;
 import com.agmbat.meetyou.settings.IdentityAuthenticationActivity;
 import com.agmbat.meetyou.settings.NotificationSettingActivity;
+import com.agmbat.meetyou.settings.PrivateSettingActivity;
 import com.agmbat.meetyou.util.ResourceUtil;
 import com.agmbat.wxshare.ShareContent;
 import com.agmbat.wxshare.WXShare;
@@ -127,7 +128,10 @@ public class ProfileFragment extends Fragment {
         NotificationSettingActivity.launch(getContext());
     }
 
-
+    @OnClick(R.id.btn_privacy)
+    void onClickPrivateSetting(){
+        PrivateSettingActivity.launch(getContext());
+    }
 
     @OnClick(R.id.btn_credits)
     void onClickCredits() {

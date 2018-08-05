@@ -14,6 +14,7 @@ import com.agmbat.meetyou.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class NotificationSettingActivity extends Activity {
 
@@ -65,6 +66,10 @@ public class NotificationSettingActivity extends Activity {
         mSoundCheckBox.setChecked(AppConfigUtils.isNotificationSoundEnable(this));
     }
 
+    @OnClick(R.id.title_btn_back)
+    void onClickBackBtn(){
+        finish();
+    }
 
     @Override
     protected void onDestroy() {

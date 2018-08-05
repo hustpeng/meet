@@ -22,6 +22,7 @@ import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.tab.contacts.ContactsView;
 import com.agmbat.swipemenulist.SwipeMenu;
+import com.agmbat.swipemenulist.SwipeMenuAdapter;
 import com.agmbat.swipemenulist.SwipeMenuCreator;
 import com.agmbat.swipemenulist.SwipeMenuItem;
 import com.agmbat.swipemenulist.SwipeMenuListView;
@@ -135,8 +136,7 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(ContactOnAddEvent event) {
-        FriendAdapter adapter = (FriendAdapter) mListView.getAdapter();
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     private static class FriendAdapter extends ArrayAdapter<ContactInfo> {

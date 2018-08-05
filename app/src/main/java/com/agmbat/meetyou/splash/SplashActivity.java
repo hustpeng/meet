@@ -31,6 +31,8 @@ import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.account.LoginActivity;
 
+import org.jivesoftware.smack.XMPPConnection;
+
 import java.util.ArrayList;
 import java.util.List;
 

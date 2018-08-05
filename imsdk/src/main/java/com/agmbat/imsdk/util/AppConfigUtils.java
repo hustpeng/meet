@@ -43,6 +43,8 @@ public class AppConfigUtils {
     private static final String KEY_NOTIFICATION_ENABLE = "KEY_NOTIFICATION_ENABLE";
     private static final String KEY_NOTIFICATION_SOUND_ENABLE = "KEY_NOTIFICATION_SOUND_ENABLE";
 
+    private static final String KEY_UNAUTH_DENIED_ENABLE = "KEY_UNAUTH_DENIED_ENABLE";
+
     private static SharedPreferences getPreferences(Context context) {
         if (context == null) {
             Log.e(TAG, "getPreferences ERR. context is nil");
@@ -209,6 +211,16 @@ public class AppConfigUtils {
     public static void setNotificationSoundEnable(Context context, boolean enable){
         SharedPreferences preferences = getPreferences(context);
         preferences.edit().putBoolean(KEY_NOTIFICATION_SOUND_ENABLE, enable).apply();
+    }
+
+    public static boolean isUnauthDeniedEnable(Context context){
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(KEY_UNAUTH_DENIED_ENABLE, false);
+    }
+
+    public static void setUnauthDeniedEnable(Context context, boolean enable){
+        SharedPreferences preferences = getPreferences(context);
+        preferences.edit().putBoolean(KEY_UNAUTH_DENIED_ENABLE, enable).apply();
     }
 
 }

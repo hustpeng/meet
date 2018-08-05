@@ -1,5 +1,6 @@
 package com.agmbat.imsdk.asmack.roster;
 
+import com.agmbat.android.AppResources;
 import com.agmbat.android.task.AsyncTask;
 import com.agmbat.android.task.AsyncTaskUtils;
 import com.agmbat.android.utils.UiUtils;
@@ -17,6 +18,7 @@ import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribedEvent;
 import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.imsdk.util.VLog;
 import com.agmbat.log.Debug;
 import com.agmbat.log.Log;
@@ -33,6 +35,7 @@ import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
 import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smack.roster.RosterPacketItem;
+import org.jivesoftware.smack.roster.RosterPacketItemType;
 import org.jivesoftware.smackx.message.MessageObject;
 
 import java.util.ArrayList;
@@ -464,6 +467,7 @@ public class RosterManager {
     public void acceptFriend(ContactInfo contactInfo) {
         // 存入数据库（好友表+分组表）
         addContactToFriend(contactInfo);
+        removeFriendRequest(contactInfo);
         mRoster.sendSubscribed(contactInfo.getBareJid());
     }
 
@@ -544,11 +548,24 @@ public class RosterManager {
         }
 
         @Override
-        public void presenceSubscribe(Presence presence) {
+        public void presenceSubscribe(final Presence presence) {
             // 收到添加好友请求
             OnFetchContactListener listener = new OnFetchContactListener() {
                 @Override
                 public void onFetchContactInfo(final ContactInfo contactInfo) {
+                    //未认证用户不能通过好友申请
+                    if(contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_NOT_SUBMIT
+                            || contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_SUBMITED
+                            || contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_DENIED){
+
+                        if(AppConfigUtils.isUnauthDeniedEnable(AppResources.getAppContext())){
+                            VLog.d("Refuse unauth user as my friend");
+                            Presence response = new Presence(Presence.Type.unsubscribed);
+                            response.setTo(presence.getFrom());
+                            mConnection.sendPacket(response);
+                            return;
+                        }
+                    }
 
                     // 需要用本地数据库存为列表
                     UiUtils.runOnUIThread(new Runnable() {
@@ -616,6 +633,9 @@ public class RosterManager {
                     final List<ContactInfo> contactInfoList = new ArrayList<>();
                     VLog.d("RCV roster size: " + list.size());
                     for (RosterPacketItem item : list) {
+                        if(item.getItemType() == RosterPacketItemType.none){
+                            continue;
+                        }
                         ContactInfo info = RosterHelper.loadContactInfo(item.getUser());
                         info.setLocalUpdateTime(System.currentTimeMillis());
                         info.setRosterType(RosterHelper.getRosterType(item.getItemType()));
