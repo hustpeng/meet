@@ -23,18 +23,24 @@ public class VCardExtendProvider implements IQProvider {
     @Override
     public IQ parseIQ(XmlPullParser parser) throws Exception {
         VCardExtendPacket packet = new VCardExtendPacket();
-        VCardExtendObject item = new VCardExtendObject();
+        VCardExtendObject item = null;
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 String parserName = parser.getName();
-                parseField(item, parserName, parser);
+                if (!"vCard".equals(parserName) && null == item) {
+                    item = new VCardExtendObject();
+                }
+                if (null != item) {
+                    parseField(item, parserName, parser);
+                }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if ("vCard".equals(parser.getName())) {
                     done = true;
                 }
             }
+
         }
         packet.setObject(item);
         return packet;

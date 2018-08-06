@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -140,6 +141,9 @@ public class UserInfoActivity extends Activity {
             public void run() {
                 ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
                 mNickNameView.setText(contactInfo.getNickName());
+                if(!TextUtils.isEmpty(contactInfo.getRemark())){
+                    mNickNameView.append(String.format("(%s)", contactInfo.getRemark()));
+                }
                 String displayName = UserInfoDisplay.getDisplayUserName(contactInfo.getUserName());
                 mImUidView.setText(ResourceUtil.getString(R.string.id_name_format, contactInfo.getImUid()));
 

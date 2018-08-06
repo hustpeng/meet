@@ -26,7 +26,8 @@ public class LoginUser {
      * @return
      */
     public boolean isValid() {
-        return mVCardObject != null && mVCardExtendObject != null;
+        //return mVCardObject != null && mVCardExtendObject != null;
+        return mVCardObject != null;
     }
 
     public VCardObject getVCardObject() {
@@ -46,20 +47,23 @@ public class LoginUser {
     }
 
     public int getGender() {
-        return mVCardObject.getGender();
+        return null == mVCardObject ? 0 : mVCardObject.getGender();
     }
 
-    public int getAuth(){
-       return mVCardObject.getAuth();
+    public int getAuth() {
+        return null == mVCardObject ? 0 : mVCardObject.getAuth();
     }
 
     public void setGender(int gender) {
+        if (null == mVCardObject) {
+            mVCardObject = new VCardObject();
+        }
         mVCardObject.setGender(gender);
     }
 
     public int getAge() {
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
-        return thisYear - mVCardObject.getBirthYear();
+        return thisYear - getBirthYear();
     }
 
     /**
@@ -68,48 +72,63 @@ public class LoginUser {
      * @param url
      */
     public void setAvatar(String url) {
+        if (null == mVCardObject) {
+            mVCardObject = new VCardObject();
+        }
         mVCardObject.setAvatar(url);
     }
 
     public String getAvatar() {
-        return mVCardObject.getAvatar();
+        return null == mVCardObject ? "" : mVCardObject.getAvatar();
     }
 
 
     public int getImUid() {
-        return mVCardObject.getImUid();
+        return null == mVCardObject ? 0 : mVCardObject.getImUid();
     }
 
 
     public String getDemand() {
-        return mVCardExtendObject.getDemand();
+        return null == mVCardExtendObject ? "" : mVCardExtendObject.getDemand();
     }
 
     public void setDemand(String text) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setDemand(text);
     }
 
     public String getHobby() {
-        return mVCardExtendObject.getHobby();
+        return null == mVCardExtendObject ? "" : mVCardExtendObject.getHobby();
     }
 
     public void setHobby(String hobby) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setHobby(hobby);
     }
 
     public String getIntroduce() {
-        return mVCardExtendObject.getIntroduce();
+        return null == mVCardExtendObject ? "" : mVCardExtendObject.getIntroduce();
     }
 
     public void setIntroduce(String introduce) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setIntroduce(introduce);
     }
 
     public String getNickname() {
-        return mVCardObject.getNickname();
+        return null == mVCardObject ? "" : mVCardObject.getNickname();
     }
 
     public void setNickname(String nickName) {
+        if (null == mVCardObject) {
+            mVCardObject = new VCardObject();
+        }
         mVCardObject.setNickname(nickName);
     }
 
@@ -119,122 +138,164 @@ public class LoginUser {
      * @return
      */
     public String getUserName() {
-        return mVCardObject.getUserName();
+        return null == mVCardObject ? "" : mVCardObject.getUserName();
     }
 
     public String getJid() {
-        return mVCardObject.getJid();
+        return null == mVCardObject ? "" : mVCardObject.getJid();
     }
 
     public String getStatus() {
-        return mVCardExtendObject.getStatus();
+        return null == mVCardExtendObject ? "" : mVCardExtendObject.getStatus();
     }
 
     public void setStatus(String status) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setStatus(status);
     }
 
     public int getBirthYear() {
-        return mVCardObject.getBirthYear();
+        return null == mVCardObject ? 0 : mVCardObject.getBirthYear();
     }
 
     public void setBirthYear(int birthYear) {
+        if (null == mVCardObject) {
+            mVCardObject = new VCardObject();
+        }
         mVCardObject.setBirthYear(birthYear);
     }
 
     public int getHeight() {
-        return mVCardExtendObject.getHeight();
+        return null == mVCardExtendObject ? 0 : mVCardExtendObject.getHeight();
     }
 
     public void setHeight(int height) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setHeight(height);
     }
 
     public int getWeight() {
-        return mVCardExtendObject.getWeight();
+        return null == mVCardExtendObject ? 0 : mVCardExtendObject.getWeight();
     }
 
     public void setWeight(int weight) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setWeight(weight);
     }
 
     public int getWage() {
-        return mVCardExtendObject.getWage();
+        return null == mVCardExtendObject ? 0 : mVCardExtendObject.getWage();
     }
 
     public void setWage(int wage) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setWage(wage);
     }
 
     public String getResidence() {
-        return mVCardExtendObject.getResidence();
+        return null == mVCardExtendObject ? "" : mVCardExtendObject.getResidence();
     }
 
     public void setResidence(String residence) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setResidence(residence);
     }
 
     public int getEducation() {
-        return mVCardExtendObject.getEducation();
+        return null == mVCardExtendObject ? 0 : mVCardExtendObject.getEducation();
     }
 
     public void setEducation(int education) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setEducation(education);
     }
 
     public int getMarriage() {
-        return mVCardExtendObject.getMarriage();
+        return null == mVCardExtendObject ? 0 : mVCardExtendObject.getMarriage();
     }
 
     public void setMarriage(int marriage) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setMarriage(marriage);
     }
 
     public String getIndustry() {
-        return mVCardExtendObject.getIndustry();
+        return null == mVCardExtendObject ? "" : mVCardExtendObject.getIndustry();
     }
 
     public void setIndustry(String industry) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setIndustry(industry);
     }
 
     public String getCareer() {
-        return mVCardExtendObject.getCareer();
+        return null == mVCardExtendObject ? "" : mVCardExtendObject.getCareer();
     }
 
     public void setCareer(String career) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setCareer(career);
     }
 
     public int getCar() {
-        return mVCardExtendObject.getCar();
+        return null == mVCardExtendObject ? 0 : mVCardExtendObject.getCar();
     }
 
     public void setCar(int car) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setCar(car);
     }
 
     public int getHouse() {
-        return mVCardExtendObject.getHouse();
+        return null == mVCardExtendObject ? 0 : mVCardExtendObject.getHouse();
     }
 
     public void setHouse(int house) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setHouse(house);
     }
 
     public String getWorkarea() {
-        return mVCardExtendObject.getWorkarea();
+        return null == mVCardExtendObject ? "" : mVCardExtendObject.getWorkarea();
     }
 
     public void setWorkarea(String workarea) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setWorkarea(workarea);
     }
 
     public String getBirthplace() {
-        return mVCardExtendObject.getBirthplace();
+        return null == mVCardExtendObject ? "" : mVCardExtendObject.getBirthplace();
     }
 
     public void setBirthplace(String birthplace) {
+        if (null == mVCardExtendObject) {
+            mVCardExtendObject = new VCardExtendObject();
+        }
         mVCardExtendObject.setBirthplace(birthplace);
     }
 

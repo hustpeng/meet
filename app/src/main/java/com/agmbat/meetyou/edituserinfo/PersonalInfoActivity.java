@@ -8,8 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
+import com.agmbat.android.utils.UiUtils;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.asmack.api.OnFetchLoginUserListener;
+import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.meetyou.R;
@@ -46,6 +49,9 @@ public class PersonalInfoActivity extends Activity {
     @BindView(R.id.birth_year)
     TextView mBirthYearView;
 
+    @BindView(R.id.personal_more_info)
+    TextView mMoreUserInfo;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +59,13 @@ public class PersonalInfoActivity extends Activity {
         setContentView(R.layout.activity_personal_info);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        update(XMPPManager.getInstance().getRosterManager().getLoginUser());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LoginUser loginUser = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        update(loginUser);
     }
 
     @Override
@@ -155,17 +167,41 @@ public class PersonalInfoActivity extends Activity {
         startActivity(intent);
     }
 
+    private boolean hasMoreUserInfo;
+
     /**
      * 更新UI显示
      */
     private void update(LoginUser user) {
-        if (!user.isValid()) {
+        if (null == user || !user.isValid()) {
             return;
         }
         ImageManager.displayImage(user.getAvatar(), mAvatarView, AvatarHelper.getOptions());
         mNickNameView.setText(user.getNickname());
         mGenderView.setText(GenderHelper.getName(user.getGender()));
         mBirthYearView.setText(String.valueOf(user.getBirthYear()));
+        hasMoreUserInfo = user.getVCardExtendObject() != null;
+        if (hasMoreUserInfo) {
+            mMoreUserInfo.setText(R.string.label_has_more_user_info);
+        } else {
+            mMoreUserInfo.setText(R.string.label_no_more_user_info);
+        }
+    }
+
+    private void loadMoreUserInfo(String jid) {
+        XMPPApi.fetchLoginUser(jid, new OnFetchLoginUserListener() {
+            @Override
+            public void onFetchLoginUser(final LoginUser user) {
+                UiUtils.runOnUIThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        update(user);
+                    }
+                });
+
+            }
+
+        });
     }
 
 }
