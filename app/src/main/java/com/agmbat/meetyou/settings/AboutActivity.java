@@ -58,7 +58,7 @@ public class AboutActivity extends Activity {
 
     @OnClick(R.id.visit_offical_web)
     void onClickOfficalWeb() {
-        SystemUtil.openBrowser(this, "http://www.baidu.com");
+        SystemUtil.openBrowser(this, "https://www.xmpp.org.cn/");
     }
 
 

@@ -2,6 +2,7 @@ package com.agmbat.meetyou.search;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
-import com.agmbat.android.AppResources;
 import com.agmbat.android.SysResources;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
@@ -22,7 +22,6 @@ import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.tab.contacts.ContactsView;
 import com.agmbat.swipemenulist.SwipeMenu;
-import com.agmbat.swipemenulist.SwipeMenuAdapter;
 import com.agmbat.swipemenulist.SwipeMenuCreator;
 import com.agmbat.swipemenulist.SwipeMenuItem;
 import com.agmbat.swipemenulist.SwipeMenuListView;
@@ -30,7 +29,6 @@ import com.agmbat.swipemenulist.SwipeMenuListView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smack.util.XmppStringUtils;
 
 import java.util.List;
 
@@ -47,6 +45,12 @@ public class NewFriendActivity extends Activity implements AdapterView.OnItemCli
     SwipeMenuListView mListView;
 
     private FriendAdapter mAdapter;
+
+    public static void launch(Context context) {
+        Intent intent = new Intent(context, NewFriendActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

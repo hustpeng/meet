@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.permissions.PermissionArrayAction;
 import com.agmbat.android.permissions.Permissions;
+import com.agmbat.android.utils.NetworkUtil;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.R;
@@ -30,8 +31,6 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.account.LoginActivity;
-
-import org.jivesoftware.smack.XMPPConnection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,11 +183,15 @@ public class SplashActivity extends Activity {
     private void entryMainPager() {
         String userName = AppConfigUtils.getUserName(getBaseContext());
         String password = AppConfigUtils.getPassword(getBaseContext());
-        if(TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)){
-            Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-            startActivity(intent);
+        if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
+            LoginActivity.launch(getBaseContext());
             finish();
-        }else{
+        } else {
+            if (!NetworkUtil.isNetworkAvailable()) {
+                ToastUtil.showToast("网络不可用，请检查网络后重新进入程序");
+                finish();
+                return;
+            }
             ImAccountManager.login(userName, password, new ImAccountManager.OnLoginListener() {
                 @Override
                 public void onLogin(ApiResult result) {
@@ -197,8 +200,10 @@ public class SplashActivity extends Activity {
                         // 每次登陆成功,重置一次数据
                         XMPPManager.getInstance().getRosterManager().resetData();
                         startActivity(new Intent(getBaseContext(), MainTabActivity.class));
-                        finish();
+                    } else {
+                        LoginActivity.launch(getBaseContext());
                     }
+                    finish();
                 }
             });
         }

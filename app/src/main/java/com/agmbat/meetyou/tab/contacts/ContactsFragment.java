@@ -1,5 +1,6 @@
 package com.agmbat.meetyou.tab.contacts;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +13,6 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
 
-import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactGroup;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
@@ -20,6 +20,7 @@ import com.agmbat.imsdk.imevent.ContactGroupLoadEvent;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.util.VLog;
+import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.group.CreateGroupActivity;
 import com.agmbat.meetyou.group.GroupListActivity;
@@ -85,8 +86,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         headerView.findViewById(R.id.btn_new_friend).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NewFriendActivity.class);
-                startActivity(intent);
+                NewFriendActivity.launch(getContext());
                 getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
@@ -150,7 +150,25 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(PresenceSubscribeEvent event) {
         ContactInfo contactInfo = event.getContactInfo();
-        ToastUtil.showToastLong("收到添加好友请求" + contactInfo.getBareJid());
+        ISAlertDialog newFriendAlertDialog = new ISAlertDialog(getActivity());
+        newFriendAlertDialog.setCancelable(true);
+        newFriendAlertDialog.setCanceledOnTouchOutside(false);
+        newFriendAlertDialog.setTitle("好友请求提醒");
+        newFriendAlertDialog.setMessage(String.format("您收到一条来自【%s】的加好友请求，请前往查看", contactInfo.getNickName()));
+        newFriendAlertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        newFriendAlertDialog.setPositiveButton("查看", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                NewFriendActivity.launch(getContext());
+            }
+        });
+        newFriendAlertDialog.show();
     }
 
     /**

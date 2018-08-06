@@ -1,5 +1,6 @@
 package com.agmbat.meetyou.account;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -11,7 +12,6 @@ import android.widget.EditText;
 
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.account.AccountPrefs;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
@@ -45,6 +45,12 @@ public class LoginActivity extends FragmentActivity {
     EditText mPasswordView;
 
     private ISLoadingDialog mISLoadingDialog;
+
+    public static void launch(Context context){
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
