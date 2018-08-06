@@ -55,6 +55,6 @@
         android:layout_height="24dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="20dp"
-        android:src="@drawable/ic_vector_check" />
+        android:src="@drawable/ic_selected_large" />
 
 </LinearLayout>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:background="@color/ip_color_primary"
@@ -13,13 +12,13 @@
         android:layout_centerVertical="true"
         android:background="@drawable/selector_back_press"
         android:padding="12dp"
-        android:src="@drawable/ic_arrow_back" />
+        android:src="@drawable/ic_return_white" />
 
     <View
         android:layout_width="2px"
         android:layout_height="match_parent"
-        android:layout_marginBottom="12dp"
         android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
         android:layout_toRightOf="@id/btn_back"
         android:background="#2E2E32" />
 
@@ -44,13 +43,14 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:background="@drawable/selector_top_ok"
-        android:minHeight="30dp"
         android:minWidth="48dp"
+        android:minHeight="30dp"
         android:paddingLeft="16.0dp"
         android:paddingRight="16.0dp"
         android:text="完成(0/3)"
         android:textColor="#ffffff"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:visibility="visible" />
 
     <ImageView
         android:id="@+id/btn_del"
@@ -60,6 +60,6 @@
         android:layout_centerVertical="true"
         android:background="@drawable/selector_back_press"
         android:padding="12dp"
-        android:src="@drawable/ic_vector_delete"
+        android:src="@drawable/ic_trush"
         android:visibility="gone" />
 </RelativeLayout>

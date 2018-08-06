@@ -13,12 +13,15 @@ import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.android.utils.UiUtils;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
+import com.agmbat.imsdk.asmack.api.OnFetchLoginUserListener;
 import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ContactOnAddEvent;
+import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
@@ -64,6 +67,9 @@ public class UserInfoActivity extends Activity {
     @BindView(R.id.setup_alias)
     TextView mAliasTv;
 
+    @BindView(R.id.more_user_info)
+    TextView mMoreUserInfo;
+
     private ContactInfo mContactInfo;
     private BusinessHandler mBusinessHandler;
 
@@ -74,6 +80,11 @@ public class UserInfoActivity extends Activity {
         setContentView(R.layout.activity_user_info);
         ButterKnife.bind(this);
         setup();
+        loadBaseUserInfo();
+        loadMoreUserInfo();
+    }
+
+    private void loadBaseUserInfo() {
         XMPPApi.fetchContactInfo(mContactInfo.getBareJid(), new OnFetchContactListener() {
             @Override
             public void onFetchContactInfo(ContactInfo contactInfo) {
@@ -81,6 +92,29 @@ public class UserInfoActivity extends Activity {
                 mContactInfo.apply(contactInfo);
                 fillViews(mContactInfo);
             }
+        });
+    }
+
+    private boolean hasMoreUserInfo;
+
+    private void loadMoreUserInfo() {
+        XMPPApi.fetchLoginUser(mContactInfo.getBareJid(), new OnFetchLoginUserListener() {
+            @Override
+            public void onFetchLoginUser(final LoginUser user) {
+                hasMoreUserInfo = user.getVCardExtendObject() != null;
+                UiUtils.runOnUIThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (hasMoreUserInfo) {
+                            mMoreUserInfo.setText(R.string.label_has_more_user_info);
+                        } else {
+                            mMoreUserInfo.setText(R.string.label_no_more_user_info);
+                        }
+                    }
+                });
+
+            }
+
         });
     }
 
@@ -204,7 +238,9 @@ public class UserInfoActivity extends Activity {
 
     @OnClick(R.id.more_user_info)
     void onClickMoreInfo() {
-        ViewUserHelper.viewContactInfoMore(this, mContactInfo);
+        if (hasMoreUserInfo) {
+            ViewUserHelper.viewContactInfoMore(this, mContactInfo);
+        }
     }
 
     @OnClick(R.id.setup_alias)
