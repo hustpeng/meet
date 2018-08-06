@@ -245,14 +245,21 @@ public class UserInfoActivity extends Activity {
 
     @OnClick(R.id.setup_alias)
     void onClickSetupAlias() {
+        final String originRemark = mContactInfo.getRemark();
         final EditText aliasInput = new EditText(this);
+        aliasInput.setText(originRemark);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("设置备注").setView(aliasInput)
                 .setNegativeButton("取消", null);
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                aliasInput.getText().toString();
+                String newRemark = aliasInput.getText().toString();
+                if (newRemark.equals(originRemark)) {
+                    return;
+                }
+                XMPPManager.getInstance().getRosterManager().changeNickName(mContactInfo.getBareJid(), newRemark);
+                mContactInfo.setRemark(newRemark);
             }
         });
         builder.show();
