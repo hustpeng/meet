@@ -10,6 +10,7 @@ import android.widget.CompoundButton;
 
 import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.blocklist.BlockListActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +38,11 @@ public class PrivateSettingActivity extends Activity {
     @OnClick(R.id.title_btn_back)
     void onClickBackBtn(){
         finish();
+    }
+
+    @OnClick(R.id.block_list_item)
+    void onClickBlockList(){
+        BlockListActivity.launch(getApplicationContext());
     }
 
     private void initContentView(){

@@ -14,6 +14,10 @@ import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.menu.PopupMenu;
 
+import org.jivesoftware.smack.util.XmppStringUtils;
+import org.jivesoftware.smackx.block.BlockListener;
+import org.jivesoftware.smackx.block.BlockManager;
+
 /**
  * 查看联系人信息界面处理
  */
@@ -43,7 +47,64 @@ public class ContactsBusinessHandler extends BusinessHandler {
             }
         });
         popupMenu.addItem(reportUser);
+
+        final BlockManager blockManager = XMPPManager.getInstance().getBlockManager();
+        blockManager.addListener(mBlockListener);
+        final boolean isUserBlock = blockManager.isBlock(contactInfo.getBareJid());
+        MenuInfo blockUser = new MenuInfo();
+        blockUser.setTitle(isUserBlock ? "移出黑名单" : "加入黑名单");
+        blockUser.setOnClickMenuListener(new OnClickMenuListener() {
+            @Override
+            public void onClick(MenuInfo menu, int index) {
+                if(isUserBlock){
+                    blockManager.removeBlock(contactInfo.getBareJid());
+                }else{
+                    blockManager.addBlock(contactInfo.getBareJid());
+                }
+            }
+        });
+        popupMenu.addItem(blockUser);
     }
+
+    private BlockListener mBlockListener = new BlockListener() {
+        @Override
+        public void notifyFetchBlockListNameResult(boolean success) {
+
+        }
+
+        @Override
+        public void notifyFetchBlockResult(boolean success) {
+
+        }
+
+        @Override
+        public void notifyAddBlockResult(String jid, boolean success) {
+            BlockManager blockManager = XMPPManager.getInstance().getBlockManager();
+            if(success){
+                ToastUtil.showToast("已加入黑名单");
+                blockManager.setActiveName(blockManager.getListName());
+            }else{
+                ToastUtil.showToast("加入黑名单失败");
+            }
+            blockManager.removeListener(this);
+        }
+
+        @Override
+        public void notifyRemoveBlockResult(String jid, boolean success) {
+            BlockManager blockManager = XMPPManager.getInstance().getBlockManager();
+            if(success){
+                ToastUtil.showToast("已移出黑名单");
+            }else{
+                ToastUtil.showToast("移出黑名单失败");
+            }
+            blockManager.removeListener(this);
+        }
+
+        @Override
+        public void notifyBlockListChange(String jid, boolean isBlock) {
+
+        }
+    };
 
     private void showRemoveUserDialog(final Context context, final ContactInfo contactInfo) {
         ISAlertDialog dialog = new ISAlertDialog(context);

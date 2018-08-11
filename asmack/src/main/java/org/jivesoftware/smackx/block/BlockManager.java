@@ -118,6 +118,7 @@ public class BlockManager extends Xepmodule {
                 setListName(blockPacket.getListName());
                 setDefaultListName(blockPacket.getDefaultName());
                 setActiveListName(blockPacket.getActiveName());
+                setActiveName(blockPacket.getListName());//新增代码
                 fetchBlockList();
                 notifyFetchBlockListNameResult(true);
             }
@@ -430,7 +431,7 @@ public class BlockManager extends Xepmodule {
                 buffer.append("<active/>");
             } else {
                 buffer.append("<active");
-                buffer.append(" name=\"block-message-list\"/>");
+                buffer.append(" name=\"" + activeName + "\"/>");
             }
             buffer.append("</");
             buffer.append(BlockProvider.elementName());
@@ -488,7 +489,7 @@ public class BlockManager extends Xepmodule {
                 buffer.append("<default/>");
             } else {
                 buffer.append("<default");
-                buffer.append(" name=\"block-message-list\"/>");
+                buffer.append(" name=\"" + defaultName + "\"/>");
             }
             buffer.append("</");
             buffer.append(BlockProvider.elementName());

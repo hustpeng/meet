@@ -213,6 +213,11 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.agmbat.meetyou.blocklist.BlockListActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
