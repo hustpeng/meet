@@ -2,15 +2,21 @@ package com.agmbat.meetyou.blocklist;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
+import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.RegisterSuccessEvent;
+import com.agmbat.meetyou.widget.OnRecyclerViewItemClickListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -50,6 +56,7 @@ public class BlockListActivity extends Activity {
 
     private void initContentView() {
         mBlockListAdapter = new BlockListAdapter(getApplicationContext());
+        mBlockListAdapter.setOnItemClickListener(mOnItemClickListener);
         mBlackListView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         mBlackListView.setAdapter(mBlockListAdapter);
     }
@@ -85,12 +92,51 @@ public class BlockListActivity extends Activity {
 
         @Override
         public void notifyRemoveBlockResult(String jid, boolean success) {
-
+            if(jid.equals(mRemoveJid)){
+                if(success){
+                    ToastUtil.showToast("已移出黑名单");
+                    mBlockManager.setActiveName(mBlockManager.getListName());
+                    mBlockListAdapter.setAll(mBlockManager.getAllBlockObjects());
+                }else{
+                    ToastUtil.showToast("移出黑名单失败");
+                }
+            }
         }
 
         @Override
         public void notifyBlockListChange(String jid, boolean isBlock) {
 
+        }
+    };
+
+    private String mRemoveJid = "";
+
+    private OnRecyclerViewItemClickListener mOnItemClickListener = new OnRecyclerViewItemClickListener() {
+        @Override
+        public void onItemClick(View view, int position, RecyclerView.ViewHolder viewHolder) {
+
+        }
+
+        @Override
+        public void onLongClick(View view, int position, RecyclerView.ViewHolder viewHolder) {
+            final BlockObject blockObject = mBlockListAdapter.getItem(position);
+            if(null == blockObject){
+                ToastUtil.showToast("找不到需要移出的人");
+                return;
+            }
+            mRemoveJid = blockObject.getJid();
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(BlockListActivity.this);
+            CharSequence[] items = new CharSequence[]{"移出黑名单"};
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(which == 0){
+                        mBlockManager.removeBlock(mRemoveJid);
+                    }
+                }
+            });
+            builder.create().show();
         }
     };
 
