@@ -1,6 +1,7 @@
 package com.agmbat.meetyou.tab.contacts;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -29,7 +30,7 @@ public class ContactsView extends RelativeLayout {
     }
 
     public void update(ContactInfo contactInfo) {
-        mNickNameView.setText(contactInfo.getNickName());
+        mNickNameView.setText(TextUtils.isEmpty(contactInfo.getRemark()) ? contactInfo.getNickName() : contactInfo.getRemark());
         ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
     }
 

@@ -1,6 +1,7 @@
 package com.agmbat.meetyou.tab.msg;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,7 +52,7 @@ public class RecentMsgView extends LinearLayout {
     public void update(MessageObject messageObject) {
         ContactInfo contactInfo = MessageManager.getTalkContactInfo(messageObject);
         if (contactInfo != null) {
-            mNickNameView.setText(contactInfo.getNickName());
+            mNickNameView.setText(TextUtils.isEmpty(contactInfo.getRemark()) ? contactInfo.getNickName() : contactInfo.getRemark());
             mMessageView.setVisibility(View.VISIBLE);
             mLastMsgTimeView.setVisibility(View.VISIBLE);
             ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());

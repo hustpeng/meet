@@ -25,6 +25,7 @@ import com.agmbat.imsdk.imevent.ContactOnAddEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
+import com.agmbat.imsdk.settings.SettingManger;
 import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
@@ -141,11 +142,14 @@ public class UserInfoActivity extends Activity {
             public void run() {
                 ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
                 mNickNameView.setText(contactInfo.getNickName());
-                if(!TextUtils.isEmpty(contactInfo.getRemark())){
-                    mNickNameView.append(String.format("(%s)", contactInfo.getRemark()));
-                }
                 String displayName = UserInfoDisplay.getDisplayUserName(contactInfo.getUserName());
                 mImUidView.setText(ResourceUtil.getString(R.string.id_name_format, contactInfo.getImUid()));
+
+                if(TextUtils.isEmpty(contactInfo.getRemark())){
+                    mAliasTv.setText(R.string.set_alias_and_tag);
+                }else{
+                    mAliasTv.setText(contactInfo.getRemark());
+                }
 
                 mAuthView.setImageResource(GenderHelper.getIconRes(contactInfo.getGender()));
                 int thisYear = Calendar.getInstance().get(Calendar.YEAR);

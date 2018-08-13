@@ -1,7 +1,10 @@
 package com.agmbat.imsdk.asmack.roster;
 
+import android.text.TextUtils;
+
 import com.agmbat.db.annotation.Column;
 import com.agmbat.db.annotation.Table;
+import com.agmbat.imsdk.settings.SettingManger;
 import com.agmbat.imsdk.user.LoginUser;
 import com.google.gson.annotations.SerializedName;
 
@@ -222,11 +225,12 @@ public class ContactInfo implements Serializable, AuthStatus {
     }
 
     public String getRemark() {
-        return mRemark;
+        return TextUtils.isEmpty(mRemark) ? SettingManger.getInstance().getUserRemark(mBareJid) : mRemark;
     }
 
     public void setRemark(String remark) {
         mRemark = remark;
+        SettingManger.getInstance().setUserRemark(mBareJid, remark);
     }
 
     public String getAvatar() {
