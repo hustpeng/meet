@@ -27,6 +27,7 @@ import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.imsdk.settings.SettingManger;
 import com.agmbat.meetyou.chat.ChatActivity;
+import com.agmbat.meetyou.edituserinfo.DisplayAvatarActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
 import com.agmbat.meetyou.helper.UserInfoDisplay;
@@ -145,9 +146,9 @@ public class UserInfoActivity extends Activity {
                 String displayName = UserInfoDisplay.getDisplayUserName(contactInfo.getUserName());
                 mImUidView.setText(ResourceUtil.getString(R.string.id_name_format, contactInfo.getImUid()));
 
-                if(TextUtils.isEmpty(contactInfo.getRemark())){
+                if (TextUtils.isEmpty(contactInfo.getRemark())) {
                     mAliasTv.setText(R.string.set_alias_and_tag);
-                }else{
+                } else {
                     mAliasTv.setText(contactInfo.getRemark());
                 }
 
@@ -171,6 +172,11 @@ public class UserInfoActivity extends Activity {
     public void startActivity(Intent intent) {
         super.startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
+    @OnClick(R.id.avatar)
+    void onClickAvatar() {
+        DisplayAvatarActivity.launch(this, mContactInfo.getAvatar());
     }
 
     @OnClick(R.id.title_btn_back)

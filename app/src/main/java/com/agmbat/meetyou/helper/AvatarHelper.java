@@ -16,6 +16,11 @@ public class AvatarHelper {
      */
     private static DisplayImageOptions sGroupOptions = null;
 
+    /**
+     * 方形头像参数
+     */
+    private static DisplayImageOptions sRectAngleOptions = null;
+
     public static DisplayImageOptions getOptions() {
         if (sOptions == null) {
             sOptions = buildUserOptions();
@@ -36,6 +41,13 @@ public class AvatarHelper {
         return sGroupOptions;
     }
 
+    public static DisplayImageOptions getRectangleUserOptions(){
+        if(sRectAngleOptions == null){
+            sRectAngleOptions = buildRectAngleOptions(R.drawable.ic_default_avatar);
+        }
+        return sRectAngleOptions;
+    }
+
     /**
      * 创建头像群显示参数
      *
@@ -45,6 +57,7 @@ public class AvatarHelper {
         return buildOptions(R.drawable.ic_default_circle_avatar);
     }
 
+
     /**
      * 创建用户显头像显示参数
      *
@@ -52,6 +65,21 @@ public class AvatarHelper {
      */
     private static DisplayImageOptions buildUserOptions() {
         return buildOptions(R.drawable.ic_default_avatar);
+    }
+
+    /**
+     * 获取方形头像参数
+     * @param defaultDrawable
+     * @return
+     */
+    public static DisplayImageOptions buildRectAngleOptions(int defaultDrawable){
+        DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
+        builder.showImageForEmptyUri(defaultDrawable);
+        builder.showImageOnFail(defaultDrawable);
+        builder.cacheInMemory(true);
+        builder.cacheOnDisk(true);
+        builder.considerExifParams(false);
+        return builder.build();
     }
 
     private static DisplayImageOptions buildOptions(int defaultDrawableId) {
