@@ -108,7 +108,7 @@ public abstract class ItemView extends LinearLayout {
      * @param msg
      * @param showTime
      */
-    public void update(MessageObject msg, boolean showTime, boolean showLoading) {
+    public void update(MessageObject msg, boolean showTime) {
         setupViews();
         setAvatar(msg);
         setMessageBody(msg);

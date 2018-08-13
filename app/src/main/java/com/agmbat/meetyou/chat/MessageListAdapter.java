@@ -30,7 +30,7 @@ public class MessageListAdapter extends ArrayAdapter<MessageObject> {
             prevMessage = getItem(position - 1);
         }
         boolean isShowTime = isShowTime(message, prevMessage);
-        view.update(message, isShowTime, false);
+        view.update(message, isShowTime);
         return convertView;
     }
 

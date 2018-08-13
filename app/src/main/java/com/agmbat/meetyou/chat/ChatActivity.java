@@ -293,12 +293,6 @@ public class ChatActivity extends Activity implements OnInputListener {
                 takePicture();
             }
         }));
-        beans.add(createMenuInfo(R.mipmap.icon_contact, "联系人", new OnClickMenuListener() {
-            @Override
-            public void onClick(MenuInfo menu, int index) {
-
-            }
-        }));
         beans.add(createMenuInfo(R.mipmap.icon_file, "文件", new OnClickMenuListener() {
             @Override
             public void onClick(MenuInfo menu, int index) {
@@ -310,6 +304,12 @@ public class ChatActivity extends Activity implements OnInputListener {
             @Override
             public void onClick(MenuInfo menu, int index) {
                 getLocation();
+            }
+        }));
+        beans.add(createMenuInfo(R.mipmap.icon_blank, "", new OnClickMenuListener() {
+            @Override
+            public void onClick(MenuInfo menu, int index) {
+
             }
         }));
         SimpleAppsGridView gridView = new SimpleAppsGridView(this);
