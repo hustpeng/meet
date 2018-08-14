@@ -166,7 +166,7 @@ public class IdentityManager {
         File frontFile = new File(path);
         String frontFileName = frontFile.getName();
         File outFrontFile = new File(UserFileManager.getCurImageDir(), frontFileName);
-        ImageUtils.resizeImage(frontFile.getAbsolutePath(), outFrontFile.getAbsolutePath(), 1080, 1920);
+        ImageUtils.resizeImage(frontFile.getAbsolutePath(), outFrontFile.getAbsolutePath(), 540, 960);
         String format = FileUtils.getExtension(path);
         return FileApi.uploadCommonFile(phone, ticket, format, outFrontFile);
     }
