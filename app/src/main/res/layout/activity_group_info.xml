@@ -68,7 +68,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/im_default_head" />
+                    android:src="@drawable/ic_default_avatar" />
 
                 <TextView
                     android:id="@+id/nickname"
