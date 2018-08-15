@@ -40,12 +40,12 @@ import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.imsdk.remotefile.FileApiResult;
 import com.agmbat.imsdk.remotefile.OnFileUploadListener;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
-import com.agmbat.meetyou.splash.SplashStore;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.input.InputController;
 import com.agmbat.input.InputView;
 import com.agmbat.input.OnInputListener;
 import com.agmbat.input.VoiceInputController;
+import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.map.LocationCallback;
 import com.agmbat.map.LocationObject;
 import com.agmbat.map.Maps;
@@ -54,6 +54,7 @@ import com.agmbat.meetyou.group.CircleInfo;
 import com.agmbat.meetyou.group.EditGroupEvent;
 import com.agmbat.meetyou.group.GroupInfoActivity;
 import com.agmbat.meetyou.group.RemoveGroupEvent;
+import com.agmbat.meetyou.splash.SplashStore;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.net.HttpUtils;
@@ -225,9 +226,9 @@ public class ChatActivity extends Activity implements OnInputListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(ReceiveMessageEvent event) {
         String participantJid = "";
-        if(mChatType == TYPE_SINGLE_CHAT){
-            participantJid =  mParticipant.getBareJid();
-        }else if(mChatType == TYPE_GROUP_CHAT){
+        if (mChatType == TYPE_SINGLE_CHAT) {
+            participantJid = mParticipant.getBareJid();
+        } else if (mChatType == TYPE_GROUP_CHAT) {
             participantJid = mCircleInfo.getGroupJid();
         }
         if (event.getMessageObject().getFromJid().equals(participantJid)) {
@@ -337,7 +338,7 @@ public class ChatActivity extends Activity implements OnInputListener {
                 }
                 mInputController.reset();
                 LocationBody body = new LocationBody(location);
-                if(null != emptyMessage) {
+                if (null != emptyMessage) {
                     sendMessage(body, true, emptyMessage.getMsgId());
                 }
             }
@@ -378,6 +379,7 @@ public class ChatActivity extends Activity implements OnInputListener {
             sendMessage(body, true, "");
         } else if (type == OnInputListener.TYPE_VOICE) {
             final String path = content;
+            showUploadingDialog();
             //先发送空的消息
             final Body emptyBody = new AudioBody("", 0);
             final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
@@ -393,14 +395,32 @@ public class ChatActivity extends Activity implements OnInputListener {
 
                         long duration = AmrHelper.getAmrDuration(newFile);
                         Body body = new AudioBody(url, duration);
-                        if(null != emptyMessage) {
+                        if (null != emptyMessage) {
                             sendMessage(body, true, emptyMessage.getMsgId());
                         }
                     } else {
                         ToastUtil.showToast("发送语音失败!");
                     }
+                    dismissUploadingDialog();
                 }
             });
+        }
+    }
+
+    private ISLoadingDialog mUploadingDialog;
+
+    private void showUploadingDialog() {
+        if (null == mUploadingDialog || !mUploadingDialog.isShowing()) {
+            mUploadingDialog = new ISLoadingDialog(this);
+            mUploadingDialog.setMessage("发送中");
+            mUploadingDialog.show();
+        }
+    }
+
+    private void dismissUploadingDialog() {
+        if (null != mUploadingDialog && mUploadingDialog.isShowing()) {
+            mUploadingDialog.dismiss();
+            mUploadingDialog = null;
         }
     }
 
@@ -464,6 +484,7 @@ public class ChatActivity extends Activity implements OnInputListener {
      * @param path
      */
     private void sendImage(final String path) {
+        showUploadingDialog();
         //先发送空消息
         Body emptyBody = new ImageBody("", new ImageBody.Image());
         final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
@@ -472,12 +493,13 @@ public class ChatActivity extends Activity implements OnInputListener {
             public void onUpload(FileApiResult apiResult) {
                 if (apiResult.mResult) {
                     Body body = new ImageBody(apiResult.url, new ImageBody.Image());
-                    if(null != emptyMessage) {
+                    if (null != emptyMessage) {
                         sendMessage(body, true, emptyMessage.getMsgId());
                     }
                 } else {
                     ToastUtil.showToast("发送图片失败!");
                 }
+                dismissUploadingDialog();
             }
         });
     }
@@ -500,6 +522,7 @@ public class ChatActivity extends Activity implements OnInputListener {
      * @param file
      */
     private void sendFile(final File file) {
+        showUploadingDialog();
         //先发送空消息
         final Body emptyBody = new FileBody("", file.getName(), file);
         final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
@@ -509,19 +532,20 @@ public class ChatActivity extends Activity implements OnInputListener {
                 if (apiResult.mResult) {
                     String url = apiResult.url;
                     Body body = new FileBody(url, file.getName(), file);
-                    if(null != emptyMessage) {
+                    if (null != emptyMessage) {
                         sendMessage(body, true, emptyMessage.getMsgId());
                     }
                 } else {
                     ToastUtil.showToast("发送文件失败!");
                 }
+                dismissUploadingDialog();
             }
         });
     }
 
     @OnClick(R.id.btn_profile)
     void onClickProfile() {
-        if(mChatType == TYPE_GROUP_CHAT) {
+        if (mChatType == TYPE_GROUP_CHAT) {
             GroupInfoActivity.launch(this, mCircleInfo.getGroupJid());
         }
     }
@@ -535,7 +559,7 @@ public class ChatActivity extends Activity implements OnInputListener {
     public void onEvent(EditGroupEvent editGroupEvent) {
         //收到群修改成功通知后，重新刷新列表
         if (mChatType == TYPE_GROUP_CHAT) {
-            if(editGroupEvent.getGroupJid().equals(mCircleInfo.getGroupJid())){
+            if (editGroupEvent.getGroupJid().equals(mCircleInfo.getGroupJid())) {
                 mNicknameView.setText(editGroupEvent.getGroupName());
                 mCircleInfo.setName(editGroupEvent.getGroupName());
                 mCircleInfo.setAvatar(editGroupEvent.getAvatar());
