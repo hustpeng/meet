@@ -30,14 +30,54 @@
     <TextView
         android:id="@+id/visit_offical_web"
         android:layout_width="match_parent"
-        android:layout_height="51dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="48dp"
         android:background="@drawable/im_setting_item"
         android:drawableRight="@drawable/im_ic_right"
         android:gravity="center"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:text="访问真约官网"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="#D2D2D2" />
+
+    <TextView
+        android:id="@+id/user_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/im_setting_item"
+        android:gravity="center"
+        android:drawableRight="@drawable/im_ic_right"
+        android:text="@string/user_feedback"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="#D2D2D2" />
+
+
+    <TextView
+        android:id="@+id/check_update"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/im_setting_item"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:drawableRight="@drawable/im_ic_right"
+        android:text="@string/check_update"
+        android:paddingRight="15dp"
         android:textColor="#000000"
         android:textSize="16sp" />
 
@@ -75,7 +115,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="25dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -98,64 +138,5 @@
                 android:visibility="visible" />
         </LinearLayout>
     </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffffff"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="51dp"
-            android:background="@drawable/im_setting_item"
-            android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:text="@string/function_introduction"
-            android:textColor="#000000"
-            android:textSize="16sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:background="#D2D2D2" />
-
-
-        <TextView
-            android:id="@+id/user_feedback"
-            android:layout_width="match_parent"
-            android:layout_height="51dp"
-            android:background="@drawable/im_setting_item"
-            android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:text="@string/user_feedback"
-            android:textColor="#000000"
-            android:textSize="16sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:background="#D2D2D2" />
-
-
-        <TextView
-            android:id="@+id/check_update"
-            android:layout_width="match_parent"
-            android:layout_height="51dp"
-            android:background="@drawable/im_setting_item"
-            android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:text="@string/check_update"
-            android:textColor="#000000"
-            android:textSize="16sp" />
-
-
-    </LinearLayout>
-
 
 </LinearLayout>

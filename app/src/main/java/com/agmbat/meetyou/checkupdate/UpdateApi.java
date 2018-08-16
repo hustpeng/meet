@@ -74,6 +74,9 @@ public class UpdateApi implements AppVersionInfoRequester {
             return null;
         }
         UpdateInfo info = apiResult.mData;
+        if (null == info) {
+            return null;
+        }
 
         AppVersionInfo appVersionInfo = new AppVersionInfo();
         appVersionInfo.setUrl(info.url);

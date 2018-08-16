@@ -24,6 +24,7 @@ import com.agmbat.android.permissions.Permissions;
 import com.agmbat.android.utils.NetworkUtil;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.appupdate.AppVersionHelper;
 import com.agmbat.imsdk.R;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.imsdk.api.ApiResult;
@@ -100,6 +101,7 @@ public class SplashActivity extends Activity {
                 }
             }
         });
+        AppVersionHelper.checkVersionOnBackground();
     }
 
     @Override

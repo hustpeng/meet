@@ -11,8 +11,6 @@ import android.support.v4.app.NotificationCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 
-import com.agmbat.android.SysResources;
-import com.agmbat.emoji.display.EmojiDisplay;
 import com.agmbat.imsdk.R;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
@@ -91,23 +89,25 @@ public class MeetNotificationManager {
         Body body = BodyParser.parse(rawBody);
         Spannable spannable = null;
         if (body instanceof TextBody) {
-            TextBody textBody = (TextBody) body;
-            spannable = EmojiDisplay.update(textBody.getContent(), (int) SysResources.dipToPixel(14));
+            //TextBody textBody = (TextBody) body;
+            //spannable = EmojiDisplay.update(textBody.getContent(), (int) SysResources.dipToPixel(14));
+            spannable = new SpannableString("[文本]");
         } else if (body instanceof UrlBody) {
             UrlBody urlBody = (UrlBody) body;
-            spannable = new SpannableString(urlBody.getContent());
+            //spannable = new SpannableString(urlBody.getContent());
+            spannable = new SpannableString("[链接]");
         } else if (body instanceof AudioBody) {
-            spannable = new SpannableString("收到一条语音消息");
+            spannable = new SpannableString("[语音]");
         } else if (body instanceof FireBody) {
-            spannable = new SpannableString("收到一条图片消息");
+            spannable = new SpannableString("[阅后即焚]");
         } else if (body instanceof ImageBody) {
-            spannable = new SpannableString("收到一条图片消息");
+            spannable = new SpannableString("[图片]");
         } else if (body instanceof LocationBody) {
-            spannable = new SpannableString("收到一条定位消息");
+            spannable = new SpannableString("[位置]");
         } else if (body instanceof FriendBody) {
-            spannable = new SpannableString("收到一张名片");
+            spannable = new SpannableString("[名片]");
         } else if (body instanceof FileBody) {
-            spannable = new SpannableString("收到一个文件");
+            spannable = new SpannableString("[文件]");
         }
         return spannable;
     }
