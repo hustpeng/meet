@@ -3,7 +3,6 @@ package com.agmbat.meetyou.chat;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.view.Gravity;
 
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.meetyou.R;
@@ -27,8 +26,7 @@ public class FromView extends ItemView {
         Drawable[] drawable = mChatContentView.getCompoundDrawables();
         if (isPlaying(audioBody)) {
             if (drawable[0] == null || !(drawable[0] instanceof AnimationDrawable)) {
-                mChatContentView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.chatfrom_voice_playing_f, 0, 0,
-                        0);
+                mChatContentView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.chatfrom_voice_playing_f, 0, 0, 0);
                 drawable = mChatContentView.getCompoundDrawables();
             }
             AnimationDrawable animationDrawable = (AnimationDrawable) drawable[0];

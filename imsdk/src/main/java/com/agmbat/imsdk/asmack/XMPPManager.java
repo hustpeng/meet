@@ -282,6 +282,9 @@ public class XMPPManager {
     }
 
     public void login(String userName, String password) throws XMPPException {
+        if (isLogin()) {
+            return;
+        }
         xmppConnection.login(userName, password);
         Context context = AppResources.getAppContext();
         AppConfigUtils.saveNormalLoginInfo(context, userName, password);
