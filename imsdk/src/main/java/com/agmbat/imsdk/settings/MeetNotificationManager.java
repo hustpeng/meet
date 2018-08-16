@@ -12,10 +12,8 @@ import android.text.Spannable;
 import android.text.SpannableString;
 
 import com.agmbat.android.SysResources;
-import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.emoji.display.EmojiDisplay;
 import com.agmbat.imsdk.R;
-import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.BodyParser;
@@ -28,7 +26,6 @@ import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.imsdk.util.SystemUtil;
-import com.agmbat.text.uri.Uri;
 
 import org.jivesoftware.smackx.message.MessageObject;
 
@@ -84,7 +81,7 @@ public class MeetNotificationManager {
         builder.setWhen(System.currentTimeMillis());
         Notification notification = builder.build();
         if (AppConfigUtils.isNotificationSoundEnable(mContext)) {
-            notification.sound = RingtoneManager.getActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_RINGTONE);
+            notification.sound = RingtoneManager.getActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_NOTIFICATION);
         }
         mNotificationManager.notify(messageObject.getSenderJid().hashCode(), notification);
     }

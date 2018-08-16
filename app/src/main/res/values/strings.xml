@@ -32,8 +32,8 @@
     <string name="old_password">旧密码</string>
     <string name="input_old_password">请填写旧密码</string>
     <string name="change_password_processing">正在处理中&#8230;</string>
-    <string name="id_name">遇缘号</string>
-    <string name="id_name_format">遇缘号: %d</string>
+    <string name="id_name">真约号</string>
+    <string name="id_name_format">真约号: %d</string>
 
     <!-- 重置密码-->
     <string name="reset_password">重置密码</string>
@@ -47,7 +47,7 @@
     <!-- 我的 -->
     <string name="im_settings_new_msg">新消息通知</string>
     <string name="im_settings_privacy">隐私</string>
-    <string name="im_settings_about">关于遇缘</string>
+    <string name="im_settings_about">关于真约</string>
     <string name="im_settings_logout">退出登录</string>
     <string name="my_coins">我的缘币</string>
     <string name="coins_detail">缘币明细</string>
@@ -129,7 +129,7 @@
     <string name="contacts_block">黑名单</string>
 
     <!-- 关于 -->
-    <string name="function_introduction">遇缘简介</string>
+    <string name="function_introduction">真约简介</string>
     <string name="user_feedback">用户反馈</string>
     <string name="check_update">检查更新</string>
     <string name="terms_of_use_and_privacy_policy">使用条款和隐私政策</string>
