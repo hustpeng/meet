@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.agmbat.android.AppResources;
 import com.agmbat.android.SysResources;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.asmack.MessageManager;
@@ -24,8 +23,8 @@ import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ContactDeleteEvent;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
-import com.agmbat.imsdk.search.user.OnSearchUserListener;
 import com.agmbat.imsdk.search.SearchManager;
+import com.agmbat.imsdk.search.user.OnSearchUserListener;
 import com.agmbat.imsdk.search.user.SearchUserResult;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.log.Debug;
@@ -125,13 +124,13 @@ public class MsgFragment extends Fragment {
             }
         });
 
-        new InitRecentChatTask().execute();
     }
 
     @Override
     public void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
+        new InitRecentChatTask().execute();
     }
 
     @Override

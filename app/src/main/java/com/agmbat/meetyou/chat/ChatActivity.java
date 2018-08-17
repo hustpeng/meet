@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -66,6 +67,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.message.MessageObject;
+import org.jivesoftware.smackx.message.MessageObjectStatus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -275,8 +277,32 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
         List<MessageObject> chatMessages = XMPPManager.getInstance().getMessageManager().getMessageList(bareJid);
         mAdapter = new MessageListAdapter(this, chatMessages);
+        mPtrView.setOnScrollListener(mOnScrollListener);
         mPtrView.setAdapter(mAdapter);
     }
+
+    private AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
+
+
+        @Override
+        public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+        }
+
+        @Override
+        public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            int lastIndex = firstVisibleItem + visibleItemCount;
+            for (int i = firstVisibleItem; i < lastIndex; i++) {
+                if (i == 0 || i == lastIndex - 1) {
+                    continue;
+                }
+                MessageObject messageObject = mAdapter.getItem(i - 1);
+                MessageObjectStatus oldStatus = messageObject.getMsgStatus();
+                if (oldStatus != MessageObjectStatus.READ) {
+                    XMPPManager.getInstance().getMessageManager().updateMsgStatus(messageObject.getMsgId(), MessageObjectStatus.READ);
+                }
+            }
+        }
+    };
 
     private void initOtherPanel() {
         List<MenuInfo> beans = new ArrayList<>();
