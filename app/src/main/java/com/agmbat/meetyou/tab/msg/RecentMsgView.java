@@ -9,19 +9,22 @@ import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.asmack.MessageManager;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.BodyParser;
+import com.agmbat.imsdk.chat.body.FileBody;
 import com.agmbat.imsdk.chat.body.FireBody;
 import com.agmbat.imsdk.chat.body.FriendBody;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
-import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.AvatarHelper;
 
 import org.jivesoftware.smackx.message.MessageObject;
+import org.jivesoftware.smackx.message.MessageObjectStatus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,18 +72,15 @@ public class RecentMsgView extends LinearLayout {
 //            mLastMsgTimeView.setVisibility(View.GONE);
 //        }
 
-//        int unreadCount = recentChat.getUnreadCount();
-//        if (unreadCount > 0) {
-//            mUnreadCountView.setVisibility(View.VISIBLE);
-//            mUnreadCountView.setText(String.valueOf(unreadCount));
-//        } else {
-//            mUnreadCountView.setVisibility(View.GONE);
-//        }
+        if (messageObject.getMsgStatus() == MessageObjectStatus.UNREAD) {
+            mUnreadCountView.setVisibility(VISIBLE);
+        } else {
+            mUnreadCountView.setVisibility(GONE);
+        }
     }
 
 
     private void setLastMessageBody(MessageObject msg) {
-        mMessageView.setText(msg.getBody());
         Body body = BodyParser.parse(msg.getBody());
         if (body instanceof TextBody) {
             TextBody textBody = (TextBody) body;
@@ -95,6 +95,12 @@ public class RecentMsgView extends LinearLayout {
             mMessageView.setText(R.string.recent_chat_type_location);
         } else if (body instanceof FriendBody) {
             mMessageView.setText(R.string.recent_chat_type_recommend);
+        } else if (body instanceof FileBody) {
+            mMessageView.setText(R.string.recent_chat_type_file);
+        } else if (body instanceof UrlBody) {
+            mMessageView.setText(R.string.recent_chat_type_url);
+        } else {
+            mMessageView.setText(msg.getBody());
         }
     }
 }

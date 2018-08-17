@@ -135,6 +135,8 @@
     <string name="terms_of_use_and_privacy_policy">使用条款和隐私政策</string>
 
     <string name="recent_chat_type_voice">[语音]</string>
+    <string name="recent_chat_type_file">[文件]</string>
+    <string name="recent_chat_type_url">[链接]</string>
     <string name="recent_chat_type_pic">[图片]</string>
     <string name="recent_chat_type_fire">[阅后即焚]</string>
     <string name="recent_chat_type_location">[位置]</string>
