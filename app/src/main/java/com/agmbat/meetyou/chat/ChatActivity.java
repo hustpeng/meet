@@ -577,6 +577,11 @@ public class ChatActivity extends Activity implements OnInputListener {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(FinishChatEvent finishChatEvent) {
+        finish();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(RemoveGroupEvent removeGroupEvent) {
         finish();
     }

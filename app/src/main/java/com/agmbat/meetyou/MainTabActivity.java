@@ -26,6 +26,7 @@ import com.agmbat.imsdk.search.group.GroupCategory;
 import com.agmbat.imsdk.search.group.GroupCategoryResult;
 import com.agmbat.imsdk.search.group.OnGetGroupCategoryListener;
 import com.agmbat.isdialog.ISAlertDialog;
+import com.agmbat.meetyou.chat.ChangeTabEvent;
 import com.agmbat.meetyou.group.GroupDBCache;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;
 import com.agmbat.meetyou.tab.discovery.DiscoveryFragment;
@@ -46,6 +47,9 @@ import java.util.List;
 public class MainTabActivity extends FragmentActivity {
 
     public static final int TAB_INDEX_MSG = 0;
+    public static final int TAB_INDEX_CONTACT = 1;
+    public static final int TAB_INDEX_DISCOVERY = 2;
+    public static final int TAB_INDEX_PROFILE = 3;
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -72,18 +76,19 @@ public class MainTabActivity extends FragmentActivity {
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
+    private TabManager mTabManager;
+
     private void setupViews() {
-        TabManager tabManager = new TabManager(getSupportFragmentManager(), findViewById(android.R.id.content));
+        mTabManager = new TabManager(getSupportFragmentManager(), findViewById(android.R.id.content));
         View tabMsg = createTabItemView(R.string.tab_msg, R.drawable.tab_msg);
-        tabManager.addTab(tabMsg, "tabMsg", new MsgFragment());
+        mTabManager.addTab(tabMsg, "tabMsg", new MsgFragment());
         View tabContacts = createTabItemView(R.string.tab_contacts, R.drawable.tab_contacts);
-        tabManager.addTab(tabContacts, "tabContacts", new ContactsFragment());
+        mTabManager.addTab(tabContacts, "tabContacts", new ContactsFragment());
         View tabFound = createTabItemView(R.string.tab_found, R.drawable.tab_found);
-        tabManager.addTab(tabFound, "tabFound", new DiscoveryFragment());
+        mTabManager.addTab(tabFound, "tabFound", new DiscoveryFragment());
         View tabMe = createTabItemView(R.string.tab_profile, R.drawable.tab_profile);
-        tabManager.addTab(tabMe, "tabMe", new ProfileFragment());
-        tabManager.setCurrentTab(TAB_INDEX_MSG);
-        tabManager.setOnTabChangedListener(new TabManager.OnTabChangeListener() {
+        mTabManager.addTab(tabMe, "tabMe", new ProfileFragment());
+        mTabManager.setOnTabChangedListener(new TabManager.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
                 if ("tabContacts".equals(tabId)) {
@@ -91,6 +96,7 @@ public class MainTabActivity extends FragmentActivity {
                 }
             }
         });
+        mTabManager.setCurrentTab(TAB_INDEX_MSG);
     }
 
     private View createTabItemView(int textId, int imageId) {
@@ -136,6 +142,11 @@ public class MainTabActivity extends FragmentActivity {
             builder.setPositiveButton("确定", null);
             builder.create().show();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ChangeTabEvent event) {
+        mTabManager.setCurrentTab(event.getTabIndex());
     }
 
     private Runnable mInitRunnable = new Runnable() {

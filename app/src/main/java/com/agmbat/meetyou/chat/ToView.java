@@ -3,10 +3,13 @@ package com.agmbat.meetyou.chat;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.view.Gravity;
+import android.view.View;
 
 import com.agmbat.imsdk.chat.body.AudioBody;
+import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * 发送给其他人的消息
@@ -45,6 +48,13 @@ public class ToView extends ItemView {
 
     @Override
     protected void setupViews() {
+        mAvatarView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EventBus.getDefault().post(new FinishChatEvent());
+                EventBus.getDefault().post(new ChangeTabEvent(MainTabActivity.TAB_INDEX_PROFILE));
+            }
+        });
     }
 
 }

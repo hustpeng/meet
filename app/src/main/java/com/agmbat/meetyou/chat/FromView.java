@@ -3,14 +3,18 @@ package com.agmbat.meetyou.chat;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.search.ViewUserHelper;
 
 /**
  * 其他发送过来的消息
  */
 public class FromView extends ItemView {
+
 
     public FromView(Context context) {
         super(context);
@@ -43,6 +47,14 @@ public class FromView extends ItemView {
 
     @Override
     protected void setupViews() {
+        mAvatarView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ContactInfo contactInfo = new ContactInfo();
+                contactInfo.setBareJid(mMessageObject.getSenderJid());
+                ViewUserHelper.openContactDetail(getContext(), contactInfo);
+            }
+        });
     }
 
 

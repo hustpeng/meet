@@ -36,7 +36,6 @@ import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.imsdk.mgr.XmppFileManager;
-import com.agmbat.log.Debug;
 import com.agmbat.map.LocationObject;
 import com.agmbat.map.Maps;
 import com.agmbat.meetyou.R;
@@ -62,6 +61,8 @@ public abstract class ItemView extends LinearLayout {
 
     private static final int BASE_WIDTH = (int) SysResources.dipToPixel(80);
     private static final int AUDIO_MAX_WIDTH = (int) SysResources.dipToPixel(200);
+
+    protected MessageObject mMessageObject;
 
     /**
      * 用户头像
@@ -109,6 +110,7 @@ public abstract class ItemView extends LinearLayout {
      * @param showTime
      */
     public void update(MessageObject msg, boolean showTime) {
+        mMessageObject = msg;
         setupViews();
         setAvatar(msg);
         setMessageBody(msg);
