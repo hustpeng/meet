@@ -31,6 +31,7 @@ import com.agmbat.meetyou.search.ViewUserHelper;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smackx.block.BlockManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -221,11 +222,30 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     }
 
     private void fillData(List<ContactGroup> groups) {
+        removeContactInBlockList(groups);
         mFriendsAdapter.clear();
         mFriendsAdapter.addAll(groups);
         mFriendsAdapter.notifyDataSetChanged();
         if (groups.size() > 0) {
             mListView.expandGroup(0);
+        }
+    }
+
+    private void removeContactInBlockList(List<ContactGroup> groups) {
+        BlockManager blockManager = XMPPManager.getInstance().getBlockManager();
+        for (int i = 0; i < groups.size(); i++) {
+            List<ContactInfo> contactInfos = groups.get(i).getContactList();
+            List<Integer> removeIndex = new ArrayList<>();
+            for (int j = 0; j < contactInfos.size(); j++) {
+                ContactInfo contactInfo = contactInfos.get(j);
+                if (blockManager.isBlock(contactInfo.getBareJid())) {
+                    removeIndex.add(j);
+                }
+            }
+
+            for (int j = 0; j < removeIndex.size(); j++) {
+                contactInfos.remove(removeIndex.get(j).intValue());
+            }
         }
     }
 
