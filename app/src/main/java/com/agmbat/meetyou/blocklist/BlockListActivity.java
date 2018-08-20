@@ -13,6 +13,7 @@ import android.view.View;
 
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.account.RegisterSuccessEvent;
@@ -65,8 +66,21 @@ public class BlockListActivity extends Activity {
         mBlockManager = XMPPManager.getInstance().getBlockManager();
         mBlockManager.addListener(mBlockListener);
         mBlockManager.fetchBlockList();
+        fillBlockList();
+    }
+
+    private void fillBlockList(){
         List<BlockObject> blockObjects = mBlockManager.getAllBlockObjects();
+        for (int i = 0; i < blockObjects.size(); i++) {
+            BlockObject blockObject = blockObjects.get(i);
+            ContactInfo info = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(blockObject.getJid());
+            if(null != info){
+                blockObject.setAvatar(info.getAvatar());
+                blockObject.setNickname(info.getNickName());
+            }
+        }
         mBlockListAdapter.setAll(blockObjects);
+
     }
 
 
@@ -80,8 +94,7 @@ public class BlockListActivity extends Activity {
         @Override
         public void notifyFetchBlockResult(final boolean success) {
             if (success) {
-                List<BlockObject> blockObjects = mBlockManager.getAllBlockObjects();
-                mBlockListAdapter.setAll(blockObjects);
+                fillBlockList();
             }
         }
 
@@ -96,7 +109,7 @@ public class BlockListActivity extends Activity {
                 if(success){
                     ToastUtil.showToast("已移出黑名单");
                     mBlockManager.setActiveName(mBlockManager.getListName());
-                    mBlockListAdapter.setAll(mBlockManager.getAllBlockObjects());
+                    fillBlockList();
                 }else{
                     ToastUtil.showToast("移出黑名单失败");
                 }
