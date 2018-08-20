@@ -4,6 +4,7 @@ import com.agmbat.android.utils.ApkUtils;
 import com.agmbat.appupdate.AppVersionInfo;
 import com.agmbat.appupdate.AppVersionInfoRequester;
 import com.agmbat.imsdk.api.Api;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.net.HttpRequester;
 import com.agmbat.server.GsonHelper;
 import com.agmbat.text.StringUtils;
@@ -68,32 +69,31 @@ public class UpdateApi implements AppVersionInfoRequester {
 
     @Override
     public AppVersionInfo request(String packageName, int versionCode) {
-        String uid = "13437122759";
+        String uid = XMPPManager.getInstance().getConnectionUserName();
         UpdateApiResult apiResult = requestCheckUpdate(uid, versionCode, packageName);
         if (apiResult == null || !apiResult.mResult) {
             return null;
         }
-        UpdateInfo info = apiResult.mData;
-        if (null == info) {
-            return null;
-        }
-
         AppVersionInfo appVersionInfo = new AppVersionInfo();
-        appVersionInfo.setUrl(info.url);
-        appVersionInfo.setDescription(info.changelog);
-
-        boolean hasUpdate = false;
-        if (ApkUtils.getVersionCode() < info.app_version) {
-            hasUpdate = true;
-        }
-        if (hasUpdate) {
-            if (info.can_skip) {
-                appVersionInfo.setUpgradeStrategy(0);
+        UpdateInfo info = apiResult.mData;
+        if (null != info) {
+            appVersionInfo.setUrl(info.url);
+            appVersionInfo.setDescription(info.changelog);
+            boolean hasUpdate = false;
+            if (ApkUtils.getVersionCode() < info.app_version) {
+                hasUpdate = true;
+            }
+            if (hasUpdate) {
+                if (info.can_skip) {
+                    appVersionInfo.setUpgradeStrategy(AppVersionInfo.OPTIONAL_UPDATE);
+                } else {
+                    appVersionInfo.setUpgradeStrategy(AppVersionInfo.FORCE_UPDATE);
+                }
             } else {
-                appVersionInfo.setUpgradeStrategy(1);
+                appVersionInfo.setUpgradeStrategy(AppVersionInfo.LAST_VERSION);
             }
         } else {
-            appVersionInfo.setUpgradeStrategy(2);
+            appVersionInfo.setUpgradeStrategy(AppVersionInfo.LAST_VERSION);
         }
         return appVersionInfo;
     }
