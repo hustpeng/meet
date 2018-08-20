@@ -352,9 +352,9 @@ public class ChatActivity extends Activity implements OnInputListener {
 
     private void getLocation() {
         //先发送空消息
-        LocationObject locationObject = new LocationObject();
-        final Body emptyBody = new LocationBody(locationObject);
-        final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
+        //LocationObject locationObject = new LocationObject();
+        //final Body emptyBody = new LocationBody(locationObject);
+        //final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
         Maps.getLocation(this, new LocationCallback() {
             @Override
             public void callback(LocationObject location) {
@@ -364,9 +364,9 @@ public class ChatActivity extends Activity implements OnInputListener {
                 }
                 mInputController.reset();
                 LocationBody body = new LocationBody(location);
-                if (null != emptyMessage) {
-                    sendMessage(body, true, emptyMessage.getMsgId());
-                }
+                //if (null != emptyMessage) {
+                sendMessage(body, true, "");
+                //}
             }
         });
     }
@@ -407,8 +407,8 @@ public class ChatActivity extends Activity implements OnInputListener {
             final String path = content;
             showUploadingDialog();
             //先发送空的消息
-            final Body emptyBody = new AudioBody("", 0);
-            final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
+            //final Body emptyBody = new AudioBody("", 0);
+            //final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
             RemoteFileManager.uploadTempFile(new File(path), new OnFileUploadListener() {
                 @Override
                 public void onUpload(FileApiResult apiResult) {
@@ -421,9 +421,9 @@ public class ChatActivity extends Activity implements OnInputListener {
 
                         long duration = AmrHelper.getAmrDuration(newFile);
                         Body body = new AudioBody(url, duration);
-                        if (null != emptyMessage) {
-                            sendMessage(body, true, emptyMessage.getMsgId());
-                        }
+                        //if (null != emptyMessage) {
+                        sendMessage(body, true, "");
+                        //}
                     } else {
                         ToastUtil.showToast("发送语音失败!");
                     }
@@ -512,16 +512,14 @@ public class ChatActivity extends Activity implements OnInputListener {
     private void sendImage(final String path) {
         showUploadingDialog();
         //先发送空消息
-        Body emptyBody = new ImageBody("", new ImageBody.Image());
-        final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
+        //Body emptyBody = new ImageBody("", new ImageBody.Image());
+        //final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
         RemoteFileManager.uploadImageFile(new File(path), new OnFileUploadListener() {
             @Override
             public void onUpload(FileApiResult apiResult) {
                 if (apiResult.mResult) {
                     Body body = new ImageBody(apiResult.url, new ImageBody.Image());
-                    if (null != emptyMessage) {
-                        sendMessage(body, true, emptyMessage.getMsgId());
-                    }
+                    sendMessage(body, true, "");
                 } else {
                     ToastUtil.showToast("发送图片失败!");
                 }
@@ -550,17 +548,17 @@ public class ChatActivity extends Activity implements OnInputListener {
     private void sendFile(final File file) {
         showUploadingDialog();
         //先发送空消息
-        final Body emptyBody = new FileBody("", file.getName(), file);
-        final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
+        //final Body emptyBody = new FileBody("", file.getName(), file);
+        //final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
         RemoteFileManager.uploadTempFile(file, new OnFileUploadListener() {
             @Override
             public void onUpload(FileApiResult apiResult) {
                 if (apiResult.mResult) {
                     String url = apiResult.url;
                     Body body = new FileBody(url, file.getName(), file);
-                    if (null != emptyMessage) {
-                        sendMessage(body, true, emptyMessage.getMsgId());
-                    }
+                    //if (null != emptyMessage) {
+                    sendMessage(body, true, "");
+                    //}
                 } else {
                     ToastUtil.showToast("发送文件失败!");
                 }

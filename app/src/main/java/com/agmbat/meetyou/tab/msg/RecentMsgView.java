@@ -22,6 +22,7 @@ import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.AvatarHelper;
+import com.agmbat.time.TimeUtils;
 
 import org.jivesoftware.smackx.message.MessageObject;
 import org.jivesoftware.smackx.message.MessageObjectStatus;
@@ -60,17 +61,9 @@ public class RecentMsgView extends LinearLayout {
             mLastMsgTimeView.setVisibility(View.VISIBLE);
             ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
         }
-//
-//        ChatMessage msg = recentChat.getLastChatMessage();
-//        if (msg != null) {
-
         setLastMessageBody(messageObject);
-
-//        mLastMsgTimeView.setText(TimeUtils.formatTime(msg.getTimestamp()));
-//        } else {
-//            mMessageView.setVisibility(View.GONE);
-//            mLastMsgTimeView.setVisibility(View.GONE);
-//        }
+        mLastMsgTimeView.setText(TimeUtils.formatTime(messageObject.getDate()));
+        mLastMsgTimeView.setVisibility(GONE);
 
         if (messageObject.getMsgStatus() == MessageObjectStatus.UNREAD) {
             mUnreadCountView.setVisibility(VISIBLE);

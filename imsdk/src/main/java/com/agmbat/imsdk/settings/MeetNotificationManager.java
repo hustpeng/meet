@@ -70,6 +70,7 @@ public class MeetNotificationManager {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
         builder.setAutoCancel(true);
@@ -81,6 +82,7 @@ public class MeetNotificationManager {
         if (AppConfigUtils.isNotificationSoundEnable(mContext)) {
             notification.sound = RingtoneManager.getActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_NOTIFICATION);
         }
+        notification.icon = R.mipmap.ic_launcher;
         mNotificationManager.notify(messageObject.getSenderJid().hashCode(), notification);
     }
 
