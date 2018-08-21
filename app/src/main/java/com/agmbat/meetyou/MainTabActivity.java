@@ -92,7 +92,9 @@ public class MainTabActivity extends FragmentActivity {
             @Override
             public void onTabChanged(String tabId) {
                 if ("tabContacts".equals(tabId)) {
-                    XMPPManager.getInstance().getRosterManager().reloadRoster();
+                    if (XMPPManager.getInstance().isLogin()) {
+                        XMPPManager.getInstance().getRosterManager().reloadRoster();
+                    }
                 }
             }
         });
@@ -171,6 +173,8 @@ public class MainTabActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        XMPPManager.getInstance().getRosterManager().reloadRoster();
+        if (XMPPManager.getInstance().isLogin()) {
+            XMPPManager.getInstance().getRosterManager().reloadRoster();
+        }
     }
 }
