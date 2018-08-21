@@ -20,6 +20,8 @@ import com.agmbat.imsdk.chat.body.BodyParser;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
+import com.agmbat.imsdk.group.GroupChatReply;
+import com.agmbat.imsdk.group.QueryGroupChatIQ;
 import com.agmbat.imsdk.imevent.ReceiveSysMessageEvent;
 import com.agmbat.imsdk.search.SearchManager;
 import com.agmbat.imsdk.search.group.GroupCategory;
@@ -37,7 +39,12 @@ import com.agmbat.tab.TabManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.message.MessageObject;
+import org.jivesoftware.smackx.message.MessageStorage;
 
 import java.util.List;
 
@@ -177,4 +184,10 @@ public class MainTabActivity extends FragmentActivity {
             XMPPManager.getInstance().getRosterManager().reloadRoster();
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
 }

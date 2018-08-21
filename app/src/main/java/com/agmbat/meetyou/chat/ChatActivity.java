@@ -36,6 +36,8 @@ import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
+import com.agmbat.imsdk.group.GroupChatReply;
+import com.agmbat.imsdk.group.QueryGroupChatIQ;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.imsdk.remotefile.FileApiResult;
@@ -65,9 +67,15 @@ import com.agmbat.text.TagText;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.message.MessageObject;
 import org.jivesoftware.smackx.message.MessageObjectStatus;
+import org.jivesoftware.smackx.message.MessageStorage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -136,6 +144,7 @@ public class ChatActivity extends Activity implements OnInputListener {
 
     private InputController mInputController;
     private VoiceInputController mVoiceInputController;
+    private MessageStorage messageStorage = new MessageStorage();
 
     private AudioPlayer.OnPlayListener mOnPlayListener = new AudioPlayer.OnPlayListener() {
 
@@ -204,6 +213,18 @@ public class ChatActivity extends Activity implements OnInputListener {
         setupViews();
         EventBus.getDefault().register(this);
         AudioPlayer.getDefault().addListener(mOnPlayListener);
+
+        PacketFilter packetFilter = new PacketTypeFilter(GroupChatReply.class);
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupChatListener, packetFilter);
+        if (mChatType == TYPE_GROUP_CHAT) {
+            List<MessageObject> cacheMessages = messageStorage.getAllMessage(mCircleInfo.getGroupJid());
+            if (cacheMessages.size() == 0) {
+                QueryGroupChatIQ queryGroupChatIQ = new QueryGroupChatIQ();
+                queryGroupChatIQ.setTo(mCircleInfo.getGroupJid());
+                queryGroupChatIQ.setType(IQ.Type.GET);
+                XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupChatIQ);
+            }
+        }
     }
 
     @Override
@@ -212,6 +233,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         EventBus.getDefault().unregister(this);
         AudioPlayer.getDefault().removeListener(mOnPlayListener);
         AudioPlayer.getDefault().pause();
+        XMPPManager.getInstance().getXmppConnection().removePacketListener(mGroupChatListener);
     }
 
     @Override
@@ -595,4 +617,23 @@ public class ChatActivity extends Activity implements OnInputListener {
             }
         }
     }
+
+    private PacketListener mGroupChatListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof GroupChatReply) {
+                GroupChatReply groupChatReply = (GroupChatReply) packet;
+                List<MessageObject> messageObjects = groupChatReply.getMessages();
+                for (int i = 0; i < messageObjects.size(); i++) {
+                    messageStorage.insertMsg(messageObjects.get(i));
+                }
+
+                List<MessageObject> chatMessages = XMPPManager.getInstance().getMessageManager().getMessageList(mCircleInfo.getGroupJid());
+                mAdapter = new MessageListAdapter(ChatActivity.this, chatMessages);
+                mPtrView.setAdapter(mAdapter);
+            }
+        }
+    };
+
+
 }
