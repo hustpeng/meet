@@ -180,7 +180,7 @@ public class MessageManager extends Xepmodule {
         return false;
     }
 
-    public void notifyReceiveNewMsg(MessageObject messageObject){
+    public void notifyReceiveNewMsg(MessageObject messageObject) {
         for (MessageListener listener : listeners) {
             listener.didReceiveNewMsg(messageObject);
         }
@@ -215,9 +215,9 @@ public class MessageManager extends Xepmodule {
             messageObject.setDate(date.getTime());
         }
         messageObject.setChatType(message.getType());
-        if(message.getType() == Type.groupchat) {
+        if (message.getType() == Type.groupchat) {
             messageObject.setSenderJid(XmppStringUtils.parseBareAddress(message.getSenderJid()));
-        }else {
+        } else {
             messageObject.setSenderJid(XmppStringUtils.parseBareAddress(message.getFrom()));
         }
         messageObject.setSenderNickName(message.getSenderNickName());
@@ -256,9 +256,9 @@ public class MessageManager extends Xepmodule {
             return null;
         }
         Message message = new Message();
-        if(!TextUtils.isEmpty(updateMsgId)){
+        if (!TextUtils.isEmpty(updateMsgId)) {
             message.setPacketID(updateMsgId);
-        }else {
+        } else {
             message.setPacketID(Packet.nextID());
         }
         message.setType(chatType);
@@ -268,14 +268,14 @@ public class MessageManager extends Xepmodule {
         message.setSenderJid(xmppConnection.getBareJid());
         message.setSenderNickName(senderNickName);
         message.setSenderAvatar(senderAvatar);
-        if(shouldSend) {
+        if (shouldSend) {
             xmppConnection.sendPacket(message);
         }
         MessageObject messageObject = phareMessageFromPacket(message);
         MessageObject existMsg = messageStorage.getMsg(message.getPacketID());
-        if(null == existMsg){
+        if (null == existMsg) {
             messageStorage.insertMsg(messageObject);
-        }else{
+        } else {
             messageStorage.updateMsg(messageObject);
         }
         addMessage(toJidString, messageObject);
@@ -536,9 +536,9 @@ public class MessageManager extends Xepmodule {
             list = messageStorage.getMessages(user, jid);
             mMessageMap.put(jid, list);
         }
-        if(!list.contains(messageObject)){
+        if (!list.contains(messageObject)) {
             list.add(messageObject);
-        }else{
+        } else {
             int index = list.indexOf(messageObject);
             list.set(index, messageObject);
         }
@@ -551,6 +551,13 @@ public class MessageManager extends Xepmodule {
      */
     private void removeMessage(String jid) {
         mMessageMap.remove(jid);
+    }
+
+    /**
+     * 清除内存中的所有信息
+     */
+    public void clearCachedMessages() {
+        mMessageMap.clear();
     }
 
 

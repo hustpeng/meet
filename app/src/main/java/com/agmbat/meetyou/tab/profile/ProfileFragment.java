@@ -174,6 +174,7 @@ public class ProfileFragment extends Fragment {
         // TODO 显示对话框, 需要清空数据
         XMPPManager.getInstance().logout();
         XMPPManager.getInstance().getRosterManager().resetData();
+        XMPPManager.getInstance().getMessageManager().clearCachedMessages();
         getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
         getActivity().finish();
     }
