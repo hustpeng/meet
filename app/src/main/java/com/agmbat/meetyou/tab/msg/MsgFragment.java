@@ -31,6 +31,7 @@ import com.agmbat.log.Debug;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
+import com.agmbat.meetyou.event.UnreadMessageEvent;
 import com.agmbat.meetyou.search.SearchUserActivity;
 import com.agmbat.meetyou.search.ViewUserHelper;
 import com.agmbat.menu.MenuInfo;
@@ -47,6 +48,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smackx.message.MessageObject;
+import org.jivesoftware.smackx.message.MessageObjectStatus;
 
 import java.util.List;
 
@@ -276,6 +278,9 @@ public class MsgFragment extends Fragment {
         mAdapter.insert(messageObject, 0);
         mAdapter.notifyDataSetChanged();
         refreshState();
+        if (messageObject.getMsgStatus() == MessageObjectStatus.UNREAD) {
+            EventBus.getDefault().post(new UnreadMessageEvent(true));
+        }
     }
 
 
@@ -338,7 +343,21 @@ public class MsgFragment extends Fragment {
             mAdapter = new RecentChatAdapter(getActivity(), recentChatList);
             mListView.setAdapter(mAdapter);
             refreshState();
+            boolean hasUnread = hasUnreadMessage(recentChatList);
+            EventBus.getDefault().post(new UnreadMessageEvent(hasUnread));
         }
+    }
+
+    private boolean hasUnreadMessage(List<MessageObject> recentChatList) {
+        boolean hasUnread = false;
+        for (int i = 0; i < recentChatList.size(); i++) {
+            MessageObject messageObject = recentChatList.get(i);
+            if (messageObject.getMsgStatus() == MessageObjectStatus.UNREAD) {
+                hasUnread = true;
+                break;
+            }
+        }
+        return hasUnread;
     }
 
     /**

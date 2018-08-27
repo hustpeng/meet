@@ -20,8 +20,6 @@ import com.agmbat.imsdk.chat.body.BodyParser;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
-import com.agmbat.imsdk.group.GroupChatReply;
-import com.agmbat.imsdk.group.QueryGroupChatIQ;
 import com.agmbat.imsdk.imevent.ReceiveSysMessageEvent;
 import com.agmbat.imsdk.search.SearchManager;
 import com.agmbat.imsdk.search.group.GroupCategory;
@@ -29,6 +27,7 @@ import com.agmbat.imsdk.search.group.GroupCategoryResult;
 import com.agmbat.imsdk.search.group.OnGetGroupCategoryListener;
 import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.chat.ChangeTabEvent;
+import com.agmbat.meetyou.event.UnreadMessageEvent;
 import com.agmbat.meetyou.group.GroupDBCache;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;
 import com.agmbat.meetyou.tab.discovery.DiscoveryFragment;
@@ -39,12 +38,7 @@ import com.agmbat.tab.TabManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.message.MessageObject;
-import org.jivesoftware.smackx.message.MessageStorage;
 
 import java.util.List;
 
@@ -156,6 +150,12 @@ public class MainTabActivity extends FragmentActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(ChangeTabEvent event) {
         mTabManager.setCurrentTab(event.getTabIndex());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(UnreadMessageEvent event) {
+        View unreadView = mTabManager.getTabWidget().getChildTabViewAt(0).findViewById(R.id.unread_count);
+        unreadView.setVisibility(event.hasUnread() ? View.VISIBLE : View.GONE);
     }
 
     private Runnable mInitRunnable = new Runnable() {
