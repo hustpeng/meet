@@ -214,17 +214,17 @@ public class ChatActivity extends Activity implements OnInputListener {
         EventBus.getDefault().register(this);
         AudioPlayer.getDefault().addListener(mOnPlayListener);
 
-        PacketFilter packetFilter = new PacketTypeFilter(GroupChatReply.class);
-        XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupChatListener, packetFilter);
-        if (mChatType == TYPE_GROUP_CHAT) {
-            List<MessageObject> cacheMessages = messageStorage.getAllMessage(mCircleInfo.getGroupJid());
-            if (cacheMessages.size() == 0) {
-                QueryGroupChatIQ queryGroupChatIQ = new QueryGroupChatIQ();
-                queryGroupChatIQ.setTo(mCircleInfo.getGroupJid());
-                queryGroupChatIQ.setType(IQ.Type.GET);
-                XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupChatIQ);
-            }
-        }
+//        PacketFilter packetFilter = new PacketTypeFilter(GroupChatReply.class);
+//        XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupChatListener, packetFilter);
+//        if (mChatType == TYPE_GROUP_CHAT) {
+//            List<MessageObject> cacheMessages = messageStorage.getAllMessage(mCircleInfo.getGroupJid());
+//            if (cacheMessages.size() == 0) {
+//                QueryGroupChatIQ queryGroupChatIQ = new QueryGroupChatIQ();
+//                queryGroupChatIQ.setTo(mCircleInfo.getGroupJid());
+//                queryGroupChatIQ.setType(IQ.Type.GET);
+//                XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupChatIQ);
+//            }
+//        }
     }
 
     @Override
