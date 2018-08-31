@@ -87,28 +87,30 @@ public class MessageStorage {
         }
     }
 
-    public void updateMsg(MessageObject newMsg) {
+    public void updateMsg(MessageObject newMsg, String myJid) {
         if (newMsg != null) {
-            update(newMsg, Columns.MSG_ID + "=?",
+            update(newMsg, Columns.MSG_ID + "=? And " + Columns.MSG_ACCOUNT + "=?",
                     new String[]{
-                            newMsg.getMsgId()
+                            newMsg.getMsgId(),
+                            myJid
+
                     });
         }
     }
 
-    public void deleteMsg(String msgId) {
-        delete(Columns.MSG_ID + "=?", new String[]{
-                msgId
+    public void deleteMsg(String msgId, String myJid) {
+        delete(Columns.MSG_ID + "=? And " + Columns.MSG_ACCOUNT + "=?", new String[]{
+                msgId, myJid
         });
     }
 
-    public MessageObject getMsg(String msgId) {
+    public MessageObject getMsg(String msgId, String myJid) {
         if (TextUtils.isEmpty(msgId)) {
             return null;
         }
         ArrayList<MessageObject> arrayList = query(
-                Columns.MSG_ID + "=?", new String[]{
-                        msgId
+                Columns.MSG_ID + "=? And " + Columns.MSG_ACCOUNT + "=?", new String[]{
+                        msgId, myJid
                 }, null);
         if (arrayList != null && arrayList.size() > 0) {
             return arrayList.get(0);
@@ -173,7 +175,7 @@ public class MessageStorage {
      * @param msg
      */
     public void deleteChatMessage(MessageObject msg) {
-        deleteChatMessage(msg.getFromJid(), msg.getToJid());
+        deleteChatMessage(msg.getFromJid(), msg.getToJid(), msg.getAccount());
     }
 
     /**
@@ -182,7 +184,7 @@ public class MessageStorage {
      * @param aJid
      * @param bJid
      */
-    public void deleteChatMessage(String aJid, String bJid) {
+    public void deleteChatMessage(String aJid, String bJid, String account) {
         StringBuilder builder = new StringBuilder();
         builder.append("(");
         builder.append(Columns.MSG_FROM_JID);
@@ -199,10 +201,13 @@ public class MessageStorage {
         builder.append(Columns.MSG_TO_JID);
         builder.append("=?");
         builder.append(")");
+        builder.append(" AND ");
+        builder.append(Columns.MSG_ACCOUNT);
+        builder.append("=?");
 
         String where = builder.toString();
         String[] selectionArgs = new String[]{
-                aJid, bJid, bJid, aJid
+                aJid, bJid, bJid, aJid, account
         };
         delete(where, selectionArgs);
     }
@@ -226,6 +231,7 @@ public class MessageStorage {
         public static final String MSG_TYPE = "msg_type";
         public static final String MSG_STATUS = "msg_status";
         public static final String MSG_DATE = "msg_date";
+        public static final String MSG_ACCOUNT = "account";
     }
 
     static public String getCreateTableStr() {
@@ -244,6 +250,7 @@ public class MessageStorage {
         builder.addColumn(Columns.MSG_TYPE, DataType.INTEGER);
         builder.addColumn(Columns.MSG_STATUS, DataType.INTEGER);
         builder.addColumn(Columns.MSG_DATE, DataType.INTEGER);
+        builder.addColumn(Columns.MSG_ACCOUNT, DataType.TEXT);
         return builder.buildSql();
     }
 
@@ -274,6 +281,7 @@ public class MessageStorage {
         }
         values.put(Columns.MSG_STATUS, obj.getMsgStatus().ordinal());
         values.put(Columns.MSG_DATE, obj.getDate());
+        values.put(Columns.MSG_ACCOUNT, obj.getAccount());
     }
 
     // MessageFragment data
@@ -287,9 +295,9 @@ public class MessageStorage {
     private List<MessageObject> getReceiverMessageObjects(String myJid) {
         List<MessageObject> messages = new ArrayList<MessageObject>();
         Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null,
-                "(" + Columns.MSG_TO_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=0)"
+                "(" + Columns.MSG_TO_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=0 And " + Columns.MSG_ACCOUNT + "=?)"
                 , new String[]{
-                        myJid
+                        myJid, myJid
                 }, Columns.MSG_FROM_JID, null, MessageStorage.Columns.MSG_DATE + " DESC");
 
         if (cursor != null) {
@@ -313,9 +321,9 @@ public class MessageStorage {
     private List<MessageObject> getSenderMessageObjects(String myJid) {
         List<MessageObject> messages = new ArrayList<MessageObject>();
         Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null,
-                "(" + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=1)"
+                "(" + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=1 And " + Columns.MSG_ACCOUNT + "=?)"
                 , new String[]{
-                        myJid
+                        myJid, myJid
                 }, Columns.MSG_TO_JID, null, Columns.MSG_DATE + " DESC");
 
         if (cursor != null) {
@@ -375,12 +383,14 @@ public class MessageStorage {
      */
     public List<MessageObject> getMessages(String myJid, String chatJid) {
         List<MessageObject> resultArray = new ArrayList<MessageObject>();
-        Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null, "("
+        Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null, "(("
                         + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_TO_JID + "=?) Or ("
-                        + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_TO_JID + "=?)",
+                        + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_TO_JID + "=?)) And "
+                        + Columns.MSG_ACCOUNT + "=?",
                 new String[]{
                         myJid, chatJid,
-                        chatJid, myJid
+                        chatJid, myJid,
+                        myJid
                 }, null, null, Columns.MSG_DATE + " ASC");
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -443,6 +453,7 @@ public class MessageStorage {
         } else {
             obj.setOutgoing(false);
         }
+        obj.setAccount(cursor.getString(sMessageIndex.accountIndex));
         return obj;
     }
 
@@ -461,6 +472,7 @@ public class MessageStorage {
         private final int dateIndex;
         private final int htmlIndex;
         private final int outgoingIndex;
+        private final int accountIndex;
 
         public MessageIndex(Cursor cursor) {
             fromJidIndex = cursor.getColumnIndex(Columns.MSG_FROM_JID);
@@ -476,6 +488,7 @@ public class MessageStorage {
             msgStatusIndex = cursor.getColumnIndex(Columns.MSG_STATUS);
             dateIndex = cursor.getColumnIndex(Columns.MSG_DATE);
             outgoingIndex = cursor.getColumnIndex(Columns.MSG_IS_OUTGOING);
+            accountIndex = cursor.getColumnIndex(Columns.MSG_ACCOUNT);
         }
 
     }

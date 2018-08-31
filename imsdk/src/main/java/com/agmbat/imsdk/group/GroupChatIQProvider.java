@@ -3,6 +3,8 @@ package com.agmbat.imsdk.group;
 import android.net.ParseException;
 import android.text.TextUtils;
 
+import com.agmbat.imsdk.asmack.XMPPManager;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -36,17 +38,18 @@ public class GroupChatIQProvider implements IQProvider {
                 if (parser.getName().equals("msg")) {
                     messageObject = new MessageObject();
                     String type = parser.getAttributeValue("", "type");
-                    if("groupchat".equals(type)) {
+                    if ("groupchat".equals(type)) {
                         messageObject.setChatType(Message.Type.groupchat);
                     }
-                    messageObject.setFromJid(parser.getAttributeValue("","from"));
-                    messageObject.setToJid(parser.getAttributeValue("","to"));
+                    messageObject.setFromJid(parser.getAttributeValue("", "from"));
+                    messageObject.setToJid(parser.getAttributeValue("", "to"));
+                    messageObject.setAccount(XMPPManager.getInstance().getXmppConnection().getBareJid());
                     groupChatReply.addMessage(messageObject);
-                }else if(parser.getName().equals("body")){
+                } else if (parser.getName().equals("body")) {
                     messageObject.setBody(parseContent(parser));
-                }else if(parser.getName().equals("sender")){
+                } else if (parser.getName().equals("sender")) {
                     messageObject.setSenderJid(parser.nextText());
-                }else if(parser.getName().equals("delay")){
+                } else if (parser.getName().equals("delay")) {
                     Date date = parseOfflineMessageDate(parser);
                     if (date != null) {
                         messageObject.setDate(date.getTime());

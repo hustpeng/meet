@@ -75,6 +75,7 @@ public class MessageObject implements Serializable {
 
     private String imageThumbUrl;
     private String imageSrcUrl;
+    private String account;
 
     public String getSenderJid() {
         return senderJid;
@@ -180,6 +181,14 @@ public class MessageObject implements Serializable {
         this.html = html;
     }
 
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
     private static final Pattern IMAGE_THUMB_PATTERN = Pattern.compile("thumb=\"(.*?)\"");
 
     public String getImageThumbUrl() {
@@ -215,8 +224,11 @@ public class MessageObject implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if(null != obj && obj instanceof MessageObject){
-            MessageObject input = (MessageObject)obj;
+        if (null != obj && obj instanceof MessageObject) {
+            MessageObject input = (MessageObject) obj;
+            if (TextUtils.isEmpty(input.getMsgId()) || TextUtils.isEmpty(this.getMsgId())) {
+                return false;
+            }
             return input.getMsgId().equals(this.getMsgId());
         }
         return false;

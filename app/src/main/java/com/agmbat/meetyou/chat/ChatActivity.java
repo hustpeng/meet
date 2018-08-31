@@ -625,7 +625,9 @@ public class ChatActivity extends Activity implements OnInputListener {
                 GroupChatReply groupChatReply = (GroupChatReply) packet;
                 List<MessageObject> messageObjects = groupChatReply.getMessages();
                 for (int i = 0; i < messageObjects.size(); i++) {
-                    messageStorage.insertMsg(messageObjects.get(i));
+                    MessageObject messageObject = messageObjects.get(i);
+                    messageObject.setAccount(XMPPManager.getInstance().getXmppConnection().getBareJid());
+                    messageStorage.insertMsg(messageObject);
                 }
 
                 List<MessageObject> chatMessages = XMPPManager.getInstance().getMessageManager().getMessageList(mCircleInfo.getGroupJid());

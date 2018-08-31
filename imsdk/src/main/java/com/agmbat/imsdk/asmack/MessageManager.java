@@ -107,17 +107,17 @@ public class MessageManager extends Xepmodule {
                     String elementName = extension.getElementName();
                     if ("delivered".equals(elementName)) {
                         MessageObject targetMessage = messageStorage.getMsg(messageObject
-                                .getMsgId());
+                                .getMsgId(), xmppConnection.getBareJid());
                         if (targetMessage != null) {
                             targetMessage.setMsgStatus(MessageObjectStatus.UNREAD);
-                            messageStorage.updateMsg(targetMessage);
+                            messageStorage.updateMsg(targetMessage, xmppConnection.getBareJid());
                         }
                     } else if ("read".equals(elementName)) {
                         MessageObject targetMessage = messageStorage.getMsg(messageObject
-                                .getMsgId());
+                                .getMsgId(), xmppConnection.getBareJid());
                         if (targetMessage != null) {
                             targetMessage.setMsgStatus(MessageObjectStatus.READ);
-                            messageStorage.updateMsg(targetMessage);
+                            messageStorage.updateMsg(targetMessage, xmppConnection.getBareJid());
                         }
                     } else if ("composing".equals(elementName)) {
                     }
@@ -238,6 +238,7 @@ public class MessageManager extends Xepmodule {
             messageObject.setOutgoing(false);
             messageObject.setMsgStatus(MessageObjectStatus.UNREAD);
         }
+        messageObject.setAccount(xmppConnection.getBareJid());
         return messageObject;
     }
 
@@ -272,25 +273,25 @@ public class MessageManager extends Xepmodule {
             xmppConnection.sendPacket(message);
         }
         MessageObject messageObject = phareMessageFromPacket(message);
-        MessageObject existMsg = messageStorage.getMsg(message.getPacketID());
+        MessageObject existMsg = messageStorage.getMsg(message.getPacketID(), xmppConnection.getBareJid());
         if (null == existMsg) {
             messageStorage.insertMsg(messageObject);
         } else {
-            messageStorage.updateMsg(messageObject);
+            messageStorage.updateMsg(messageObject, xmppConnection.getBareJid());
         }
         addMessage(toJidString, messageObject);
         return messageObject;
     }
 
 
-    public void setMessageRead(String msg_id) {
-        if (TextUtils.isEmpty(msg_id)) {
+    public void setMessageRead(String msgId, String myJid) {
+        if (TextUtils.isEmpty(msgId)) {
             return;
         }
-        MessageObject targetMessage = messageStorage.getMsg(msg_id);
+        MessageObject targetMessage = messageStorage.getMsg(msgId, myJid);
         if ((targetMessage != null) && (targetMessage.getMsgStatus() != MessageObjectStatus.READ)) {
             targetMessage.setMsgStatus(MessageObjectStatus.READ);
-            messageStorage.updateMsg(targetMessage);
+            messageStorage.updateMsg(targetMessage, myJid);
             sendChatStates(targetMessage.getMsgId(), "read", targetMessage.getFromJid());
         }
     }
@@ -322,6 +323,7 @@ public class MessageManager extends Xepmodule {
         messageObject.setSenderJid(xmppConnection.getBareJid());
         messageObject.setSenderNickName(fromNickName);
         messageObject.setOutgoing(true);
+        messageObject.setAccount(xmppConnection.getBareJid());
 
         messageStorage.insertMsg(messageObject);
         return msgid;
@@ -350,24 +352,26 @@ public class MessageManager extends Xepmodule {
 
         messageObject.setBody(thumb);
         messageObject.setHtml(imageExtension.toString());
+        messageObject.setAccount(xmppConnection.getBareJid());
 
         messageStorage.insertMsg(messageObject);
         return msgid;
     }
 
-    public void updateImageMsg(String msgId, String src, String thumb) {
+    public void updateImageMsg(String msgId, String src, String thumb, String myJid) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             return;
         }
         if (TextUtils.isEmpty(msgId)) {
             return;
         }
-        MessageObject messageObject = messageStorage.getMsg(msgId);
+        MessageObject messageObject = messageStorage.getMsg(msgId, myJid);
         if (messageObject != null) {
             MessageHtmlExtension imageExtension = new MessageHtmlExtension(MessageSubType.image, src, thumb);
             messageObject.setBody(thumb);
             messageObject.setHtml(imageExtension.toString());
-            messageStorage.updateMsg(messageObject);
+            messageObject.setAccount(xmppConnection.getBareJid());
+            messageStorage.updateMsg(messageObject, myJid);
         }
     }
 
@@ -379,15 +383,16 @@ public class MessageManager extends Xepmodule {
             return;
         }
 
-        MessageObject messageObject = messageStorage.getMsg(msgId);
+        MessageObject messageObject = messageStorage.getMsg(msgId, xmppConnection.getBareJid());
         if (messageObject != null) {
             messageObject.setMsgStatus(status);
-            messageStorage.updateMsg(messageObject);
+            messageObject.setAccount(xmppConnection.getBareJid());
+            messageStorage.updateMsg(messageObject, xmppConnection.getBareJid());
         }
     }
 
     public void sendCompletedLocationMsg(String msgid, double lat, double lon) {
-        MessageObject messageObject = messageStorage.getMsg(msgid);
+        MessageObject messageObject = messageStorage.getMsg(msgid, xmppConnection.getBareJid());
         if (messageObject == null) {
             return;
         }
@@ -409,11 +414,12 @@ public class MessageManager extends Xepmodule {
         messageObject.setMsgStatus(MessageObjectStatus.SEND);
         messageObject.setHtml(locationExtension.toString());
         messageObject.setDate(System.currentTimeMillis());
-        messageStorage.updateMsg(messageObject);
+        messageObject.setAccount(xmppConnection.getBareJid());
+        messageStorage.updateMsg(messageObject, xmppConnection.getBareJid());
     }
 
     public void sendCompletedImageMsg(String msgid, String src, String thumb) {
-        MessageObject messageObject = messageStorage.getMsg(msgid);
+        MessageObject messageObject = messageStorage.getMsg(msgid, xmppConnection.getBareJid());
         if (messageObject == null) {
             return;
         }
@@ -435,11 +441,12 @@ public class MessageManager extends Xepmodule {
         messageObject.setMsgStatus(MessageObjectStatus.SEND);
         messageObject.setHtml(imageExtension.toString());
         messageObject.setDate(System.currentTimeMillis());
-        messageStorage.updateMsg(messageObject);
+        messageObject.setAccount(xmppConnection.getBareJid());
+        messageStorage.updateMsg(messageObject, xmppConnection.getBareJid());
     }
 
     public void deleteMessage(String msgId) {
-        messageStorage.deleteMsg(msgId);
+        messageStorage.deleteMsg(msgId, xmppConnection.getBareJid());
     }
 
     public void deleteAllMessage() {
@@ -605,7 +612,7 @@ public class MessageManager extends Xepmodule {
      */
     public void deleteMessage(String loginUserId, String bareJid) {
         removeMessage(bareJid);
-        messageStorage.deleteChatMessage(loginUserId, bareJid);
+        messageStorage.deleteChatMessage(loginUserId, bareJid, xmppConnection.getBareJid());
     }
 
     /**
