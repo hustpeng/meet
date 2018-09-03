@@ -324,7 +324,7 @@ public class MessageStorage {
     private List<MessageObject> getSenderMessageObjects(String myJid) {
         List<MessageObject> messages = new ArrayList<MessageObject>();
         Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null,
-                "(" + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=1 And " + Columns.MSG_ACCOUNT + "=?)"
+                Columns.MSG_FROM_JID + "=? And " + Columns.MSG_IS_OUTGOING + "=1 And " + Columns.MSG_ACCOUNT + "=?"
                 , new String[]{
                         myJid, myJid
                 }, Columns.MSG_TO_JID, null, Columns.MSG_DATE + " DESC");
@@ -350,9 +350,9 @@ public class MessageStorage {
     private static List<MessageObject> mergeMessage(List<MessageObject> senderArray,
                                                     List<MessageObject> receiverArray) {
         List<MessageObject> resultArray = null;
-        boolean duplicateFlag = false;
         if (senderArray.size() > 0 && receiverArray.size() > 0) {
             for (MessageObject senderMessageObject : senderArray) {
+                boolean duplicateFlag = false;
                 for (MessageObject receiverMessageObject : receiverArray) {
                     if (senderMessageObject.getFromJid().equals(receiverMessageObject.getToJid())) {
                         if (senderMessageObject.getDate() > receiverMessageObject.getDate()) {

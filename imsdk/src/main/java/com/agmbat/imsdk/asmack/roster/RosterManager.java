@@ -658,7 +658,7 @@ public class RosterManager {
                             // 将列表同步到数据库中
                             ContactDBCache.saveAndClearOldList(contactInfoList);
                             VLog.d("Load contacts from server: " + contactInfoList.size());
-                            clearMessage(contactInfoList);
+                            //clearMessage(contactInfoList);
                             EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));
                         }
                     });
