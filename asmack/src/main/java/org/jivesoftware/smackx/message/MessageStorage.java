@@ -286,6 +286,9 @@ public class MessageStorage {
 
     // MessageFragment data
     public List<MessageObject> getAllMessage(String myJid) {
+        if (null == myJid) {
+            myJid = "";
+        }
         List<MessageObject> senderArray = getSenderMessageObjects(myJid);
         List<MessageObject> receiverArray = getReceiverMessageObjects(myJid);
         List<MessageObject> resultArray = mergeMessage(senderArray, receiverArray);
