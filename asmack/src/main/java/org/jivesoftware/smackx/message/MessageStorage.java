@@ -186,7 +186,7 @@ public class MessageStorage {
      */
     public void deleteChatMessage(String aJid, String bJid, String account) {
         StringBuilder builder = new StringBuilder();
-        builder.append("(");
+        builder.append("((");
         builder.append(Columns.MSG_FROM_JID);
         builder.append("=?");
         builder.append(" AND ");
@@ -200,7 +200,7 @@ public class MessageStorage {
         builder.append(" AND ");
         builder.append(Columns.MSG_TO_JID);
         builder.append("=?");
-        builder.append(")");
+        builder.append("))");
         builder.append(" AND ");
         builder.append(Columns.MSG_ACCOUNT);
         builder.append("=?");
@@ -286,7 +286,7 @@ public class MessageStorage {
 
     // MessageFragment data
     public List<MessageObject> getAllMessage(String myJid) {
-        if (null == myJid) {
+        if(null == myJid){
             myJid = "";
         }
         List<MessageObject> senderArray = getSenderMessageObjects(myJid);
