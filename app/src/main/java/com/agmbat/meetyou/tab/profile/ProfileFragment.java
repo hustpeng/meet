@@ -146,7 +146,8 @@ public class ProfileFragment extends Fragment {
             BitmapUtils.compressToFile(bitmap, file.getAbsolutePath());
         }
         ShareContent content = new ShareContent();
-        content.mDescription = AppResources.getString(R.string.invite_friend_msg);
+        LoginUser loginUser = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        content.mDescription = AppResources.getString(R.string.invite_friend_msg, String.valueOf(loginUser.getImUid()));
         List<File> fileList = new ArrayList<>();
         fileList.add(file);
         content.mImageFileList = fileList;
