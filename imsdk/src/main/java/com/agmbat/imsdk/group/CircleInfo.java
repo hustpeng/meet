@@ -1,6 +1,8 @@
 package com.agmbat.imsdk.group;
 
-public class GroupBean {
+import java.io.Serializable;
+
+public class CircleInfo implements Serializable {
 
     private String groupJid;
 
@@ -12,7 +14,7 @@ public class GroupBean {
 
     private String ownerJid;
 
-    public GroupBean(String groupJid, String name){
+    public CircleInfo(String groupJid, String name){
         this.groupJid = groupJid;
         this.name = name;
     }

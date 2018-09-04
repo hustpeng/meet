@@ -20,10 +20,13 @@ import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
+import com.agmbat.imsdk.group.CircleInfo;
+import com.agmbat.imsdk.group.GroupManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.time.TimeUtils;
 
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.message.MessageObject;
 import org.jivesoftware.smackx.message.MessageObjectStatus;
 
@@ -54,12 +57,20 @@ public class RecentMsgView extends LinearLayout {
     }
 
     public void update(MessageObject messageObject) {
-        ContactInfo contactInfo = MessageManager.getTalkContactInfo(messageObject);
-        if (contactInfo != null) {
-            mNickNameView.setText(TextUtils.isEmpty(contactInfo.getRemark()) ? contactInfo.getNickName() : contactInfo.getRemark());
-            mMessageView.setVisibility(View.VISIBLE);
-            mLastMsgTimeView.setVisibility(View.VISIBLE);
-            ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
+        if (messageObject.getChatType() == Message.Type.chat) {
+            ContactInfo contactInfo = MessageManager.getTalkContactInfo(messageObject);
+            if (contactInfo != null) {
+                mNickNameView.setText(TextUtils.isEmpty(contactInfo.getRemark()) ? contactInfo.getNickName() : contactInfo.getRemark());
+                mMessageView.setVisibility(View.VISIBLE);
+                ImageManager.displayImage(contactInfo.getAvatar(), mAvatarView, AvatarHelper.getOptions());
+            }
+        } else if (messageObject.getChatType() == Message.Type.groupchat) {
+            CircleInfo groupBean = GroupManager.getInstance().getMemCacheGroup(MessageManager.getTalkJid(messageObject));
+            if (groupBean != null) {
+                mNickNameView.setText(String.format("来自\"%s\"群", groupBean.getName()));
+                mMessageView.setVisibility(VISIBLE);
+                ImageManager.displayImage(groupBean.getAvatar(), mAvatarView, AvatarHelper.getOptions());
+            }
         }
         setLastMessageBody(messageObject);
         mLastMsgTimeView.setText(TimeUtils.formatTime(messageObject.getDate()));

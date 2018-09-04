@@ -7,10 +7,11 @@ import com.agmbat.imsdk.asmack.api.FetchContactInfoRunnable;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.Body;
+import com.agmbat.imsdk.group.CircleInfo;
+import com.agmbat.imsdk.group.GroupManager;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.ReceiveSysMessageEvent;
 import com.agmbat.imsdk.settings.MeetNotificationManager;
-import com.agmbat.log.Debug;
 import com.agmbat.log.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -490,22 +491,30 @@ public class MessageManager extends Xepmodule {
             if (isToOthers(messageObject)) {
                 String receiverJid = messageObject.getToJid();
                 // 如果数据库中没有此用户则直接删除与此用户相关的所有聊天记录
-                ContactInfo info = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(receiverJid);
-                if (info != null) {
-                    retList.add(messageObject);
-                } else {
-                    Debug.print("not found message:" + receiverJid);
-                    Debug.printStackTrace();
+                if (messageObject.getChatType() == Type.chat) {
+                    ContactInfo info = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(receiverJid);
+                    if (info != null) {
+                        retList.add(messageObject);
+                    }
+                } else if (messageObject.getChatType() == Type.groupchat) {
+                    CircleInfo groupBean = GroupManager.getInstance().getMemCacheGroup(receiverJid);
+                    if (groupBean != null) {
+                        retList.add(messageObject);
+                    }
                 }
             } else {
                 String senderJid = messageObject.getFromJid();
                 // 如果数据库中没有此用户则直接删除与此用户相关的所有聊天记录
-                ContactInfo info = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(senderJid);
-                if (info != null) {
-                    retList.add(messageObject);
-                } else {
-                    Debug.print("not found message:" + senderJid);
-                    Debug.printStackTrace();
+                if (messageObject.getChatType() == Type.chat) {
+                    ContactInfo info = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(senderJid);
+                    if (info != null) {
+                        retList.add(messageObject);
+                    }
+                } else if (messageObject.getChatType() == Type.groupchat) {
+                    CircleInfo groupBean = GroupManager.getInstance().getMemCacheGroup(senderJid);
+                    if (groupBean != null) {
+                        retList.add(messageObject);
+                    }
                 }
             }
         }

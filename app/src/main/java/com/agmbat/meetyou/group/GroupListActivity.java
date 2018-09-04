@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
-import com.agmbat.imsdk.group.GroupBean;
+import com.agmbat.imsdk.group.CircleInfo;
 import com.agmbat.imsdk.group.QueryGroupResultIQ;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
@@ -91,7 +91,7 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         mHandler.postDelayed(mResultRunnable, 10000);
     }
 
-    private Runnable mResultRunnable = new Runnable(){
+    private Runnable mResultRunnable = new Runnable() {
 
         @Override
         public void run() {
@@ -176,7 +176,7 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         }
     }
 
-    private List<CircleGroup> initGroupList(List<GroupBean> groupBeans) {
+    private List<CircleGroup> initGroupList(List<CircleInfo> groupBeans) {
         List<CircleGroup> groups = new ArrayList<CircleGroup>();
 
         List<CircleInfo> myCircles = new ArrayList<>();
@@ -185,18 +185,11 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
 
         for (int i = 0; i < groupBeans.size(); i++) {
-            GroupBean groupBean = groupBeans.get(i);
-            CircleInfo circleInfo = new CircleInfo();
-            circleInfo.setName(groupBean.getName());
-            circleInfo.setAvatar(groupBean.getAvatar());
-            circleInfo.setGroupJid(groupBean.getGroupJid());
-            circleInfo.setMembers(groupBean.getMembers());
-            circleInfo.setOwnerJid(groupBean.getOwnerJid());
-
+            CircleInfo groupBean = groupBeans.get(i);
             if (myJid.equals(groupBean.getOwnerJid())) {
-                myCircles.add(circleInfo);
+                myCircles.add(groupBean);
             } else {
-                joinCircles.add(circleInfo);
+                joinCircles.add(groupBean);
             }
         }
 

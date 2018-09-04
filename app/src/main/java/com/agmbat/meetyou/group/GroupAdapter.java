@@ -5,10 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
-import com.agmbat.imsdk.asmack.roster.ContactGroup;
-import com.agmbat.imsdk.asmack.roster.ContactInfo;
-import com.agmbat.meetyou.tab.contacts.ContactsGroupView;
-import com.agmbat.meetyou.tab.contacts.ContactsView;
+import com.agmbat.imsdk.group.CircleInfo;
 
 import java.util.List;
 

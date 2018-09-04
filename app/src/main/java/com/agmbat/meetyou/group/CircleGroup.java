@@ -3,7 +3,7 @@ package com.agmbat.meetyou.group;
 import com.agmbat.db.annotation.Column;
 import com.agmbat.db.annotation.Table;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
-import com.agmbat.imsdk.asmack.roster.RosterManager;
+import com.agmbat.imsdk.group.CircleInfo;
 
 import java.util.ArrayList;
 import java.util.List;

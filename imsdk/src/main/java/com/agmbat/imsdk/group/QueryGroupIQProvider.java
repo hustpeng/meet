@@ -35,7 +35,7 @@ public class QueryGroupIQProvider implements IQProvider {
 
     @Override
     public IQ parseIQ(XmlPullParser parser) throws Exception {
-        List<GroupBean> groupBeans = new ArrayList<>();
+        List<CircleInfo> groupBeans = new ArrayList<>();
         FindServerObject item = new FindServerObject();
         int messageType = -1;
         QueryGroupInfoResultIQ queryGroupInfoResultIQ = new QueryGroupInfoResultIQ();
@@ -66,7 +66,7 @@ public class QueryGroupIQProvider implements IQProvider {
                         String cover = parser.getAttributeValue("", "cover");
                         String owner = parser.getAttributeValue("", "owner");
 
-                        GroupBean groupBean = new GroupBean(groupJid, groupName);
+                        CircleInfo groupBean = new CircleInfo(groupJid, groupName);
                         groupBean.setAvatar(cover);
                         if (!TextUtils.isEmpty(members) && TextUtils.isDigitsOnly(members)) {
                             groupBean.setMembers(Integer.parseInt(members));

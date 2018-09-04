@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
+import com.agmbat.imsdk.group.CircleInfo;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.AvatarHelper;
 

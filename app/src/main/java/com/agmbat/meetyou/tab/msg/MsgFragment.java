@@ -20,6 +20,8 @@ import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.asmack.MessageManager;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
+import com.agmbat.imsdk.group.CircleInfo;
+import com.agmbat.imsdk.group.GroupManager;
 import com.agmbat.imsdk.imevent.ContactDeleteEvent;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
@@ -27,7 +29,6 @@ import com.agmbat.imsdk.search.SearchManager;
 import com.agmbat.imsdk.search.user.OnSearchUserListener;
 import com.agmbat.imsdk.search.user.SearchUserResult;
 import com.agmbat.isdialog.ISLoadingDialog;
-import com.agmbat.log.Debug;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
@@ -47,6 +48,7 @@ import com.agmbat.zxing.ScannerHelper;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.message.MessageObject;
 import org.jivesoftware.smackx.message.MessageObjectStatus;
 
@@ -145,11 +147,16 @@ public class MsgFragment extends Fragment {
     @OnItemClick(R.id.recent_chat_list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         MessageObject recentChat = mAdapter.getItem(position);
-        ContactInfo contactInfo = MessageManager.getTalkContactInfo(recentChat);
-        if (contactInfo != null) {
-            ChatActivity.openChat(getActivity(), contactInfo);
-        } else {
-            Debug.printStackTrace();
+        if (recentChat.getChatType() == Message.Type.chat) {
+            ContactInfo contactInfo = MessageManager.getTalkContactInfo(recentChat);
+            if (contactInfo != null) {
+                ChatActivity.openChat(getActivity(), contactInfo);
+            }
+        }else if(recentChat.getChatType() == Message.Type.groupchat){
+            CircleInfo groupBean = GroupManager.getInstance().getMemCacheGroup(MessageManager.getTalkJid(recentChat));
+            if(groupBean != null){
+                ChatActivity.openGroupChat(getActivity(), groupBean);
+            }
         }
     }
 

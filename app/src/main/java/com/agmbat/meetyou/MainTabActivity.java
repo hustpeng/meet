@@ -20,6 +20,7 @@ import com.agmbat.imsdk.chat.body.BodyParser;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
+import com.agmbat.imsdk.group.QueryGroupResultIQ;
 import com.agmbat.imsdk.imevent.ReceiveSysMessageEvent;
 import com.agmbat.imsdk.search.SearchManager;
 import com.agmbat.imsdk.search.group.GroupCategory;
@@ -29,6 +30,7 @@ import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.chat.ChangeTabEvent;
 import com.agmbat.meetyou.event.UnreadMessageEvent;
 import com.agmbat.meetyou.group.GroupDBCache;
+import com.agmbat.imsdk.group.GroupManager;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;
 import com.agmbat.meetyou.tab.discovery.DiscoveryFragment;
 import com.agmbat.meetyou.tab.msg.MsgFragment;
@@ -38,6 +40,11 @@ import com.agmbat.tab.TabManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smackx.circle.CircleListPacket;
 import org.jivesoftware.smackx.message.MessageObject;
 
 import java.util.List;
@@ -57,12 +64,33 @@ public class MainTabActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        queryGroupList();
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_maintab);
         setupViews();
         EventBus.getDefault().register(this);
         mHandler.postDelayed(mInitRunnable, 1500);
     }
+
+    private void queryGroupList() {
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mQueryGroupListener, new PacketTypeFilter(QueryGroupResultIQ.class));
+        CircleListPacket circleListPacket = new CircleListPacket(XMPPManager.GROUP_CHAT_SERVER);
+        XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
+        if (xmppConnection.isConnected()) {
+            xmppConnection.sendPacket(circleListPacket);
+        }
+    }
+
+    private PacketListener mQueryGroupListener = new PacketListener() {
+
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof QueryGroupResultIQ) {
+                final QueryGroupResultIQ queryGroupResultIQ = (QueryGroupResultIQ) packet;
+                GroupManager.getInstance().setMemCacheGroups(queryGroupResultIQ.getGroups());
+            }
+        }
+    };
 
 
     @Override

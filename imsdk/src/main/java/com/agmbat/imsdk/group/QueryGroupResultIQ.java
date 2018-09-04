@@ -7,13 +7,13 @@ import java.util.List;
 public class QueryGroupResultIQ extends IQ {
 
 
-    private List<GroupBean> groups;
+    private List<CircleInfo> groups;
 
-    public List<GroupBean> getGroups() {
+    public List<CircleInfo> getGroups() {
         return groups;
     }
 
-    public void setGroups(List<GroupBean> groups) {
+    public void setGroups(List<CircleInfo> groups) {
         this.groups = groups;
     }
 
@@ -23,7 +23,7 @@ public class QueryGroupResultIQ extends IQ {
         builder.append("<query xmlns=\"" + QueryGroupIQProvider.namespace() + "\">");
         if (null != groups) {
             for (int i = 0; i < groups.size(); i++) {
-                GroupBean groupBean = groups.get(i);
+                CircleInfo groupBean = groups.get(i);
                 builder.append("<item jid=\"" + groupBean.getGroupJid() + "\" members=\"" + groupBean.getMembers() + "\" name=\"" + groupBean.getName() + "\" cover=\"" + groupBean.getAvatar() + "\" owner=\"" + groupBean.getOwnerJid() + "\" circle_status=\"approved\"/>");
             }
         }
