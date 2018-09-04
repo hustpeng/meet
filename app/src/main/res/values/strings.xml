@@ -144,6 +144,7 @@
     <string name="identity_authentication">身份认证</string>
 
     <!-- 群信息界面 -->
+
     <string name="label_btn_quit_group">退出群聊</string>
     <string name="label_btn_dismiss_group">解散群聊</string>
 

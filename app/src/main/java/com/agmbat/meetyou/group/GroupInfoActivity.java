@@ -15,6 +15,7 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.group.CircleInfo;
 import com.agmbat.imsdk.group.DismissGroupReply;
 import com.agmbat.imsdk.group.JoinGroupIQ;
 import com.agmbat.imsdk.group.JoinGroupReply;
@@ -24,6 +25,7 @@ import com.agmbat.imsdk.group.QuitGroupReplay;
 import com.agmbat.imsdk.search.group.GroupInfo;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.search.ViewUserHelper;
 import com.agmbat.menu.MenuInfo;
@@ -119,7 +121,7 @@ public class GroupInfoActivity extends Activity {
         loadGroupInfo();
     }
 
-    private void loadGroupInfo(){
+    private void loadGroupInfo() {
         QueryGroupInfoIQ queryGroupInfoIQ = new QueryGroupInfoIQ(mGroupJid);
         XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupInfoIQ);
     }
@@ -197,6 +199,13 @@ public class GroupInfoActivity extends Activity {
     public void onEvent(JoinGroupReply joinGroupReply) {
         if (joinGroupReply.isSuccess()) {
             ToastUtil.showToast("你已成功入群");
+            mBtnJoinGroup.setVisibility(View.VISIBLE);
+            mBtnJoinGroup.setText("进入群聊");
+            mBtnQuitGroup.setVisibility(View.GONE);
+            mBtnEditGroup.setVisibility(View.GONE);
+            mGroupInfo.memberNum++;
+            mGroupInfo.isGroupMember = true;
+            mMemberNumTv.setText(String.valueOf(mGroupInfo.memberNum));
         } else if (joinGroupReply.isWaitForAgree()) {
             ToastUtil.showToast("已申请成功，等待群主审批");
         } else {
@@ -206,7 +215,7 @@ public class GroupInfoActivity extends Activity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(RemoveGroupEvent removeGroupEvent) {
-        if(removeGroupEvent.getGroupJid().equals(mGroupJid)) {
+        if (removeGroupEvent.getGroupJid().equals(mGroupJid)) {
             finish();
         }
     }
@@ -214,7 +223,7 @@ public class GroupInfoActivity extends Activity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(EditGroupEvent editGroupEvent) {
         //收到群修改成功通知后，刷新群信息
-        if(editGroupEvent.getGroupJid().equals(mGroupJid)){
+        if (editGroupEvent.getGroupJid().equals(mGroupJid)) {
             loadGroupInfo();
         }
     }
@@ -257,11 +266,11 @@ public class GroupInfoActivity extends Activity {
         mDescriptionTv.setText(groupInfo.description);
         mGroupIdTv.setText(XmppStringUtils.parseName(groupInfo.jid));
         mMemberNumTv.setText(String.valueOf(groupInfo.memberNum));
-        if(!groupInfo.isGroupMember){//当前登录用户还不是群成员，只显示加群按钮
+        if (!groupInfo.isGroupMember) {//当前登录用户还不是群成员，只显示加群按钮
             mBtnJoinGroup.setVisibility(View.VISIBLE);
             mBtnQuitGroup.setVisibility(View.GONE);
             mBtnEditGroup.setVisibility(View.GONE);
-        }else {
+        } else {
             mBtnJoinGroup.setVisibility(View.GONE);
             mBtnQuitGroup.setVisibility(View.VISIBLE);
             String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
@@ -273,8 +282,6 @@ public class GroupInfoActivity extends Activity {
                 mBtnQuitGroup.setText(R.string.label_btn_quit_group);//一般用户只能执行退群操作
                 mBtnEditGroup.setVisibility(View.GONE);
             }
-
-            mBtnJoinGroup.setVisibility(View.GONE);
             mBtnQuitGroup.setVisibility(View.VISIBLE);
         }
     }
@@ -334,12 +341,21 @@ public class GroupInfoActivity extends Activity {
     }
 
     @OnClick(R.id.btn_join_group)
-    public void onClickJoinGroupBtn(){
-        XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
-        String senderName = XmppStringUtils.parseName(xmppConnection.getUser());
-        JoinGroupIQ joinGroupIQ = new JoinGroupIQ(senderName);
-        joinGroupIQ.setType(IQ.Type.SET);
-        joinGroupIQ.setTo(mGroupJid);
-        xmppConnection.sendPacket(joinGroupIQ);
+    public void onClickJoinGroupBtn() {
+        if (mGroupInfo.isGroupMember) {
+            CircleInfo circleInfo = new CircleInfo(mGroupInfo.jid, mGroupInfo.name);
+            circleInfo.setAvatar(mGroupInfo.cover);
+            circleInfo.setMembers(mGroupInfo.memberNum);
+            circleInfo.setOwnerJid(mGroupInfo.ownerJid);
+            ChatActivity.openGroupChat(this, circleInfo);
+        } else {
+            XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
+            String senderName = XmppStringUtils.parseName(xmppConnection.getUser());
+            JoinGroupIQ joinGroupIQ = new JoinGroupIQ(senderName);
+            joinGroupIQ.setType(IQ.Type.SET);
+            joinGroupIQ.setTo(mGroupJid);
+            xmppConnection.sendPacket(joinGroupIQ);
+        }
+
     }
 }
