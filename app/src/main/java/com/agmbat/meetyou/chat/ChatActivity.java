@@ -1,7 +1,9 @@
 package com.agmbat.meetyou.chat;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -31,11 +33,13 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
+import com.agmbat.imsdk.chat.body.BodyParser;
 import com.agmbat.imsdk.chat.body.FileBody;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.LocationBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
+import com.agmbat.imsdk.group.CircleInfo;
 import com.agmbat.imsdk.group.GroupChatReply;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
@@ -52,11 +56,11 @@ import com.agmbat.map.LocationCallback;
 import com.agmbat.map.LocationObject;
 import com.agmbat.map.Maps;
 import com.agmbat.meetyou.R;
-import com.agmbat.imsdk.group.CircleInfo;
 import com.agmbat.meetyou.group.EditGroupEvent;
 import com.agmbat.meetyou.group.GroupInfoActivity;
 import com.agmbat.meetyou.group.RemoveGroupEvent;
 import com.agmbat.meetyou.splash.SplashStore;
+import com.agmbat.meetyou.util.SystemUtil;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.net.HttpUtils;
@@ -295,9 +299,46 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
         List<MessageObject> chatMessages = XMPPManager.getInstance().getMessageManager().getMessageList(bareJid);
         mAdapter = new MessageListAdapter(this, chatMessages);
+        mAdapter.setOnContentLongClickListener(mOnItemLongClickListener);
         mPtrView.setOnScrollListener(mOnScrollListener);
         mPtrView.setAdapter(mAdapter);
     }
+
+    private MessageListAdapter.OnContentLongClickListener mOnItemLongClickListener = new MessageListAdapter.OnContentLongClickListener() {
+        @Override
+        public void onLongClick(final int position, MessageView messageView) {
+            final MessageObject messageObject = mAdapter.getItem(position);
+            String bodyText = messageObject.getBody();
+            String[] operations = null;
+            final Body body = BodyParser.parse(bodyText);
+            if (body instanceof TextBody) {
+                operations = new String[]{"复制", "删除"};
+            } else {
+                operations = new String[]{"删除"};
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+
+            builder.setItems(operations, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == 0) {
+                        if (body instanceof TextBody) {
+                            TextBody textBody = (TextBody) body;
+                            SystemUtil.copyToClipBoard(getBaseContext(), "chat", textBody.getContent());
+                            ToastUtil.showToast("已复制");
+                        } else {
+                            mAdapter.remove(messageObject);
+                            XMPPManager.getInstance().getMessageManager().deleteMessage(messageObject.getMsgId());
+                        }
+                    } else if (which == 1) {
+                        mAdapter.remove(messageObject);
+                        XMPPManager.getInstance().getMessageManager().deleteMessage(messageObject.getMsgId());
+                    }
+                }
+            });
+            builder.create().show();
+        }
+    };
 
     private AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
 

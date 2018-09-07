@@ -14,23 +14,34 @@ import java.util.List;
  */
 public class MessageListAdapter extends ArrayAdapter<MessageObject> {
 
+    private OnContentLongClickListener mOnContentLongClickListener;
+
     public MessageListAdapter(Context context, List<MessageObject> messages) {
         super(context, 0, messages);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = new MessageView(getContext());
         }
         MessageObject message = getItem(position);
-        MessageView view = (MessageView) convertView;
+        final MessageView messageView = (MessageView) convertView;
         MessageObject prevMessage = null;
         if (position > 0) {
             prevMessage = getItem(position - 1);
         }
         boolean isShowTime = isShowTime(message, prevMessage);
-        view.update(message, isShowTime);
+        messageView.update(message, isShowTime);
+        messageView.setOnContentLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (null != mOnContentLongClickListener) {
+                    mOnContentLongClickListener.onLongClick(position, messageView);
+                }
+                return true;
+            }
+        });
         return convertView;
     }
 
@@ -48,6 +59,17 @@ public class MessageListAdapter extends ArrayAdapter<MessageObject> {
         long current = messageObject.getDate();
         long prev = prevMessage.getDate();
         return (current - prev > (5 * 60 * 1000));
+    }
+
+
+    public void setOnContentLongClickListener(OnContentLongClickListener onContentLongClickListener) {
+        mOnContentLongClickListener = onContentLongClickListener;
+    }
+
+
+    public interface OnContentLongClickListener {
+
+        public void onLongClick(int position, MessageView messageView);
     }
 
 }

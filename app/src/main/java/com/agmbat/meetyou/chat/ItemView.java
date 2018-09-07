@@ -89,6 +89,8 @@ public abstract class ItemView extends LinearLayout {
      */
     protected ProgressBar mLoadingProgress;
 
+    private OnLongClickListener mOnLongClickListener;
+
     public ItemView(Context context) {
         super(context);
         View.inflate(context, getLayoutId(), this);
@@ -97,6 +99,24 @@ public abstract class ItemView extends LinearLayout {
         mTimeView = (TextView) findViewById(R.id.time);
         mBodyImage = (ImageView) findViewById(R.id.body_image);
         mLoadingProgress = (ProgressBar) findViewById(R.id.loading_progress);
+        mChatContentView.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (null != mOnLongClickListener) {
+                    mOnLongClickListener.onLongClick(view);
+                }
+                return true;
+            }
+        });
+        mBodyImage.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (null != mOnLongClickListener) {
+                    mOnLongClickListener.onLongClick(view);
+                }
+                return true;
+            }
+        });
     }
 
     protected abstract int getLayoutId();
@@ -308,9 +328,9 @@ public abstract class ItemView extends LinearLayout {
         mChatContentView.setVisibility(View.GONE);
         mBodyImage.setVisibility(View.VISIBLE);
         mBodyImage.setImageResource(0);
-        if(TextUtils.isEmpty(imageBody.getFileUrl())){
+        if (TextUtils.isEmpty(imageBody.getFileUrl())) {
             mLoadingProgress.setVisibility(VISIBLE);
-        }else {
+        } else {
             ImageManager.displayImage(imageBody.getFileUrl(), mBodyImage, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
@@ -449,5 +469,10 @@ public abstract class ItemView extends LinearLayout {
         }
         return false;
     }
+
+    public void setOnContentLongClickListener(OnLongClickListener onLongClickListener) {
+        mOnLongClickListener = onLongClickListener;
+    }
+
 
 }

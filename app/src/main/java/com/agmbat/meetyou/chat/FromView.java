@@ -15,7 +15,6 @@ import com.agmbat.meetyou.search.ViewUserHelper;
  */
 public class FromView extends ItemView {
 
-
     public FromView(Context context) {
         super(context);
     }
