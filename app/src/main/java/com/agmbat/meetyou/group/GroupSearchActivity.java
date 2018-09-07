@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.agmbat.android.utils.KeyboardUtils;
 import com.agmbat.android.utils.ToastUtil;
@@ -71,8 +70,7 @@ public class GroupSearchActivity extends Activity {
         loadGroupCategories();
         mPageDataLoader = new DiscoveryPageLoader(this);
         mPageDataLoader.setupViews(findViewById(android.R.id.content));
-
-//        mPageDataLoader.loadData();
+        mPageDataLoader.loadData();
     }
 
     private void loadGroupCategories() {
@@ -125,13 +123,8 @@ public class GroupSearchActivity extends Activity {
             ToastUtil.showToast("请选择群分类");
             return;
         }
-        String keyword = mEditText.getText().toString().trim();
-        if (TextUtils.isEmpty(keyword)) {
-            ToastUtil.showToast("请输入关键字");
-            return;
-        }
+        mKeyword = mEditText.getText().toString().trim();
         KeyboardUtils.hideInputMethod(mEditText);
-        mKeyword = keyword;
         mPageDataLoader.loadData();
     }
 
@@ -158,7 +151,7 @@ public class GroupSearchActivity extends Activity {
             @Override
             public void onSelected(int index, String tag) {
                 mGroupCategory = findGroupCategory(tag);
-                if(!TextUtils.isEmpty(mKeyword)){
+                if (!TextUtils.isEmpty(mKeyword)) {
                     mPageDataLoader.loadData();
                 }
             }
@@ -190,7 +183,7 @@ public class GroupSearchActivity extends Activity {
 
         @Override
         public SearchGroupResult onLoadData(int page) {
-            if (TextUtils.isEmpty(mKeyword) || mGroupCategory == null) {
+            if (mGroupCategory == null) {
                 return null;
             }
             return SearchManager.searchGroupSync(mKeyword, mGroupCategory.getId(), page);
