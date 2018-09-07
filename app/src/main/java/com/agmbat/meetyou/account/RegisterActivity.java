@@ -22,11 +22,11 @@ import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.GenderHelper;
+import com.agmbat.meetyou.util.StringUtil;
 import com.agmbat.picker.NumberPicker;
 import com.agmbat.picker.SinglePicker;
 import com.agmbat.picker.helper.GenderItem;
 import com.agmbat.picker.helper.PickerHelper;
-import com.agmbat.text.PhoneNumberUtil;
 import com.agmbat.text.StringParser;
 
 import org.greenrobot.eventbus.EventBus;
@@ -183,7 +183,7 @@ public class RegisterActivity extends Activity {
         final String password = mPasswordView.getText().toString();
         String verificationCode = mVerificationCodeView.getText().toString();
 
-        if (ImAccountManager.DEBUG_CHECK_SMS && !PhoneNumberUtil.isValidPhoneNumber(name)) {
+        if (ImAccountManager.DEBUG_CHECK_SMS && !StringUtil.isMobile(name)) {
             ToastUtil.showToastLong("请使用手机号码注册账户！");
             return;
         }
@@ -301,7 +301,7 @@ public class RegisterActivity extends Activity {
         int gender = GenderHelper.getGender(mGenderView.getText().toString());
         int birthYear = StringParser.parseInt(mBirthYearView.getText().toString());
         String inviteCode = mInviteCodeView.getText().toString();
-        if (ImAccountManager.DEBUG_CHECK_SMS && !PhoneNumberUtil.isValidPhoneNumber(name)) {
+        if (ImAccountManager.DEBUG_CHECK_SMS && !StringUtil.isMobile(name)) {
             ToastUtil.showToastLong("请使用手机号码注册账户！");
             return;
         }
@@ -313,6 +313,17 @@ public class RegisterActivity extends Activity {
                 || TextUtils.isEmpty(verificationCode)) {
             ToastUtil.showToastLong("请填写核心信息！");
             return;
+        }
+
+        if (!TextUtils.isEmpty(inviteCode)) {
+            if (inviteCode.startsWith("0")) {
+                ToastUtil.showToast("邀请码不能以0作为开头");
+                return;
+            }
+            if (inviteCode.length() < 4) {
+                ToastUtil.showToast("邀请码不能少于4个数字");
+                return;
+            }
         }
         showDialog();
         mRegisterButton.setEnabled(false);

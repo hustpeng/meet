@@ -3,7 +3,7 @@ package com.agmbat.meetyou.account;
 import android.text.Editable;
 import android.text.TextWatcher;
 
-import com.agmbat.text.PhoneNumberUtil;
+import com.agmbat.meetyou.util.StringUtil;
 
 /**
  * 手机号 EditText监听器
@@ -39,7 +39,7 @@ public class TelTextWatcher implements TextWatcher {
     public void afterTextChanged(Editable s) {
         String phone = s.toString();
         if (phone.length() == 11) {
-            if (PhoneNumberUtil.isValidPhoneNumber(phone)) {
+            if (StringUtil.isMobile(phone)) {
                 if (mListener != null) {
                     mListener.onInputTelephone(true, true);
                 }

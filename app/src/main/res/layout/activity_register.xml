@@ -41,8 +41,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="12dp">
 
                 <EditText
                     android:id="@+id/input_username"
@@ -73,8 +73,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="12dp">
 
                 <EditText
                     android:id="@+id/input_code"
@@ -121,8 +121,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="12dp">
 
                 <EditText
                     android:id="@+id/input_password"
@@ -153,12 +153,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
                 android:layout_marginTop="40dp"
+                android:layout_marginRight="12dp"
                 android:background="@drawable/bg_btn_login"
                 android:enabled="false"
-                android:paddingBottom="7dp"
                 android:paddingTop="7dp"
+                android:paddingBottom="7dp"
                 android:text="下一步"
                 android:textColor="@color/im_account_button_txt_color"
                 android:textSize="18sp" />
@@ -166,17 +166,17 @@
 
         <LinearLayout
             android:id="@+id/page2"
-            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="invisible">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="12dp">
 
                 <EditText
                     android:id="@+id/input_nickname"
@@ -285,8 +285,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="12dp">
 
                 <EditText
                     android:id="@+id/input_invite_code"
@@ -295,6 +295,7 @@
                     android:layout_centerVertical="true"
                     android:background="@drawable/edittext_bg_selector"
                     android:hint="@string/input_invite_code"
+                    android:inputType="number"
                     android:paddingLeft="90dp"
                     android:singleLine="true"
                     android:textColorHint="#DDDDDD"
@@ -317,12 +318,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
                 android:layout_marginTop="40dp"
+                android:layout_marginRight="12dp"
                 android:background="@drawable/bg_btn_login"
                 android:enabled="false"
-                android:paddingBottom="7dp"
                 android:paddingTop="7dp"
+                android:paddingBottom="7dp"
                 android:text="@string/signup"
                 android:textColor="@color/im_account_button_txt_color"
                 android:textSize="18sp" />
