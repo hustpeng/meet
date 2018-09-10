@@ -41,6 +41,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.circle.DismissCirclePacket;
 import org.jivesoftware.smackx.circle.ExitCirclePacket;
@@ -206,6 +207,11 @@ public class GroupInfoActivity extends Activity {
             mGroupInfo.memberNum++;
             mGroupInfo.isGroupMember = true;
             mMemberNumTv.setText(String.valueOf(mGroupInfo.memberNum));
+
+            Presence response = new Presence(Presence.Type.available);
+            response.setTo(mGroupInfo.jid);
+            response.setFrom(XMPPManager.getInstance().getXmppConnection().getBareJid());
+            XMPPManager.getInstance().getXmppConnection().sendPacket(response);
         } else if (joinGroupReply.isWaitForAgree()) {
             ToastUtil.showToast("已申请成功，等待群主审批");
         } else {
