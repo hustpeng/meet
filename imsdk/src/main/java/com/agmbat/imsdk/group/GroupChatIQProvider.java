@@ -9,7 +9,9 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.DateFormatType;
+import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.message.MessageObject;
+import org.jivesoftware.smackx.message.MessageObjectStatus;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -31,6 +33,8 @@ public class GroupChatIQProvider implements IQProvider {
     public IQ parseIQ(XmlPullParser parser) throws Exception {
         GroupChatReply groupChatReply = new GroupChatReply();
         MessageObject messageObject = null;
+        String groupJid = "";
+        String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
@@ -41,27 +45,40 @@ public class GroupChatIQProvider implements IQProvider {
                     if ("groupchat".equals(type)) {
                         messageObject.setChatType(Message.Type.groupchat);
                     }
-                    messageObject.setFromJid(parser.getAttributeValue("", "from"));
-                    messageObject.setToJid(parser.getAttributeValue("", "to"));
+                    groupJid = XmppStringUtils.parseBareAddress(parser.getAttributeValue("", "from"));
                     messageObject.setAccount(XMPPManager.getInstance().getXmppConnection().getBareJid());
                     groupChatReply.addMessage(messageObject);
                 } else if (parser.getName().equals("body")) {
                     messageObject.setBody(parseContent(parser));
                 } else if (parser.getName().equals("sender")) {
-                    messageObject.setSenderJid(parser.nextText());
+                    String senderJid = XmppStringUtils.parseBareAddress(parser.nextText());
+                    messageObject.setSenderJid(senderJid);
+                    if (myJid.equals(senderJid)) {
+                        messageObject.setOutgoing(true);
+                        messageObject.setMsgStatus(MessageObjectStatus.SEND);
+                        messageObject.setFromJid(myJid);
+                        messageObject.setToJid(groupJid);
+                    } else {
+                        messageObject.setOutgoing(false);
+                        messageObject.setMsgStatus(MessageObjectStatus.UNREAD);
+                        messageObject.setFromJid(groupJid);
+                        messageObject.setToJid(myJid);
+                    }
+
                 } else if (parser.getName().equals("delay")) {
                     Date date = parseOfflineMessageDate(parser);
                     if (date != null) {
                         messageObject.setDate(date.getTime());
                     }
+                } else if (parser.getName().equals("nick")) {
+                    messageObject.setSenderNickName(parser.nextText());
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("query")) {
+                if (parser.getName().equals("messages")) {
                     done = true;
                 }
             }
         }
-
         return groupChatReply;
     }
 
@@ -80,6 +97,9 @@ public class GroupChatIQProvider implements IQProvider {
         if (!TextUtils.isEmpty(stampString)) {
             SimpleDateFormat format = DateFormatType.XEP_0082_DATETIME_MILLIS_PROFILE.createFormatter();
             try {
+                while (stampString.startsWith("0")) {
+                    stampString = stampString.substring(1, stampString.length());
+                }
                 Date date = format.parse(stampString);
                 return date;
             } catch (ParseException e) {

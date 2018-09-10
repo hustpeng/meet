@@ -41,6 +41,7 @@ import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
 import com.agmbat.imsdk.group.CircleInfo;
 import com.agmbat.imsdk.group.GroupChatReply;
+import com.agmbat.imsdk.group.QueryGroupChatIQ;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.imsdk.remotefile.FileApiResult;
@@ -71,6 +72,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.message.MessageObject;
@@ -141,6 +145,8 @@ public class ChatActivity extends Activity implements OnInputListener {
     private int mChatType;
 
     private LoginUser mLoginUser;
+
+    private List<MessageObject> mMessages = new ArrayList<>();
 
     private InputController mInputController;
     private VoiceInputController mVoiceInputController;
@@ -214,17 +220,18 @@ public class ChatActivity extends Activity implements OnInputListener {
         EventBus.getDefault().register(this);
         AudioPlayer.getDefault().addListener(mOnPlayListener);
 
-//        PacketFilter packetFilter = new PacketTypeFilter(GroupChatReply.class);
-//        XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupChatListener, packetFilter);
-//        if (mChatType == TYPE_GROUP_CHAT) {
-//            List<MessageObject> cacheMessages = messageStorage.getAllMessage(mCircleInfo.getGroupJid());
-//            if (cacheMessages.size() == 0) {
-//                QueryGroupChatIQ queryGroupChatIQ = new QueryGroupChatIQ();
-//                queryGroupChatIQ.setTo(mCircleInfo.getGroupJid());
-//                queryGroupChatIQ.setType(IQ.Type.GET);
-//                XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupChatIQ);
-//            }
-//        }
+        PacketFilter packetFilter = new PacketTypeFilter(GroupChatReply.class);
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupChatListener, packetFilter);
+        if (mChatType == TYPE_GROUP_CHAT) {
+            String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+            List<MessageObject> cacheMessages = messageStorage.getMessages(myJid, mCircleInfo.getGroupJid());
+            if (cacheMessages.size() == 0) {
+                QueryGroupChatIQ queryGroupChatIQ = new QueryGroupChatIQ();
+                queryGroupChatIQ.setTo(mCircleInfo.getGroupJid());
+                queryGroupChatIQ.setType(IQ.Type.GET);
+                XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupChatIQ);
+            }
+        }
     }
 
     @Override
@@ -297,8 +304,8 @@ public class ChatActivity extends Activity implements OnInputListener {
         } else if (mChatType == TYPE_GROUP_CHAT) {
             bareJid = mCircleInfo.getGroupJid();
         }
-        List<MessageObject> chatMessages = XMPPManager.getInstance().getMessageManager().getMessageList(bareJid);
-        mAdapter = new MessageListAdapter(this, chatMessages);
+        mMessages = XMPPManager.getInstance().getMessageManager().getMessageList(bareJid);
+        mAdapter = new MessageListAdapter(this, mMessages);
         mAdapter.setOnContentLongClickListener(mOnItemLongClickListener);
         mPtrView.setOnScrollListener(mOnScrollListener);
         mPtrView.setAdapter(mAdapter);
@@ -661,15 +668,27 @@ public class ChatActivity extends Activity implements OnInputListener {
             if (packet instanceof GroupChatReply) {
                 GroupChatReply groupChatReply = (GroupChatReply) packet;
                 List<MessageObject> messageObjects = groupChatReply.getMessages();
+                String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
                 for (int i = 0; i < messageObjects.size(); i++) {
                     MessageObject messageObject = messageObjects.get(i);
-                    messageObject.setAccount(XMPPManager.getInstance().getXmppConnection().getBareJid());
-                    messageStorage.insertMsg(messageObject);
+                    messageObject.setAccount(myJid);
+                    MessageObject existMsg = messageStorage.getMsg(messageObject.getMsgId(), myJid);
+                    if (null == existMsg) {
+                        messageStorage.insertMsg(messageObject);
+                    } else {
+                        messageStorage.updateMsg(messageObject, myJid);
+                    }
                 }
 
-                List<MessageObject> chatMessages = XMPPManager.getInstance().getMessageManager().getMessageList(mCircleInfo.getGroupJid());
-                mAdapter = new MessageListAdapter(ChatActivity.this, chatMessages);
-                mPtrView.setAdapter(mAdapter);
+                mMessages.clear();
+                mMessages.addAll(messageObjects);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+
             }
         }
     };

@@ -531,7 +531,7 @@ public class MessageManager extends Xepmodule {
      */
     public List<MessageObject> getMessageList(String jid) {
         List<MessageObject> list = mMessageMap.get(jid);
-        if (list == null) {
+        if (list == null || list.size() == 0) {
             String user = XmppStringUtils.parseBareAddress(xmppConnection.getUser());
             list = messageStorage.getMessages(user, jid);
             mMessageMap.put(jid, list);
