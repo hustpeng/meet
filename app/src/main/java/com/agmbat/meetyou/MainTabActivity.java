@@ -69,7 +69,7 @@ public class MainTabActivity extends FragmentActivity {
         setContentView(R.layout.activity_maintab);
         setupViews();
         EventBus.getDefault().register(this);
-        mHandler.postDelayed(mInitRunnable, 1500);
+        mHandler.postDelayed(mInitRunnable, 500);
     }
 
     private void queryGroupList() {

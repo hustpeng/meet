@@ -46,7 +46,9 @@ public class GroupChatIQProvider implements IQProvider {
                         messageObject.setChatType(Message.Type.groupchat);
                     }
                     groupJid = XmppStringUtils.parseBareAddress(parser.getAttributeValue("", "from"));
+                    String msgId = parser.getAttributeValue("", "id");
                     messageObject.setAccount(XMPPManager.getInstance().getXmppConnection().getBareJid());
+                    messageObject.setMsgId(msgId);
                     groupChatReply.addMessage(messageObject);
                 } else if (parser.getName().equals("body")) {
                     messageObject.setBody(parseContent(parser));
