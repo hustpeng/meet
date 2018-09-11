@@ -723,4 +723,41 @@ public class StringUtils {
         // text = text.replace((char) 160, ' ');
         return text.replaceAll("\\u00A0", " ");
     }
+
+    public static long parseLong(String numberText) {
+        long number = 0;
+        try {
+            number = Long.parseLong(numberText);
+        } catch (Exception e) {
+        }
+        return number;
+    }
+
+
+    public static int parseInt(String numberText) {
+        int number = 0;
+        try {
+            number = Integer.parseInt(numberText);
+        } catch (Exception e) {
+        }
+        return number;
+    }
+
+    public static float parseFloat(String numberText) {
+        float number = 0f;
+        try {
+            number = Float.parseFloat(numberText);
+        } catch (Exception e) {
+        }
+        return number;
+    }
+
+    public static double parseDouble(String numberText) {
+        double number = 0f;
+        try {
+            number = Double.parseDouble(numberText);
+        } catch (Exception e) {
+        }
+        return number;
+    }
 }

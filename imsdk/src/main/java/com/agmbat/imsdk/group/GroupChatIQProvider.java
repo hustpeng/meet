@@ -4,6 +4,8 @@ import android.net.ParseException;
 import android.text.TextUtils;
 
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.util.VLog;
+import com.agmbat.text.StringUtils;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
@@ -47,6 +49,8 @@ public class GroupChatIQProvider implements IQProvider {
                     }
                     groupJid = XmppStringUtils.parseBareAddress(parser.getAttributeValue("", "from"));
                     String msgId = parser.getAttributeValue("", "id");
+                    long time = StringUtils.parseLong(parser.getAttributeValue("", "time"));
+                    messageObject.setDate(time);
                     messageObject.setAccount(XMPPManager.getInstance().getXmppConnection().getBareJid());
                     messageObject.setMsgId(msgId);
                     groupChatReply.addMessage(messageObject);
