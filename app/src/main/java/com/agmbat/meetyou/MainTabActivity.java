@@ -20,6 +20,7 @@ import com.agmbat.imsdk.chat.body.BodyParser;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
+import com.agmbat.imsdk.group.GroupManager;
 import com.agmbat.imsdk.group.QueryGroupResultIQ;
 import com.agmbat.imsdk.imevent.ReceiveSysMessageEvent;
 import com.agmbat.imsdk.search.SearchManager;
@@ -30,7 +31,6 @@ import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.chat.ChangeTabEvent;
 import com.agmbat.meetyou.event.UnreadMessageEvent;
 import com.agmbat.meetyou.group.GroupDBCache;
-import com.agmbat.imsdk.group.GroupManager;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;
 import com.agmbat.meetyou.tab.discovery.DiscoveryFragment;
 import com.agmbat.meetyou.tab.msg.MsgFragment;
@@ -107,10 +107,13 @@ public class MainTabActivity extends FragmentActivity {
 
     private TabManager mTabManager;
 
+    private MsgFragment mMsgFragment;
+
     private void setupViews() {
         mTabManager = new TabManager(getSupportFragmentManager(), findViewById(android.R.id.content));
         View tabMsg = createTabItemView(R.string.tab_msg, R.drawable.tab_msg);
-        mTabManager.addTab(tabMsg, "tabMsg", new MsgFragment());
+        mMsgFragment = new MsgFragment();
+        mTabManager.addTab(tabMsg, "tabMsg", mMsgFragment);
         View tabContacts = createTabItemView(R.string.tab_contacts, R.drawable.tab_contacts);
         mTabManager.addTab(tabContacts, "tabContacts", new ContactsFragment());
         View tabFound = createTabItemView(R.string.tab_found, R.drawable.tab_found);
@@ -124,6 +127,8 @@ public class MainTabActivity extends FragmentActivity {
                     if (XMPPManager.getInstance().isLogin()) {
                         XMPPManager.getInstance().getRosterManager().reloadRoster();
                     }
+                } else if ("tabMsg".equals(tabId)) {
+                    mMsgFragment.refreshRecentChat();
                 }
             }
         });
@@ -202,6 +207,7 @@ public class MainTabActivity extends FragmentActivity {
 
                 });
             }
+            mMsgFragment.refreshRecentChat();
         }
     };
 

@@ -127,13 +127,22 @@ public class MsgFragment extends Fragment {
                 return false;
             }
         });
-
+        isInitialed = true;
     }
+
+    private boolean isInitialed;
 
     @Override
     public void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
+        refreshRecentChat();
+    }
+
+    public void refreshRecentChat() {
+        if (!isInitialed) {
+            return;
+        }
         new InitRecentChatTask().execute();
     }
 
@@ -152,9 +161,9 @@ public class MsgFragment extends Fragment {
             if (contactInfo != null) {
                 ChatActivity.openChat(getActivity(), contactInfo);
             }
-        }else if(recentChat.getChatType() == Message.Type.groupchat){
+        } else if (recentChat.getChatType() == Message.Type.groupchat) {
             CircleInfo groupBean = GroupManager.getInstance().getMemCacheGroup(MessageManager.getTalkJid(recentChat));
-            if(groupBean != null){
+            if (groupBean != null) {
                 ChatActivity.openGroupChat(getActivity(), groupBean);
             }
         }
