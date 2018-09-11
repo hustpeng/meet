@@ -143,6 +143,8 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
+    private ISAlertDialog mNewFriendAlertDialog;
+
     /**
      * 收到申请添加自己为好友的消息
      *
@@ -150,26 +152,29 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(PresenceSubscribeEvent event) {
-        ContactInfo contactInfo = event.getContactInfo();
-        ISAlertDialog newFriendAlertDialog = new ISAlertDialog(getActivity());
-        newFriendAlertDialog.setCancelable(true);
-        newFriendAlertDialog.setCanceledOnTouchOutside(false);
-        newFriendAlertDialog.setTitle("好友请求提醒");
-        newFriendAlertDialog.setMessage(String.format("您收到一条来自【%s】的加好友请求，请前往查看", contactInfo.getNickName()));
-        newFriendAlertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        newFriendAlertDialog.setPositiveButton("查看", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                NewFriendActivity.launch(getContext());
-            }
-        });
-        newFriendAlertDialog.show();
+        if(null == mNewFriendAlertDialog || !mNewFriendAlertDialog.isShowing()){
+            ContactInfo contactInfo = event.getContactInfo();
+            mNewFriendAlertDialog = new ISAlertDialog(getActivity());
+            mNewFriendAlertDialog.setCancelable(true);
+            mNewFriendAlertDialog.setCanceledOnTouchOutside(false);
+            mNewFriendAlertDialog.setTitle("好友请求提醒");
+            mNewFriendAlertDialog.setMessage(String.format("您收到一条来自【%s】的加好友请求，请前往查看", contactInfo.getNickName()));
+            mNewFriendAlertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            mNewFriendAlertDialog.setPositiveButton("查看", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    NewFriendActivity.launch(getContext());
+                }
+            });
+            mNewFriendAlertDialog.show();
+        }
+
     }
 
     /**
