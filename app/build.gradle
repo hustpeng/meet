@@ -1,4 +1,16 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'com.android.application'
+
+def verName = "1.0"
+def projectName = "meetyou"
+
+def buildTime() {
+    def df = new SimpleDateFormat("yyyyMMdd")
+    df.setTimeZone(TimeZone.getTimeZone("UTC+08:00"))
+    return df.format(new Date())
+}
+
 
 android {
     compileSdkVersion "${COMPLILE_SDK_VERSION}" as int
@@ -8,10 +20,10 @@ android {
         minSdkVersion "${MIN_SDK_VERSION}" as int
         targetSdkVersion "${TARGET_SDK_VERSION}" as int
         versionCode 1
-        versionName "1.0"
-        project.archivesBaseName = "meetyou"
+        versionName "${verName}"
+        project.archivesBaseName = "${projectName}"
         resConfigs "zh-rCN", "zh-rHK", "zh-rTW", "en"
-        buildConfigField "String", "BUILD_NUMBER", "\"Build20180911\""
+        buildConfigField "String", "BUILD_NUMBER", "\"Build${buildTime()}\""
 
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
@@ -24,6 +36,12 @@ android {
             storePassword "meetyou"
             keyAlias "meetyou"
             keyPassword "meetyou"
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "${projectName}-" + defaultConfig.versionName + "-${buildType.name}" + ".apk"
         }
     }
 
