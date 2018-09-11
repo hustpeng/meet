@@ -4,7 +4,6 @@ import android.net.ParseException;
 import android.text.TextUtils;
 
 import com.agmbat.imsdk.asmack.XMPPManager;
-import com.agmbat.imsdk.util.VLog;
 import com.agmbat.text.StringUtils;
 
 import org.jivesoftware.smack.packet.IQ;

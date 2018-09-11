@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.appupdate.AppVersionHelper;
+import com.agmbat.meetyou.BuildConfig;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.util.SystemUtil;
 
@@ -22,6 +23,8 @@ public class AboutActivity extends Activity {
 
     @BindView(R.id.version)
     TextView mVersionTv;
+    @BindView(R.id.build)
+    TextView mBuildTv;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class AboutActivity extends Activity {
 
     private void initContentView() {
         mVersionTv.setText("版本号：" + SystemUtil.getAppVersion(this));
+        mBuildTv.setText(BuildConfig.BUILD_NUMBER);
     }
 
     @Override

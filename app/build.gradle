@@ -11,6 +11,7 @@ android {
         versionName "1.0"
         project.archivesBaseName = "meetyou"
         resConfigs "zh-rCN", "zh-rHK", "zh-rTW", "en"
+        buildConfigField "String", "BUILD_NUMBER", "\"Build20180911\""
 
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
