@@ -554,11 +554,11 @@ public class RosterManager {
                 @Override
                 public void onFetchContactInfo(final ContactInfo contactInfo) {
                     //未认证用户不能通过好友申请
-                    if(contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_NOT_SUBMIT
+                    if (contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_NOT_SUBMIT
                             || contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_SUBMITED
-                            || contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_DENIED){
+                            || contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_DENIED) {
 
-                        if(AppConfigUtils.isUnauthDeniedEnable(AppResources.getAppContext())){
+                        if (AppConfigUtils.isUnauthDeniedEnable(AppResources.getAppContext())) {
                             VLog.d("Refuse unauth user as my friend");
                             Presence response = new Presence(Presence.Type.unsubscribed);
                             response.setTo(presence.getFrom());
@@ -633,7 +633,7 @@ public class RosterManager {
                     final List<ContactInfo> contactInfoList = new ArrayList<>();
                     VLog.d("RCV roster size: " + list.size());
                     for (RosterPacketItem item : list) {
-                        if(item.getItemType() == RosterPacketItemType.none){
+                        if (item.getItemType() == RosterPacketItemType.none) {
                             continue;
                         }
                         ContactInfo info = RosterHelper.loadContactInfo(item.getUser());
@@ -641,6 +641,9 @@ public class RosterManager {
                         info.setRosterType(RosterHelper.getRosterType(item.getItemType()));
                         info.setGroupName(mRoster.getGroupName(item.getUser()));
                         contactInfoList.add(info);
+                        if (getContactFromMemCache(info.getBareJid()) == null) {
+                            addContactToMemCache(info);
+                        }
                     }
 
                     UiUtils.runOnUIThread(new Runnable() {
@@ -657,6 +660,7 @@ public class RosterManager {
 
                             // 将列表同步到数据库中
                             ContactDBCache.saveAndClearOldList(contactInfoList);
+
                             VLog.d("Load contacts from server: " + contactInfoList.size());
                             //clearMessage(contactInfoList);
                             EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));

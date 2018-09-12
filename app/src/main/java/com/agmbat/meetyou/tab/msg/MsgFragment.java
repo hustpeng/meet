@@ -23,6 +23,7 @@ import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.group.CircleInfo;
 import com.agmbat.imsdk.group.GroupManager;
 import com.agmbat.imsdk.imevent.ContactDeleteEvent;
+import com.agmbat.imsdk.imevent.ContactGroupLoadEvent;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.imsdk.search.SearchManager;
@@ -139,11 +140,16 @@ public class MsgFragment extends Fragment {
         refreshRecentChat();
     }
 
+    private InitRecentChatTask mInitRecentChatTask;
+
     public void refreshRecentChat() {
         if (!isInitialed) {
             return;
         }
-        new InitRecentChatTask().execute();
+        if (null == mInitRecentChatTask) {
+            mInitRecentChatTask = new InitRecentChatTask();
+            mInitRecentChatTask.execute();
+        }
     }
 
     @Override
@@ -239,6 +245,12 @@ public class MsgFragment extends Fragment {
             refreshState();
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ContactGroupLoadEvent event) {
+        refreshRecentChat();
+    }
+
 
     /**
      * 打开相机开始扫描二维码
@@ -361,6 +373,7 @@ public class MsgFragment extends Fragment {
             refreshState();
             boolean hasUnread = hasUnreadMessage(recentChatList);
             EventBus.getDefault().post(new UnreadMessageEvent(hasUnread));
+            mInitRecentChatTask = null;
         }
     }
 
