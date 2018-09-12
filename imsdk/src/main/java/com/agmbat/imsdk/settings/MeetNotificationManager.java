@@ -93,7 +93,7 @@ public class MeetNotificationManager {
         if (body instanceof TextBody) {
             //TextBody textBody = (TextBody) body;
             //spannable = EmojiDisplay.update(textBody.getContent(), (int) SysResources.dipToPixel(14));
-            spannable = new SpannableString("[文本]");
+            spannable = new SpannableString("发来文字信息，请点开查看...");
         } else if (body instanceof UrlBody) {
             UrlBody urlBody = (UrlBody) body;
             //spannable = new SpannableString(urlBody.getContent());
