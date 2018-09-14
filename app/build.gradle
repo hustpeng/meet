@@ -2,7 +2,7 @@ import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
 
-def verName = "1.0"
+def verName = "1.0 final"
 def projectName = "meetyou"
 
 def buildTime() {
@@ -23,7 +23,7 @@ android {
         versionName "${verName}"
         project.archivesBaseName = "${projectName}"
         resConfigs "zh-rCN", "zh-rHK", "zh-rTW", "en"
-        buildConfigField "String", "BUILD_NUMBER", "\"Build${buildTime()}\""
+            buildConfigField "String", "BUILD_NUMBER", "\"Build${buildTime()}\""
 
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
