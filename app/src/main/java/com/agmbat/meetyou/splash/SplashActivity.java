@@ -165,7 +165,7 @@ public class SplashActivity extends Activity {
             mSkipButton.setVisibility(View.INVISIBLE);
         }
         mSplashShowTime = splashInfo.displayTime;
-        SplashManager.update();
+
     }
 
     /**

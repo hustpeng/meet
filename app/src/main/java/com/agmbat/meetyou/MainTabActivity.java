@@ -31,6 +31,7 @@ import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.chat.ChangeTabEvent;
 import com.agmbat.meetyou.event.UnreadMessageEvent;
 import com.agmbat.meetyou.group.GroupDBCache;
+import com.agmbat.meetyou.splash.SplashManager;
 import com.agmbat.meetyou.tab.contacts.ContactsFragment;
 import com.agmbat.meetyou.tab.discovery.DiscoveryFragment;
 import com.agmbat.meetyou.tab.msg.MsgFragment;
@@ -69,7 +70,7 @@ public class MainTabActivity extends FragmentActivity {
         setContentView(R.layout.activity_maintab);
         setupViews();
         EventBus.getDefault().register(this);
-        mHandler.postDelayed(mInitRunnable, 500);
+        mHandler.postDelayed(mInitRunnable, 1000);
     }
 
     private void queryGroupList() {
@@ -208,6 +209,7 @@ public class MainTabActivity extends FragmentActivity {
                 });
             }
             mMsgFragment.refreshRecentChat();
+            SplashManager.update();
         }
     };
 
