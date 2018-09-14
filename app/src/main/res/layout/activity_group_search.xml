@@ -7,7 +7,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="48.0dip"
+        android:layout_height="48dp"
         android:background="#ff232325">
 
         <ImageView

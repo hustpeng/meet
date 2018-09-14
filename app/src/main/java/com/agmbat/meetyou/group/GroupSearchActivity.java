@@ -22,6 +22,7 @@ import com.agmbat.imsdk.search.group.GroupCategoryResult;
 import com.agmbat.imsdk.search.group.GroupInfo;
 import com.agmbat.imsdk.search.group.OnGetGroupCategoryListener;
 import com.agmbat.imsdk.search.group.SearchGroupResult;
+import com.agmbat.imsdk.util.VLog;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.TagSelectedView;
 import com.agmbat.pagedataloader.PageData;
@@ -51,7 +52,7 @@ public class GroupSearchActivity extends Activity {
     @BindView(R.id.btn_search_group)
     ImageView mSearchButton;
 
-    private GroupCategory mGroupCategory;
+    private GroupCategory mSelectedCategory;
     private List<GroupCategory> mGroupCategoryList;
 
     private String mKeyword;
@@ -75,7 +76,8 @@ public class GroupSearchActivity extends Activity {
 
     private void loadGroupCategories() {
         List<GroupCategory> cachedGroupCategories = GroupDBCache.getGroupCategories();
-        if ((null == cachedGroupCategories || cachedGroupCategories.size() == 0)) {
+        if (null == cachedGroupCategories || cachedGroupCategories.size() == 0) {
+            mSelectedCategory = createAllCategory();
             mProgressBar.setVisibility(View.VISIBLE);
             mTagSelectedView.setVisibility(View.GONE);
             SearchManager.getGroupCategory(new OnGetGroupCategoryListener() {
@@ -119,7 +121,7 @@ public class GroupSearchActivity extends Activity {
 
     @OnClick(R.id.btn_search_group)
     void onClickSearch() {
-        if (mGroupCategory == null) {
+        if (mSelectedCategory == null) {
             ToastUtil.showToast("请选择群分类");
             return;
         }
@@ -134,23 +136,21 @@ public class GroupSearchActivity extends Activity {
      * @param list
      */
     private void updateCategory(List<GroupCategory> list) {
-        GroupCategory all = new GroupCategory();
-        all.setId(0);
-        all.setName("所有");
+        GroupCategory all = createAllCategory();
         list.add(0, all);
         mGroupCategoryList = list;
-        mGroupCategory = all;
+        mSelectedCategory = all;
         List<String> textList = new ArrayList<>();
         for (GroupCategory groupCategory : list) {
             textList.add(groupCategory.getName());
         }
         mTagSelectedView.setVisibility(View.VISIBLE);
         mTagSelectedView.setTagList(textList);
-        mTagSelectedView.setSelectedTag(mGroupCategory.getName());
+        mTagSelectedView.setSelectedTag(mSelectedCategory.getName());
         mTagSelectedView.setOnSelectedListener(new TagSelectedView.OnSelectedListener() {
             @Override
             public void onSelected(int index, String tag) {
-                mGroupCategory = findGroupCategory(tag);
+                mSelectedCategory = findGroupCategory(tag);
                 if (!TextUtils.isEmpty(mKeyword)) {
                     mPageDataLoader.loadData();
                 }
@@ -158,6 +158,13 @@ public class GroupSearchActivity extends Activity {
         });
     }
 
+
+    private GroupCategory createAllCategory() {
+        GroupCategory all = new GroupCategory();
+        all.setId(0);
+        all.setName("所有");
+        return all;
+    }
 
     private GroupCategory findGroupCategory(String name) {
         if (mGroupCategoryList != null) {
@@ -183,10 +190,12 @@ public class GroupSearchActivity extends Activity {
 
         @Override
         public SearchGroupResult onLoadData(int page) {
-            if (mGroupCategory == null) {
+            if (mSelectedCategory == null) {
+                VLog.d("Group search: category is null");
                 return null;
             }
-            return SearchManager.searchGroupSync(mKeyword, mGroupCategory.getId(), page);
+            SearchGroupResult result = SearchManager.searchGroupSync(mKeyword, mSelectedCategory.getId(), page);
+            return result;
         }
 
         @Override
@@ -196,6 +205,7 @@ public class GroupSearchActivity extends Activity {
 
         @Override
         protected void onLoadingError(PageData data) {
+            VLog.d("Group search error:");
         }
 
         @Override
