@@ -1,4 +1,4 @@
-include ':app'
+include ':app', ':indicator'
 include ':imsdk'
 include ':asmack'
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.agmbat.android.SysResources;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.permissions.PermissionArrayAction;
 import com.agmbat.android.permissions.Permissions;
@@ -32,6 +34,8 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.account.LoginActivity;
+import com.agmbat.meetyou.util.ResourceUtil;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +65,8 @@ public class SplashActivity extends Activity {
      */
     private TextView mSkipButton;
 
+    private CirclePageIndicator mIndicator;
+
     /**
      * splash 显示时长
      */
@@ -75,6 +81,11 @@ public class SplashActivity extends Activity {
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mSplashImageView = (ImageView) findViewById(R.id.splash_image);
         mSkipButton = (TextView) findViewById(R.id.btn_skip);
+        mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+        mIndicator.setFillColor(Color.parseColor("#d4a7a7"));
+        mIndicator.setRadius(SysResources.dipToPixel(5));
+        mIndicator.setSnap(true);
+        mIndicator.setPageColor(Color.parseColor("#d6d3d0"));
         if (isFirstLaunch()) {
             showGuide();
         } else {
@@ -120,6 +131,7 @@ public class SplashActivity extends Activity {
      */
     private void showGuide() {
         mViewPager.setVisibility(View.VISIBLE);
+        mIndicator.setVisibility(View.VISIBLE);
         mSplashImageView.setVisibility(View.INVISIBLE);
         mSkipButton.setVisibility(View.INVISIBLE);
 
@@ -138,6 +150,7 @@ public class SplashActivity extends Activity {
             }
         });
         mViewPager.setAdapter(adapter);
+        mIndicator.setViewPager(mViewPager);
     }
 
     /**
@@ -145,6 +158,7 @@ public class SplashActivity extends Activity {
      */
     private void showSplash() {
         mViewPager.setVisibility(View.GONE);
+        mIndicator.setVisibility(View.GONE);
         mSplashImageView.setVisibility(View.VISIBLE);
 
         mSkipButton.setOnClickListener(new View.OnClickListener() {
