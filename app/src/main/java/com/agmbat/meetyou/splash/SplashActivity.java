@@ -118,6 +118,7 @@ public class SplashActivity extends Activity {
             }
         });
         AppVersionHelper.checkVersionOnBackground();
+        SplashManager.update();
     }
 
     @Override
@@ -179,7 +180,6 @@ public class SplashActivity extends Activity {
             mSkipButton.setVisibility(View.INVISIBLE);
         }
         mSplashShowTime = splashInfo.displayTime;
-
     }
 
     /**
