@@ -305,10 +305,20 @@ public class ChatActivity extends Activity implements OnInputListener {
             bareJid = mCircleInfo.getGroupJid();
         }
         mMessages = XMPPManager.getInstance().getMessageManager().getMessageList(bareJid);
+        markMessagesAsRead(mMessages);
         mAdapter = new MessageListAdapter(this, mMessages);
         mAdapter.setOnContentLongClickListener(mOnItemLongClickListener);
         mPtrView.setOnScrollListener(mOnScrollListener);
         mPtrView.setAdapter(mAdapter);
+    }
+
+    private void markMessagesAsRead(List<MessageObject> messageObjects){
+        for (int i = 0; i < messageObjects.size(); i++) {
+            MessageObject current = messageObjects.get(i);
+            if(current.getMsgStatus() != MessageObjectStatus.READ){
+                XMPPManager.getInstance().getMessageManager().updateMsgStatus(current.getMsgId(), MessageObjectStatus.READ);
+            }
+        }
     }
 
     private MessageListAdapter.OnContentLongClickListener mOnItemLongClickListener = new MessageListAdapter.OnContentLongClickListener() {
@@ -668,6 +678,7 @@ public class ChatActivity extends Activity implements OnInputListener {
             if (packet instanceof GroupChatReply) {
                 GroupChatReply groupChatReply = (GroupChatReply) packet;
                 List<MessageObject> messageObjects = groupChatReply.getMessages();
+                markMessagesAsRead(messageObjects);
                 String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
                 for (int i = 0; i < messageObjects.size(); i++) {
                     MessageObject messageObject = messageObjects.get(i);
