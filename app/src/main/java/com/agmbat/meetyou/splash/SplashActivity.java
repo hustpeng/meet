@@ -71,11 +71,6 @@ public class SplashActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
-        if (XMPPManager.getInstance().isLogin()) {
-            startActivity(new Intent(getBaseContext(), MainTabActivity.class));
-            finish();
-            return;
-        }
         setContentView(R.layout.activity_splash);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mSplashImageView = (ImageView) findViewById(R.id.splash_image);
@@ -83,6 +78,11 @@ public class SplashActivity extends Activity {
         if (isFirstLaunch()) {
             showGuide();
         } else {
+            if (XMPPManager.getInstance().isLogin()) {
+                startActivity(new Intent(getBaseContext(), MainTabActivity.class));
+                finish();
+                return;
+            }
             showSplash();
         }
         Permissions.request(this, new String[]{
