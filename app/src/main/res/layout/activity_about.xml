@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="#EBEBEB"
     android:orientation="vertical">
 
@@ -53,11 +53,11 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@drawable/im_setting_item"
-        android:gravity="center"
         android:drawableRight="@drawable/im_ic_right"
-        android:text="@string/user_feedback"
+        android:gravity="center"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
+        android:text="@string/user_feedback"
         android:textColor="#000000"
         android:textSize="16sp" />
 
@@ -74,11 +74,11 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@drawable/im_setting_item"
+        android:drawableRight="@drawable/im_ic_right"
         android:gravity="center"
         android:paddingLeft="15dp"
-        android:drawableRight="@drawable/im_ic_right"
-        android:text="@string/check_update"
         android:paddingRight="15dp"
+        android:text="@string/check_update"
         android:textColor="#000000"
         android:textSize="16sp" />
 
@@ -117,7 +117,7 @@
                 android:textColor="#969696"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                tools:text="Build20180911"/>
+                tools:text="Build20180911" />
 
         </LinearLayout>
 
@@ -144,7 +144,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="XX科技提供开发支持"
+                android:gravity="center_horizontal"
+                android:text="恩宜工作室开发"
                 android:textColor="#969696"
                 android:textSize="12sp"
                 android:visibility="visible" />

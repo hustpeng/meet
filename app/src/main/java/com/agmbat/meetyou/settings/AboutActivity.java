@@ -62,7 +62,7 @@ public class AboutActivity extends Activity {
 
     @OnClick(R.id.visit_offical_web)
     void onClickOfficalWeb() {
-        SystemUtil.openBrowser(this, "https://www.xmpp.org.cn/");
+        SystemUtil.openBrowser(this, "https://www.zhenyue365.com");
     }
 
 
