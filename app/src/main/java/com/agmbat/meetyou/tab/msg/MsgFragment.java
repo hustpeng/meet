@@ -53,6 +53,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.message.MessageObject;
 import org.jivesoftware.smackx.message.MessageObjectStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -90,6 +91,8 @@ public class MsgFragment extends Fragment {
      */
     private ISLoadingDialog mISLoadingDialog;
 
+    private List<MessageObject> mRecentMessages = new ArrayList<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return View.inflate(getActivity(), R.layout.tab_fragment_msg, null);
@@ -100,6 +103,10 @@ public class MsgFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         EventBus.getDefault().register(this);
+
+        mAdapter = new RecentChatAdapter(getActivity(), mRecentMessages);
+        mListView.setAdapter(mAdapter);
+
         // step 1. create a MenuCreator
         final SwipeMenuCreator creator = new SwipeMenuCreator() {
 
@@ -119,7 +126,7 @@ public class MsgFragment extends Fragment {
                 switch (index) {
                     case 0:
                         MessageObject item = mAdapter.getItem(position);
-                        mAdapter.remove(item);
+                        mRecentMessages.remove(item);
                         mAdapter.notifyDataSetChanged();
                         refreshState();
                         XMPPManager.getInstance().getMessageManager().deleteMessage(item);
@@ -240,7 +247,7 @@ public class MsgFragment extends Fragment {
         String jid = event.getJid();
         MessageObject existTalkMessage = findTalkMessage(jid);
         if (existTalkMessage != null) {
-            mAdapter.remove(existTalkMessage);
+            mRecentMessages.remove(existTalkMessage);
             mAdapter.notifyDataSetChanged();
             refreshState();
         }
@@ -301,9 +308,10 @@ public class MsgFragment extends Fragment {
     private void updateRecentMsgList(MessageObject messageObject) {
         MessageObject existTalkMessage = findTalkMessage(MessageManager.getTalkJid(messageObject));
         if (existTalkMessage != null) {
-            mAdapter.remove(existTalkMessage);
+            mRecentMessages.remove(existTalkMessage);
         }
-        mAdapter.insert(messageObject, 0);
+        mRecentMessages.add(0, messageObject);
+        MessageObject.sortByDate(mRecentMessages, false);
         mAdapter.notifyDataSetChanged();
         refreshState();
         if (messageObject.getMsgStatus() == MessageObjectStatus.UNREAD) {
@@ -319,8 +327,8 @@ public class MsgFragment extends Fragment {
      * @return
      */
     private MessageObject findTalkMessage(String jid) {
-        for (int i = 0; i < mAdapter.getCount(); i++) {
-            MessageObject exist = mAdapter.getItem(i);
+        for (int i = 0; i < mRecentMessages.size(); i++) {
+            MessageObject exist = mRecentMessages.get(i);
             if (jid.equals(MessageManager.getTalkJid(exist))) {
                 return exist;
             }
@@ -354,7 +362,7 @@ public class MsgFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            if (null == mAdapter || mAdapter.getCount() == 0) {
+            if (mRecentMessages.size() == 0) {
                 setState(STATE_LOADING);
             }
         }
@@ -368,8 +376,9 @@ public class MsgFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<MessageObject> recentChatList) {
-            mAdapter = new RecentChatAdapter(getActivity(), recentChatList);
-            mListView.setAdapter(mAdapter);
+            mRecentMessages.clear();
+            mRecentMessages.addAll(recentChatList);
+            mAdapter.notifyDataSetChanged();
             refreshState();
             boolean hasUnread = hasUnreadMessage(recentChatList);
             EventBus.getDefault().post(new UnreadMessageEvent(hasUnread));
@@ -393,7 +402,7 @@ public class MsgFragment extends Fragment {
      * 刷新状态显示
      */
     private void refreshState() {
-        if (mAdapter.getCount() > 0) {
+        if (mRecentMessages.size() > 0) {
             setState(STATE_SUCCESS);
         } else {
             setState(STATE_NO_DATA);
