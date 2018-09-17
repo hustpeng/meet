@@ -26,6 +26,9 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageSubType;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -232,5 +235,19 @@ public class MessageObject implements Serializable {
             return input.getMsgId().equals(this.getMsgId());
         }
         return false;
+    }
+
+    public static void sortByDate(List<MessageObject> messageObjects, final boolean isAsc) {
+        Collections.sort(messageObjects, new Comparator<MessageObject>() {
+            @Override
+            public int compare(MessageObject messageObject, MessageObject t1) {
+                if (messageObject.getDate() > t1.getDate()) {
+                    return isAsc ? 1 : -1;
+                } else if (messageObject.getDate() < t1.getDate()) {
+                    return isAsc ? -1 : 1;
+                }
+                return 0;
+            }
+        });
     }
 }

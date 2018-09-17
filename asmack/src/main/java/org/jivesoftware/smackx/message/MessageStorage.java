@@ -286,12 +286,13 @@ public class MessageStorage {
 
     // MessageFragment data
     public List<MessageObject> getAllMessage(String myJid) {
-        if(null == myJid){
+        if (null == myJid) {
             myJid = "";
         }
         List<MessageObject> senderArray = getSenderMessageObjects(myJid);
         List<MessageObject> receiverArray = getReceiverMessageObjects(myJid);
         List<MessageObject> resultArray = mergeMessage(senderArray, receiverArray);
+        MessageObject.sortByDate(resultArray, false);
         return resultArray;
     }
 
@@ -349,30 +350,31 @@ public class MessageStorage {
      */
     private static List<MessageObject> mergeMessage(List<MessageObject> senderArray,
                                                     List<MessageObject> receiverArray) {
-        List<MessageObject> resultArray = null;
+        List<MessageObject> resultArray = new ArrayList<>();
         if (senderArray.size() > 0 && receiverArray.size() > 0) {
             for (MessageObject senderMessageObject : senderArray) {
-                boolean duplicateFlag = false;
+                boolean found = false;
                 for (MessageObject receiverMessageObject : receiverArray) {
-                    if (senderMessageObject.getFromJid().equals(receiverMessageObject.getToJid())) {
+                    if (senderMessageObject.getToJid().equals(receiverMessageObject.getFromJid())) {
                         if (senderMessageObject.getDate() > receiverMessageObject.getDate()) {
-                            receiverArray.remove(receiverMessageObject);
-                            receiverArray.add(senderMessageObject);
+                            resultArray.add(senderMessageObject);
+                        } else {
+                            resultArray.add(receiverMessageObject);
                         }
-                        duplicateFlag = true;
+                        found = true;
+                        receiverArray.remove(receiverMessageObject);
                         break;
                     }
                 }
-
-                if (!duplicateFlag) {
-                    receiverArray.add(senderMessageObject);
+                if (!found) {
+                    resultArray.add(senderMessageObject);
                 }
             }
-            resultArray = receiverArray;
+            resultArray.addAll(receiverArray);
         } else if (senderArray.size() > 0) {
-            resultArray = senderArray;
-        } else {
-            resultArray = receiverArray;
+            resultArray.addAll(senderArray);
+        } else if (receiverArray.size() > 0) {
+            resultArray.addAll(receiverArray);
         }
         return resultArray;
     }
