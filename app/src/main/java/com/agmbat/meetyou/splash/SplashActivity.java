@@ -108,7 +108,7 @@ public class SplashActivity extends Activity {
                 @Override
                 public void onResult(String[] permissions, boolean[] grantResults) {
                     if (Permissions.checkResult(grantResults)) {
-                        if (mViewPager.isShown()) {
+                        if (mViewPager.getVisibility() == View.VISIBLE) {
                             // 如果显示了引导页面, 则不处理
                         } else {
                             mHandler.postDelayed(mRunnable, mSplashShowTime);
@@ -119,7 +119,7 @@ public class SplashActivity extends Activity {
                 }
             });
         } else {
-            if (mViewPager.isShown()) {
+            if (mViewPager.getVisibility() == View.VISIBLE) {
                 // 如果显示了引导页面, 则不处理
             } else {
                 mHandler.postDelayed(mRunnable, mSplashShowTime);
