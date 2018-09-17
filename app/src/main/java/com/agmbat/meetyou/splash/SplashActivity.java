@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -34,7 +35,6 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.account.LoginActivity;
-import com.agmbat.meetyou.util.ResourceUtil;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
@@ -96,27 +96,35 @@ public class SplashActivity extends Activity {
             }
             showSplash();
         }
-        Permissions.request(this, new String[]{
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA
-        }, new PermissionArrayAction() {
-            @Override
-            public void onResult(String[] permissions, boolean[] grantResults) {
-                if (Permissions.checkResult(grantResults)) {
-                    if (mViewPager.isShown()) {
-                        // 如果显示了引导页面, 则不处理
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Permissions.request(this, new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.RECORD_AUDIO,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA
+            }, new PermissionArrayAction() {
+                @Override
+                public void onResult(String[] permissions, boolean[] grantResults) {
+                    if (Permissions.checkResult(grantResults)) {
+                        if (mViewPager.isShown()) {
+                            // 如果显示了引导页面, 则不处理
+                        } else {
+                            mHandler.postDelayed(mRunnable, mSplashShowTime);
+                        }
                     } else {
-                        mHandler.postDelayed(mRunnable, mSplashShowTime);
+                        showNoPermissionDialog();
                     }
-                } else {
-                    showNoPermissionDialog();
                 }
+            });
+        } else {
+            if (mViewPager.isShown()) {
+                // 如果显示了引导页面, 则不处理
+            } else {
+                mHandler.postDelayed(mRunnable, mSplashShowTime);
             }
-        });
+        }
         AppVersionHelper.checkVersionOnBackground();
         SplashManager.update();
     }
