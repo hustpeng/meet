@@ -4,18 +4,20 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <EditText
         android:id="@+id/txt_search"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="33dp"
         android:layout_margin="15dp"
         android:background="@drawable/search_ba"
         android:drawableLeft="@drawable/search_icon"
         android:drawablePadding="10dp"
-        android:gravity="center|left"
+        android:gravity="left|center_vertical"
+        android:hint="@string/search"
+        android:imeOptions="actionSearch"
         android:paddingLeft="20dp"
         android:singleLine="true"
-        android:text="@string/search"
-        android:textColor="#7A7E83" />
+        android:textColor="@color/normal_text_color"
+        android:textColorHint="#7A7E83" />
 
 </LinearLayout>

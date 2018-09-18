@@ -2,15 +2,11 @@ package com.agmbat.imsdk.asmack.roster;
 
 import com.agmbat.db.DbException;
 import com.agmbat.db.DbManager;
-import com.agmbat.imsdk.asmack.roster.ContactGroup;
-import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.db.MeetDatabase;
 import com.agmbat.log.Debug;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -73,6 +69,25 @@ public class ContactDBCache {
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+
+    public static List<ContactInfo> searchContacts(String keyword) {
+        DbManager db = MeetDatabase.getInstance().getDatabase();
+        if (db == null) {
+            Debug.printStackTrace();
+            return new ArrayList<>();
+        }
+        List<ContactInfo> contactInfos = new ArrayList<>();
+        try {
+            contactInfos = db.selector(ContactInfo.class)
+                    .where("nickname", "like", "'%" + keyword + "'")
+                    //.or("jid", "like", "'%" + keyword + "%'")
+                    .findAll();
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return contactInfos;
     }
 
 

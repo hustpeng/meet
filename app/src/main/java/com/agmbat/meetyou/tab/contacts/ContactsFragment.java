@@ -1,17 +1,23 @@
 package com.agmbat.meetyou.tab.contacts;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactGroup;
@@ -78,10 +84,25 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         View headerView = View.inflate(getActivity(), R.layout.layout_head_friend, null);
-        headerView.findViewById(R.id.btn_search).setOnClickListener(new View.OnClickListener() {
+        final EditText searchEditText = (EditText) headerView.findViewById(R.id.txt_search);
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View v) {
-                onClickAdd();
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                //判断是否是“完成”键
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    //隐藏软键盘
+                    InputMethodManager imm = (InputMethodManager) searchEditText.getContext()
+                            .getSystemService(
+                                    Context.INPUT_METHOD_SERVICE);
+                    if (imm.isActive()) {
+                        imm.hideSoftInputFromWindow(
+                                searchEditText.getApplicationWindowToken(), 0);
+                    }
+                    ContactSearchActivity.launch(getContext(), searchEditText.getText().toString());
+                    searchEditText.setText("");
+                    return true;
+                }
+                return false;
             }
         });
         headerView.findViewById(R.id.btn_new_friend).setOnClickListener(new View.OnClickListener() {
@@ -119,6 +140,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         setState(STATE_LOADING);
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
@@ -152,7 +174,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(PresenceSubscribeEvent event) {
-        if(null == mNewFriendAlertDialog || !mNewFriendAlertDialog.isShowing()){
+        if (null == mNewFriendAlertDialog || !mNewFriendAlertDialog.isShowing()) {
             ContactInfo contactInfo = event.getContactInfo();
             mNewFriendAlertDialog = new ISAlertDialog(getActivity());
             mNewFriendAlertDialog.setCancelable(true);
