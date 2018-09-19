@@ -307,23 +307,30 @@ public class ChatActivity extends Activity implements OnInputListener {
         mMessages = XMPPManager.getInstance().getMessageManager().getMessageList(bareJid);
         markMessagesAsRead(mMessages);
         mAdapter = new MessageListAdapter(this, mMessages);
-        mAdapter.setOnContentLongClickListener(mOnItemLongClickListener);
+        mAdapter.setOnChatLongClickListener(mOnItemLongClickListener);
         mPtrView.setOnScrollListener(mOnScrollListener);
         mPtrView.setAdapter(mAdapter);
     }
 
-    private void markMessagesAsRead(List<MessageObject> messageObjects){
+    private void markMessagesAsRead(List<MessageObject> messageObjects) {
         for (int i = 0; i < messageObjects.size(); i++) {
             MessageObject current = messageObjects.get(i);
-            if(current.getMsgStatus() != MessageObjectStatus.READ){
+            if (current.getMsgStatus() != MessageObjectStatus.READ) {
                 XMPPManager.getInstance().getMessageManager().updateMsgStatus(current.getMsgId(), MessageObjectStatus.READ);
             }
         }
     }
 
-    private MessageListAdapter.OnContentLongClickListener mOnItemLongClickListener = new MessageListAdapter.OnContentLongClickListener() {
+    private MessageListAdapter.OnChatLongClickListener mOnItemLongClickListener = new MessageListAdapter.OnChatLongClickListener() {
         @Override
-        public void onLongClick(final int position, MessageView messageView) {
+        public void onAvatarLongClick(int position, MessageView messageView) {
+            MessageObject messageObject = mAdapter.getItem(position);
+            mInputView.setText("@" + messageObject.getSenderNickName());
+            mInputView.setSelection(mInputView.getText().length());
+        }
+
+        @Override
+        public void onContentLongClick(final int position, MessageView messageView) {
             final MessageObject messageObject = mAdapter.getItem(position);
             String bodyText = messageObject.getBody();
             String[] operations = null;
@@ -366,17 +373,17 @@ public class ChatActivity extends Activity implements OnInputListener {
 
         @Override
         public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            int lastIndex = firstVisibleItem + visibleItemCount;
-            for (int i = firstVisibleItem; i < lastIndex; i++) {
-                if (i == 0 || i == lastIndex - 1) {
-                    continue;
-                }
-                MessageObject messageObject = mAdapter.getItem(i - 1);
-                MessageObjectStatus oldStatus = messageObject.getMsgStatus();
-                if (oldStatus != MessageObjectStatus.READ) {
-                    XMPPManager.getInstance().getMessageManager().updateMsgStatus(messageObject.getMsgId(), MessageObjectStatus.READ);
-                }
-            }
+//            int lastIndex = firstVisibleItem + visibleItemCount;
+//            for (int i = firstVisibleItem; i < lastIndex; i++) {
+//                if (i == 0 || i == lastIndex - 1) {
+//                    continue;
+//                }
+//                MessageObject messageObject = mAdapter.getItem(i - 1);
+//                MessageObjectStatus oldStatus = messageObject.getMsgStatus();
+//                if (oldStatus != MessageObjectStatus.READ) {
+//                    XMPPManager.getInstance().getMessageManager().updateMsgStatus(messageObject.getMsgId(), MessageObjectStatus.READ);
+//                }
+//            }
         }
     };
 

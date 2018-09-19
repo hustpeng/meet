@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class MessageListAdapter extends ArrayAdapter<MessageObject> {
 
-    private OnContentLongClickListener mOnContentLongClickListener;
+    private OnChatLongClickListener mOnChatLongClickListener;
 
     public MessageListAdapter(Context context, List<MessageObject> messages) {
         super(context, 0, messages);
@@ -33,13 +33,19 @@ public class MessageListAdapter extends ArrayAdapter<MessageObject> {
         }
         boolean isShowTime = isShowTime(message, prevMessage);
         messageView.update(message, isShowTime);
-        messageView.setOnContentLongClickListener(new View.OnLongClickListener() {
+        messageView.setOnItemLongClickListener(new ItemView.OnItemLongClickListener() {
             @Override
-            public boolean onLongClick(View view) {
-                if (null != mOnContentLongClickListener) {
-                    mOnContentLongClickListener.onLongClick(position, messageView);
+            public void onContentLongClick(View view) {
+                if (null != mOnChatLongClickListener) {
+                    mOnChatLongClickListener.onContentLongClick(position, messageView);
                 }
-                return true;
+            }
+
+            @Override
+            public void onAvatarLongClick(View view) {
+                if (null != mOnChatLongClickListener) {
+                    mOnChatLongClickListener.onAvatarLongClick(position, messageView);
+                }
             }
         });
         return convertView;
@@ -62,14 +68,17 @@ public class MessageListAdapter extends ArrayAdapter<MessageObject> {
     }
 
 
-    public void setOnContentLongClickListener(OnContentLongClickListener onContentLongClickListener) {
-        mOnContentLongClickListener = onContentLongClickListener;
+    public void setOnChatLongClickListener(OnChatLongClickListener onChatLongClickListener) {
+        mOnChatLongClickListener = onChatLongClickListener;
     }
 
 
-    public interface OnContentLongClickListener {
+    public interface OnChatLongClickListener {
 
-        public void onLongClick(int position, MessageView messageView);
+        public void onAvatarLongClick(int position, MessageView messageView);
+
+        public void onContentLongClick(int position, MessageView messageView);
+
     }
 
 }

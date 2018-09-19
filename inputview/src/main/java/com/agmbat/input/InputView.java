@@ -250,6 +250,15 @@ public class InputView extends LinearLayout {
         return mVoiceButton;
     }
 
+
+    public void setSelection(int start, int stop) {
+        mEditText.setSelection(start, stop);
+    }
+
+    public void setSelection(int index) {
+        mEditText.setSelection(index);
+    }
+
     /**
      * 判断语音面板是否显示
      *

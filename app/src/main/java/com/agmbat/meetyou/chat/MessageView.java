@@ -33,7 +33,7 @@ public class MessageView extends FrameLayout {
         }
     }
 
-    public void setOnContentLongClickListener(OnLongClickListener onLongClickListener) {
+    public void setOnItemLongClickListener(ItemView.OnItemLongClickListener onLongClickListener) {
         mFromView.setOnContentLongClickListener(onLongClickListener);
         mToView.setOnContentLongClickListener(onLongClickListener);
     }

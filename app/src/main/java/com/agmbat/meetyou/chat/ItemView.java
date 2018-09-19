@@ -89,12 +89,21 @@ public abstract class ItemView extends LinearLayout {
      */
     protected ProgressBar mLoadingProgress;
 
-    private OnLongClickListener mOnLongClickListener;
+    private OnItemLongClickListener mOnLongClickListener;
 
     public ItemView(Context context) {
         super(context);
         View.inflate(context, getLayoutId(), this);
         mAvatarView = (ImageView) findViewById(R.id.avatar);
+        mAvatarView.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (null != mOnLongClickListener) {
+                    mOnLongClickListener.onAvatarLongClick(view);
+                }
+                return true;
+            }
+        });
         mChatContentView = (TextView) findViewById(R.id.chat_content);
         mTimeView = (TextView) findViewById(R.id.time);
         mBodyImage = (ImageView) findViewById(R.id.body_image);
@@ -103,7 +112,7 @@ public abstract class ItemView extends LinearLayout {
             @Override
             public boolean onLongClick(View view) {
                 if (null != mOnLongClickListener) {
-                    mOnLongClickListener.onLongClick(view);
+                    mOnLongClickListener.onContentLongClick(view);
                 }
                 return true;
             }
@@ -112,7 +121,7 @@ public abstract class ItemView extends LinearLayout {
             @Override
             public boolean onLongClick(View view) {
                 if (null != mOnLongClickListener) {
-                    mOnLongClickListener.onLongClick(view);
+                    mOnLongClickListener.onContentLongClick(view);
                 }
                 return true;
             }
@@ -470,9 +479,17 @@ public abstract class ItemView extends LinearLayout {
         return false;
     }
 
-    public void setOnContentLongClickListener(OnLongClickListener onLongClickListener) {
+    public void setOnContentLongClickListener(OnItemLongClickListener onLongClickListener) {
         mOnLongClickListener = onLongClickListener;
     }
 
+
+    public interface OnItemLongClickListener{
+
+        public void onContentLongClick(View view);
+
+        public void onAvatarLongClick(View view);
+
+    }
 
 }
