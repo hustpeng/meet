@@ -3,6 +3,7 @@ package com.agmbat.meetyou.tab.contacts;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,18 +15,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.agmbat.android.SysResources;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.asmack.roster.ContactDBCache;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.widget.BaseRecyclerAdapter;
+import com.agmbat.meetyou.widget.OnRecyclerViewItemClickListener;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ContactSearchActivity extends Activity {
 
@@ -60,7 +65,27 @@ public class ContactSearchActivity extends Activity {
     private void initContentView() {
         mResultListView.setLayoutManager(new GridLayoutManager(getBaseContext(), 4));
         mContactAdapter = new ContactsAdapter();
+        mContactAdapter.setOnItemClickListener(new OnRecyclerViewItemClickListener<ContactsAdapter.ContactViewHolder>() {
+            @Override
+            public void onItemClick(View view, int position, ContactsAdapter.ContactViewHolder viewHolder) {
+                ContactInfo contactInfo = mContactAdapter.getItem(position);
+                ChatActivity.openChat(getBaseContext(), contactInfo);
+            }
+
+            @Override
+            public void onLongClick(View view, int position, ContactsAdapter.ContactViewHolder viewHolder) {
+
+            }
+        });
         mResultListView.setAdapter(mContactAdapter);
+        mResultListView.addItemDecoration(new RecyclerView.ItemDecoration() {
+
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                int position = parent.getChildAdapterPosition(view);
+                outRect.top = (int) SysResources.dipToPixel(15);
+            }
+        });
     }
 
     private ISLoadingDialog mLoadingDialog;
@@ -99,6 +124,7 @@ public class ContactSearchActivity extends Activity {
         @Override
         protected void onPreExecute() {
             showSearchingDialog();
+            mResultView.setVisibility(View.GONE);
         }
 
         @Override
@@ -112,6 +138,13 @@ public class ContactSearchActivity extends Activity {
             mSearchTask = null;
             dismissSearchingDialog();
             mContactAdapter.setAll(contactInfos);
+            if (contactInfos.size() == 0) {
+                mResultView.setVisibility(View.VISIBLE);
+                mResultListView.setVisibility(View.GONE);
+            } else {
+                mResultView.setVisibility(View.GONE);
+                mResultListView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -147,6 +180,12 @@ public class ContactSearchActivity extends Activity {
                 mNameView.setText(contactInfo.getNickName());
             }
         }
+    }
+
+
+    @OnClick(R.id.title_btn_back)
+    public void onClickBack() {
+        finish();
     }
 
 

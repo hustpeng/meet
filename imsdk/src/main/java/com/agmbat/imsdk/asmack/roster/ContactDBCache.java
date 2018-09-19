@@ -81,8 +81,8 @@ public class ContactDBCache {
         List<ContactInfo> contactInfos = new ArrayList<>();
         try {
             contactInfos = db.selector(ContactInfo.class)
-                    .where("nickname", "like", "'%" + keyword + "'")
-                    //.or("jid", "like", "'%" + keyword + "%'")
+                    .where("nickname", "like", "%" + keyword + "%")
+                    .or("jid", "like", "%" + keyword + "%")
                     .findAll();
         } catch (DbException e) {
             e.printStackTrace();
