@@ -175,6 +175,10 @@ public class InputView extends LinearLayout {
         }
     }
 
+    public int getSelectionStart(){
+        return mEditText.getSelectionStart();
+    }
+
     public void setOnClickSendListener(OnClickListener l) {
         mSendButton.setOnClickListener(l);
     }
@@ -215,8 +219,8 @@ public class InputView extends LinearLayout {
      *
      * @return
      */
-    public String getText() {
-        return mEditText.getText().toString();
+    public Editable getText() {
+        return mEditText.getText();
     }
 
     /**
@@ -226,6 +230,10 @@ public class InputView extends LinearLayout {
      */
     public void setText(String text) {
         mEditText.setText(text);
+    }
+
+    public void setTextKeepState(CharSequence text) {
+        mEditText.setTextKeepState(text);
     }
 
     /**

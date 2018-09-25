@@ -109,7 +109,7 @@ public class InputController {
      * 发送聊天信息
      */
     private void sendText() {
-        String text = mInputView.getText();
+        String text = mInputView.getText().toString();
         if (TextUtils.isEmpty(text)) {
             Toast.makeText(mInputView.getContext(), "不能发送空消息", Toast.LENGTH_LONG).show();
         }
