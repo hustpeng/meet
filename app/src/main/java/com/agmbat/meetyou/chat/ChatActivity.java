@@ -353,21 +353,27 @@ public class ChatActivity extends Activity implements OnInputListener {
             String senderJid = messageObject.getSenderJid();
             String senderNickName = messageObject.getSenderNickName();
 
+            String atNickName = "@" + senderNickName;
+            String existInput = mInputView.getText().toString().trim();
+            String[] inputParts = existInput.split("@");
+            for (int i = 0; i < inputParts.length; i++) {
+                if(inputParts[i].equals(senderNickName)){
+                    return;
+                }
+            }
+
             cidNameMap.put(senderJid, senderNickName);
-            String existInput = String.valueOf(mInputView.getText().toString().trim());
-            String[] inputParts = existInput.split(" ");
             //返回的人名，自增加
             if (nameStr == null) {
-                nameStr = senderNickName + " ";
+                nameStr = atNickName + " ";
             } else {
-                nameStr += senderNickName + " ";
-
+                nameStr += atNickName + " ";
             }
-            lastNameStr = senderNickName;
+            lastNameStr = atNickName;
             // 获取光标当前位置
             int curIndex = mInputView.getSelectionStart();
             // 把要@的人插入光标所在位置
-            mInputView.getText().insert(curIndex, lastNameStr);
+            mInputView.getText().insert(curIndex, atNickName);
             setAtImageSpan(nameStr);
         }
 
@@ -420,7 +426,7 @@ public class ChatActivity extends Activity implements OnInputListener {
                 for (String name : names) {
                     if (name != null && name.trim().length() > 0) {
                         //把获取到的名字转为bitmap对象
-                        final Bitmap bmp = getNameBitmap("@" + name);
+                        final Bitmap bmp = getNameBitmap(name);
                         // 这里会出现删除过的用户，需要做判断，过滤掉
                         if (tmp.indexOf(name) >= 0
                                 && (tmp.indexOf(name) + name.length()) <= tmp
@@ -428,7 +434,7 @@ public class ChatActivity extends Activity implements OnInputListener {
                             // 把取到的要@的人名，用DynamicDrawableSpan代替
                             ss.setSpan(
                                     new DynamicDrawableSpan(
-                                            DynamicDrawableSpan.ALIGN_BASELINE) {
+                                            DynamicDrawableSpan.ALIGN_BOTTOM) {
                                         @Override
                                         public Drawable getDrawable() {
                                             BitmapDrawable drawable = new BitmapDrawable(
