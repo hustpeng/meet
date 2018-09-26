@@ -26,7 +26,7 @@ public class TextBody extends Body {
         builder.append("<wrap>");
         builder.append("<type>").append(getBodyType()).append("</type>");
         builder.append("<content>").append(mContent).append("</content>");
-        if (null != mAtUsers) {
+        if (null != mAtUsers && mAtUsers.size() > 0) {
             builder.append("<at>");
             for (int i = 0; i < mAtUsers.size(); i++) {
                 AtUser atUser = mAtUsers.get(i);
@@ -47,7 +47,7 @@ public class TextBody extends Body {
     }
 
 
-    public class AtUser {
+    public static class AtUser {
 
         private String jid;
 

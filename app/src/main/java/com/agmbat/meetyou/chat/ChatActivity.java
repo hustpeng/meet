@@ -16,6 +16,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.DynamicDrawableSpan;
 import android.widget.AbsListView;
 import android.widget.ImageView;
@@ -93,6 +94,7 @@ import org.jivesoftware.smackx.message.MessageStorage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -335,12 +337,13 @@ public class ChatActivity extends Activity implements OnInputListener {
     /**
      * 存储@的cid、name对
      */
-    private Map<String, String> cidNameMap = new HashMap<String, String>();
+    private Map<String, String> nickNameMap = new HashMap<String, String>();
     /**
      * 返回的所有的用户名,用于识别输入框中的所有要@的人
      * 如果用户删除过，会出现不匹配的情况，需要在for循环中做处理
      */
-    private String nameStr;
+    private List<String> atNames = new ArrayList<>();
+
 
     private MessageListAdapter.OnChatLongClickListener mOnItemLongClickListener = new MessageListAdapter.OnChatLongClickListener() {
         @Override
@@ -349,27 +352,29 @@ public class ChatActivity extends Activity implements OnInputListener {
             String senderJid = messageObject.getSenderJid();
             String senderNickName = messageObject.getSenderNickName();
 
-            String atNickName = "@" + senderNickName;
+            String atNickName = "@" + senderNickName + " ";
             String existInput = mInputView.getText().toString().trim();
-            String[] inputParts = existInput.split("@");
+            String[] inputParts = existInput.split(" ");
             for (int i = 0; i < inputParts.length; i++) {
-                if(inputParts[i].equals(senderNickName)){
+                if(inputParts[i].equals(atNickName.trim())){
                     return;
                 }
             }
 
-            cidNameMap.put(senderJid, senderNickName);
+            nickNameMap.put(senderJid, senderNickName);
             //返回的人名，自增加
-            if (nameStr == null) {
-                nameStr = atNickName + " ";
-            } else {
-                nameStr += atNickName + " ";
-            }
+            atNames.add(atNickName);
             // 获取光标当前位置
             int curIndex = mInputView.getSelectionStart();
+            if(curIndex > 0){
+                char curPreChar = mInputView.getText().toString().charAt(curIndex - 1);
+                if(curPreChar != ' '){
+                    atNickName = " " + atNickName;
+                }
+            }
             // 把要@的人插入光标所在位置
             mInputView.getText().insert(curIndex, atNickName);
-            setAtImageSpan(nameStr);
+            setAtImageSpan(atNames);
         }
 
         @Override
@@ -408,41 +413,68 @@ public class ChatActivity extends Activity implements OnInputListener {
     };
 
 
-    private void setAtImageSpan(String nameStr) {
+    //上传需要的id值
+    public List<TextBody.AtUser> getAtUsers(String content) {
+        List<TextBody.AtUser> atUsers = new ArrayList<>();
+        String[] parts = content.split(" ");
+        for (int i = 0; i < parts.length; i++) {
+            if(!parts[i].startsWith("@")){
+                continue;
+            }
+            String jid = "";
+            String nickName = parts[i].replace("@", "");
+            Iterator it = nickNameMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry) it.next();
+                Object obj = entry.getValue();
+                if (obj != null && obj.equals(nickName)) {
+                    jid = (String) entry.getKey();
+                }
+            }
+            if(!TextUtils.isEmpty(jid)){
+                TextBody.AtUser atUser = new TextBody.AtUser();
+                atUser.setJid(jid);
+                atUser.setNickName(nickName);
+                atUsers.add(atUser);
+            }
+        }
+        return atUsers;
+    }
+
+
+    private void setAtImageSpan(List<String> atNames) {
         String content = mInputView.getText().toString();
         if (content.endsWith("@") || content.endsWith("＠")) {
             content = content.substring(0, content.length() - 1);
         }
         String tmp = content;
         SpannableString ss = new SpannableString(tmp);
-        if (nameStr != null) {
-            String[] names = nameStr.split(" ");
-            if (names != null && names.length > 0) {
-                for (String name : names) {
-                    if (name != null && name.trim().length() > 0) {
-                        //把获取到的名字转为bitmap对象
-                        final Bitmap bmp = getNameBitmap(name);
-                        // 这里会出现删除过的用户，需要做判断，过滤掉
-                        if (tmp.indexOf(name) >= 0
-                                && (tmp.indexOf(name) + name.length()) <= tmp
-                                .length()) {
-                            // 把取到的要@的人名，用DynamicDrawableSpan代替
-                            ss.setSpan(
-                                    new DynamicDrawableSpan(
-                                            DynamicDrawableSpan.ALIGN_BOTTOM) {
-                                        @Override
-                                        public Drawable getDrawable() {
-                                            BitmapDrawable drawable = new BitmapDrawable(
-                                                    getResources(), bmp);
-                                            drawable.setBounds(0, 0,
-                                                    bmp.getWidth(),
-                                                    bmp.getHeight());
-                                            return drawable;
-                                        }
-                                    }, tmp.indexOf(name),
-                                    tmp.indexOf(name) + name.length(),
-                                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
+        if (atNames != null) {
+            for (int i = 0; i < atNames.size(); i++) {
+                String name = atNames.get(i);
+                if (name != null && name.trim().length() > 0) {
+                    //把获取到的名字转为bitmap对象
+                    final Bitmap bmp = getNameBitmap(name);
+                    // 这里会出现删除过的用户，需要做判断，过滤掉
+                    if (tmp.indexOf(name) >= 0
+                            && (tmp.indexOf(name) + name.length()) <= tmp
+                            .length()) {
+                        // 把取到的要@的人名，用DynamicDrawableSpan代替
+                        ss.setSpan(
+                                new DynamicDrawableSpan(
+                                        DynamicDrawableSpan.ALIGN_BOTTOM) {
+                                    @Override
+                                    public Drawable getDrawable() {
+                                        BitmapDrawable drawable = new BitmapDrawable(
+                                                getResources(), bmp);
+                                        drawable.setBounds(0, 0,
+                                                bmp.getWidth(),
+                                                bmp.getHeight());
+                                        return drawable;
+                                    }
+                                }, tmp.indexOf(name),
+                                tmp.indexOf(name) + name.length(),
+                                SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                 }
             }
@@ -602,8 +634,10 @@ public class ChatActivity extends Activity implements OnInputListener {
                 ToastUtil.showToast("请勿发送违法或敏感内容，否则你将负上法律责任!");
                 return;
             }
-            Body body = new TextBody(content);
+            List<TextBody.AtUser> atUsers = getAtUsers(content);
+            Body body = new TextBody(content, atUsers);
             sendMessage(body, true, "");
+            nickNameMap.clear();
         } else if (type == OnInputListener.TYPE_VOICE) {
             final String path = content;
             showUploadingDialog();
