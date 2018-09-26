@@ -341,10 +341,6 @@ public class ChatActivity extends Activity implements OnInputListener {
      * 如果用户删除过，会出现不匹配的情况，需要在for循环中做处理
      */
     private String nameStr;
-    /**
-     * 上一次返回的用户名，用于把要@的用户名拼接到输入框中
-     */
-    private String lastNameStr;
 
     private MessageListAdapter.OnChatLongClickListener mOnItemLongClickListener = new MessageListAdapter.OnChatLongClickListener() {
         @Override
@@ -369,7 +365,6 @@ public class ChatActivity extends Activity implements OnInputListener {
             } else {
                 nameStr += atNickName + " ";
             }
-            lastNameStr = atNickName;
             // 获取光标当前位置
             int curIndex = mInputView.getSelectionStart();
             // 把要@的人插入光标所在位置
@@ -588,6 +583,11 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
         return false;
     }
+
+//    private List<TextBody.AtUser> getAtUsers(){
+//        String content = mInputView.getText().toString();
+//        content.split()
+//    }
 
     @Override
     public void onInput(int type, String content) {
