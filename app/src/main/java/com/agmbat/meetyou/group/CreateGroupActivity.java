@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -267,7 +268,18 @@ public class CreateGroupActivity extends Activity {
         if (xmppConnection.isConnected()) {
             xmppConnection.sendPacket(createGroupIQ);
         }
+        mHandler.postDelayed(mTimeoutTask, 10000);
     }
+
+    private Handler mHandler = new Handler();
+
+    private Runnable mTimeoutTask = new Runnable() {
+        @Override
+        public void run() {
+            dismissCreateProgressDialog();
+            ToastUtil.showToast("群聊创建失败");
+        }
+    };
 
     private ISLoadingDialog mCreateProgressDialog;
 
@@ -312,6 +324,7 @@ public class CreateGroupActivity extends Activity {
 
         @Override
         public void processPacket(Packet packet) {
+            mHandler.removeCallbacks(mTimeoutTask);
             if (packet instanceof CreateGroupResultIQ) {
                 CreateGroupResultIQ createGroupIQ = (CreateGroupResultIQ) packet;
                 Log.d("Create group success, groupJid: " + createGroupIQ.getGroupJid());
