@@ -10,6 +10,7 @@ package com.agmbat.android.utils;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -35,6 +36,7 @@ public final class XmlUtils {
         }
         return result;
     }
+
 
     static final void beginDocument(XmlPullParser parser, String firstElementName) throws XmlPullParserException,
             IOException {

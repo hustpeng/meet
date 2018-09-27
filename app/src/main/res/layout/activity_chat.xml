@@ -39,11 +39,15 @@
 
     </LinearLayout>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1">
     <com.agmbat.pulltorefresh.view.PullToRefreshListView
         android:id="@+id/message_list"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+
         android:cacheColorHint="@android:color/transparent"
         android:divider="@android:color/transparent"
         android:fadingEdge="none"
@@ -55,6 +59,23 @@
         android:smoothScrollbar="false"
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll" />
+
+        <TextView
+            android:id="@+id/at_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="有消息提到你"
+            android:gravity="center"
+            android:paddingLeft="12dp"
+            android:paddingRight="10dp"
+            android:layout_gravity="bottom|right"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:background="@drawable/bg_at_tips"
+            android:visibility="gone"
+            android:layout_marginBottom="10dp"/>
+
+    </FrameLayout>
 
 
     <!-- android:transcriptMode="disabled" -->

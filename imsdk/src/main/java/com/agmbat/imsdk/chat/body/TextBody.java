@@ -16,6 +16,10 @@ public class TextBody extends Body {
         mAtUsers = atUsers;
     }
 
+    public List<AtUser> getAtUsers(){
+        return mAtUsers;
+    }
+
     public String getContent() {
         return mContent;
     }

@@ -10,6 +10,15 @@ import com.agmbat.map.LocationObject;
 import com.agmbat.text.StringParser;
 import com.baidu.location.BDLocation;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class BodyParser {
 
     /**
@@ -29,7 +38,8 @@ public class BodyParser {
         // 文本
         if (bodyType == BodyType.TEXT) {
             String content = XmlUtils.getNodeValue(bodyText, "content");
-            return new TextBody(content);
+            List<TextBody.AtUser> atUsers = parseAtUsers(bodyText);
+            return new TextBody(content, atUsers);
         }
         // url
         if (bodyType == BodyType.URL) {
@@ -84,6 +94,41 @@ public class BodyParser {
             return new FileBody(url, fileName);
         }
         return new TextBody(bodyText);
+    }
+
+    public static List<TextBody.AtUser> parseAtUsers(String xmlString) {
+        List<TextBody.AtUser> result = null;
+        TextBody.AtUser atUser = null;
+        try {
+            Document document = DocumentHelper.parseText(xmlString);
+            Element ele = document.getRootElement();
+            Iterator<Element> it = ele.elementIterator();
+            while (it.hasNext()){
+                Element node = it.next();
+                if ("at".equals(node.getName())) {
+                    //result = node.getText();
+                    result = new ArrayList<>();
+                    Iterator<Element> userNodes = node.elementIterator();
+                    while (userNodes.hasNext()){
+                        atUser = new TextBody.AtUser();
+                        result.add(atUser);
+                        Element userNode = userNodes.next();
+                        Iterator<Element> userInfoNodes = userNode.elementIterator();
+                        while (userInfoNodes.hasNext()){
+                            Element userInfoNode = userInfoNodes.next();
+                            if("jid".equals(userInfoNode.getName())){
+                                atUser.setJid(userInfoNode.getText());
+                            }else if("nickname".equals(userInfoNode.getName())){
+                                atUser.setNickName(userInfoNode.getText());
+                            }
+                        }
+                    }
+
+                }
+            }
+        } catch (DocumentException e) {
+        }
+        return result;
     }
 
 }

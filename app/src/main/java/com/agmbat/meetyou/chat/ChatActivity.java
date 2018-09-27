@@ -18,8 +18,10 @@ import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.DynamicDrawableSpan;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.agmbat.android.media.AmrHelper;
@@ -130,6 +132,9 @@ public class ChatActivity extends Activity implements OnInputListener {
      */
     @BindView(R.id.input)
     InputView mInputView;
+
+    @BindView(R.id.at_tips)
+    TextView mAtTipsView;
 
     /**
      * 消息列表
@@ -275,9 +280,31 @@ public class ChatActivity extends Activity implements OnInputListener {
         } else if (mChatType == TYPE_GROUP_CHAT) {
             participantJid = mCircleInfo.getGroupJid();
         }
-        if (event.getMessageObject().getFromJid().equals(participantJid)) {
+        MessageObject messageObject = event.getMessageObject();
+        if (messageObject.getFromJid().equals(participantJid)) {
             mAdapter.notifyDataSetChanged();
         }
+        Body body = BodyParser.parse(messageObject.getBody());
+        if(body instanceof TextBody){
+            TextBody textBody = (TextBody) body;
+            List<TextBody.AtUser> atUsers = textBody.getAtUsers();
+            for (int i = 0; i < atUsers.size(); i++) {
+                TextBody.AtUser atUser = atUsers.get(i);
+                if(messageObject.getMsgStatus() == MessageObjectStatus.UNREAD
+                        && atUser.getJid().equals(XMPPManager.getInstance().getXmppConnection().getBareJid())){
+                    mAtTipsView.setText("@"+ messageObject.getSenderNickName() + " 在新消息中提到了你");
+                    mAtTipsView.setVisibility(View.VISIBLE);
+                    break;
+                }
+            }
+        }
+    }
+
+    @OnClick(R.id.at_tips)
+    void onClickAtTips() {
+       mAtTipsView.setVisibility(View.GONE);
+       ListView listView = mPtrView.getRefreshableView();
+       listView.setSelection(listView.getBottom());
     }
 
     private void setupViews() {
@@ -348,6 +375,9 @@ public class ChatActivity extends Activity implements OnInputListener {
     private MessageListAdapter.OnChatLongClickListener mOnItemLongClickListener = new MessageListAdapter.OnChatLongClickListener() {
         @Override
         public void onAvatarLongClick(int position, MessageView messageView) {
+            if(mChatType == TYPE_SINGLE_CHAT){
+                return;
+            }
             MessageObject messageObject = mAdapter.getItem(position);
             String senderJid = messageObject.getSenderJid();
             String senderNickName = messageObject.getSenderNickName();
