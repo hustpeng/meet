@@ -286,12 +286,11 @@ public class ChatActivity extends Activity implements OnInputListener {
         } else if (mChatType == TYPE_GROUP_CHAT) {
             participantJid = mCircleInfo.getGroupJid();
         }
+        mAdapter.notifyDataSetChanged();
         MessageObject messageObject = event.getMessageObject();
         if(!messageObject.getFromJid().equals(participantJid)){
             return;
-
         }
-        mAdapter.notifyDataSetChanged();
         Body body = BodyParser.parse(messageObject.getBody());
         if (body instanceof TextBody) {
             TextBody textBody = (TextBody) body;
