@@ -285,26 +285,29 @@ public class ChatActivity extends Activity implements OnInputListener {
             mAdapter.notifyDataSetChanged();
         }
         Body body = BodyParser.parse(messageObject.getBody());
-        if(body instanceof TextBody){
+        if (body instanceof TextBody) {
             TextBody textBody = (TextBody) body;
             List<TextBody.AtUser> atUsers = textBody.getAtUsers();
-            for (int i = 0; i < atUsers.size(); i++) {
-                TextBody.AtUser atUser = atUsers.get(i);
-                if(messageObject.getMsgStatus() == MessageObjectStatus.UNREAD
-                        && atUser.getJid().equals(XMPPManager.getInstance().getXmppConnection().getBareJid())){
-                    mAtTipsView.setText("@"+ messageObject.getSenderNickName() + " 在新消息中提到了你");
-                    mAtTipsView.setVisibility(View.VISIBLE);
-                    break;
+            if (null != atUsers) {
+                for (int i = 0; i < atUsers.size(); i++) {
+                    TextBody.AtUser atUser = atUsers.get(i);
+                    if (messageObject.getMsgStatus() == MessageObjectStatus.UNREAD
+                            && atUser.getJid().equals(XMPPManager.getInstance().getXmppConnection().getBareJid())) {
+                        mAtTipsView.setText("@" + messageObject.getSenderNickName() + " 在新消息中提到了你");
+                        mAtTipsView.setVisibility(View.VISIBLE);
+                        break;
+                    }
                 }
             }
         }
     }
 
+
     @OnClick(R.id.at_tips)
     void onClickAtTips() {
-       mAtTipsView.setVisibility(View.GONE);
-       ListView listView = mPtrView.getRefreshableView();
-       listView.setSelection(listView.getBottom());
+        mAtTipsView.setVisibility(View.GONE);
+        ListView listView = mPtrView.getRefreshableView();
+        listView.setSelection(listView.getBottom());
     }
 
     private void setupViews() {
@@ -376,12 +379,12 @@ public class ChatActivity extends Activity implements OnInputListener {
         @Override
         public void onAvatarLongClick(int position, MessageView messageView) {
             //单聊不能@
-            if(mChatType == TYPE_SINGLE_CHAT){
+            if (mChatType == TYPE_SINGLE_CHAT) {
                 return;
             }
             MessageObject messageObject = mAdapter.getItem(position);
             //不能@自己
-            if(messageObject.getSenderJid().equals(XMPPManager.getInstance().getXmppConnection().getBareJid())){
+            if (messageObject.getSenderJid().equals(XMPPManager.getInstance().getXmppConnection().getBareJid())) {
                 return;
             }
             String senderJid = messageObject.getSenderJid();
@@ -391,7 +394,7 @@ public class ChatActivity extends Activity implements OnInputListener {
             String existInput = mInputView.getText().toString().trim();
             String[] inputParts = existInput.split(" ");
             for (int i = 0; i < inputParts.length; i++) {
-                if(inputParts[i].equals(atNickName.trim())){
+                if (inputParts[i].equals(atNickName.trim())) {
                     return;
                 }
             }
@@ -401,9 +404,9 @@ public class ChatActivity extends Activity implements OnInputListener {
             atNames.add(atNickName);
             // 获取光标当前位置
             int curIndex = mInputView.getSelectionStart();
-            if(curIndex > 0){
+            if (curIndex > 0) {
                 char curPreChar = mInputView.getText().toString().charAt(curIndex - 1);
-                if(curPreChar != ' '){
+                if (curPreChar != ' ') {
                     atNickName = " " + atNickName;
                 }
             }
@@ -453,7 +456,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         List<TextBody.AtUser> atUsers = new ArrayList<>();
         String[] parts = content.split(" ");
         for (int i = 0; i < parts.length; i++) {
-            if(!parts[i].startsWith("@")){
+            if (!parts[i].startsWith("@")) {
                 continue;
             }
             String jid = "";
@@ -466,7 +469,7 @@ public class ChatActivity extends Activity implements OnInputListener {
                     jid = (String) entry.getKey();
                 }
             }
-            if(!TextUtils.isEmpty(jid)){
+            if (!TextUtils.isEmpty(jid)) {
                 TextBody.AtUser atUser = new TextBody.AtUser();
                 atUser.setJid(jid);
                 atUser.setNickName(nickName);

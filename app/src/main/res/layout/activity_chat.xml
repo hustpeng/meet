@@ -64,15 +64,15 @@
             android:id="@+id/at_tips"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:text="有消息提到你"
+            android:text="有新消息提到你"
             android:gravity="center"
             android:paddingLeft="12dp"
             android:paddingRight="10dp"
             android:layout_gravity="bottom|right"
-            android:textSize="15sp"
-            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textColor="#ff0000"
             android:background="@drawable/bg_at_tips"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_marginBottom="10dp"/>
 
     </FrameLayout>

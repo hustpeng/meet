@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.imsdk.asmack.MessageManager;
+import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
@@ -29,6 +30,8 @@ import com.agmbat.time.TimeUtils;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.message.MessageObject;
 import org.jivesoftware.smackx.message.MessageObjectStatus;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,7 +91,23 @@ public class RecentMsgView extends LinearLayout {
         Body body = BodyParser.parse(msg.getBody());
         if (body instanceof TextBody) {
             TextBody textBody = (TextBody) body;
-            mMessageView.setText(textBody.getContent());
+            List<TextBody.AtUser> atUsers = textBody.getAtUsers();
+            boolean atFlag = false;
+            if (null != atUsers) {
+                for (int i = 0; i < atUsers.size(); i++) {
+                    TextBody.AtUser atUser = atUsers.get(i);
+                    if (msg.getMsgStatus() == MessageObjectStatus.UNREAD
+                            && atUser.getJid().equals(XMPPManager.getInstance().getXmppConnection().getBareJid())) {
+                        atFlag = true;
+                        break;
+                    }
+                }
+            }
+            if (atFlag) {
+                mMessageView.setText("@" + msg.getSenderNickName() + " 在新消息中提到了你");
+            } else {
+                mMessageView.setText(textBody.getContent());
+            }
         } else if (body instanceof AudioBody) {
             mMessageView.setText(R.string.recent_chat_type_voice);
         } else if (body instanceof FireBody) {
