@@ -208,6 +208,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(KEY_CONTACT, contactInfo);
         intent.putExtra(KEY_CHAT_TYPE, TYPE_SINGLE_CHAT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -215,6 +216,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(KEY_GROUP, circleInfo);
         intent.putExtra(KEY_CHAT_TYPE, TYPE_GROUP_CHAT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
