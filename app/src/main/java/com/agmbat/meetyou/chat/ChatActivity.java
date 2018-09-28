@@ -375,10 +375,15 @@ public class ChatActivity extends Activity implements OnInputListener {
     private MessageListAdapter.OnChatLongClickListener mOnItemLongClickListener = new MessageListAdapter.OnChatLongClickListener() {
         @Override
         public void onAvatarLongClick(int position, MessageView messageView) {
+            //单聊不能@
             if(mChatType == TYPE_SINGLE_CHAT){
                 return;
             }
             MessageObject messageObject = mAdapter.getItem(position);
+            //不能@自己
+            if(messageObject.getSenderJid().equals(XMPPManager.getInstance().getXmppConnection().getBareJid())){
+                return;
+            }
             String senderJid = messageObject.getSenderJid();
             String senderNickName = messageObject.getSenderNickName();
 
