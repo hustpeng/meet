@@ -1,6 +1,7 @@
 package com.agmbat.meetyou.group;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -312,9 +313,7 @@ public class CreateGroupActivity extends Activity {
             @Override
             public void onUpload(FileApiResult apiResult) {
                 dismissCreateProgressDialog();
-                finish();
-                ToastUtil.showToast("成功创建群聊");
-                Log.d("Upload group avatar result: " + apiResult.mResult, ", errorMsg: " + apiResult.mErrorMsg);
+                showSuccessDialog();
             }
         });
     }
@@ -329,21 +328,31 @@ public class CreateGroupActivity extends Activity {
                 CreateGroupResultIQ createGroupIQ = (CreateGroupResultIQ) packet;
                 Log.d("Create group success, groupJid: " + createGroupIQ.getGroupJid());
                 if (TextUtils.isEmpty(createGroupIQ.getGroupJid())) {
-                    ToastUtil.showToast("群聊创建失败");
+                    ToastUtil.showToast("因超过建群数量或网络异常创建群失败");
                     return;
                 }
 
                 if (!TextUtils.isEmpty(mAvatarPath)) {
                     uploadGroupAvatar(mAvatarPath, createGroupIQ.getGroupJid());
                 } else {
-                    ToastUtil.showToast("成功创建群聊");
                     dismissCreateProgressDialog();
-                    finish();
+                    showSuccessDialog();
                 }
             }
         }
     };
 
+    private void showSuccessDialog(){
+        ISAlertDialog dialog = new ISAlertDialog(this);
+        dialog.setMessage(String.format("你已成功创建%s群，你是该群群主，请管理好本群，勿让该群出现违法信息。", mInputNicknameView.getText().toString()));
+        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        dialog.show();
+    }
 
     private void showPage1() {
         mNextButton.setVisibility(View.VISIBLE);

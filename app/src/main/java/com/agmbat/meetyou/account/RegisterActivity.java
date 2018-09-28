@@ -1,6 +1,7 @@
 package com.agmbat.meetyou.account;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -18,6 +19,7 @@ import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.account.ImAccountManager;
 import com.agmbat.imsdk.account.RegisterInfo;
 import com.agmbat.imsdk.api.ApiResult;
+import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.MainTabActivity;
 import com.agmbat.meetyou.R;
@@ -300,7 +302,7 @@ public class RegisterActivity extends Activity {
         String nickName = mNickNameView.getText().toString();
         int gender = GenderHelper.getGender(mGenderView.getText().toString());
         int birthYear = StringParser.parseInt(mBirthYearView.getText().toString());
-        String inviteCode = mInviteCodeView.getText().toString();
+        final String inviteCode = mInviteCodeView.getText().toString();
         if (ImAccountManager.DEBUG_CHECK_SMS && !StringUtil.isMobile(name)) {
             ToastUtil.showToastLong("请使用手机号码注册账户！");
             return;
@@ -342,16 +344,27 @@ public class RegisterActivity extends Activity {
             public void onRegister(ApiResult result) {
                 dismissDialog();
                 if (result.mResult) {
-                    Intent intent = new Intent(RegisterActivity.this, MainTabActivity.class);
-                    startActivity(intent);
-                    finish();
-                    EventBus.getDefault().post(new RegisterSuccessEvent());
+                    ISAlertDialog dialog = new ISAlertDialog(RegisterActivity.this);
+                    if(TextUtils.isEmpty(inviteCode)){
+                        dialog.setMessage("欢迎您注册成为真约会员，你目前是未认证会员，如想提升信用度和使用更强大功能，请免费升级成为认证会员。");
+                    }else{
+                        dialog.setMessage(String.format("因%s邀请你注册会员，你和他/她同时增加100缘币，马上加%s为好友吧！", inviteCode, inviteCode));
+                    }
+                    dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(RegisterActivity.this, MainTabActivity.class);
+                            startActivity(intent);
+                            finish();
+                            EventBus.getDefault().post(new RegisterSuccessEvent());
+                        }
+                    });
+                    dialog.show();
                 } else {
                     mRegisterButton.setEnabled(true);
                     mGetVerificationCodeButton.setEnabled(true);
-
+                    ToastUtil.showToastLong(result.mErrorMsg);
                 }
-                ToastUtil.showToastLong(result.mErrorMsg);
             }
         });
     }
