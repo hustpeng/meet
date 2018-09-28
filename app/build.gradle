@@ -19,7 +19,7 @@ android {
         applicationId "cn.org.xmpp.im.egret"
         minSdkVersion "${MIN_SDK_VERSION}" as int
         targetSdkVersion "${TARGET_SDK_VERSION}" as int
-        versionCode 2
+        versionCode 3
         versionName "${verName}"
         project.archivesBaseName = "${projectName}"
         resConfigs "zh-rCN", "zh-rHK", "zh-rTW", "en"
