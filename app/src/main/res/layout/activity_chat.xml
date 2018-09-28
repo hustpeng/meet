@@ -40,40 +40,41 @@
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/content_layout"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1">
-    <com.agmbat.pulltorefresh.view.PullToRefreshListView
-        android:id="@+id/message_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
 
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="@android:color/transparent"
-        android:fadingEdge="none"
-        android:fadingEdgeLength="0dip"
-        android:fastScrollEnabled="true"
-        android:focusable="true"
-        android:listSelector="@android:color/transparent"
-        android:padding="4px"
-        android:smoothScrollbar="false"
-        android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll" />
+        <com.agmbat.pulltorefresh.view.PullToRefreshListView
+            android:id="@+id/message_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@android:color/transparent"
+            android:fadingEdge="none"
+            android:fadingEdgeLength="0dip"
+            android:fastScrollEnabled="true"
+            android:focusable="true"
+            android:listSelector="@android:color/transparent"
+            android:padding="4px"
+            android:smoothScrollbar="false"
+            android:stackFromBottom="true"
+            android:transcriptMode="alwaysScroll" />
 
         <TextView
             android:id="@+id/at_tips"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:text="有新消息提到你"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_at_tips"
             android:gravity="center"
             android:paddingLeft="12dp"
             android:paddingRight="10dp"
-            android:layout_gravity="bottom|right"
-            android:textSize="16sp"
+            android:text="有新消息提到你"
             android:textColor="#ff0000"
-            android:background="@drawable/bg_at_tips"
-            android:visibility="gone"
-            android:layout_marginBottom="10dp"/>
+            android:textSize="16sp"
+            android:visibility="gone" />
 
     </FrameLayout>
 

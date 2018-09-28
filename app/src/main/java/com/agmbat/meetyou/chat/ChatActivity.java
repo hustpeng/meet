@@ -20,6 +20,7 @@ import android.text.TextUtils;
 import android.text.style.DynamicDrawableSpan;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -141,6 +142,9 @@ public class ChatActivity extends Activity implements OnInputListener {
      */
     @BindView(R.id.message_list)
     PullToRefreshListView mPtrView;
+
+    @BindView(R.id.content_layout)
+    FrameLayout mContentLayout;
 
     @BindView(R.id.btn_profile)
     ImageView mBtnProfile;
@@ -334,7 +338,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         mInputController.addEmojiPanel(panel);
 
         initOtherPanel();
-        mInputController.setContentView(mPtrView);
+        mInputController.setContentView(mContentLayout);
 
 
 //        mInputView.setOnSendMessageListener(new OnSendMessageListener() {
