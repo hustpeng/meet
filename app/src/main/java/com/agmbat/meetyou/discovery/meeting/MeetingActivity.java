@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.component.WebViewActivity;
 import com.agmbat.pagedataloader.PageData;
@@ -35,6 +36,7 @@ public class MeetingActivity extends Activity {
         mPageLoader = new MeetingLoader(this);
         mPageLoader.setupViews(findViewById(android.R.id.content));
         mPageLoader.loadData();
+        AppConfigUtils.setHasEventNews(getBaseContext(), false);
     }
 
     @Override

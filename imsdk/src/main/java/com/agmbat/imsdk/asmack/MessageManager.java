@@ -7,6 +7,8 @@ import com.agmbat.imsdk.asmack.api.FetchContactInfoRunnable;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.Body;
+import com.agmbat.imsdk.chat.body.BodyParser;
+import com.agmbat.imsdk.chat.body.EventsBody;
 import com.agmbat.imsdk.group.CircleInfo;
 import com.agmbat.imsdk.group.GroupManager;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
@@ -123,6 +125,11 @@ public class MessageManager extends Xepmodule {
                     } else if ("composing".equals(elementName)) {
                     }
                 }
+                return;
+            }
+            Body body = BodyParser.parse(messageObject.getBody());
+            if(body instanceof EventsBody){
+                EventBus.getDefault().post(new ReceiveSysMessageEvent(messageObject));
                 return;
             }
 

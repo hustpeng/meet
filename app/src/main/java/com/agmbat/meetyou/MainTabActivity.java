@@ -17,6 +17,7 @@ import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.BodyParser;
+import com.agmbat.imsdk.chat.body.EventsBody;
 import com.agmbat.imsdk.chat.body.ImageBody;
 import com.agmbat.imsdk.chat.body.TextBody;
 import com.agmbat.imsdk.chat.body.UrlBody;
@@ -27,6 +28,7 @@ import com.agmbat.imsdk.search.SearchManager;
 import com.agmbat.imsdk.search.group.GroupCategory;
 import com.agmbat.imsdk.search.group.GroupCategoryResult;
 import com.agmbat.imsdk.search.group.OnGetGroupCategoryListener;
+import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.chat.ChangeTabEvent;
 import com.agmbat.meetyou.event.UnreadMessageEvent;
@@ -71,6 +73,13 @@ public class MainTabActivity extends FragmentActivity {
         setupViews();
         EventBus.getDefault().register(this);
         mHandler.postDelayed(mInitRunnable, 1000);
+
+        View unreadView = mTabManager.getTabWidget().getChildTabViewAt(2).findViewById(R.id.unread_count);
+        if (AppConfigUtils.hasEventNews(getBaseContext())) {
+            unreadView.setVisibility(View.VISIBLE);
+        } else {
+            unreadView.setVisibility(View.GONE);
+        }
     }
 
     private void queryGroupList() {
@@ -178,6 +187,10 @@ public class MainTabActivity extends FragmentActivity {
             builder.setView(view);
             builder.setPositiveButton("确定", null);
             builder.create().show();
+        } else if (body instanceof EventsBody) {
+            AppConfigUtils.setHasEventNews(getBaseContext(), true);
+            View unreadView = mTabManager.getTabWidget().getChildTabViewAt(2).findViewById(R.id.unread_count);
+            unreadView.setVisibility(View.VISIBLE);
         }
     }
 

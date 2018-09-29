@@ -1,14 +1,11 @@
 package com.agmbat.imsdk.chat.body;
 
-import android.location.Location;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.agmbat.android.utils.XmlUtils;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.map.LocationObject;
 import com.agmbat.text.StringParser;
-import com.baidu.location.BDLocation;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -92,6 +89,10 @@ public class BodyParser {
             String url = XmlUtils.getNodeValue(bodyText, "url");
             String fileName = XmlUtils.getNodeValue(bodyText, "fileName");
             return new FileBody(url, fileName);
+        }
+
+        if(bodyType == BodyType.EVENTS){
+            return new EventsBody();
         }
         return new TextBody(bodyText);
     }

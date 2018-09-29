@@ -15,6 +15,7 @@ import com.agmbat.imsdk.R;
 import com.agmbat.imsdk.chat.body.AudioBody;
 import com.agmbat.imsdk.chat.body.Body;
 import com.agmbat.imsdk.chat.body.BodyParser;
+import com.agmbat.imsdk.chat.body.EventsBody;
 import com.agmbat.imsdk.chat.body.FileBody;
 import com.agmbat.imsdk.chat.body.FireBody;
 import com.agmbat.imsdk.chat.body.FriendBody;
@@ -110,6 +111,8 @@ public class MeetNotificationManager {
             spannable = new SpannableString("[名片]");
         } else if (body instanceof FileBody) {
             spannable = new SpannableString("[文件]");
+        } else if (body instanceof EventsBody){
+            spannable = new SpannableString("[活动通知]");
         }
         return spannable;
     }
