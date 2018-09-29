@@ -20,12 +20,12 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 import com.agmbat.imsdk.asmack.api.OnFetchLoginUserListener;
 import com.agmbat.imsdk.asmack.api.XMPPApi;
+import com.agmbat.imsdk.asmack.roster.ContactDBCache;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ContactOnAddEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
-import com.agmbat.imsdk.settings.SettingManger;
 import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.edituserinfo.DisplayAvatarActivity;
 import com.agmbat.meetyou.helper.AvatarHelper;
@@ -39,6 +39,7 @@ import com.agmbat.menu.PopupMenu;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -213,6 +214,22 @@ public class UserInfoActivity extends Activity {
      */
     @OnClick(R.id.btn_add_to_contact)
     void onClickAddToContact() {
+        List<ContactInfo> contactInfos = ContactDBCache.getContactList();
+        LoginUser loginUser = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        if (loginUser.getAuth() == ContactInfo.AUTH_STATE_NOT_SUBMIT
+                || loginUser.getAuth() == ContactInfo.AUTH_STATE_SUBMITED
+                || loginUser.getAuth() == ContactInfo.AUTH_STATE_DENIED) {
+            if (contactInfos.size() >= ContactInfo.CONTACT_LIMIT_UNAUTH) {
+                ToastUtil.showToast(String.format("添加好友数量已达到%d人，无法继续添加", ContactInfo.CONTACT_LIMIT_UNAUTH));
+                return;
+            }
+        } else if (loginUser.getAuth() == ContactInfo.AUTH_STATE_AUTHENTICATED) {
+            if (contactInfos.size() >= ContactInfo.CONTACT_LIMITE_AUTH) {
+                ToastUtil.showToast(String.format("添加好友数量已达到%d人，无法继续添加", ContactInfo.CONTACT_LIMITE_AUTH));
+                return;
+            }
+        }
+
         boolean result = XMPPManager.getInstance().getRosterManager().requestAddContactToFriend(mContactInfo);
         if (result) {
             ToastUtil.showToastLong("已发送");

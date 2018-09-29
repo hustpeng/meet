@@ -71,6 +71,21 @@ public class ContactDBCache {
         return new ArrayList<>();
     }
 
+    public static List<ContactInfo> getContactList() {
+        DbManager db = MeetDatabase.getInstance().getDatabase();
+        if (db == null) {
+            Debug.printStackTrace();
+            return new ArrayList<>();
+        }
+        try {
+            List<ContactInfo> contactInfoList = db.selector(ContactInfo.class).findAll();
+            return contactInfoList;
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
 
     public static List<ContactInfo> searchContacts(String keyword) {
         DbManager db = MeetDatabase.getInstance().getDatabase();

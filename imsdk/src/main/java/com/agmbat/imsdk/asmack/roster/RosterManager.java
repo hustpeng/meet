@@ -13,6 +13,7 @@ import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.db.MeetDatabase;
 import com.agmbat.imsdk.imevent.ContactDeleteEvent;
 import com.agmbat.imsdk.imevent.ContactGroupLoadEvent;
+import com.agmbat.imsdk.imevent.ContactLimitEvent;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
@@ -557,12 +558,27 @@ public class RosterManager {
                     if (contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_NOT_SUBMIT
                             || contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_SUBMITED
                             || contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_DENIED) {
-
+                        //发送拒绝包
                         if (AppConfigUtils.isUnauthDeniedEnable(AppResources.getAppContext())) {
                             VLog.d("Refuse unauth user as my friend");
                             Presence response = new Presence(Presence.Type.unsubscribed);
                             response.setTo(presence.getFrom());
                             mConnection.sendPacket(response);
+                            return;
+                        }
+                    }
+                    LoginUser loginUser = getLoginUser();
+                    List<ContactInfo> contactInfos = ContactDBCache.getContactList();
+                    if (loginUser.getAuth() == ContactInfo.AUTH_STATE_NOT_SUBMIT
+                            || loginUser.getAuth() == ContactInfo.AUTH_STATE_SUBMITED
+                            || loginUser.getAuth() == ContactInfo.AUTH_STATE_DENIED) {
+                        if (contactInfos.size() >= ContactInfo.CONTACT_LIMIT_UNAUTH) {
+                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_UNAUTH));
+                            return;
+                        }
+                    } else if (loginUser.getAuth() == ContactInfo.AUTH_STATE_AUTHENTICATED) {
+                        if (contactInfos.size() >= ContactInfo.CONTACT_LIMITE_AUTH) {
+                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMITE_AUTH));
                             return;
                         }
                     }

@@ -18,6 +18,11 @@ import java.io.Serializable;
 @Table(name = "contact")
 public class ContactInfo implements Serializable, AuthStatus {
 
+
+    public static int CONTACT_LIMIT_UNAUTH = 20;
+
+    public static int CONTACT_LIMITE_AUTH = 100;
+
     /**
      * 对应roster信息
      */

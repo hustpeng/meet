@@ -19,10 +19,12 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.roster.ContactGroup;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.imevent.ContactGroupLoadEvent;
+import com.agmbat.imsdk.imevent.ContactLimitEvent;
 import com.agmbat.imsdk.imevent.ContactListUpdateEvent;
 import com.agmbat.imsdk.imevent.PresenceSubscribeEvent;
 import com.agmbat.imsdk.util.VLog;
@@ -198,6 +200,12 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         }
 
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ContactLimitEvent event) {
+        ToastUtil.showToast(String.format("添加好友数量已达到%d人，无法继续接受好友申请", event.getLimit()));
+    }
+
 
     /**
      * 收到list group加载完成
