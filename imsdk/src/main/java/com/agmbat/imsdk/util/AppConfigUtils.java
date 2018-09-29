@@ -47,6 +47,8 @@ public class AppConfigUtils {
 
     private static final String KEY_HAS_EVENT_NEWS = "KEY_HAS_EVENT_NEWS";
 
+    private static final String KEY_GROUP_HISTORY_FLAG = "KEY_GROUP_HISTORY_FLAG_";
+
     private static SharedPreferences getPreferences(Context context) {
         if (context == null) {
             Log.e(TAG, "getPreferences ERR. context is nil");
@@ -234,6 +236,17 @@ public class AppConfigUtils {
     public static void setHasEventNews(Context context, boolean hasEvents){
         SharedPreferences preferences = getPreferences(context);
         preferences.edit().putBoolean(KEY_HAS_EVENT_NEWS, hasEvents).apply();
+    }
+
+
+    public static boolean isGroupHistoryEverGet(Context context, String groupJid){
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(KEY_GROUP_HISTORY_FLAG + groupJid, false);
+    }
+
+    public static void setGroupHistoryEverGet(Context context, String groupJid, boolean everGet){
+        SharedPreferences preferences = getPreferences(context);
+        preferences.edit().putBoolean(KEY_GROUP_HISTORY_FLAG + groupJid, everGet).apply();
     }
 
 }

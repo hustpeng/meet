@@ -104,6 +104,7 @@ public class MessageStorage {
         });
     }
 
+
     public MessageObject getMsg(String msgId, String myJid) {
         if (TextUtils.isEmpty(msgId)) {
             return null;

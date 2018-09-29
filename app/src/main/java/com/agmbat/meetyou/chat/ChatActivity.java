@@ -13,6 +13,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
@@ -61,6 +62,7 @@ import com.agmbat.imsdk.remotefile.FileApiResult;
 import com.agmbat.imsdk.remotefile.OnFileUploadListener;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
 import com.agmbat.imsdk.user.LoginUser;
+import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.input.InputController;
 import com.agmbat.input.InputView;
 import com.agmbat.input.OnInputListener;
@@ -77,6 +79,7 @@ import com.agmbat.meetyou.splash.SplashStore;
 import com.agmbat.meetyou.util.SystemUtil;
 import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
+import com.agmbat.menu.PopupMenu;
 import com.agmbat.net.HttpUtils;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
 import com.agmbat.text.TagText;
@@ -249,7 +252,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         if (mChatType == TYPE_GROUP_CHAT) {
             String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
             List<MessageObject> cacheMessages = messageStorage.getMessages(myJid, mCircleInfo.getGroupJid());
-            if (cacheMessages.size() == 0) {
+            if (cacheMessages.size() == 0 && !AppConfigUtils.isGroupHistoryEverGet(getBaseContext(), mCircleInfo.getGroupJid())) {
                 QueryGroupChatIQ queryGroupChatIQ = new QueryGroupChatIQ();
                 queryGroupChatIQ.setTo(mCircleInfo.getGroupJid());
                 queryGroupChatIQ.setType(IQ.Type.GET);
@@ -848,9 +851,69 @@ public class ChatActivity extends Activity implements OnInputListener {
     }
 
     @OnClick(R.id.btn_profile)
-    void onClickProfile() {
+    void onClickProfile(View view) {
         if (mChatType == TYPE_GROUP_CHAT) {
-            GroupInfoActivity.launch(this, mCircleInfo.getGroupJid());
+            PopupMenu popupMenu = new PopupMenu(this);
+            MenuInfo infoMenu = new MenuInfo();
+            infoMenu.setTitle("群信息");
+            infoMenu.setOnClickMenuListener(new OnClickMenuListener() {
+                @Override
+                public void onClick(MenuInfo menu, int index) {
+                    GroupInfoActivity.launch(getBaseContext(), mCircleInfo.getGroupJid());
+                }
+            });
+            popupMenu.addItem(infoMenu);
+
+            MenuInfo chatRecordMenu = new MenuInfo();
+            chatRecordMenu.setTitle("查找聊天记录");
+            chatRecordMenu.setOnClickMenuListener(new OnClickMenuListener() {
+                @Override
+                public void onClick(MenuInfo menu, int index) {
+
+                }
+            });
+            popupMenu.addItem(chatRecordMenu);
+
+            MenuInfo clearRecordMenu = new MenuInfo();
+            clearRecordMenu.setTitle("清空聊天记录");
+            clearRecordMenu.setOnClickMenuListener(new OnClickMenuListener() {
+                @Override
+                public void onClick(MenuInfo menu, int index) {
+                    ClearChatTask clearChatTask = new ClearChatTask();
+                    clearChatTask.execute(mCircleInfo.getGroupJid());
+                }
+            });
+            popupMenu.addItem(clearRecordMenu);
+
+            View v = (View) view.getParent();
+            popupMenu.show(v);
+
+        }
+    }
+
+    private class ClearChatTask extends AsyncTask<String, Void, Void>{
+
+        private ISLoadingDialog mDeletingDialog;
+
+        @Override
+        protected void onPreExecute() {
+            mDeletingDialog = new ISLoadingDialog(ChatActivity.this);
+            mDeletingDialog.setCancelable(false);
+            mDeletingDialog.setMessage("删除中");
+            mDeletingDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(String... jids) {
+            String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+            messageStorage.deleteChatMessage(myJid, jids[0], myJid);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mDeletingDialog.dismiss();
+            mAdapter.clear();
         }
     }
 
@@ -880,6 +943,8 @@ public class ChatActivity extends Activity implements OnInputListener {
         @Override
         public void processPacket(Packet packet) {
             if (packet instanceof GroupChatReply) {
+                AppConfigUtils.setGroupHistoryEverGet(getBaseContext(), mCircleInfo.getGroupJid(), true);
+                
                 GroupChatReply groupChatReply = (GroupChatReply) packet;
                 List<MessageObject> messageObjects = groupChatReply.getMessages();
                 markMessagesAsRead(messageObjects);
