@@ -81,20 +81,20 @@ public class CoinsActivity extends Activity {
                 int contactNum = 0;
                 int groupNum = 0;
                 if (apiResult.mGrade == 1) {
-                    contactNum = 500;
-                    groupNum = 2;
+                    contactNum = ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1;
+                    groupNum = ContactInfo.GROUP_LIMIT_AUTH_GRADE_1;
                 } else if (apiResult.mGrade == 2) {
-                    contactNum = 1000;
-                    groupNum = 4;
+                    contactNum = ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2;;
+                    groupNum = ContactInfo.GROUP_LIMIT_AUTH_GRADE_2;
                 } else if (apiResult.mGrade == 3) {
-                    contactNum = 1500;
-                    groupNum = 6;
+                    contactNum = ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3;;
+                    groupNum = ContactInfo.GROUP_LIMIT_AUTH_GRADE_3;
                 } else if (apiResult.mGrade == 4) {
-                    contactNum = 2000;
-                    groupNum = 8;
+                    contactNum = ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4;;
+                    groupNum = ContactInfo.GROUP_LIMIT_AUTH_GRADE_4;
                 } else if (apiResult.mGrade == 5) {
-                    contactNum = 3000;
-                    groupNum = 10;
+                    contactNum = ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5;;
+                    groupNum = ContactInfo.GROUP_LIMIT_AUTH_GRADE_5;
                 }
                 mUpdateTipsView.setVisibility(View.VISIBLE);
                 mUpdateTipsView.setText(String.format(tipsFormat, apiResult.mGrade, contactNum, groupNum));
