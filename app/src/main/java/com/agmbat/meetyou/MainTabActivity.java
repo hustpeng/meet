@@ -73,13 +73,6 @@ public class MainTabActivity extends FragmentActivity {
         setupViews();
         EventBus.getDefault().register(this);
         mHandler.postDelayed(mInitRunnable, 1000);
-
-        View unreadView = mTabManager.getTabWidget().getChildTabViewAt(2).findViewById(R.id.unread_count);
-        if (AppConfigUtils.hasEventNews(getBaseContext())) {
-            unreadView.setVisibility(View.VISIBLE);
-        } else {
-            unreadView.setVisibility(View.GONE);
-        }
     }
 
     private void queryGroupList() {
@@ -231,6 +224,12 @@ public class MainTabActivity extends FragmentActivity {
         super.onResume();
         if (XMPPManager.getInstance().isLogin()) {
             XMPPManager.getInstance().getRosterManager().reloadRoster();
+        }
+        View unreadView = mTabManager.getTabWidget().getChildTabViewAt(2).findViewById(R.id.unread_count);
+        if (AppConfigUtils.hasEventNews(getBaseContext())) {
+            unreadView.setVisibility(View.VISIBLE);
+        } else {
+            unreadView.setVisibility(View.GONE);
         }
     }
 
