@@ -224,8 +224,23 @@ public class UserInfoActivity extends Activity {
                 return;
             }
         } else if (loginUser.getAuth() == ContactInfo.AUTH_STATE_AUTHENTICATED) {
-            if (contactInfos.size() >= ContactInfo.CONTACT_LIMITE_AUTH) {
-                ToastUtil.showToast(String.format("添加好友数量已达到%d人，无法继续添加", ContactInfo.CONTACT_LIMITE_AUTH));
+            if (loginUser.getGrade() == 0 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH) {
+                ToastUtil.showToast(String.format("添加好友数量已达到%d人，无法继续添加", ContactInfo.CONTACT_LIMIT_AUTH));
+                return;
+            } else if (loginUser.getGrade() == 1 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1) {
+                ToastUtil.showToast(String.format("添加好友数量已达到%d人，无法继续添加", ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1));
+                return;
+            } else if (loginUser.getGrade() == 2 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2) {
+                ToastUtil.showToast(String.format("添加好友数量已达到%d人，无法继续添加", ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2));
+                return;
+            } else if (loginUser.getGrade() == 3 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3) {
+                ToastUtil.showToast(String.format("添加好友数量已达到%d人，无法继续添加", ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3));
+                return;
+            } else if (loginUser.getGrade() == 4 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4) {
+                ToastUtil.showToast(String.format("添加好友数量已达到%d人，无法继续添加", ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4));
+                return;
+            } else if (loginUser.getGrade() == 5 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5) {
+                ToastUtil.showToast(String.format("添加好友数量已达到%d人，无法继续添加", ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5));
                 return;
             }
         }

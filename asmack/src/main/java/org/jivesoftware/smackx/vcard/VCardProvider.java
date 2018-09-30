@@ -65,6 +65,8 @@ public class VCardProvider implements IQProvider {
             item.setImUid(StringParser.parseInt(parser.nextText()));
         } else if (VCardObject.KEY_AUTH.equals(parserName)) {
             item.setAuth(StringParser.parseInt(parser.nextText()));
+        } else if (VCardObject.KEY_GRADE.equals(parserName)) {
+            item.setGrade(StringParser.parseInt(parser.nextText()));
         } else if ("STATUS".equals(parserName)) {
             item.setStatus(parser.nextText());
         }

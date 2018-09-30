@@ -577,8 +577,23 @@ public class RosterManager {
                             return;
                         }
                     } else if (loginUser.getAuth() == ContactInfo.AUTH_STATE_AUTHENTICATED) {
-                        if (contactInfos.size() >= ContactInfo.CONTACT_LIMITE_AUTH) {
-                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMITE_AUTH));
+                        if (loginUser.getGrade() == 0 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH) {
+                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH));
+                            return;
+                        } else if (loginUser.getGrade() == 1 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1) {
+                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1));
+                            return;
+                        } else if (loginUser.getGrade() == 2 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2) {
+                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2));
+                            return;
+                        } else if (loginUser.getGrade() == 3 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3) {
+                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3));
+                            return;
+                        } else if (loginUser.getGrade() == 4 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4) {
+                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4));
+                            return;
+                        } else if (loginUser.getGrade() == 5 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5) {
+                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5));
                             return;
                         }
                     }

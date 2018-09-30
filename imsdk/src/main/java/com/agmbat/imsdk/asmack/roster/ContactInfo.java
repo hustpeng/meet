@@ -20,8 +20,21 @@ public class ContactInfo implements Serializable, AuthStatus {
 
 
     public static int CONTACT_LIMIT_UNAUTH = 20;
+    public static int CONTACT_LIMIT_AUTH = 100;
+    public static int CONTACT_LIMIT_AUTH_GRADE_1 = 500;
+    public static int CONTACT_LIMIT_AUTH_GRADE_2 = 1000;
+    public static int CONTACT_LIMIT_AUTH_GRADE_3 = 1500;
+    public static int CONTACT_LIMIT_AUTH_GRADE_4 = 2000;
+    public static int CONTACT_LIMIT_AUTH_GRADE_5 = 3000;
 
-    public static int CONTACT_LIMITE_AUTH = 100;
+    public static int GROUP_LIMIT_UNAUTH = 0;
+    public static int GROUP_LIMIT_AUTH = 1;
+    public static int GROUP_LIMIT_AUTH_GRADE_1 = 2;
+    public static int GROUP_LIMIT_AUTH_GRADE_2 = 4;
+    public static int GROUP_LIMIT_AUTH_GRADE_3 = 6;
+    public static int GROUP_LIMIT_AUTH_GRADE_4 = 8;
+    public static int GROUP_LIMIT_AUTH_GRADE_5 = 10;
+
 
     /**
      * 对应roster信息

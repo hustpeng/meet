@@ -54,6 +54,10 @@ public class LoginUser {
         return null == mVCardObject ? 0 : mVCardObject.getAuth();
     }
 
+    public int getGrade() {
+        return null == mVCardObject ? 0 : mVCardObject.getGrade();
+    }
+
     public void setGender(int gender) {
         if (null == mVCardObject) {
             mVCardObject = new VCardObject();

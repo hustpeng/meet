@@ -42,6 +42,11 @@ public class VCardObject implements ICacheStoreObject {
      */
     public static final String KEY_AUTH = "auth";
 
+    /**
+     * 用户等级（Meet项目特殊字段）
+     */
+    public static final String KEY_GRADE = "grade";
+
 
     /**
      * 用户id
@@ -77,6 +82,8 @@ public class VCardObject implements ICacheStoreObject {
      * 用户认证状态
      */
     private int auth;
+
+    private int grade;
 
     private String status;
     private Date update_date;
@@ -147,6 +154,14 @@ public class VCardObject implements ICacheStoreObject {
         this.auth = auth;
     }
 
+    public int getGrade() {
+        return grade;
+    }
+
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
+
     /**
      * 获取用户名
      *
@@ -178,6 +193,8 @@ public class VCardObject implements ICacheStoreObject {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
 
 
     @Override
