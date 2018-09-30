@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.WindowUtils;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.widget.StarsView;
 import com.agmbat.pagedataloader.PageData;
@@ -27,6 +28,9 @@ public class CoinsActivity extends Activity {
 
     @BindView(R.id.grade_view)
     StarsView mStarsView;
+
+    @BindView(R.id.update_tips)
+    TextView mUpdateTipsView;
 
     private CoinsLoader mPageLoader;
 
@@ -72,6 +76,31 @@ public class CoinsActivity extends Activity {
             mCoinsView.setVisibility(View.VISIBLE);
             mCoinsView.setText(String.valueOf(apiResult.mBalance));
             mStarsView.setStarsCount(apiResult.mGrade);
+            if (apiResult.mAuthStatus == ContactInfo.AUTH_STATE_AUTHENTICATED && apiResult.mGrade > 0) {
+                String tipsFormat = "恭喜你已升级为%d星会员，增加添加%d个好友，可建%d个普通群";
+                int contactNum = 0;
+                int groupNum = 0;
+                if (apiResult.mGrade == 1) {
+                    contactNum = 500;
+                    groupNum = 2;
+                } else if (apiResult.mGrade == 2) {
+                    contactNum = 1000;
+                    groupNum = 4;
+                } else if (apiResult.mGrade == 3) {
+                    contactNum = 1500;
+                    groupNum = 6;
+                } else if (apiResult.mGrade == 4) {
+                    contactNum = 2000;
+                    groupNum = 8;
+                } else if (apiResult.mGrade == 5) {
+                    contactNum = 3000;
+                    groupNum = 10;
+                }
+                mUpdateTipsView.setVisibility(View.VISIBLE);
+                mUpdateTipsView.setText(String.format(tipsFormat, apiResult.mGrade, contactNum, groupNum));
+            } else {
+                mUpdateTipsView.setVisibility(View.GONE);
+            }
             return new CoinsListAdapter(context, data.getDataList());
         }
 
