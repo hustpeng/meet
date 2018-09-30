@@ -49,6 +49,8 @@ public class AppConfigUtils {
 
     private static final String KEY_GROUP_HISTORY_FLAG = "KEY_GROUP_HISTORY_FLAG_";
 
+    private static final String KEY_GROUP_VIBRATOR_SWITCH = "KEY_GROUP_VIBRATOR_SWITCH_";
+
     private static SharedPreferences getPreferences(Context context) {
         if (context == null) {
             Log.e(TAG, "getPreferences ERR. context is nil");
@@ -197,56 +199,66 @@ public class AppConfigUtils {
         return preferences.getString(KEY_FILTER_ETHNICITY, "");
     }
 
-    public static boolean isNotificationEnable(Context context){
+    public static boolean isNotificationEnable(Context context) {
         SharedPreferences preferences = getPreferences(context);
         return preferences.getBoolean(KEY_NOTIFICATION_ENABLE, true);
     }
 
-    public static void setNotificationEnable(Context context, boolean enable){
+    public static void setNotificationEnable(Context context, boolean enable) {
         SharedPreferences preferences = getPreferences(context);
         preferences.edit().putBoolean(KEY_NOTIFICATION_ENABLE, enable).apply();
     }
 
-    public static boolean isNotificationSoundEnable(Context context){
+    public static boolean isNotificationSoundEnable(Context context) {
         SharedPreferences preferences = getPreferences(context);
         return preferences.getBoolean(KEY_NOTIFICATION_SOUND_ENABLE, true);
     }
 
-    public static void setNotificationSoundEnable(Context context, boolean enable){
+    public static void setNotificationSoundEnable(Context context, boolean enable) {
         SharedPreferences preferences = getPreferences(context);
         preferences.edit().putBoolean(KEY_NOTIFICATION_SOUND_ENABLE, enable).apply();
     }
 
-    public static boolean isUnauthDeniedEnable(Context context){
+    public static boolean isUnauthDeniedEnable(Context context) {
         SharedPreferences preferences = getPreferences(context);
         return preferences.getBoolean(KEY_UNAUTH_DENIED_ENABLE, false);
     }
 
-    public static void setUnauthDeniedEnable(Context context, boolean enable){
+    public static void setUnauthDeniedEnable(Context context, boolean enable) {
         SharedPreferences preferences = getPreferences(context);
         preferences.edit().putBoolean(KEY_UNAUTH_DENIED_ENABLE, enable).apply();
     }
 
 
-    public static boolean hasEventNews(Context context){
+    public static boolean hasEventNews(Context context) {
         SharedPreferences preferences = getPreferences(context);
         return preferences.getBoolean(KEY_HAS_EVENT_NEWS, false);
     }
 
-    public static void setHasEventNews(Context context, boolean hasEvents){
+    public static void setHasEventNews(Context context, boolean hasEvents) {
         SharedPreferences preferences = getPreferences(context);
         preferences.edit().putBoolean(KEY_HAS_EVENT_NEWS, hasEvents).apply();
     }
 
 
-    public static boolean isGroupHistoryEverGet(Context context, String groupJid){
+    public static boolean isGroupHistoryEverGet(Context context, String groupJid) {
         SharedPreferences preferences = getPreferences(context);
         return preferences.getBoolean(KEY_GROUP_HISTORY_FLAG + groupJid, false);
     }
 
-    public static void setGroupHistoryEverGet(Context context, String groupJid, boolean everGet){
+    public static void setGroupHistoryEverGet(Context context, String groupJid, boolean everGet) {
         SharedPreferences preferences = getPreferences(context);
         preferences.edit().putBoolean(KEY_GROUP_HISTORY_FLAG + groupJid, everGet).apply();
+    }
+
+    public static boolean isGroupVibratorEnable(Context context, String myJid, String groupJid) {
+        SharedPreferences preferences = getPreferences(context);
+        return preferences.getBoolean(KEY_GROUP_VIBRATOR_SWITCH + myJid + "_" + groupJid, true);
+    }
+
+    public static void setGroupVibratorEnable(Context context, String myJid, String groupJid, boolean enable) {
+        SharedPreferences preferences = getPreferences(context);
+        preferences.edit().putBoolean(KEY_GROUP_VIBRATOR_SWITCH + myJid + "_" + groupJid, enable).apply();
     }
 
 }

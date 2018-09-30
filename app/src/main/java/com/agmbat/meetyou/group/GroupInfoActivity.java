@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ import com.agmbat.imsdk.group.QueryGroupInfoIQ;
 import com.agmbat.imsdk.group.QueryGroupInfoResultIQ;
 import com.agmbat.imsdk.group.QuitGroupReplay;
 import com.agmbat.imsdk.search.group.GroupInfo;
+import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
@@ -81,6 +84,8 @@ public class GroupInfoActivity extends Activity {
     TextView mBtnEditGroup;
     @BindView(R.id.btn_join_group)
     TextView mBtnJoinGroup;
+    @BindView(R.id.vibrator_switch)
+    CheckBox mVibratorSwitch;
 
     private String mGroupJid;
     private GroupInfo mGroupInfo;
@@ -118,6 +123,17 @@ public class GroupInfoActivity extends Activity {
         } else if (intent.hasExtra(KEY_GROUP_JID)) {
             mGroupJid = intent.getStringExtra(KEY_GROUP_JID);
         }
+
+        final String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        mVibratorSwitch.setChecked(AppConfigUtils.isGroupVibratorEnable(getBaseContext(), myJid , mGroupJid));
+        mVibratorSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                AppConfigUtils.setGroupVibratorEnable(getBaseContext(), myJid, mGroupJid, isChecked);
+            }
+        });
+
         fillGroupQrCodeImage(mGroupJid);
         loadGroupInfo();
     }
@@ -262,6 +278,11 @@ public class GroupInfoActivity extends Activity {
     @OnClick(R.id.title_btn_back)
     void onClickBack() {
         finish();
+    }
+
+    @OnClick(R.id.item_vibrator_switch)
+    void onClickVibratorSwitch(){
+        mVibratorSwitch.setChecked(!mVibratorSwitch.isChecked());
     }
 
     private void setupViews(GroupInfo groupInfo) {

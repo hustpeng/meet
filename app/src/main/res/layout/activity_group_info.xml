@@ -260,6 +260,38 @@
                 android:background="#ffeeeeee" />
 
 
+            <LinearLayout
+                android:id="@+id/item_vibrator_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/im_setting_item"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="开启消息震动"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+
+                <CheckBox
+                    android:id="@+id/vibrator_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.0dip"
+                android:background="#ffeeeeee" />
+
             <ImageView
                 android:id="@+id/qr_code"
                 android:layout_width="300dp"

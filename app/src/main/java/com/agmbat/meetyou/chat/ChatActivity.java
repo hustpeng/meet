@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -291,9 +292,17 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
         mAdapter.notifyDataSetChanged();
         MessageObject messageObject = event.getMessageObject();
-        if(!messageObject.getFromJid().equals(participantJid)){
+        if (!messageObject.getFromJid().equals(participantJid)) {
             return;
         }
+        String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        if (mChatType == TYPE_GROUP_CHAT) {
+            if (AppConfigUtils.isGroupVibratorEnable(getBaseContext(), myJid, participantJid)) {
+                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                vibrator.vibrate(new long[]{100, 200, 100, 200}, -1);
+            }
+        }
+
         Body body = BodyParser.parse(messageObject.getBody());
         if (body instanceof TextBody) {
             TextBody textBody = (TextBody) body;
@@ -891,7 +900,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
     }
 
-    private class ClearChatTask extends AsyncTask<String, Void, Void>{
+    private class ClearChatTask extends AsyncTask<String, Void, Void> {
 
         private ISLoadingDialog mDeletingDialog;
 
@@ -944,7 +953,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         public void processPacket(Packet packet) {
             if (packet instanceof GroupChatReply) {
                 AppConfigUtils.setGroupHistoryEverGet(getBaseContext(), mCircleInfo.getGroupJid(), true);
-                
+
                 GroupChatReply groupChatReply = (GroupChatReply) packet;
                 List<MessageObject> messageObjects = groupChatReply.getMessages();
                 markMessagesAsRead(messageObjects);
