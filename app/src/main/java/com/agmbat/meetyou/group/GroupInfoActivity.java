@@ -1,7 +1,9 @@
 package com.agmbat.meetyou.group;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +20,8 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.imsdk.group.ChangeGroupNicknameIQ;
+import com.agmbat.imsdk.group.ChangeGroupNicknameReply;
 import com.agmbat.imsdk.group.CircleInfo;
 import com.agmbat.imsdk.group.DismissGroupReply;
 import com.agmbat.imsdk.group.JoinGroupIQ;
@@ -86,6 +91,8 @@ public class GroupInfoActivity extends Activity {
     TextView mBtnJoinGroup;
     @BindView(R.id.vibrator_switch)
     CheckBox mVibratorSwitch;
+    @BindView(R.id.group_nickname)
+    TextView mGroupNickNameTv;
 
     private String mGroupJid;
     private GroupInfo mGroupInfo;
@@ -114,6 +121,7 @@ public class GroupInfoActivity extends Activity {
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mQuitGroupListener, new PacketTypeFilter(QuitGroupReplay.class));
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mDismissGroupListener, new PacketTypeFilter(DismissGroupReply.class));
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mQueryGroupInfoListener, new PacketTypeFilter(QueryGroupInfoResultIQ.class));
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mChangeGroupNicknameListener, new PacketTypeFilter(ChangeGroupNicknameReply.class));
 
         Intent intent = getIntent();
         if (intent.hasExtra(KEY_GROUP)) {
@@ -264,6 +272,7 @@ public class GroupInfoActivity extends Activity {
         XMPPManager.getInstance().getXmppConnection().removePacketListener(mQueryGroupInfoListener);
         XMPPManager.getInstance().getXmppConnection().removePacketListener(mQuitGroupListener);
         XMPPManager.getInstance().getXmppConnection().removePacketListener(mDismissGroupListener);
+        XMPPManager.getInstance().getXmppConnection().removePacketListener(mChangeGroupNicknameListener);
     }
 
     private void fillGroupQrCodeImage(String groupJid) {
@@ -284,6 +293,49 @@ public class GroupInfoActivity extends Activity {
     void onClickVibratorSwitch(){
         mVibratorSwitch.setChecked(!mVibratorSwitch.isChecked());
     }
+
+    @OnClick(R.id.item_group_nickname)
+    void onClickGroupNickname(){
+        final String originRemark = mGroupNickNameTv.getText().toString();
+        final EditText aliasInput = new EditText(this);
+        aliasInput.setText(originRemark);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("设置群昵称").setView(aliasInput)
+                .setNegativeButton("取消", null);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                String newRemark = aliasInput.getText().toString();
+                if (newRemark.equals(originRemark)) {
+                    return;
+                }
+                ChangeGroupNicknameIQ changeGroupNicknameIQ = new ChangeGroupNicknameIQ();
+                changeGroupNicknameIQ.setTo(mGroupJid);
+                changeGroupNicknameIQ.setType(IQ.Type.SET);
+                changeGroupNicknameIQ.setGroupNickname(newRemark);
+
+                XMPPManager.getInstance().getXmppConnection().sendPacket(changeGroupNicknameIQ);
+                mGroupNickNameTv.setText(newRemark);
+            }
+        });
+        builder.show();
+    }
+
+
+
+    private PacketListener mChangeGroupNicknameListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof ChangeGroupNicknameReply) {
+                ChangeGroupNicknameReply reply = (ChangeGroupNicknameReply) packet;
+                if(reply.isSuccess()){
+                    ToastUtil.showToast("群昵称修改成功");
+                }else{
+                    ToastUtil.showToast("群昵称修改失败");
+                }
+            }
+        }
+    };
 
     private void setupViews(GroupInfo groupInfo) {
         ImageManager.displayImage(groupInfo.cover, mAvatarView, AvatarHelper.getGroupOptions());

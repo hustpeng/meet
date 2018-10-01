@@ -724,6 +724,15 @@ public class StringUtils {
         return text.replaceAll("\\u00A0", " ");
     }
 
+    public static boolean parseBoolean(String numberText) {
+        boolean value = false;
+        try {
+            value = Boolean.parseBoolean(numberText);
+        } catch (Exception e) {
+        }
+        return value;
+    }
+
     public static long parseLong(String numberText) {
         long number = 0;
         try {
