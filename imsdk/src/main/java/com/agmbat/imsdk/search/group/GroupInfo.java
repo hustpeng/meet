@@ -93,6 +93,8 @@ public class GroupInfo implements Serializable {
 
     public boolean isGroupMember;
 
+    public String groupNickname;
+
 
     @Override
     public String toString() {

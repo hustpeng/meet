@@ -207,6 +207,7 @@ public class GroupInfoActivity extends Activity {
                 groupInfo.name = result.getName();
                 groupInfo.memberNum = result.getMembers();
                 groupInfo.isGroupMember = result.isGroupMember();
+                groupInfo.groupNickname = result.getGroupNickName();
                 EventBus.getDefault().post(groupInfo);
             }
         }
@@ -345,6 +346,7 @@ public class GroupInfoActivity extends Activity {
         mDescriptionTv.setText(groupInfo.description);
         mGroupIdTv.setText(XmppStringUtils.parseName(groupInfo.jid));
         mMemberNumTv.setText(String.valueOf(groupInfo.memberNum));
+        mGroupNickNameTv.setText(groupInfo.groupNickname);
         if (!groupInfo.isGroupMember) {//当前登录用户还不是群成员，只显示加群按钮
             mBtnJoinGroup.setVisibility(View.VISIBLE);
             mBtnQuitGroup.setVisibility(View.GONE);

@@ -26,6 +26,7 @@ public class QueryGroupInfoResultIQ extends IQ {
 
     private String ownerNickName;
 
+    private String groupNickName;
 
     @Override
     public String getChildElementXML() {
@@ -119,5 +120,13 @@ public class QueryGroupInfoResultIQ extends IQ {
 
     public void setOwnerNickName(String ownerNickName) {
         this.ownerNickName = ownerNickName;
+    }
+
+    public String getGroupNickName() {
+        return groupNickName;
+    }
+
+    public void setGroupNickName(String groupNickName) {
+        this.groupNickName = groupNickName;
     }
 }

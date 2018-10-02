@@ -2,6 +2,8 @@ package com.agmbat.imsdk.group;
 
 import android.text.TextUtils;
 
+import com.agmbat.text.StringUtils;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.findserver.FindServerObject;
@@ -102,15 +104,12 @@ public class QueryGroupIQProvider implements IQProvider {
                 } else if (parser.getName().equals("description")) {
                     String description = geTagText(parser, "description");
                     queryGroupInfoResultIQ.setDescription(description);
-                } else if(parser.getName().equals("current_user")){
-                    parser.next();
-                    parser.next();
-                    String isMemberText = parser.getText();
-                    if("true".equals(isMemberText)){
-                        queryGroupInfoResultIQ.setGroupMember(true);
-                    }else{
-                        queryGroupInfoResultIQ.setGroupMember(false);
-                    }
+                } else if(parser.getName().equals("is_member")){
+                    String isMemberText = parser.nextText();
+                    queryGroupInfoResultIQ.setGroupMember(StringUtils.parseBoolean(isMemberText));
+                }else if(parser.getName().equals("custom_nickame")){
+                    String groupNickname = parser.nextText();
+                    queryGroupInfoResultIQ.setGroupNickName(groupNickname);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("query")) {
