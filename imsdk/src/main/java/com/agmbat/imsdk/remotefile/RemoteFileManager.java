@@ -21,7 +21,7 @@ public class RemoteFileManager {
      * @param file
      * @param l
      */
-    public static void uploadImageFile(final File file, final OnFileUploadListener l) {
+    public static void uploadImageFile(final String circleJid, final File file, final OnFileUploadListener l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, FileApiResult>() {
             @Override
             protected FileApiResult doInBackground(Void... voids) {
@@ -29,7 +29,7 @@ public class RemoteFileManager {
                 String name = file.getName();
                 File outFile = new File(UserFileManager.getCurImageDir(), name);
                 ImageUtils.resizeImage(file.getAbsolutePath(), outFile.getAbsolutePath(), 1080, 1920);
-                return requestUploadTempFile(outFile.getAbsoluteFile());
+                return requestUploadTempFile(circleJid, outFile.getAbsoluteFile());
             }
 
             @Override
@@ -49,11 +49,11 @@ public class RemoteFileManager {
      * @param file
      * @param l
      */
-    public static void uploadTempFile(final File file, final OnFileUploadListener l) {
+    public static void uploadTempFile(final String circleJid, final File file, final OnFileUploadListener l) {
         AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, FileApiResult>() {
             @Override
             protected FileApiResult doInBackground(Void... voids) {
-                return requestUploadTempFile(file);
+                return requestUploadTempFile(circleJid, file);
             }
 
             @Override
@@ -127,11 +127,11 @@ public class RemoteFileManager {
      * @param file
      * @return
      */
-    private static FileApiResult requestUploadTempFile(File file) {
+    private static FileApiResult requestUploadTempFile(String circleJid, File file) {
         String phone = XMPPManager.getInstance().getConnectionUserName();
         String ticket = XMPPManager.getInstance().getTokenManager().getTokenRetry();
         String format = FileUtils.getExtension(file.getPath());
-        FileApiResult result = FileApi.uploadTempFile(phone, ticket, format, file);
+        FileApiResult result = FileApi.uploadTempFile(phone, ticket, format,circleJid, file);
         if (result == null) {
             result = new FileApiResult();
             result.mResult = false;

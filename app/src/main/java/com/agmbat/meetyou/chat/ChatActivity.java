@@ -701,7 +701,8 @@ public class ChatActivity extends Activity implements OnInputListener {
             //先发送空的消息
             //final Body emptyBody = new AudioBody("", 0);
             //final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
-            RemoteFileManager.uploadTempFile(new File(path), new OnFileUploadListener() {
+            String circleJid = null != mCircleInfo ? mCircleInfo.getGroupJid() : "";
+            RemoteFileManager.uploadTempFile(circleJid, new File(path), new OnFileUploadListener() {
                 @Override
                 public void onUpload(FileApiResult apiResult) {
                     if (apiResult.mResult) {
@@ -806,7 +807,8 @@ public class ChatActivity extends Activity implements OnInputListener {
         //先发送空消息
         //Body emptyBody = new ImageBody("", new ImageBody.Image());
         //final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
-        RemoteFileManager.uploadImageFile(new File(path), new OnFileUploadListener() {
+        String circleJid = null != mCircleInfo ? mCircleInfo.getGroupJid() : "";
+        RemoteFileManager.uploadImageFile(circleJid, new File(path), new OnFileUploadListener() {
             @Override
             public void onUpload(FileApiResult apiResult) {
                 if (apiResult.mResult) {
@@ -842,7 +844,8 @@ public class ChatActivity extends Activity implements OnInputListener {
         //先发送空消息
         //final Body emptyBody = new FileBody("", file.getName(), file);
         //final MessageObject emptyMessage = sendMessage(emptyBody, false, "");
-        RemoteFileManager.uploadTempFile(file, new OnFileUploadListener() {
+        String circleJid = null != mCircleInfo ? mCircleInfo.getGroupJid() : "";
+        RemoteFileManager.uploadTempFile(circleJid, file, new OnFileUploadListener() {
             @Override
             public void onUpload(FileApiResult apiResult) {
                 if (apiResult.mResult) {

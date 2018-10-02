@@ -63,9 +63,9 @@ public class FileApi {
      * @param file
      * @return
      */
-    public static FileApiResult uploadTempFile(String uid, String ticket, String format, File file) {
+    public static FileApiResult uploadTempFile(String uid, String ticket, String format, String circleJid, File file) {
         String apiName = "upload_temp";
-        return uploadFile(apiName, uid, ticket, format, "", file);
+        return uploadFile(apiName, uid, ticket, format, circleJid, file);
     }
 
 
