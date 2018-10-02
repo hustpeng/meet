@@ -76,6 +76,7 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.group.EditGroupEvent;
 import com.agmbat.meetyou.group.GroupInfoActivity;
 import com.agmbat.meetyou.group.RemoveGroupEvent;
+import com.agmbat.meetyou.group.SearchChatActivity;
 import com.agmbat.meetyou.splash.SplashStore;
 import com.agmbat.meetyou.util.SystemUtil;
 import com.agmbat.menu.MenuInfo;
@@ -881,7 +882,7 @@ public class ChatActivity extends Activity implements OnInputListener {
             chatRecordMenu.setOnClickMenuListener(new OnClickMenuListener() {
                 @Override
                 public void onClick(MenuInfo menu, int index) {
-
+                    SearchChatActivity.launch(getBaseContext(), mCircleInfo.getGroupJid());
                 }
             });
             popupMenu.addItem(chatRecordMenu);

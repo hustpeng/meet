@@ -142,6 +142,34 @@ public class MessageStorage {
         return array;
     }
 
+    public List<MessageObject> search(String myJid, String chatJid, String keyword){
+        List<MessageObject> array = new ArrayList<MessageObject>();
+        Cursor cursor = null;
+        try {
+            SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+            qb.setTables(getTableName());
+            SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+            String where = Columns.MSG_ACCOUNT + "=? AND (("
+                    + Columns.MSG_FROM_JID + "=? AND " + Columns.MSG_TO_JID + "=?) OR ("
+                    + Columns.MSG_FROM_JID + "=? AND " + Columns.MSG_TO_JID + "=?)) AND ("
+                    + Columns.MSG_BODY + " LIKE ? OR " + Columns.MSG_SENDER_NAME + " LIKE ?)";
+            String likeArgs =  "%" + keyword + "%";
+            String[] args = new String[]{myJid, myJid, chatJid, chatJid, myJid, likeArgs, likeArgs};
+            cursor = qb.query(db, null, where, args, null, null, Columns.MSG_DATE + " DESC");
+            while (cursor.moveToNext()) {
+                MessageObject obj = cursorToMessage(cursor);
+                array.add(obj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return array;
+    }
+
 
     public void deleteMsg(String[] msgIds) {
         if (msgIds == null || msgIds.length == 0) {
