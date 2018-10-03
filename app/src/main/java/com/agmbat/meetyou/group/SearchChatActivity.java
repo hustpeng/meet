@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.ToastUtil;
@@ -16,11 +17,13 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.util.VLog;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.chat.MessageListAdapter;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
 
 import org.jivesoftware.smackx.message.MessageObject;
 import org.jivesoftware.smackx.message.MessageStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -32,7 +35,7 @@ public class SearchChatActivity extends Activity {
     private static final String KEY_CHAT_JID = "chat_jid";
 
     @BindView(R.id.message_list)
-    PullToRefreshListView mMessageListView;
+    ListView mMessageListView;
     @BindView(R.id.txt_search)
     EditText mSearchText;
     @BindView(R.id.result)
@@ -40,6 +43,8 @@ public class SearchChatActivity extends Activity {
 
     private MessageStorage mMessageStorage;
     private String mChatJid;
+    private MessageListAdapter mAdapter;
+    private List<MessageObject> mMessages = new ArrayList<>();
 
     public static final void launch(Context context, String chatJid){
         Intent intent = new Intent(context, SearchChatActivity.class);
@@ -55,6 +60,8 @@ public class SearchChatActivity extends Activity {
         setContentView(R.layout.activity_search_chat);
         ButterKnife.bind(this);
         mMessageStorage = new MessageStorage();
+        mAdapter = new MessageListAdapter(this, mMessages);
+        mMessageListView.setAdapter(mAdapter);
     }
 
 
@@ -104,6 +111,11 @@ public class SearchChatActivity extends Activity {
         protected void onPostExecute(List<MessageObject> messageObjects) {
             mLoadingDialog.dismiss();
             mSearchTask = null;
+
+            mMessages.clear();
+            mMessages.addAll(messageObjects);
+            mAdapter.notifyDataSetChanged();
+
             VLog.d("Search result size:" + messageObjects.size());
             if(messageObjects.size() == 0){
                 mResultTv.setText("无法查找到相关聊天记录");
