@@ -12,6 +12,9 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.helper.GenderHelper;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,6 +38,9 @@ public class ContactView extends LinearLayout {
     @BindView(R.id.gender)
     ImageView mGenderView;
 
+    @BindView(R.id.last_login_time)
+    TextView mLastLoginTimeView;
+
     public ContactView(Context context) {
         super(context);
         View.inflate(context, R.layout.nearby_user_item, this);
@@ -49,6 +55,9 @@ public class ContactView extends LinearLayout {
         mLastMsgTimeView.setVisibility(View.GONE);
         String uri = contactInfo.getAvatar();
         ImageManager.displayImage(uri, mAvatarView, AvatarHelper.getOptions());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        mLastLoginTimeView.setText("最近登录：" + dateFormat.format(new Date(contactInfo.getLastLogin())));
     }
 
 }

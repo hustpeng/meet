@@ -103,7 +103,7 @@ public class DiscoveryFragment extends Fragment {
         String hobby = user.getHobby();
         if (TextUtils.isEmpty(hobby)) {
             ISAlertDialog dialog = new ISAlertDialog(getActivity());
-            dialog.setMessage("请先设置兴趣爱好!");
+            dialog.setMessage("请先在个人信息中填写兴趣爱好!");
             dialog.setPositiveButton("确定", null);
             dialog.show();
             return;
@@ -113,6 +113,15 @@ public class DiscoveryFragment extends Fragment {
 
     @OnClick(R.id.btn_discovery_birthplace)
     void onClickBirthplace() {
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        String birthplace = user.getBirthplace();
+        if (TextUtils.isEmpty(birthplace)) {
+            ISAlertDialog dialog = new ISAlertDialog(getActivity());
+            dialog.setMessage("请先在个人信息中填写籍贯!");
+            dialog.setPositiveButton("确定", null);
+            dialog.show();
+            return;
+        }
         DiscoveryHelper.openBirthplace(getActivity());
     }
 

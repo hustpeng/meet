@@ -518,4 +518,8 @@ public class ContactInfo implements Serializable, AuthStatus {
     public void setWorkarea(String workarea) {
         this.workarea = workarea;
     }
+
+    public long getLastLogin(){
+        return last_login;
+    }
 }

@@ -13,8 +13,12 @@ import android.widget.TextView;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.meetyou.R;
+import com.agmbat.meetyou.discovery.filter.FilterLoader;
 import com.agmbat.meetyou.discovery.filter.FilterView;
 import com.agmbat.meetyou.search.ViewUserHelper;
+import com.agmbat.menu.MenuInfo;
+import com.agmbat.menu.OnClickMenuListener;
+import com.agmbat.menu.PopupMenu;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 
@@ -100,15 +104,55 @@ public class DiscoveryActivity extends Activity {
         mPageDataLoader.loadData();
     }
 
+
     /**
      * 点击标题栏中过虑器
      */
     @OnClick(R.id.btn_filter)
     void onClickFilter() {
-        if (mFilterView.getVisibility() == View.VISIBLE) {
-            mFilterView.setVisibility(View.INVISIBLE);
-        } else {
-            mFilterView.setVisibility(View.VISIBLE);
+        if(mLoader instanceof FilterLoader) {
+            if (mFilterView.getVisibility() == View.VISIBLE) {
+                mFilterView.setVisibility(View.INVISIBLE);
+            } else {
+                mFilterView.setVisibility(View.VISIBLE);
+            }
+        }else if(mLoader instanceof NearbyUsersLoader){
+            final NearbyUsersLoader nearbyUsersLoader = (NearbyUsersLoader) mLoader;
+            PopupMenu popupMenu = new PopupMenu(this);
+
+            MenuInfo allItem = new MenuInfo();
+            allItem.setTitle("全部");
+            allItem.setOnClickMenuListener(new OnClickMenuListener() {
+                @Override
+                public void onClick(MenuInfo menu, int index) {
+                    nearbyUsersLoader.setGender(-1);
+                    mPageDataLoader.loadData();
+                }
+            });
+            popupMenu.addItem(allItem);
+            MenuInfo maleItem = new MenuInfo();
+            maleItem.setTitle("男");
+            maleItem.setOnClickMenuListener(new OnClickMenuListener() {
+                @Override
+                public void onClick(MenuInfo menu, int index) {
+                    nearbyUsersLoader.setGender(1);
+                    mPageDataLoader.loadData();
+                }
+            });
+            popupMenu.addItem(maleItem);
+            MenuInfo female = new MenuInfo();
+            female.setTitle("女");
+            female.setOnClickMenuListener(new OnClickMenuListener() {
+                @Override
+                public void onClick(MenuInfo menu, int index) {
+                    nearbyUsersLoader.setGender(0);
+                    mPageDataLoader.loadData();
+                }
+            });
+            popupMenu.addItem(female);
+
+            View v = (View) findViewById(R.id.btn_filter).getParent();
+            popupMenu.show(v);
         }
     }
 
