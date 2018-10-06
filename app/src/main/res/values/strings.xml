@@ -46,6 +46,7 @@
 
     <!-- 我的 -->
     <string name="im_settings_new_msg">新消息通知</string>
+    <string name="im_settings_sys_msg">系统广播</string>
     <string name="im_settings_privacy">隐私</string>
     <string name="im_settings_about">关于真约</string>
     <string name="im_settings_logout">退出登录</string>

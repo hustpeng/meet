@@ -127,18 +127,18 @@ public class MessageManager extends Xepmodule {
                 }
                 return;
             }
-            Body body = BodyParser.parse(messageObject.getBody());
-            if(body instanceof EventsBody){
-                EventBus.getDefault().post(new ReceiveSysMessageEvent(messageObject));
-                return;
-            }
-
             String sendMsgState = "delivered";
             if (willInsertReceivedMsg(messageObject)) {
                 messageObject.setMsgStatus(MessageObjectStatus.READ);
                 sendMsgState = "read";
             }
             messageStorage.insertMsg(messageObject);
+
+            Body body = BodyParser.parse(messageObject.getBody());
+            if(body instanceof EventsBody){
+                EventBus.getDefault().post(new ReceiveSysMessageEvent(messageObject));
+                return;
+            }
             UiUtils.post(new Runnable() {
                 @Override
                 public void run() {

@@ -92,7 +92,8 @@ public class BodyParser {
         }
 
         if(bodyType == BodyType.EVENTS){
-            return new EventsBody();
+            String content = XmlUtils.getNodeValue(bodyText, "content");
+            return new EventsBody(content);
         }
         return new TextBody(bodyText);
     }

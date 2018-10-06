@@ -31,6 +31,7 @@ import com.agmbat.meetyou.settings.AboutActivity;
 import com.agmbat.meetyou.settings.IdentityAuthenticationActivity;
 import com.agmbat.meetyou.settings.NotificationSettingActivity;
 import com.agmbat.meetyou.settings.PrivateSettingActivity;
+import com.agmbat.meetyou.tab.msg.SysMsgActivity;
 import com.agmbat.meetyou.util.ResourceUtil;
 import com.agmbat.wxshare.ShareContent;
 import com.agmbat.wxshare.WXShare;
@@ -126,6 +127,11 @@ public class ProfileFragment extends Fragment {
     @OnClick(R.id.btn_new_msg)
     void onClickNewMsgSetting() {
         NotificationSettingActivity.launch(getContext());
+    }
+
+    @OnClick(R.id.btn_sys_msg)
+    void onClickSyMsgSetting() {
+        SysMsgActivity.launch(getContext());
     }
 
     @OnClick(R.id.btn_privacy)
