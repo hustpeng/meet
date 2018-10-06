@@ -1,5 +1,7 @@
 package com.agmbat.imsdk.group;
 
+import com.agmbat.text.StringUtils;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
@@ -24,6 +26,7 @@ public class JoinGroupProvider implements IQProvider {
         JoinGroupReply joinGroupReply = new JoinGroupReply();
         QuitGroupReplay quitGroupReplay = new QuitGroupReplay();
         DismissGroupReply dismissGroupReply = new DismissGroupReply();
+        ChangeGroupNicknameReply changeGroupNicknameReply = new ChangeGroupNicknameReply();
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
@@ -31,13 +34,15 @@ public class JoinGroupProvider implements IQProvider {
                     action = geTagText(parser, "action");
                 } else if (parser.getName().equals("succeed")) {
                     String succeedText = geTagText(parser, "succeed");
-                    boolean success = Boolean.parseBoolean(succeedText);
+                    boolean success = StringUtils.parseBoolean(succeedText);
                     if ("applycircle".equals(action)) {
                         joinGroupReply.setSuccess(success);
                     } else if ("quitcircle".equals(action)) {
                         quitGroupReplay.setSuccess(success);
                     } else if ("dismisscircle".equals(action)) {
                         dismissGroupReply.setSuccess(success);
+                    }else if("changenickname".equals(action)){
+                        changeGroupNicknameReply.setSuccess(success);
                     }
                 } else if (parser.getName().equals("wait")) {
                     if ("applycircle".equals(action)) {
@@ -52,6 +57,10 @@ public class JoinGroupProvider implements IQProvider {
                     } else if ("dismisscircle".equals(action)) {
                         dismissGroupReply.setReason(reason);
                     }
+                }else if(parser.getName().equals("sendername")){
+                    if("changenickname".equals(action)){
+                        changeGroupNicknameReply.setGroupNickname(parser.nextText());
+                    }
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("query")) {
@@ -65,6 +74,8 @@ public class JoinGroupProvider implements IQProvider {
             return quitGroupReplay;
         } else if ("dismisscircle".equals(action)) {
             return dismissGroupReply;
+        } else if ("changenickname".equals(action)) {
+            return changeGroupNicknameReply;
         }
         return null;
     }

@@ -192,7 +192,7 @@ public class ReconnectionManager {
 
                         notifyReconnectionSuccess();
                         return;
-                    } catch (XMPPException e) {
+                    } catch (Exception e) {
                         retryNum--;
                     }
 

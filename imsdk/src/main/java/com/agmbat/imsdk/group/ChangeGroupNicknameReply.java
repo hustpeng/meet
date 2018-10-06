@@ -22,7 +22,7 @@ public class ChangeGroupNicknameReply extends IQ {
     @Override
     public String getChildElementXML() {
         StringBuilder builder = new StringBuilder();
-        builder.append("<query xmlns=\"" + ChangeGroupNicknameProvider.namespace() + "\">");
+        builder.append("<query xmlns=\"" + JoinGroupProvider.namespace() + "\">");
         builder.append("<action>changenickname</actoin>");
         builder.append("<succeed>" + success + "</succeed>");
         builder.append("<sendername>" + mGroupNickname + "</sendername>");
