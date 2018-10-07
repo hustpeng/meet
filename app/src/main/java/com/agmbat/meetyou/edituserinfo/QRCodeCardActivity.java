@@ -13,6 +13,7 @@ import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.WindowUtils;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
+import com.agmbat.imsdk.search.SearchManager;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.AvatarHelper;
@@ -94,7 +95,7 @@ public class QRCodeCardActivity extends Activity {
      * @param user
      */
     private void update(LoginUser user) {
-        String text = user.getUserName();
+        String text = SearchManager.PREFIX_USER + user.getUserName();
         int dimension = (int) SysResources.dipToPixel(250);
         Bitmap bitmap = QRCodeEncoder.encode(text, dimension);
         mQrCodeView.setImageBitmap(bitmap);

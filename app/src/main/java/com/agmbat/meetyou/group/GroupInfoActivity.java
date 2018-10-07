@@ -29,6 +29,7 @@ import com.agmbat.imsdk.group.JoinGroupReply;
 import com.agmbat.imsdk.group.QueryGroupInfoIQ;
 import com.agmbat.imsdk.group.QueryGroupInfoResultIQ;
 import com.agmbat.imsdk.group.QuitGroupReplay;
+import com.agmbat.imsdk.search.SearchManager;
 import com.agmbat.imsdk.search.group.GroupInfo;
 import com.agmbat.imsdk.util.AppConfigUtils;
 import com.agmbat.log.Log;
@@ -141,8 +142,8 @@ public class GroupInfoActivity extends Activity {
                 AppConfigUtils.setGroupVibratorEnable(getBaseContext(), myJid, mGroupJid, isChecked);
             }
         });
-
-        fillGroupQrCodeImage(mGroupJid);
+        String qrCodeText = SearchManager.PREFIX_GROUP + XmppStringUtils.parseName(mGroupJid);
+        fillGroupQrCodeImage(qrCodeText);
         loadGroupInfo();
     }
 

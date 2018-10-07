@@ -17,6 +17,9 @@ import com.agmbat.imsdk.search.user.SearchUserResult;
  */
 public class SearchManager {
 
+    public static final String PREFIX_USER = "user:";
+    public static final String PREFIX_GROUP = "group:";
+
     /**
      * 搜索用户
      *

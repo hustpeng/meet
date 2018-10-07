@@ -27,6 +27,9 @@ import com.agmbat.imsdk.imevent.ContactGroupLoadEvent;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
 import com.agmbat.imsdk.imevent.SendMessageEvent;
 import com.agmbat.imsdk.search.SearchManager;
+import com.agmbat.imsdk.search.group.GroupInfo;
+import com.agmbat.imsdk.search.group.OnSearchGroupListener;
+import com.agmbat.imsdk.search.group.SearchGroupResult;
 import com.agmbat.imsdk.search.user.OnSearchUserListener;
 import com.agmbat.imsdk.search.user.SearchUserResult;
 import com.agmbat.isdialog.ISLoadingDialog;
@@ -34,6 +37,7 @@ import com.agmbat.log.Log;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.chat.ChatActivity;
 import com.agmbat.meetyou.event.UnreadMessageEvent;
+import com.agmbat.meetyou.group.GroupInfoActivity;
 import com.agmbat.meetyou.search.SearchUserActivity;
 import com.agmbat.meetyou.search.ViewUserHelper;
 import com.agmbat.menu.MenuInfo;
@@ -267,7 +271,15 @@ public class MsgFragment extends Fragment {
             @Override
             public void onScan(String text) {
                 if (!TextUtils.isEmpty(text)) {
-                    searchUser(text);
+                    if(text.startsWith(SearchManager.PREFIX_USER)) {
+                        searchUser(text.replace(SearchManager.PREFIX_USER, ""));
+                    }else if(text.startsWith(SearchManager.PREFIX_GROUP)){
+                        searchGroup(text.replace(SearchManager.PREFIX_GROUP, ""));
+                    }else{
+                        ToastUtil.showToast("二维码格式有误");
+                    }
+                }else{
+                    ToastUtil.showToast("二维码内容为空");
                 }
             }
         });
@@ -284,7 +296,6 @@ public class MsgFragment extends Fragment {
             @Override
             public void onSearchUser(SearchUserResult result) {
                 hideLoadingDialog();
-                ToastUtil.showToast(result.mErrorMsg);
                 if (result.mResult) {
                     ContactInfo contactInfo = result.mData;
                     if (contactInfo == null) {
@@ -294,6 +305,33 @@ public class MsgFragment extends Fragment {
                     }
                 } else {
                     ToastUtil.showToast("搜索用户失败!");
+                }
+            }
+
+        });
+    }
+
+    /**
+     * 搜索群组
+     *
+     * @param uid
+     */
+    private void searchGroup(String uid) {
+        showLoadingDialog();
+        SearchManager.searchGroup(uid, new OnSearchGroupListener() {
+            @Override
+            public void onSearchGroup(SearchGroupResult result) {
+                hideLoadingDialog();
+                if (result.mResult) {
+                    List<GroupInfo> groupInfos = result.mData;
+                    if (groupInfos == null || groupInfos.size() == 0) {
+                        ToastUtil.showToast("未搜索到群组");
+                    } else {
+                        GroupInfo groupInfo = groupInfos.get(0);
+                        GroupInfoActivity.launch(getContext(), groupInfo);
+                    }
+                } else {
+                    ToastUtil.showToast("搜索群组失败!");
                 }
             }
 
