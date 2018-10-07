@@ -54,6 +54,7 @@ public class WebViewActivity extends Activity {
     public static void openBrowser(Context context, String url, String title) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Intent.EXTRA_TITLE, title);
         intent.setClass(context, WebViewActivity.class);
         context.startActivity(intent);
