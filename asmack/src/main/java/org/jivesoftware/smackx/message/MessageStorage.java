@@ -416,6 +416,9 @@ public class MessageStorage {
      * @return
      */
     public List<MessageObject> getMessages(String myJid, String chatJid) {
+        if(TextUtils.isEmpty(myJid) || TextUtils.isEmpty(chatJid)){
+            return new ArrayList<MessageObject>();
+        }
         List<MessageObject> resultArray = new ArrayList<MessageObject>();
         Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null, "(("
                         + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_TO_JID + "=?) Or ("
