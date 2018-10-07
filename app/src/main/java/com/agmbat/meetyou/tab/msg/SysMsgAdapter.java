@@ -134,7 +134,7 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
             mContentTv.setText(textBody.getContent());
         }
 
-        private void setAudioPlayTextView(final TextView tv, final String url) {
+        private void setAudioPlayTextView(final View tv, final String url) {
 
             tv.setOnClickListener(new View.OnClickListener() {
 
@@ -149,7 +149,7 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
             mContentTv.setVisibility(View.VISIBLE);
             mContentImage.setVisibility(View.GONE);
             mContentTv.setText(urlBody.getContent());
-            mContentTv.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     AppUtils.openBrowser(mContext, urlBody.getContent());
@@ -172,7 +172,7 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
             if (url != null && url.startsWith("http")) {
                 final File file = XmppFileManager.getRecordFile(url);
                 if (file.exists()) {
-                    setAudioPlayTextView(mContentTv, file.getAbsolutePath());
+                    setAudioPlayTextView(itemView, file.getAbsolutePath());
                 } else {
                     AsyncTaskUtils.executeAsyncTask(new AsyncTask<Void, Void, Boolean>() {
 
@@ -187,12 +187,12 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
 
                         @Override
                         protected void onPostExecute(Boolean result) {
-                            setAudioPlayTextView(mContentTv, file.getAbsolutePath());
+                            setAudioPlayTextView(itemView, file.getAbsolutePath());
                         }
                     });
                 }
             } else {
-                setAudioPlayTextView(mContentTv, url);
+                setAudioPlayTextView(itemView, url);
             }
         }
 
@@ -206,7 +206,7 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
             mContentImage.setVisibility(View.VISIBLE);
             mContentImage.setImageResource(0);
             ImageUtil.loadImage(mContext, mContentImage, imageBody.getFileUrl(), R.drawable.ic_default_image);
-            mContentImage.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ViewImageActivity.viewImage(mContext, imageBody.getFileUrl());
@@ -223,7 +223,7 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
             mContentImage.setVisibility(View.VISIBLE);
             mContentTv.setVisibility(View.GONE);
             mContentImage.setImageResource(R.drawable.ic_chat_def_location);
-            mContentImage.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
@@ -280,7 +280,7 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
             ViewGroup.LayoutParams params = mContentTv.getLayoutParams();
             params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
             mContentTv.setText("推荐好友:" + profile.getBareJid());
-            mContentTv.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
@@ -297,7 +297,7 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
             params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
             mContentTv.setVisibility(View.VISIBLE);
             mContentTv.setText("文件:" + fileBody.getFileName());
-            mContentTv.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     File file = fileBody.getFile();
