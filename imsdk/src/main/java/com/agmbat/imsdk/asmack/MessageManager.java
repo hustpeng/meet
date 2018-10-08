@@ -112,7 +112,7 @@ public class MessageManager extends Xepmodule {
                         MessageObject targetMessage = messageStorage.getMsg(messageObject
                                 .getMsgId(), xmppConnection.getBareJid());
                         if (targetMessage != null) {
-                            targetMessage.setMsgStatus(MessageObjectStatus.UNREAD);
+                            targetMessage.setMsgStatus(MessageObjectStatus.SEND);
                             messageStorage.updateMsg(targetMessage, xmppConnection.getBareJid());
                         }
                     } else if ("read".equals(elementName)) {
