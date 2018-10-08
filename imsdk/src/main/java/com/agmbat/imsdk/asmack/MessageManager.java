@@ -540,7 +540,7 @@ public class MessageManager extends Xepmodule {
         List<MessageObject> list = mMessageMap.get(jid);
         if (list == null || list.size() == 0) {
             String user = XmppStringUtils.parseBareAddress(xmppConnection.getUser());
-            list = messageStorage.getMessages(user, jid);
+            list = messageStorage.getMessages(user, jid, true);
             mMessageMap.put(jid, list);
         }
         return list;
@@ -556,7 +556,7 @@ public class MessageManager extends Xepmodule {
         List<MessageObject> list = mMessageMap.get(jid);
         if (list == null) {
             String user = XmppStringUtils.parseBareAddress(xmppConnection.getUser());
-            list = messageStorage.getMessages(user, jid);
+            list = messageStorage.getMessages(user, jid, true);
             mMessageMap.put(jid, list);
         }
         if (!list.contains(messageObject)) {

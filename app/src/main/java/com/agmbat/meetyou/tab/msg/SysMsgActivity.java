@@ -46,7 +46,7 @@ public class SysMsgActivity extends Activity {
         mMessageStorage = new MessageStorage();
 
         String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
-        List<MessageObject> sysMessages = mMessageStorage.getMessages(myJid, "support@yuan520.com");
+        List<MessageObject> sysMessages = mMessageStorage.getMessages(myJid, "support@yuan520.com", false);
         mMsgListView.setLayoutManager(new LinearLayoutManager(getApplication()));
         mSysMsgAdapter = new SysMsgAdapter(getBaseContext());
         mMsgListView.setAdapter(mSysMsgAdapter);

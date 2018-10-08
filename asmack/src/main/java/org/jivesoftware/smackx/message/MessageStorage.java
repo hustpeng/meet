@@ -415,11 +415,17 @@ public class MessageStorage {
      * @param chatJid
      * @return
      */
-    public List<MessageObject> getMessages(String myJid, String chatJid) {
+    public List<MessageObject> getMessages(String myJid, String chatJid, boolean dateAsc) {
         if(TextUtils.isEmpty(myJid) || TextUtils.isEmpty(chatJid)){
             return new ArrayList<MessageObject>();
         }
         List<MessageObject> resultArray = new ArrayList<MessageObject>();
+        String orderBy = null;
+        if(dateAsc){
+            orderBy = Columns.MSG_DATE + " ASC";
+        }else{
+            orderBy = Columns.MSG_DATE + " DESC";
+        }
         Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null, "(("
                         + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_TO_JID + "=?) Or ("
                         + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_TO_JID + "=?)) And "
@@ -428,7 +434,7 @@ public class MessageStorage {
                         myJid, chatJid,
                         chatJid, myJid,
                         myJid
-                }, null, null, Columns.MSG_DATE + " ASC");
+                }, null, null, orderBy);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 MessageObject obj = cursorToMessage(cursor);

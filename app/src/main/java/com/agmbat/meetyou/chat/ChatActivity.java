@@ -253,7 +253,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupChatListener, packetFilter);
         if (mChatType == TYPE_GROUP_CHAT) {
             String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
-            List<MessageObject> cacheMessages = messageStorage.getMessages(myJid, mCircleInfo.getGroupJid());
+            List<MessageObject> cacheMessages = messageStorage.getMessages(myJid, mCircleInfo.getGroupJid(), true);
             if (cacheMessages.size() == 0 && !AppConfigUtils.isGroupHistoryEverGet(getBaseContext(), mCircleInfo.getGroupJid())) {
                 QueryGroupChatIQ queryGroupChatIQ = new QueryGroupChatIQ();
                 queryGroupChatIQ.setTo(mCircleInfo.getGroupJid());
