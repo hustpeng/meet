@@ -73,6 +73,7 @@ public class Maps {
         String key = String.valueOf(context.hashCode());
         CONFIG_CACHE.put(key, config);
         Intent intent = new Intent(context, MapActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(KEY_CONFIG_ID, key);
         context.startActivity(intent);
     }

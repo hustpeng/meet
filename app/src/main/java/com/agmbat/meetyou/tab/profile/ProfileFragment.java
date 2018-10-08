@@ -116,12 +116,16 @@ public class ProfileFragment extends Fragment {
 
     @OnClick(R.id.view_user)
     void onClickUser() {
-        startActivity(new Intent(getActivity(), PersonalInfoActivity.class));
+        Intent intent = new Intent(getActivity(), PersonalInfoActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @OnClick(R.id.btn_change_password)
     void onClickChangePassword() {
-        startActivity(new Intent(getActivity(), ChangePasswordActivity.class));
+        Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @OnClick(R.id.btn_new_msg)
@@ -135,13 +139,15 @@ public class ProfileFragment extends Fragment {
     }
 
     @OnClick(R.id.btn_privacy)
-    void onClickPrivateSetting(){
+    void onClickPrivateSetting() {
         PrivateSettingActivity.launch(getContext());
     }
 
     @OnClick(R.id.btn_credits)
     void onClickCredits() {
-        startActivity(new Intent(getActivity(), CoinsActivity.class));
+        Intent intent = new Intent(getActivity(), CoinsActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @OnClick(R.id.btn_invite_friend)
@@ -162,7 +168,9 @@ public class ProfileFragment extends Fragment {
 
     @OnClick(R.id.btn_about)
     void onClickAbout() {
-        startActivity(new Intent(getActivity(), AboutActivity.class));
+        Intent intent = new Intent(getActivity(), AboutActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     /**
@@ -170,7 +178,9 @@ public class ProfileFragment extends Fragment {
      */
     @OnClick(R.id.identity_authentication)
     void onClickIdentityAuthentication() {
-        startActivity(new Intent(getActivity(), IdentityAuthenticationActivity.class));
+        Intent intent = new Intent(getActivity(), IdentityAuthenticationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     /**
@@ -182,7 +192,9 @@ public class ProfileFragment extends Fragment {
         XMPPManager.getInstance().logout();
         XMPPManager.getInstance().getRosterManager().resetData();
         XMPPManager.getInstance().getMessageManager().clearCachedMessages();
-        getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getActivity().startActivity(intent);
         getActivity().finish();
     }
 

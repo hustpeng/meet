@@ -68,7 +68,9 @@ public class AboutActivity extends Activity {
 
     @OnClick(R.id.user_feedback)
     void onClickFeedback() {
-        startActivity(new Intent(this, FeedbackActivity.class));
+        Intent intent = new Intent(this, FeedbackActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     /**

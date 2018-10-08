@@ -354,6 +354,7 @@ public class RegisterActivity extends Activity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(RegisterActivity.this, MainTabActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                             finish();
                             EventBus.getDefault().post(new RegisterSuccessEvent());

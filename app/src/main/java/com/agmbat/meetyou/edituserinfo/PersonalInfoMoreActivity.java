@@ -291,24 +291,28 @@ public class PersonalInfoMoreActivity extends Activity {
     @OnClick(R.id.btn_demand)
     void onClickDemand() {
         Intent intent = new Intent(this, EditDemandActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
     @OnClick(R.id.btn_signature)
     void onClickSignature() {
         Intent intent = new Intent(this, EditSignatureActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
     @OnClick(R.id.btn_introduce)
     void onClickIntroduce() {
         Intent intent = new Intent(this, EditIntroduceActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
     @OnClick(R.id.btn_hobby)
     void onClickHobby() {
         Intent intent = new Intent(this, EditHobbyActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 

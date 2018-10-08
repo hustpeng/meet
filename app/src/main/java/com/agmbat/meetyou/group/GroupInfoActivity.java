@@ -395,6 +395,7 @@ public class GroupInfoActivity extends Activity {
     private void reportGroup() {
         Intent intent = new Intent(this, ReportGroupActivity.class);
         intent.putExtra(ViewUserHelper.KEY_USER_INFO, mGroupJid);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 

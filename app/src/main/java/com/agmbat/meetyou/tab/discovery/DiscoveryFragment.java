@@ -135,7 +135,9 @@ public class DiscoveryFragment extends Fragment {
      */
     @OnClick(R.id.btn_discovery_meeting)
     void onClickMeeting() {
-        getActivity().startActivity(new Intent(getActivity(), MeetingActivity.class));
+        Intent intent = new Intent(getActivity(), MeetingActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getActivity().startActivity(intent);
     }
 
     /**
@@ -143,7 +145,9 @@ public class DiscoveryFragment extends Fragment {
      */
     @OnClick(R.id.btn_search_group)
     void onClickSearchGroup() {
-        getActivity().startActivity(new Intent(getActivity(), GroupSearchActivity.class));
+        Intent intent = new Intent(getActivity(), GroupSearchActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getActivity().startActivity(intent);
     }
 
     @Override

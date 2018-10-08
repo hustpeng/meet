@@ -45,6 +45,7 @@ public class DiscoveryHelper {
     public static void openNearByUsers(Context context) {
         Intent intent = new Intent(context, DiscoveryActivity.class);
         intent.putExtra(TYPE, DISCOVER_TYPE_NEAR_BY_USERS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -57,6 +58,7 @@ public class DiscoveryHelper {
     public static void openLover(Context context) {
         Intent intent = new Intent(context, DiscoveryActivity.class);
         intent.putExtra(TYPE, DISCOVER_TYPE_LOVER);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -69,6 +71,7 @@ public class DiscoveryHelper {
     public static void openHobby(Context context) {
         Intent intent = new Intent(context, DiscoveryActivity.class);
         intent.putExtra(TYPE, DISCOVER_TYPE_HOBBY);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -80,6 +83,7 @@ public class DiscoveryHelper {
     public static void openBirthplace(Context context) {
         Intent intent = new Intent(context, DiscoveryActivity.class);
         intent.putExtra(TYPE, DISCOVER_TYPE_BIRTHPLACE);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -91,6 +95,7 @@ public class DiscoveryHelper {
     public static void openFilter(Context context) {
         Intent intent = new Intent(context, DiscoveryActivity.class);
         intent.putExtra(TYPE, DISCOVER_TYPE_FILTER);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 }

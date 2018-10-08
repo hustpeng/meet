@@ -134,8 +134,9 @@ public class LocationActivity extends Activity implements OnGetGeoCoderResultLis
      * 点击查找
      */
     void onClickSearch() {
-        Intent search_intent = new Intent(this, SearchPositionActivity.class);
-        startActivityForResult(search_intent, REQUEST_CODE);
+        Intent intent = new Intent(this, SearchPositionActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
     /**

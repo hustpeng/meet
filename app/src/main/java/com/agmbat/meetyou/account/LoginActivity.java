@@ -105,12 +105,16 @@ public class LoginActivity extends FragmentActivity {
 
     @OnClick(R.id.btn_signup)
     void onClickSignup() {
-        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @OnClick(R.id.login_problem)
     void onClickLoginProblem() {
-        startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
+        Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     /**
@@ -130,7 +134,9 @@ public class LoginActivity extends FragmentActivity {
                     //AccountPrefs.saveAccount(userName, password);
                     // 每次登陆成功,重置一次数据
                     XMPPManager.getInstance().getRosterManager().resetData();
-                    startActivity(new Intent(LoginActivity.this, MainTabActivity.class));
+                    Intent intent = new Intent(LoginActivity.this, MainTabActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                     finish();
                 }
             }

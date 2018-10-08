@@ -208,6 +208,7 @@ public class MsgFragment extends Fragment {
             @Override
             public void onClick(MenuInfo menu, int index) {
                 Intent intent = new Intent(getActivity(), SearchUserActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }

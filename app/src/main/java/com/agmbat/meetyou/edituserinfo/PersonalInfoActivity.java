@@ -111,6 +111,7 @@ public class PersonalInfoActivity extends Activity {
     @OnClick(R.id.btn_head)
     void onClickHead() {
         Intent intent = new Intent(this, EditAvatarActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
@@ -120,6 +121,7 @@ public class PersonalInfoActivity extends Activity {
     @OnClick(R.id.btn_nickname)
     void onClickNickname() {
         Intent intent = new Intent(this, EditNameActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
@@ -129,6 +131,7 @@ public class PersonalInfoActivity extends Activity {
     @OnClick(R.id.btn_gender)
     void onClickGender() {
         Intent intent = new Intent(this, EditGenderActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
@@ -138,6 +141,7 @@ public class PersonalInfoActivity extends Activity {
     @OnClick(R.id.btn_qrcode)
     void onClickQRCode() {
         Intent intent = new Intent(this, QRCodeCardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
@@ -164,6 +168,7 @@ public class PersonalInfoActivity extends Activity {
     @OnClick(R.id.personal_more_info)
     void onClickMore() {
         Intent intent = new Intent(this, PersonalInfoMoreActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
