@@ -108,6 +108,7 @@ public class GroupInfoActivity extends Activity {
     public static void launch(Context context, String groupJid) {
         Intent intent = new Intent(context, GroupInfoActivity.class);
         intent.putExtra(KEY_GROUP_JID, groupJid);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

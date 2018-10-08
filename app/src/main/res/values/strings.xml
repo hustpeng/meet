@@ -113,6 +113,7 @@
     <string name="search">搜索</string>
     <string name="group_chat">群聊</string>
     <string name="new_friend">新的朋友</string>
+    <string name="label_new_contact_reach_top">添加好友数量已达到%d人，无法继续添加</string>
 
     <!-- 发现页面 -->
     <string name="discovery_nearby_users">附近的人</string>
