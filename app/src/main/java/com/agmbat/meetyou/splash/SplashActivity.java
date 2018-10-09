@@ -72,12 +72,16 @@ public class SplashActivity extends Activity {
      */
     private long mSplashShowTime = 3000;
 
+    private int mTabIndex;
+    private String mLaunchActivity;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowUtils.setStatusBarColor(this, 0xff232325);
         setContentView(R.layout.activity_splash);
+        parseIntent();
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mSplashImageView = (ImageView) findViewById(R.id.splash_image);
         mSkipButton = (TextView) findViewById(R.id.btn_skip);
@@ -90,7 +94,11 @@ public class SplashActivity extends Activity {
             showGuide();
         } else {
             if (XMPPManager.getInstance().isLogin()) {
-                startActivity(new Intent(getBaseContext(), MainTabActivity.class));
+                Intent intent = new Intent(getBaseContext(), MainTabActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(MainTabActivity.EXTRA_MAIN_TAB_INDEX, mTabIndex);
+                intent.putExtra(MainTabActivity.EXTRA_LAUNCH_ACTIVITY, mLaunchActivity);
+                startActivity(intent);
                 finish();
                 return;
             }
@@ -133,6 +141,18 @@ public class SplashActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
         mHandler.removeCallbacks(mRunnable);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        parseIntent();
+    }
+
+    private void parseIntent() {
+        mTabIndex = getIntent().getIntExtra(MainTabActivity.EXTRA_MAIN_TAB_INDEX, MainTabActivity.TAB_INDEX_MSG);
+        mLaunchActivity = getIntent().getStringExtra(MainTabActivity.EXTRA_LAUNCH_ACTIVITY);
     }
 
     /**
@@ -228,7 +248,11 @@ public class SplashActivity extends Activity {
                         //AccountPrefs.saveAccount(userName, password);
                         // 每次登陆成功,重置一次数据
                         XMPPManager.getInstance().getRosterManager().resetData();
-                        startActivity(new Intent(getBaseContext(), MainTabActivity.class));
+                        Intent intent = new Intent(getBaseContext(), MainTabActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra(MainTabActivity.EXTRA_MAIN_TAB_INDEX, mTabIndex);
+                        intent.putExtra(MainTabActivity.EXTRA_LAUNCH_ACTIVITY, mLaunchActivity);
+                        startActivity(intent);
                     } else {
                         LoginActivity.launch(getBaseContext());
                     }

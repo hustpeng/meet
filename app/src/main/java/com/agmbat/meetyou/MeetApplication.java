@@ -35,12 +35,11 @@ public class MeetApplication extends Application {
         CrashReporter.init(this);
         ImageManager.initImageLoader(this);
         SplashManager.init(LoginActivity.class.getName());
-        MeetNotificationManager.init(this).configNewMsgEntrance(SplashActivity.class.getName());
+        MeetNotificationManager.init(this);
         SDKInitializer.initialize(this);
         AppVersionHelper.setAppVersionInfoRequester(new UpdateApi());
         if (ThreadUtil.isOnMainProcess(this)) {
             ConnectionReceiver.register(this);
-            MessageReceiver.register(this);
         }
         initDatabaseBrowser();
     }

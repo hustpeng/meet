@@ -32,9 +32,11 @@ import static com.agmbat.android.AppResources.getResources;
 
 public class MeetNotificationManager {
 
+    public static final String ACTION_RCV_NEW_MESSAGE = "ACTION_MEET_RCV_NEW_MESSAGE";
+    public static final String EXTRA_NEW_MESSAGE = "new_message";
+
     private NotificationManager mNotificationManager;
     private static MeetNotificationManager sInstance;
-    private String mNewMsgEntranceClass;
     private Context mContext;
 
     private MeetNotificationManager(Context context) {
@@ -53,24 +55,16 @@ public class MeetNotificationManager {
         return sInstance;
     }
 
-    public void configNewMsgEntrance(String className) {
-        mNewMsgEntranceClass = className;
-    }
-
-
     public void notifyMessageReceived(MessageObject messageObject) {
         if (!AppConfigUtils.isNotificationEnable(mContext) || !SystemUtil.isAppBackground(mContext)) {
             return;
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
-        try {
-            Intent intent = new Intent();
-            intent.setClass(mContext, Class.forName(mNewMsgEntranceClass));
-            PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
-            builder.setContentIntent(pendingIntent);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        Intent intent = new Intent(ACTION_RCV_NEW_MESSAGE);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(EXTRA_NEW_MESSAGE, messageObject);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
+        builder.setContentIntent(pendingIntent);
 
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));

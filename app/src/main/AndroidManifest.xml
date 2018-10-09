@@ -33,6 +33,7 @@
         <activity
             android:name="com.agmbat.meetyou.splash.SplashActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,6 +53,7 @@
         <activity
             android:name="com.agmbat.meetyou.MainTabActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.agmbat.meetyou.account.ChangePasswordActivity"
@@ -241,6 +243,12 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
+
+        <receiver android:name="com.agmbat.meetyou.MessageReceiver">
+            <intent-filter>
+                <action android:name="ACTION_MEET_RCV_NEW_MESSAGE" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

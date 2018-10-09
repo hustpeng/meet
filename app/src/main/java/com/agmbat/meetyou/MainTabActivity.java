@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -57,6 +58,9 @@ import java.util.List;
  */
 public class MainTabActivity extends FragmentActivity {
 
+    public static final String EXTRA_MAIN_TAB_INDEX = "tab_index";
+    public static final String EXTRA_LAUNCH_ACTIVITY = "launch_activity";
+
     public static final int TAB_INDEX_MSG = 0;
     public static final int TAB_INDEX_CONTACT = 1;
     public static final int TAB_INDEX_DISCOVERY = 2;
@@ -64,15 +68,48 @@ public class MainTabActivity extends FragmentActivity {
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
+    private int mTabIndex;
+    private String mLaunchActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         queryGroupList();
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_maintab);
+        parseIntent();
         setupViews();
         EventBus.getDefault().register(this);
         mHandler.postDelayed(mInitRunnable, 1000);
+        gotoLaunchActivity();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        parseIntent();
+        mTabManager.setCurrentTab(mTabIndex);
+        gotoLaunchActivity();
+    }
+
+    private void parseIntent() {
+        mTabIndex = getIntent().getIntExtra(EXTRA_MAIN_TAB_INDEX, TAB_INDEX_MSG);
+        mLaunchActivity = getIntent().getStringExtra(EXTRA_LAUNCH_ACTIVITY);
+    }
+
+    private void gotoLaunchActivity() {
+        if (TextUtils.isEmpty(mLaunchActivity)) {
+            return;
+        }
+        try {
+            Intent intent = new Intent();
+            intent.setClass(getApplicationContext(), Class.forName(mLaunchActivity));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void queryGroupList() {
@@ -135,7 +172,7 @@ public class MainTabActivity extends FragmentActivity {
                 }
             }
         });
-        mTabManager.setCurrentTab(TAB_INDEX_MSG);
+        mTabManager.setCurrentTab(mTabIndex);
     }
 
     private View createTabItemView(int textId, int imageId) {
