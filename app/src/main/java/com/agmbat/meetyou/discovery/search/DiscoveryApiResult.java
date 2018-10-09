@@ -52,6 +52,12 @@ public class DiscoveryApiResult extends ApiResult<List<ContactInfo>> implements 
     public int mPages;
 
     /**
+     * 每页的大小（不是当前页的大小）
+     */
+    @SerializedName("pagesize")
+    public int mPageSize;
+
+    /**
      * 当前page num
      */
     public int mPageNum;
@@ -73,6 +79,6 @@ public class DiscoveryApiResult extends ApiResult<List<ContactInfo>> implements 
 
     @Override
     public boolean hasNextPageData() {
-        return PageDataLoader.hasNextPage(mCount, PAGE_SIZE, mPageNum);
+        return PageDataLoader.hasNextPage(mCount, mPageSize, mPageNum);
     }
 }
