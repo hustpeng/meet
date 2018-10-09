@@ -569,32 +569,34 @@ public class RosterManager {
                     }
                     LoginUser loginUser = getLoginUser();
                     List<ContactInfo> contactInfos = ContactDBCache.getContactList();
-                    if (loginUser.getAuth() == ContactInfo.AUTH_STATE_NOT_SUBMIT
-                            || loginUser.getAuth() == ContactInfo.AUTH_STATE_SUBMITED
-                            || loginUser.getAuth() == ContactInfo.AUTH_STATE_DENIED) {
-                        if (contactInfos.size() >= ContactInfo.CONTACT_LIMIT_UNAUTH) {
-                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_UNAUTH));
-                            return;
-                        }
-                    } else if (loginUser.getAuth() == ContactInfo.AUTH_STATE_AUTHENTICATED) {
-                        if (loginUser.getGrade() == 0 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH) {
-                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH));
-                            return;
-                        } else if (loginUser.getGrade() == 1 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1) {
-                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1));
-                            return;
-                        } else if (loginUser.getGrade() == 2 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2) {
-                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2));
-                            return;
-                        } else if (loginUser.getGrade() == 3 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3) {
-                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3));
-                            return;
-                        } else if (loginUser.getGrade() == 4 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4) {
-                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4));
-                            return;
-                        } else if (loginUser.getGrade() == 5 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5) {
-                            EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5));
-                            return;
+                    if (null != contactInfos) {
+                        if (loginUser.getAuth() == ContactInfo.AUTH_STATE_NOT_SUBMIT
+                                || loginUser.getAuth() == ContactInfo.AUTH_STATE_SUBMITED
+                                || loginUser.getAuth() == ContactInfo.AUTH_STATE_DENIED) {
+                            if (contactInfos.size() >= ContactInfo.CONTACT_LIMIT_UNAUTH) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_UNAUTH));
+                                return;
+                            }
+                        } else if (loginUser.getAuth() == ContactInfo.AUTH_STATE_AUTHENTICATED) {
+                            if (loginUser.getGrade() == 0 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH));
+                                return;
+                            } else if (loginUser.getGrade() == 1 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1));
+                                return;
+                            } else if (loginUser.getGrade() == 2 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2));
+                                return;
+                            } else if (loginUser.getGrade() == 3 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3));
+                                return;
+                            } else if (loginUser.getGrade() == 4 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4));
+                                return;
+                            } else if (loginUser.getGrade() == 5 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5));
+                                return;
+                            }
                         }
                     }
 

@@ -238,8 +238,7 @@ public class ChatActivity extends Activity implements OnInputListener {
 
         mChatType = getIntent().getIntExtra(KEY_CHAT_TYPE, TYPE_SINGLE_CHAT);
         if (mChatType == TYPE_SINGLE_CHAT) {
-            ContactInfo contactInfo = (ContactInfo) getIntent().getSerializableExtra(KEY_CONTACT);
-            mParticipant = XMPPManager.getInstance().getRosterManager().getContactFromMemCache(contactInfo.getBareJid());
+            mParticipant = (ContactInfo) getIntent().getSerializableExtra(KEY_CONTACT);
         } else if (mChatType == TYPE_GROUP_CHAT) {
             mCircleInfo = (CircleInfo) getIntent().getSerializableExtra(KEY_GROUP);
         }
