@@ -129,6 +129,7 @@ public class AppUtils {
             context.startActivity(intent);
             return true;
         } catch (ActivityNotFoundException ex) {
+            ToastUtil.showToast("无法找到相应的程序");
             Log.e(TAG, "Failed to start activity", ex);
         }
         return false;

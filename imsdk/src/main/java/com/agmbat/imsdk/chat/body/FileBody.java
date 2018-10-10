@@ -29,7 +29,7 @@ public class FileBody extends Body {
         builder.append("<wrap>");
         builder.append("<type>").append(getBodyType()).append("</type>");
         builder.append("<url>").append(mUrl).append("</url>");
-        builder.append("<fileName>").append(mUrl).append("</fileName>");
+        builder.append("<fileName>").append(mFileName).append("</fileName>");
         builder.append("</wrap>");
         return builder.toString();
     }
