@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
 import com.agmbat.imsdk.asmack.XMPPManager;
+import com.agmbat.meetyou.MeetApplication;
 import com.agmbat.meetyou.R;
 
 import org.jivesoftware.smackx.message.MessageObject;
@@ -46,7 +47,7 @@ public class SysMsgActivity extends Activity {
         mMessageStorage = new MessageStorage();
 
         String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
-        List<MessageObject> sysMessages = mMessageStorage.getMessages(myJid, "support@yuan520.com", false);
+        List<MessageObject> sysMessages = mMessageStorage.getMessages(myJid, MeetApplication.SYSTEM_JID, false);
         mMsgListView.setLayoutManager(new LinearLayoutManager(getApplication()));
         mSysMsgAdapter = new SysMsgAdapter(getBaseContext());
         mMsgListView.setAdapter(mSysMsgAdapter);

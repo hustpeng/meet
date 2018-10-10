@@ -29,7 +29,9 @@ import com.agmbat.imsdk.search.SearchManager;
 import com.agmbat.imsdk.search.group.GroupCategory;
 import com.agmbat.imsdk.search.group.GroupCategoryResult;
 import com.agmbat.imsdk.search.group.OnGetGroupCategoryListener;
+import com.agmbat.imsdk.settings.MeetNotificationManager;
 import com.agmbat.imsdk.util.AppConfigUtils;
+import com.agmbat.imsdk.util.VLog;
 import com.agmbat.isdialog.ISAlertDialog;
 import com.agmbat.meetyou.chat.ChangeTabEvent;
 import com.agmbat.meetyou.event.UnreadMessageEvent;
@@ -47,9 +49,11 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.circle.CircleListPacket;
 import org.jivesoftware.smackx.message.MessageObject;
+import org.jivesoftware.smackx.message.MessageObjectStatus;
 
 import java.util.List;
 
@@ -82,6 +86,22 @@ public class MainTabActivity extends FragmentActivity {
         EventBus.getDefault().register(this);
         mHandler.postDelayed(mInitRunnable, 1000);
         gotoLaunchActivity();
+        //testNotification();
+    }
+
+    private void testNotification() {
+        MessageObject messageObject = new MessageObject();
+        messageObject.setFromJid(MeetApplication.SYSTEM_JID);
+        messageObject.setToJid(XMPPManager.getInstance().getXmppConnection().getBareJid());
+        messageObject.setSenderJid(MeetApplication.SYSTEM_JID);
+        messageObject.setSenderNickName("系统管理员");
+        messageObject.setMsgId("sjfksjdk2343");
+        messageObject.setAccount(XMPPManager.getInstance().getXmppConnection().getBareJid());
+        messageObject.setMsgStatus(MessageObjectStatus.UNREAD);
+        messageObject.setChatType(Message.Type.chat);
+        messageObject.setBody("<wrap><type>TEXT</type><content>测试测试</content></wrap>");
+        messageObject.setDate(1539080524848L);
+        MeetNotificationManager.getInstance().notifyMessageReceived(messageObject);
     }
 
     @Override
@@ -96,6 +116,7 @@ public class MainTabActivity extends FragmentActivity {
     private void parseIntent() {
         mTabIndex = getIntent().getIntExtra(EXTRA_MAIN_TAB_INDEX, TAB_INDEX_MSG);
         mLaunchActivity = getIntent().getStringExtra(EXTRA_LAUNCH_ACTIVITY);
+        VLog.d("Go to tab[%d], Activity: %s", mTabIndex, mLaunchActivity);
     }
 
     private void gotoLaunchActivity() {

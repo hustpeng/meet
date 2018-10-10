@@ -12,14 +12,15 @@ import com.agmbat.appupdate.AppVersionHelper;
 import com.agmbat.crashreport.CrashReporter;
 import com.agmbat.imsdk.settings.MeetNotificationManager;
 import com.agmbat.imsdk.util.VLog;
-import com.agmbat.meetyou.splash.SplashActivity;
-import com.agmbat.meetyou.splash.SplashManager;
 import com.agmbat.meetyou.account.LoginActivity;
 import com.agmbat.meetyou.checkupdate.UpdateApi;
+import com.agmbat.meetyou.splash.SplashManager;
 import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
 
 public class MeetApplication extends Application {
+
+    public static final String SYSTEM_JID = "support@yuan520.com";
 
     private static Application sInstance;
 

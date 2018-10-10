@@ -250,4 +250,9 @@ public class MessageObject implements Serializable {
             }
         });
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%s -> %s]: %s", fromJid, toJid, body);
+    }
 }

@@ -61,16 +61,18 @@ public class MeetNotificationManager {
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
         Intent intent = new Intent(ACTION_RCV_NEW_MESSAGE);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRA_NEW_MESSAGE, messageObject);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
 
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
         builder.setAutoCancel(true);
-
-        builder.setContentTitle(messageObject.getSenderNickName());
+        if (messageObject.getFromJid().equals("support@yuan520.com")) {
+            builder.setContentTitle("管理员");
+        } else {
+            builder.setContentTitle(messageObject.getSenderNickName());
+        }
         builder.setContentText(getContentSpannable(messageObject.getBody()));
         builder.setWhen(System.currentTimeMillis());
         Notification notification = builder.build();
@@ -88,25 +90,25 @@ public class MeetNotificationManager {
         if (body instanceof TextBody) {
             //TextBody textBody = (TextBody) body;
             //spannable = EmojiDisplay.update(textBody.getContent(), (int) SysResources.dipToPixel(14));
-            spannable = new SpannableString("发来文字信息，请点开查看...");
+            spannable = new SpannableString("发来一条文字信息，请点开查看...");
         } else if (body instanceof UrlBody) {
             UrlBody urlBody = (UrlBody) body;
             //spannable = new SpannableString(urlBody.getContent());
-            spannable = new SpannableString("[链接]");
+            spannable = new SpannableString("发来一条链接，请点开查看...");
         } else if (body instanceof AudioBody) {
-            spannable = new SpannableString("[语音]");
+            spannable = new SpannableString("发来一条语音信息，请点开查看...");
         } else if (body instanceof FireBody) {
-            spannable = new SpannableString("[阅后即焚]");
+            spannable = new SpannableString("发来一条阅后即焚信息，请点开查看...");
         } else if (body instanceof ImageBody) {
-            spannable = new SpannableString("[图片]");
+            spannable = new SpannableString("发来一条图片信息，请点开查看...");
         } else if (body instanceof LocationBody) {
-            spannable = new SpannableString("[位置]");
+            spannable = new SpannableString("发来一条位置信息，请点开查看...");
         } else if (body instanceof FriendBody) {
-            spannable = new SpannableString("[名片]");
+            spannable = new SpannableString("发来一个推荐好友，请点开查看...");
         } else if (body instanceof FileBody) {
-            spannable = new SpannableString("[文件]");
-        } else if (body instanceof EventsBody){
-            spannable = new SpannableString("[活动通知]");
+            spannable = new SpannableString("发来一个文件，请点开查看...");
+        } else if (body instanceof EventsBody) {
+            spannable = new SpannableString("发来一条活动通知，请点开查看...");
         }
         return spannable;
     }
