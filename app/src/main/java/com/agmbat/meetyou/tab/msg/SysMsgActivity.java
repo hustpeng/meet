@@ -33,7 +33,7 @@ public class SysMsgActivity extends Activity {
     private MessageStorage mMessageStorage;
     private SysMsgAdapter mSysMsgAdapter;
 
-    public static void launch(Context context){
+    public static void launch(Context context) {
         Intent intent = new Intent(context, SysMsgActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -47,7 +47,7 @@ public class SysMsgActivity extends Activity {
         mMessageStorage = new MessageStorage();
 
         String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
-        List<MessageObject> sysMessages = mMessageStorage.getMessages(myJid, MeetApplication.SYSTEM_JID, false);
+        List<MessageObject> sysMessages = mMessageStorage.getMessages(myJid, MeetApplication.SYSTEM_JID, -1, -1, false);
         mMsgListView.setLayoutManager(new LinearLayoutManager(getApplication()));
         mSysMsgAdapter = new SysMsgAdapter(getBaseContext());
         mMsgListView.setAdapter(mSysMsgAdapter);
@@ -56,7 +56,7 @@ public class SysMsgActivity extends Activity {
     }
 
     @OnClick(R.id.title_btn_back)
-    void onClickBack(){
+    void onClickBack() {
         finish();
     }
 

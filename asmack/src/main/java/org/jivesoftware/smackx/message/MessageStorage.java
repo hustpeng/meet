@@ -415,7 +415,7 @@ public class MessageStorage {
      * @param chatJid
      * @return
      */
-    public List<MessageObject> getMessages(String myJid, String chatJid, boolean dateAsc) {
+    public List<MessageObject> getMessages(String myJid, String chatJid, long since, int limit, boolean dateAsc) {
         if(TextUtils.isEmpty(myJid) || TextUtils.isEmpty(chatJid)){
             return new ArrayList<MessageObject>();
         }
@@ -426,15 +426,24 @@ public class MessageStorage {
         }else{
             orderBy = Columns.MSG_DATE + " DESC";
         }
-        Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null, "(("
-                        + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_TO_JID + "=?) Or ("
-                        + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_TO_JID + "=?)) And "
-                        + Columns.MSG_ACCOUNT + "=?",
-                new String[]{
-                        myJid, chatJid,
-                        chatJid, myJid,
-                        myJid
-                }, null, null, orderBy);
+        String where = "((" + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_TO_JID + "=?) Or ("
+                + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_TO_JID + "=?)) And "
+                + Columns.MSG_ACCOUNT + "=?";
+
+        String[] args = null;
+        if(since != -1){
+            where += " And " + Columns.MSG_DATE + "<?";
+            args = new String[]{myJid, chatJid, chatJid, myJid, myJid, String.valueOf(since)};
+        }else{
+            args = new String[]{myJid, chatJid, chatJid, myJid, myJid};
+        }
+
+        String limitArgs = null;
+        if(limit != -1){
+            limitArgs = String.valueOf(limit);
+        }
+        Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null, where,
+                args, null, null, orderBy, limitArgs);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 MessageObject obj = cursorToMessage(cursor);

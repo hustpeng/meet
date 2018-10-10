@@ -64,6 +64,7 @@ import com.agmbat.imsdk.remotefile.OnFileUploadListener;
 import com.agmbat.imsdk.remotefile.RemoteFileManager;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.imsdk.util.AppConfigUtils;
+import com.agmbat.imsdk.util.VLog;
 import com.agmbat.input.InputController;
 import com.agmbat.input.InputView;
 import com.agmbat.input.OnInputListener;
@@ -83,6 +84,7 @@ import com.agmbat.menu.MenuInfo;
 import com.agmbat.menu.OnClickMenuListener;
 import com.agmbat.menu.PopupMenu;
 import com.agmbat.net.HttpUtils;
+import com.agmbat.pulltorefresh.PullToRefreshBase;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
 import com.agmbat.text.TagText;
 
@@ -110,10 +112,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.agmbat.pulltorefresh.PullToRefreshBase.State.RELEASE_TO_REFRESH;
+
 /***
  * 消息聊天界面
  */
 public class ChatActivity extends Activity implements OnInputListener {
+
+    public static final int PAGE_SIZE = 10;
 
     /**
      * key, 用于标识联系人
@@ -252,14 +258,20 @@ public class ChatActivity extends Activity implements OnInputListener {
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupChatListener, packetFilter);
         if (mChatType == TYPE_GROUP_CHAT) {
             String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
-            List<MessageObject> cacheMessages = messageStorage.getMessages(myJid, mCircleInfo.getGroupJid(), true);
+            List<MessageObject> cacheMessages = messageStorage.getMessages(myJid, mCircleInfo.getGroupJid(), -1, -1, true);
             if (cacheMessages.size() == 0 && !AppConfigUtils.isGroupHistoryEverGet(getBaseContext(), mCircleInfo.getGroupJid())) {
-                QueryGroupChatIQ queryGroupChatIQ = new QueryGroupChatIQ();
-                queryGroupChatIQ.setTo(mCircleInfo.getGroupJid());
-                queryGroupChatIQ.setType(IQ.Type.GET);
-                XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupChatIQ);
+                getNextGroupMessages(System.currentTimeMillis(), PAGE_SIZE);
             }
         }
+    }
+
+    private void getNextGroupMessages(long since, int limit) {
+        QueryGroupChatIQ queryGroupChatIQ = new QueryGroupChatIQ();
+        queryGroupChatIQ.setTo(mCircleInfo.getGroupJid());
+        queryGroupChatIQ.setSince(since);
+        queryGroupChatIQ.setLimitNumber(limit);
+        queryGroupChatIQ.setType(IQ.Type.GET);
+        XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupChatIQ);
     }
 
     @Override
@@ -366,12 +378,32 @@ public class ChatActivity extends Activity implements OnInputListener {
         } else if (mChatType == TYPE_GROUP_CHAT) {
             bareJid = mCircleInfo.getGroupJid();
         }
-        mMessages = XMPPManager.getInstance().getMessageManager().getMessageList(bareJid);
+        final String chatJid = bareJid;
+        mMessages = XMPPManager.getInstance().getMessageManager().getMessageList(bareJid, System.currentTimeMillis(), PAGE_SIZE);
         markMessagesAsRead(mMessages);
         mAdapter = new MessageListAdapter(this, mMessages);
         mAdapter.setOnChatLongClickListener(mOnItemLongClickListener);
         mPtrView.setOnScrollListener(mOnScrollListener);
         mPtrView.setAdapter(mAdapter);
+        mPtrView.setOnPullEventListener(new PullToRefreshBase.OnPullEventListener<ListView>() {
+            @Override
+            public void onPullEvent(PullToRefreshBase<ListView> refreshView, PullToRefreshBase.State state, PullToRefreshBase.Mode direction) {
+                VLog.d("state=" + state + ", direction=" + direction);
+                if (direction == PullToRefreshBase.Mode.PULL_FROM_START && state == PullToRefreshBase.State.RELEASE_TO_REFRESH) {
+                    String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+                    long since = System.currentTimeMillis();
+                    if (mAdapter.getCount() > 0) {
+                        since = mAdapter.getItem(0).getDate();
+                    }
+                    List<MessageObject> nextMessages = messageStorage.getMessages(myJid, chatJid, since, PAGE_SIZE, true);
+                    mMessages.addAll(0, nextMessages);
+                    mAdapter.notifyDataSetChanged();
+                    if (mChatType == TYPE_GROUP_CHAT && nextMessages.size() == 0) {
+                        getNextGroupMessages(since, PAGE_SIZE);
+                    }
+                }
+            }
+        });
     }
 
     private void markMessagesAsRead(List<MessageObject> messageObjects) {
@@ -959,6 +991,7 @@ public class ChatActivity extends Activity implements OnInputListener {
 
                 GroupChatReply groupChatReply = (GroupChatReply) packet;
                 List<MessageObject> messageObjects = groupChatReply.getMessages();
+                VLog.d("Receive message size: " + messageObjects.size());
                 markMessagesAsRead(messageObjects);
                 String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
                 for (int i = 0; i < messageObjects.size(); i++) {
@@ -972,8 +1005,8 @@ public class ChatActivity extends Activity implements OnInputListener {
                     }
                 }
 
-                mMessages.clear();
-                mMessages.addAll(messageObjects);
+                //mMessages.clear();
+                mMessages.addAll(0, messageObjects);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
