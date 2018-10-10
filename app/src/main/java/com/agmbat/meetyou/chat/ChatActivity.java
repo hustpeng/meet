@@ -102,7 +102,9 @@ import org.jivesoftware.smackx.message.MessageObjectStatus;
 import org.jivesoftware.smackx.message.MessageStorage;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -395,7 +397,9 @@ public class ChatActivity extends Activity implements OnInputListener {
                     if (mAdapter.getCount() > 0) {
                         since = mAdapter.getItem(0).getDate();
                     }
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     List<MessageObject> nextMessages = messageStorage.getMessages(myJid, chatJid, since, PAGE_SIZE, true);
+                    VLog.d("get next messages before date: " + format.format(new Date(since)) + ", size=" + nextMessages.size());
                     mMessages.addAll(0, nextMessages);
                     mAdapter.notifyDataSetChanged();
                     if (mChatType == TYPE_GROUP_CHAT && nextMessages.size() == 0) {
