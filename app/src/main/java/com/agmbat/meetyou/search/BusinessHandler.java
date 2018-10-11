@@ -1,5 +1,6 @@
 package com.agmbat.meetyou.search;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
@@ -154,7 +155,10 @@ public abstract class BusinessHandler {
         dialog.dismiss();
         if (success) {
             ToastUtil.showToast("删除好友成功");
-
+            if(context instanceof Activity){
+                Activity activity = (Activity) context;
+                activity.finish();
+            }
         } else {
             ToastUtil.showToast("删除好友失败");
         }

@@ -74,17 +74,6 @@
             android:textColor="#ff929292"
             android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/last_login_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:singleLine="true"
-                tools:text="2018-2-23"
-                android:textColor="#ff929292"
-                android:textSize="14sp"
-                android:layout_marginLeft="10dp"/>
-
         </LinearLayout>
     </LinearLayout>
 
