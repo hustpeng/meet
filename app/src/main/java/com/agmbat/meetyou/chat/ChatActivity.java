@@ -114,8 +114,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.agmbat.pulltorefresh.PullToRefreshBase.State.RELEASE_TO_REFRESH;
-
 /***
  * 消息聊天界面
  */
@@ -398,12 +396,22 @@ public class ChatActivity extends Activity implements OnInputListener {
                         since = mAdapter.getItem(0).getDate();
                     }
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    List<MessageObject> nextMessages = messageStorage.getMessages(myJid, chatJid, since, PAGE_SIZE, true);
+                    final List<MessageObject> nextMessages = messageStorage.getMessages(myJid, chatJid, since, PAGE_SIZE, true);
                     VLog.d("get next messages before date: " + format.format(new Date(since)) + ", size=" + nextMessages.size());
-                    mMessages.addAll(0, nextMessages);
-                    mAdapter.notifyDataSetChanged();
-                    if (mChatType == TYPE_GROUP_CHAT && nextMessages.size() == 0) {
-                        getNextGroupMessages(since, PAGE_SIZE);
+                    if (nextMessages.size() == 0) {
+                        if (mChatType == TYPE_GROUP_CHAT) {
+                            getNextGroupMessages(since, PAGE_SIZE);
+                        }
+                    } else {
+                        insertMessages(nextMessages);
+                        mAdapter.notifyDataSetChanged();
+                        mPtrView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mPtrView.getRefreshableView().setSelection(nextMessages.size());
+                            }
+                        });
+
                     }
                 }
             }
@@ -994,7 +1002,7 @@ public class ChatActivity extends Activity implements OnInputListener {
                 AppConfigUtils.setGroupHistoryEverGet(getBaseContext(), mCircleInfo.getGroupJid(), true);
 
                 GroupChatReply groupChatReply = (GroupChatReply) packet;
-                List<MessageObject> messageObjects = groupChatReply.getMessages();
+                final List<MessageObject> messageObjects = groupChatReply.getMessages();
                 VLog.d("Receive message size: " + messageObjects.size());
                 markMessagesAsRead(messageObjects);
                 String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
@@ -1008,19 +1016,35 @@ public class ChatActivity extends Activity implements OnInputListener {
                         messageStorage.updateMsg(messageObject, myJid);
                     }
                 }
-
+                insertMessages(messageObjects);
                 //mMessages.clear();
-                mMessages.addAll(0, messageObjects);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mAdapter.notifyDataSetChanged();
+                        mPtrView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mPtrView.getRefreshableView().setSelection(messageObjects.size());
+                            }
+                        });
+
                     }
                 });
 
             }
         }
     };
+
+    private void insertMessages(List<MessageObject> messageObjects) {
+        MessageObject.sortByDate(messageObjects, false);
+        for (int i = 0; i < messageObjects.size(); i++) {
+            MessageObject current = messageObjects.get(i);
+            if (!mMessages.contains(current)) {
+                mMessages.add(0, current);
+            }
+        }
+    }
 
 
 }
