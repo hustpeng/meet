@@ -119,7 +119,7 @@ import butterknife.OnClick;
  */
 public class ChatActivity extends Activity implements OnInputListener {
 
-    public static final int PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 20;
 
     /**
      * key, 用于标识联系人
@@ -257,9 +257,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         PacketFilter packetFilter = new PacketTypeFilter(GroupChatReply.class);
         XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupChatListener, packetFilter);
         if (mChatType == TYPE_GROUP_CHAT) {
-            String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
-            List<MessageObject> cacheMessages = messageStorage.getMessages(myJid, mCircleInfo.getGroupJid(), -1, -1, true);
-            if (cacheMessages.size() == 0 && !AppConfigUtils.isGroupHistoryEverGet(getBaseContext(), mCircleInfo.getGroupJid())) {
+            if (mMessages.size() == 0 && !AppConfigUtils.isGroupHistoryEverGet(getBaseContext(), mCircleInfo.getGroupJid())) {
                 getNextGroupMessages(System.currentTimeMillis(), PAGE_SIZE);
             }
         }
@@ -302,11 +300,11 @@ public class ChatActivity extends Activity implements OnInputListener {
         } else if (mChatType == TYPE_GROUP_CHAT) {
             participantJid = mCircleInfo.getGroupJid();
         }
-        mAdapter.notifyDataSetChanged();
         MessageObject messageObject = event.getMessageObject();
         if (!messageObject.getFromJid().equals(participantJid)) {
             return;
         }
+        insertMessagesToTheEnd(messageObject);
         String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
         if (mChatType == TYPE_GROUP_CHAT) {
             if (AppConfigUtils.isGroupVibratorEnable(getBaseContext(), myJid, participantJid)) {
@@ -361,17 +359,14 @@ public class ChatActivity extends Activity implements OnInputListener {
         EmojiPanel panel = new EmojiPanel(this);
         panel.setConfig(config);
         mInputController.addEmojiPanel(panel);
-
         initOtherPanel();
         mInputController.setContentView(mContentLayout);
 
+        mAdapter = new MessageListAdapter(this, mMessages);
+        mAdapter.setOnChatLongClickListener(mOnItemLongClickListener);
+        mPtrView.setOnScrollListener(mOnScrollListener);
+        mPtrView.setAdapter(mAdapter);
 
-//        mInputView.setOnSendMessageListener(new OnSendMessageListener() {
-//            @Override
-//            public void onSendMessage(Body message) {
-//                sendTextMsg(message);
-//            }
-//        });
         String bareJid = "";
         if (mChatType == TYPE_SINGLE_CHAT) {
             bareJid = mParticipant.getBareJid();
@@ -379,32 +374,27 @@ public class ChatActivity extends Activity implements OnInputListener {
             bareJid = mCircleInfo.getGroupJid();
         }
         final String chatJid = bareJid;
-        mMessages = XMPPManager.getInstance().getMessageManager().getMessageList(bareJid, System.currentTimeMillis(), PAGE_SIZE);
-        markMessagesAsRead(mMessages);
-        mAdapter = new MessageListAdapter(this, mMessages);
-        mAdapter.setOnChatLongClickListener(mOnItemLongClickListener);
-        mPtrView.setOnScrollListener(mOnScrollListener);
-        mPtrView.setAdapter(mAdapter);
+        final String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        List<MessageObject> firstPageMessages = messageStorage.getMessages(myJid, bareJid, System.currentTimeMillis(), PAGE_SIZE, false);
+        insertMessagesToTheEnd(firstPageMessages);
         mPtrView.setOnPullEventListener(new PullToRefreshBase.OnPullEventListener<ListView>() {
             @Override
             public void onPullEvent(PullToRefreshBase<ListView> refreshView, PullToRefreshBase.State state, PullToRefreshBase.Mode direction) {
                 VLog.d("state=" + state + ", direction=" + direction);
                 if (direction == PullToRefreshBase.Mode.PULL_FROM_START && state == PullToRefreshBase.State.RELEASE_TO_REFRESH) {
-                    String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
                     long since = System.currentTimeMillis();
                     if (mAdapter.getCount() > 0) {
                         since = mAdapter.getItem(0).getDate();
                     }
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    final List<MessageObject> nextMessages = messageStorage.getMessages(myJid, chatJid, since, PAGE_SIZE, true);
+                    final List<MessageObject> nextMessages = messageStorage.getMessages(myJid, chatJid, since, PAGE_SIZE, false);
                     VLog.d("get next messages before date: " + format.format(new Date(since)) + ", size=" + nextMessages.size());
                     if (nextMessages.size() == 0) {
                         if (mChatType == TYPE_GROUP_CHAT) {
                             getNextGroupMessages(since, PAGE_SIZE);
                         }
                     } else {
-                        insertMessages(nextMessages);
-                        mAdapter.notifyDataSetChanged();
+                        insertMessagesAtBeginning(nextMessages);
                         mPtrView.post(new Runnable() {
                             @Override
                             public void run() {
@@ -424,6 +414,12 @@ public class ChatActivity extends Activity implements OnInputListener {
             if (current.getMsgStatus() != MessageObjectStatus.READ) {
                 XMPPManager.getInstance().getMessageManager().updateMsgStatus(current.getMsgId(), MessageObjectStatus.READ);
             }
+        }
+    }
+
+    private void markMessagesAsRead(MessageObject messageObject){
+        if (messageObject.getMsgStatus() != MessageObjectStatus.READ) {
+            XMPPManager.getInstance().getMessageManager().updateMsgStatus(messageObject.getMsgId(), MessageObjectStatus.READ);
         }
     }
 
@@ -490,7 +486,7 @@ public class ChatActivity extends Activity implements OnInputListener {
                 operations = new String[]{"删除"};
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
-
+            final String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
             builder.setItems(operations, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -500,12 +496,12 @@ public class ChatActivity extends Activity implements OnInputListener {
                             SystemUtil.copyToClipBoard(getBaseContext(), "chat", textBody.getContent());
                             ToastUtil.showToast("已复制");
                         } else {
-                            mAdapter.remove(messageObject);
-                            XMPPManager.getInstance().getMessageManager().deleteMessage(messageObject.getMsgId());
+                            removeMessage(messageObject);
+                            messageStorage.deleteMsg(messageObject.getMsgId(), myJid);
                         }
                     } else if (which == 1) {
-                        mAdapter.remove(messageObject);
-                        XMPPManager.getInstance().getMessageManager().deleteMessage(messageObject.getMsgId());
+                        removeMessage(messageObject);
+                        messageStorage.deleteMsg(messageObject.getMsgId(), myJid);
                     }
                 }
             });
@@ -717,10 +713,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         return false;
     }
 
-//    private List<TextBody.AtUser> getAtUsers(){
-//        String content = mInputView.getText().toString();
-//        content.split()
-//    }
 
     @Override
     public void onInput(int type, String content) {
@@ -805,8 +797,8 @@ public class ChatActivity extends Activity implements OnInputListener {
 
         MessageObject messageObject = XMPPManager.getInstance().getMessageManager()
                 .sendTextMessage(chatType, toJid, mLoginUser.getNickname(), mLoginUser.getAvatar(), body, shouldSend, updateMsgId);
-        mAdapter.notifyDataSetChanged();
         if (messageObject != null) {
+            insertMessagesToTheEnd(messageObject);
             EventBus.getDefault().post(new SendMessageEvent(messageObject));
         }
         return messageObject;
@@ -969,7 +961,7 @@ public class ChatActivity extends Activity implements OnInputListener {
         @Override
         protected void onPostExecute(Void aVoid) {
             mDeletingDialog.dismiss();
-            mAdapter.clear();
+            removeAllMessages();
         }
     }
 
@@ -1016,19 +1008,16 @@ public class ChatActivity extends Activity implements OnInputListener {
                         messageStorage.updateMsg(messageObject, myJid);
                     }
                 }
-                insertMessages(messageObjects);
-                //mMessages.clear();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mAdapter.notifyDataSetChanged();
+                        insertMessagesAtBeginning(messageObjects);
                         mPtrView.post(new Runnable() {
                             @Override
                             public void run() {
                                 mPtrView.getRefreshableView().setSelection(messageObjects.size());
                             }
                         });
-
                     }
                 });
 
@@ -1036,13 +1025,53 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
     };
 
-    private void insertMessages(List<MessageObject> messageObjects) {
+    private void removeAllMessages(){
+        mMessages.clear();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void removeMessage(MessageObject messageObject){
+        mMessages.remove(messageObject);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void insertMessagesAtBeginning(List<MessageObject> messageObjects) {
+        markMessagesAsRead(messageObjects);
         MessageObject.sortByDate(messageObjects, false);
         for (int i = 0; i < messageObjects.size(); i++) {
             MessageObject current = messageObjects.get(i);
             if (!mMessages.contains(current)) {
                 mMessages.add(0, current);
             }
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void insertMessagesAtBeginning(MessageObject messageObject){
+        markMessagesAsRead(messageObject);
+        if(!mMessages.contains(messageObject)){
+            mMessages.add(0,messageObject);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void insertMessagesToTheEnd(List<MessageObject> messageObjects) {
+        markMessagesAsRead(messageObjects);
+        MessageObject.sortByDate(messageObjects, true);
+        for (int i = 0; i < messageObjects.size(); i++) {
+            MessageObject current = messageObjects.get(i);
+            if (!mMessages.contains(current)) {
+                mMessages.add(current);
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void insertMessagesToTheEnd(MessageObject messageObject){
+        markMessagesAsRead(messageObject);
+        if(!mMessages.contains(messageObject)){
+            mMessages.add(messageObject);
+            mAdapter.notifyDataSetChanged();
         }
     }
 
