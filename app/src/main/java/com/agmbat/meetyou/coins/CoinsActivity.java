@@ -75,8 +75,8 @@ public class CoinsActivity extends Activity {
             CoinsApiResult apiResult = (CoinsApiResult) data;
             mCoinsView.setVisibility(View.VISIBLE);
             mCoinsView.setText(String.valueOf(apiResult.mBalance));
-            mStarsView.setStarsCount(apiResult.mGrade);
             if (apiResult.mAuthStatus == ContactInfo.AUTH_STATE_AUTHENTICATED && apiResult.mGrade > 0) {
+                mStarsView.setStarsCount(apiResult.mGrade);
                 String tipsFormat = "恭喜你已升级为%d星会员，增加添加%d个好友，可建%d个普通群";
                 int contactNum = 0;
                 int groupNum = 0;
