@@ -216,32 +216,34 @@ public class UserInfoActivity extends Activity {
     void onClickAddToContact() {
         List<ContactInfo> contactInfos = ContactDBCache.getContactList();
         LoginUser loginUser = XMPPManager.getInstance().getRosterManager().getLoginUser();
-        if (loginUser.getAuth() == ContactInfo.AUTH_STATE_NOT_SUBMIT
-                || loginUser.getAuth() == ContactInfo.AUTH_STATE_SUBMITED
-                || loginUser.getAuth() == ContactInfo.AUTH_STATE_DENIED) {
-            if (contactInfos.size() >= ContactInfo.CONTACT_LIMIT_UNAUTH) {
-                ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_UNAUTH));
-                return;
-            }
-        } else if (loginUser.getAuth() == ContactInfo.AUTH_STATE_AUTHENTICATED) {
-            if (loginUser.getGrade() == 0 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH) {
-                ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_AUTH));
-                return;
-            } else if (loginUser.getGrade() == 1 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1) {
-                ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1));
-                return;
-            } else if (loginUser.getGrade() == 2 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2) {
-                ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2));
-                return;
-            } else if (loginUser.getGrade() == 3 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3) {
-                ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3));
-                return;
-            } else if (loginUser.getGrade() == 4 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4) {
-                ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4));
-                return;
-            } else if (loginUser.getGrade() == 5 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5) {
-                ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5));
-                return;
+        if(null != contactInfos && null != loginUser) {
+            if (loginUser.getAuth() == ContactInfo.AUTH_STATE_NOT_SUBMIT
+                    || loginUser.getAuth() == ContactInfo.AUTH_STATE_SUBMITED
+                    || loginUser.getAuth() == ContactInfo.AUTH_STATE_DENIED) {
+                if (contactInfos.size() >= ContactInfo.CONTACT_LIMIT_UNAUTH) {
+                    ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_UNAUTH));
+                    return;
+                }
+            } else if (loginUser.getAuth() == ContactInfo.AUTH_STATE_AUTHENTICATED) {
+                if (loginUser.getGrade() == 0 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH) {
+                    ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_AUTH));
+                    return;
+                } else if (loginUser.getGrade() == 1 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1) {
+                    ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1));
+                    return;
+                } else if (loginUser.getGrade() == 2 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2) {
+                    ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2));
+                    return;
+                } else if (loginUser.getGrade() == 3 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3) {
+                    ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3));
+                    return;
+                } else if (loginUser.getGrade() == 4 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4) {
+                    ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4));
+                    return;
+                } else if (loginUser.getGrade() == 5 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5) {
+                    ToastUtil.showToast(ResourceUtil.getString(R.string.label_new_contact_reach_top, ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5));
+                    return;
+                }
             }
         }
 

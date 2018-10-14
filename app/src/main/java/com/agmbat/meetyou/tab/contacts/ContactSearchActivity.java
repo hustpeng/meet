@@ -137,11 +137,11 @@ public class ContactSearchActivity extends Activity {
         protected void onPostExecute(List<ContactInfo> contactInfos) {
             mSearchTask = null;
             dismissSearchingDialog();
-            mContactAdapter.setAll(contactInfos);
-            if (contactInfos.size() == 0) {
+            if (null == contactInfos || contactInfos.size() == 0) {
                 mResultView.setVisibility(View.VISIBLE);
                 mResultListView.setVisibility(View.GONE);
             } else {
+                mContactAdapter.setAll(contactInfos);
                 mResultView.setVisibility(View.GONE);
                 mResultListView.setVisibility(View.VISIBLE);
             }
