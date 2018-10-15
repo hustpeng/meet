@@ -7,8 +7,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.agmbat.meetyou.R;
-import com.agmbat.meetyou.coins.CoinsRecords;
-import com.agmbat.time.TimeUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

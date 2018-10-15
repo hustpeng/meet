@@ -26,13 +26,49 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ReconnectionManager {
 
-    private Connection connection;
-    private Thread reconnectionThread;
-    private Thread autoLoginThread;
     private final List<ReconnectionListener> listeners;
     boolean isReconnecting = false;
     boolean isAutoLogin = false;
     Object networkWaittingLock = new Object();
+    private Connection connection;
+    private Thread reconnectionThread;
+    private Thread autoLoginThread;
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            synchronized (networkWaittingLock) {
+                networkWaittingLock.notifyAll();
+            }
+        }
+    };
+    private ConnectionListener connectionListener = new ConnectionListener() {
+        @Override
+        public void loginSuccessful() {
+        }
+
+        @Override
+        public void connectionClosedOnError(Exception e) {
+            if (e instanceof XMPPException) {
+                XMPPException xmppEx = (XMPPException) e;
+                StreamError error = xmppEx.getStreamError();
+
+                if (error != null) {
+                    String reason = error.getCode();
+                    if ("conflict".equals(reason)) {
+                        return;
+                    }
+                }
+            }
+
+            if (!isAutoLogin && !isReconnecting && isReconnectionAllowed()) {
+                reconnect();
+            }
+        }
+
+        @Override
+        public void connectionClosed() {
+        }
+    };
 
     public ReconnectionManager(Connection connection) {
         this.connection = connection;
@@ -48,15 +84,6 @@ public class ReconnectionManager {
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         AppResources.getAppContext().registerReceiver(mReceiver, filter);
     }
-
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            synchronized (networkWaittingLock) {
-                networkWaittingLock.notifyAll();
-            }
-        }
-    };
 
     @Override
     protected void finalize() throws Throwable {
@@ -123,35 +150,6 @@ public class ReconnectionManager {
             listener.notifyAutoLoginSuccess();
         }
     }
-
-    private ConnectionListener connectionListener = new ConnectionListener() {
-        @Override
-        public void loginSuccessful() {
-        }
-
-        @Override
-        public void connectionClosedOnError(Exception e) {
-            if (e instanceof XMPPException) {
-                XMPPException xmppEx = (XMPPException) e;
-                StreamError error = xmppEx.getStreamError();
-
-                if (error != null) {
-                    String reason = error.getCode();
-                    if ("conflict".equals(reason)) {
-                        return;
-                    }
-                }
-            }
-
-            if (!isAutoLogin && !isReconnecting && isReconnectionAllowed()) {
-                reconnect();
-            }
-        }
-
-        @Override
-        public void connectionClosed() {
-        }
-    };
 
     /**
      * Returns true if the reconnection mechanism is enabled.

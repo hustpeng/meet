@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.token;
 
 import org.jivesoftware.smackx.db.ICacheStoreObject;

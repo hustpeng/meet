@@ -254,43 +254,6 @@ public class LocationActivity extends Activity implements OnGetGeoCoderResultLis
         }
     }
 
-
-    /**
-     * 定位SDK监听函数
-     */
-    public class MyLocationListener implements BDLocationListener {
-
-        @Override
-        public void onReceiveLocation(BDLocation location) {
-            // map view 销毁后不在处理新接收的位置
-            if (location == null || mMapView == null) {
-                return;
-            }
-            MyLocationData locData = new MyLocationData.Builder()
-                    .accuracy(location.getRadius())
-                    .latitude(location.getLatitude())
-                    .longitude(location.getLongitude()).build();
-            mBaiduMap.setMyLocationData(locData);
-
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-
-            LatLng currentLatLng = new LatLng(latitude, longitude);
-            mLocationLatLng = new LatLng(latitude, longitude);
-
-            // 是否第一次定位
-            if (isFirstLoc) {
-                isFirstLoc = false;
-                // 实现动画跳转
-                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(currentLatLng);
-                mBaiduMap.animateMapStatus(u);
-
-                mSearch.reverseGeoCode((new ReverseGeoCodeOption()).location(currentLatLng));
-            }
-        }
-    }
-
-
     /**
      * 显示列表，查找附近的地点
      */
@@ -431,5 +394,40 @@ public class LocationActivity extends Activity implements OnGetGeoCoderResultLis
      */
     @Override
     public void onMapStatusChangeFinish(MapStatus status) {
+    }
+
+    /**
+     * 定位SDK监听函数
+     */
+    public class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            // map view 销毁后不在处理新接收的位置
+            if (location == null || mMapView == null) {
+                return;
+            }
+            MyLocationData locData = new MyLocationData.Builder()
+                    .accuracy(location.getRadius())
+                    .latitude(location.getLatitude())
+                    .longitude(location.getLongitude()).build();
+            mBaiduMap.setMyLocationData(locData);
+
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+
+            LatLng currentLatLng = new LatLng(latitude, longitude);
+            mLocationLatLng = new LatLng(latitude, longitude);
+
+            // 是否第一次定位
+            if (isFirstLoc) {
+                isFirstLoc = false;
+                // 实现动画跳转
+                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(currentLatLng);
+                mBaiduMap.animateMapStatus(u);
+
+                mSearch.reverseGeoCode((new ReverseGeoCodeOption()).location(currentLatLng));
+            }
+        }
     }
 }

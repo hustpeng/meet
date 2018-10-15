@@ -10,12 +10,12 @@ public class VLog {
     private static boolean isDebug = true;
     private static String sTag = "VLog";
 
-    public static void setDebug(boolean debug) {
-        isDebug = debug;
-    }
-
     public static boolean isDebug() {
         return isDebug;
+    }
+
+    public static void setDebug(boolean debug) {
+        isDebug = debug;
     }
 
     public static String getTag() {

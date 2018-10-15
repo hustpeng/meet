@@ -50,6 +50,13 @@ public class LoginUser {
         return null == mVCardObject ? 0 : mVCardObject.getGender();
     }
 
+    public void setGender(int gender) {
+        if (null == mVCardObject) {
+            mVCardObject = new VCardObject();
+        }
+        mVCardObject.setGender(gender);
+    }
+
     public int getAuth() {
         return null == mVCardObject ? 0 : mVCardObject.getAuth();
     }
@@ -58,16 +65,13 @@ public class LoginUser {
         return null == mVCardObject ? 0 : mVCardObject.getGrade();
     }
 
-    public void setGender(int gender) {
-        if (null == mVCardObject) {
-            mVCardObject = new VCardObject();
-        }
-        mVCardObject.setGender(gender);
-    }
-
     public int getAge() {
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
         return thisYear - getBirthYear();
+    }
+
+    public String getAvatar() {
+        return null == mVCardObject ? "" : mVCardObject.getAvatar();
     }
 
     /**
@@ -81,11 +85,6 @@ public class LoginUser {
         }
         mVCardObject.setAvatar(url);
     }
-
-    public String getAvatar() {
-        return null == mVCardObject ? "" : mVCardObject.getAvatar();
-    }
-
 
     public int getImUid() {
         return null == mVCardObject ? 0 : mVCardObject.getImUid();

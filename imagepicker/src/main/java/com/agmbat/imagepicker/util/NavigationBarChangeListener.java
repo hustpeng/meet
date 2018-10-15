@@ -27,6 +27,24 @@ public class NavigationBarChangeListener implements ViewTreeObserver.OnGlobalLay
         rect = new Rect();
     }
 
+    public static NavigationBarChangeListener with(View rootView) {
+        return with(rootView, ORIENTATION_VERTICAL);
+    }
+
+    public static NavigationBarChangeListener with(Activity activity) {
+        return with(activity.findViewById(android.R.id.content), ORIENTATION_VERTICAL);
+    }
+
+    public static NavigationBarChangeListener with(View rootView, int orientation) {
+        NavigationBarChangeListener changeListener = new NavigationBarChangeListener(rootView, orientation);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(changeListener);
+        return changeListener;
+    }
+
+    public static NavigationBarChangeListener with(Activity activity, int orientation) {
+        return with(activity.findViewById(android.R.id.content), orientation);
+    }
+
     @Override
     public void onGlobalLayout() {
         rect.setEmpty();
@@ -59,23 +77,5 @@ public class NavigationBarChangeListener implements ViewTreeObserver.OnGlobalLay
         void onNavigationBarShow(int orientation, int height);
 
         void onNavigationBarHide(int orientation);
-    }
-
-    public static NavigationBarChangeListener with(View rootView) {
-        return with(rootView, ORIENTATION_VERTICAL);
-    }
-
-    public static NavigationBarChangeListener with(Activity activity) {
-        return with(activity.findViewById(android.R.id.content), ORIENTATION_VERTICAL);
-    }
-
-    public static NavigationBarChangeListener with(View rootView, int orientation) {
-        NavigationBarChangeListener changeListener = new NavigationBarChangeListener(rootView, orientation);
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(changeListener);
-        return changeListener;
-    }
-
-    public static NavigationBarChangeListener with(Activity activity, int orientation) {
-        return with(activity.findViewById(android.R.id.content), orientation);
     }
 }

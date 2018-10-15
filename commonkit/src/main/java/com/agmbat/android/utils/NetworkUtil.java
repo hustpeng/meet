@@ -1,19 +1,12 @@
 /**
  * Copyright (C) 2015 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * Android Common Kit
  *
  * @author mayimchen
  * @since 2016-06-29
  */
 package com.agmbat.android.utils;
-
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Enumeration;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,8 +17,16 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+
 import com.agmbat.android.SystemManager;
 import com.agmbat.utils.ReflectionUtils;
+
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 /**
  * 管理网络的工具类
@@ -512,11 +513,11 @@ public class NetworkUtil {
     public static void setMobileDataEnabled(boolean enabled) {
         if (Build.VERSION.SDK_INT >= 21) {
             // android 5.0 需要MODIY PHONE STATE 权限，不能正常工作
-            ReflectionUtils.invokeMethod(getTelephonyManager(), "setDataEnabled", new Class<?>[] {boolean.class},
-                    new Object[] {enabled});
+            ReflectionUtils.invokeMethod(getTelephonyManager(), "setDataEnabled", new Class<?>[]{boolean.class},
+                    new Object[]{enabled});
         } else if (Build.VERSION.SDK_INT >= 9) {
             ReflectionUtils.invokeMethod(getConnectivityManager(), "setMobileDataEnabled",
-                    new Class<?>[] {boolean.class}, new Object[] {enabled});
+                    new Class<?>[]{boolean.class}, new Object[]{enabled});
         } else {
             Object telephony = ReflectionUtils.invokeMethod(getTelephonyManager(), "getITelephony", null, null);
             if (enabled) {

@@ -131,11 +131,6 @@ public abstract class BasicPopup<V extends View> implements DialogInterface.OnKe
     protected void setContentViewAfter(V contentView) {
     }
 
-    public void setContentView(View view) {
-        contentLayout.removeAllViews();
-        contentLayout.addView(view);
-    }
-
     public void setFitsSystemWindows(boolean flag) {
         contentLayout.setFitsSystemWindows(flag);
     }
@@ -294,6 +289,11 @@ public abstract class BasicPopup<V extends View> implements DialogInterface.OnKe
         // IllegalStateException: The specified child already has a parent.
         // You must call removeView() on the child's parent first.
         return contentLayout.getChildAt(0);
+    }
+
+    public void setContentView(View view) {
+        contentLayout.removeAllViews();
+        contentLayout.addView(view);
     }
 
     /**

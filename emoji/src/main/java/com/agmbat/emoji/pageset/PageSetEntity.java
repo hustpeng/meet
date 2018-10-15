@@ -1,7 +1,5 @@
 package com.agmbat.emoji.pageset;
 
-import com.agmbat.emoji.display.EmojiClickHandler;
-
 import java.util.LinkedList;
 import java.util.UUID;
 
@@ -44,6 +42,10 @@ public class PageSetEntity<T extends PageEntity> {
         return mIconUri;
     }
 
+    public void setIconUri(String iconUri) {
+        mIconUri = iconUri;
+    }
+
     public int getPageCount() {
         return mPageEntityList == null ? 0 : mPageEntityList.size();
     }
@@ -64,10 +66,6 @@ public class PageSetEntity<T extends PageEntity> {
         mPageEntityList.add(pageEntityt);
     }
 
-    public void setIconUri(String iconUri) {
-        mIconUri = iconUri;
-    }
-
     public String getUuid() {
         return uuid;
     }
@@ -83,7 +81,6 @@ public class PageSetEntity<T extends PageEntity> {
     public void setSetName(String setName) {
         mSetName = setName;
     }
-
 
 
 }

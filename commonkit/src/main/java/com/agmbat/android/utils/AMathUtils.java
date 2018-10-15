@@ -1,8 +1,8 @@
 package com.agmbat.android.utils;
 
-import com.agmbat.utils.MathUtils;
-
 import android.graphics.Point;
+
+import com.agmbat.utils.MathUtils;
 
 /**
  * Created by chenming03 on 16/10/8.

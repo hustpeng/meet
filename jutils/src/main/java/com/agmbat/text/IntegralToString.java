@@ -4,15 +4,15 @@ package com.agmbat.text;
  * Converts integral types to strings. This class is public but hidden so that it can also be
  * used by java.util.Formatter to speed up %d. This class is in java.lang so that it can take
  * advantage of the package-private String constructor.
- *
+ * <p>
  * The most important methods are appendInt/appendLong and intToString(int)/longToString(int).
  * The former are used in the implementation of StringBuilder, StringBuffer, and Formatter, while
  * the latter are used by Integer.toString and Long.toString.
- *
+ * <p>
  * The append methods take AbstractStringBuilder rather than Appendable because the latter requires
  * CharSequences, while we only have raw char[]s. Since much of the savings come from not creating
  * any garbage, we can't afford temporary CharSequence instances.
- *
+ * <p>
  * One day the performance advantage of the binary/hex/octal specializations will be small enough
  * that we can lose the duplication, but until then this class offers the full set.
  *
@@ -28,7 +28,8 @@ public final class IntegralToString {
      * the code.)
      */
     private static final ThreadLocal<char[]> BUFFER = new ThreadLocal<char[]>() {
-        @Override protected char[] initialValue() {
+        @Override
+        protected char[] initialValue() {
             return new char[20]; // Maximum length of a base-10 long.
         }
     };
@@ -45,32 +46,36 @@ public final class IntegralToString {
     private static final String[] SMALL_NONNEGATIVE_VALUES = new String[100];
     private static final String[] SMALL_NEGATIVE_VALUES = new String[100];
 
-    /** TENS[i] contains the tens digit of the number i, 0 <= i <= 99. */
+    /**
+     * TENS[i] contains the tens digit of the number i, 0 <= i <= 99.
+     */
     private static final char[] TENS = {
-        '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
-        '1', '1', '1', '1', '1', '1', '1', '1', '1', '1',
-        '2', '2', '2', '2', '2', '2', '2', '2', '2', '2',
-        '3', '3', '3', '3', '3', '3', '3', '3', '3', '3',
-        '4', '4', '4', '4', '4', '4', '4', '4', '4', '4',
-        '5', '5', '5', '5', '5', '5', '5', '5', '5', '5',
-        '6', '6', '6', '6', '6', '6', '6', '6', '6', '6',
-        '7', '7', '7', '7', '7', '7', '7', '7', '7', '7',
-        '8', '8', '8', '8', '8', '8', '8', '8', '8', '8',
-        '9', '9', '9', '9', '9', '9', '9', '9', '9', '9'
+            '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
+            '1', '1', '1', '1', '1', '1', '1', '1', '1', '1',
+            '2', '2', '2', '2', '2', '2', '2', '2', '2', '2',
+            '3', '3', '3', '3', '3', '3', '3', '3', '3', '3',
+            '4', '4', '4', '4', '4', '4', '4', '4', '4', '4',
+            '5', '5', '5', '5', '5', '5', '5', '5', '5', '5',
+            '6', '6', '6', '6', '6', '6', '6', '6', '6', '6',
+            '7', '7', '7', '7', '7', '7', '7', '7', '7', '7',
+            '8', '8', '8', '8', '8', '8', '8', '8', '8', '8',
+            '9', '9', '9', '9', '9', '9', '9', '9', '9', '9'
     };
 
-    /** Ones [i] contains the tens digit of the number i, 0 <= i <= 99. */
+    /**
+     * Ones [i] contains the tens digit of the number i, 0 <= i <= 99.
+     */
     private static final char[] ONES = {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
     };
 
     /**
@@ -79,24 +84,24 @@ public final class IntegralToString {
      * http://www.hackersdelight.org/divcMore.pdf
      */
     private static final char[] MOD_10_TABLE = {
-        0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 7, 7, 8, 8, 9, 0
+            0, 1, 2, 2, 3, 3, 4, 5, 5, 6, 7, 7, 8, 8, 9, 0
     };
 
     /**
      * The digits for every supported radix.
      */
     private static final char[] DIGITS = {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-        'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-        'u', 'v', 'w', 'x', 'y', 'z'
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+            'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+            'u', 'v', 'w', 'x', 'y', 'z'
     };
 
     private static final char[] UPPER_CASE_DIGITS = {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-        'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-        'U', 'V', 'W', 'X', 'Y', 'Z'
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+            'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+            'U', 'V', 'W', 'X', 'Y', 'Z'
     };
 
     private IntegralToString() {
@@ -204,7 +209,7 @@ public final class IntegralToString {
         while (i >= (1 << 16)) {
             // Compute q = n/100 and r = n % 100 as per "Hacker's Delight" 10-8
             int q = (int) ((0x51EB851FL * i) >>> 37);
-            int r = i - 100*q;
+            int r = i - 100 * q;
             buf[--cursor] = ONES[r];
             buf[--cursor] = TENS[r];
             i = q;
@@ -214,7 +219,7 @@ public final class IntegralToString {
         while (i != 0) {
             // Compute q = n/10 and r = n % 10 as per "Hacker's Delight" 10-8
             int q = (0xCCCD * i) >>> 19;
-            int r = i - 10*q;
+            int r = i - 10 * q;
             buf[--cursor] = DIGITS[r];
             i = q;
         }
@@ -392,7 +397,7 @@ public final class IntegralToString {
              * if n's sign bit were set.
              */
             int q = (int) ((0x51EB851FL * (n >>> 2)) >>> 35);
-            int r = n - 100*q;
+            int r = n - 100 * q;
             buf[--cursor] = ONES[r];
             buf[--cursor] = TENS[r];
             n = q;
@@ -402,7 +407,7 @@ public final class IntegralToString {
         while (n != 0) {
             // Compute q = n / 10 and r = n % 10 as per "Hacker's Delight" 10-8
             int q = (0xCCCD * n) >>> 19;
-            int r = n - 10*q;
+            int r = n - 10 * q;
             buf[--cursor] = DIGITS[r];
             n = q;
         }
@@ -416,7 +421,7 @@ public final class IntegralToString {
 
         do {
             buf[--cursor] = DIGITS[i & 1];
-        }  while ((i >>>= 1) != 0);
+        } while ((i >>>= 1) != 0);
 
         return new String(buf, cursor, bufLen - cursor);
     }
@@ -433,7 +438,7 @@ public final class IntegralToString {
 
         do {
             buf[--cursor] = DIGITS[((int) v) & 1];
-        }  while ((v >>>= 1) != 0);
+        } while ((v >>>= 1) != 0);
 
         return new String(buf, cursor, bufLen - cursor);
     }

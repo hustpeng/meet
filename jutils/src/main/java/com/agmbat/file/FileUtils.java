@@ -43,30 +43,26 @@ import java.util.regex.Pattern;
 public final class FileUtils {
 
     /**
-     * Regular expression for safe filenames: no spaces or metacharacters
-     */
-    private static final Pattern SAFE_FILENAME_PATTERN = Pattern.compile("[\\w%+,./=_-]+");
-
-    /**
      * Illegal file name chars.
      */
     public static final Pattern ILLEGAL_FILE_NAME_CHARS = Pattern.compile("[\\\\/:*?<>|]+");
-
     /**
      * The max length for file name.
      */
     public static final int MAX_PATH = 256;
-
-    private FileUtils() {
-    }
-
+    /**
+     * Regular expression for safe filenames: no spaces or metacharacters
+     */
+    private static final Pattern SAFE_FILENAME_PATTERN = Pattern.compile("[\\w%+,./=_-]+");
     /**
      * 用于生成文件
      */
     private static final String DEFAULT_FILE_PATTERN = "yyyy-MM-dd-HH-mm-ss";
-
-
     private static final String TAG = "FileUtils";
+
+
+    private FileUtils() {
+    }
 
     /**
      * 获取文件创建时间

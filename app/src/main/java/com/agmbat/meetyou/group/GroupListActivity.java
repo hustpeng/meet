@@ -54,6 +54,28 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
 
     private GroupAdapter mFriendsAdapter;
     private Handler mHandler = new Handler();
+    private Runnable mResultRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            mResultTv.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+        }
+    };
+    private PacketListener mQueryGroupListener = new PacketListener() {
+
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof QueryGroupResultIQ) {
+                mHandler.removeCallbacks(mResultRunnable);
+                final QueryGroupResultIQ queryGroupResultIQ = (QueryGroupResultIQ) packet;
+                Log.d("Group size: " + queryGroupResultIQ.getGroups().size());
+
+                //这里很奇怪，一定要用EventBus把值传给ListView才能刷新列表，使用AsyncTask或者Handler都不行。
+                EventBus.getDefault().post(new CircleGroupEvent(initGroupList(queryGroupResultIQ.getGroups())));
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,37 +113,11 @@ public class GroupListActivity extends Activity implements ExpandableListView.On
         mHandler.postDelayed(mResultRunnable, 10000);
     }
 
-    private Runnable mResultRunnable = new Runnable() {
-
-        @Override
-        public void run() {
-            mResultTv.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.GONE);
-        }
-    };
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(CircleGroupEvent event) {
         fillData(event.getCircleGroups());
         setState(STATE_LOAD_FINISH);
     }
-
-
-    private PacketListener mQueryGroupListener = new PacketListener() {
-
-        @Override
-        public void processPacket(Packet packet) {
-            if (packet instanceof QueryGroupResultIQ) {
-                mHandler.removeCallbacks(mResultRunnable);
-                final QueryGroupResultIQ queryGroupResultIQ = (QueryGroupResultIQ) packet;
-                Log.d("Group size: " + queryGroupResultIQ.getGroups().size());
-
-                //这里很奇怪，一定要用EventBus把值传给ListView才能刷新列表，使用AsyncTask或者Handler都不行。
-                EventBus.getDefault().post(new CircleGroupEvent(initGroupList(queryGroupResultIQ.getGroups())));
-            }
-        }
-    };
-
 
     /**
      * 点击返回键

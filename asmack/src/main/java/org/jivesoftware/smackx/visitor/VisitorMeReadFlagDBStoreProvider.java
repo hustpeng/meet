@@ -16,6 +16,12 @@ import java.util.ArrayList;
 
 public class VisitorMeReadFlagDBStoreProvider {
 
+    private Context mContext;
+
+    public VisitorMeReadFlagDBStoreProvider(Context context) {
+        mContext = context;
+    }
+
     static String getTableName() {
         return "visitorme_read_flag";
     }
@@ -35,13 +41,6 @@ public class VisitorMeReadFlagDBStoreProvider {
                 + "/" + id + "?" + DataContentProvider.URI_PARAMETER_NOTIFY + "=" + notify);
     }
 
-    public interface Columns extends BaseColumns {
-        public static final String VISITORME_READ_VISITOR_JID = "jid";
-        public static final String VISITORME_READ_MY_JID = "my_jid";
-        public static final String VISITORME_READ_ENTRANCE = "entrance";
-        public static final String VISITORME_READ_DATE = "date";
-    }
-
     static public String getCreateTableStr() {
         TableSqlBuilder builder = new TableSqlBuilder(getTableName());
         builder.addColumn(Columns._ID, DataType.INTEGER, Param.PRIMARY_KEY, Param.AUTOINCREMENT);
@@ -59,12 +58,6 @@ public class VisitorMeReadFlagDBStoreProvider {
         values.put(Columns.VISITORME_READ_ENTRANCE, obj.getEntrance());
         values.put(Columns.VISITORME_READ_DATE, obj.getCreate_date());
         return values;
-    }
-
-    private Context mContext;
-
-    public VisitorMeReadFlagDBStoreProvider(Context context) {
-        mContext = context;
     }
 
     public int delete(String selection, String[] selectionArgs) {
@@ -132,5 +125,12 @@ public class VisitorMeReadFlagDBStoreProvider {
         }
 
         return ret;
+    }
+
+    public interface Columns extends BaseColumns {
+        public static final String VISITORME_READ_VISITOR_JID = "jid";
+        public static final String VISITORME_READ_MY_JID = "my_jid";
+        public static final String VISITORME_READ_ENTRANCE = "entrance";
+        public static final String VISITORME_READ_DATE = "date";
     }
 }

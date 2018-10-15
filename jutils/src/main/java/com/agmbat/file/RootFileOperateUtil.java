@@ -61,9 +61,9 @@ public class RootFileOperateUtil {
      * 新建一个文件
      *
      * @param filePath 文件的路径
-     *            <p>
-     *            注意请传入文件的绝对路径
-     *            </p>
+     *                 <p>
+     *                 注意请传入文件的绝对路径
+     *                 </p>
      * @return 是否创建成功
      */
     public static boolean newFile(String filePath) {
@@ -80,15 +80,15 @@ public class RootFileOperateUtil {
      * 新建一个文件夹
      *
      * @param filePath 文件夹的绝对路径
-     *            <p>
-     *            <h4>注意:</h4>
-     *            <p>
-     *            <p>
-     *            1.请传入文件夹的绝对路径
-     *            </p>
-     *            <p>
-     *            2.保证其父目录都已经存在，不然创建不成功
-     *            </p>
+     *                 <p>
+     *                 <h4>注意:</h4>
+     *                 <p>
+     *                 <p>
+     *                 1.请传入文件夹的绝对路径
+     *                 </p>
+     *                 <p>
+     *                 2.保证其父目录都已经存在，不然创建不成功
+     *                 </p>
      * @return 是否创建成功
      */
     public static boolean newFolder(String filePath) {
@@ -157,9 +157,9 @@ public class RootFileOperateUtil {
      *
      * @param resFolder 源文件夹的路径
      * @param desFolder 目标文件夹的路径
-     *            <p>
-     *            请保证其父目录存在
-     *            <p>
+     *                  <p>
+     *                  请保证其父目录存在
+     *                  <p>
      * @return 是否复制成功
      */
     public static boolean copyFolder(String resFolder, String desFolder) {
@@ -178,11 +178,11 @@ public class RootFileOperateUtil {
     /**
      * 重命名文件
      *
-     * @param filePath 源文件地址
+     * @param filePath    源文件地址
      * @param newFileName 目标文件地址
-     *            <p>
-     *            请保证其路径一定存在
-     *            <p>
+     *                    <p>
+     *                    请保证其路径一定存在
+     *                    <p>
      * @return 重命名是否成功
      */
     public static boolean renameFile(String filePath, String newFileName) {
@@ -199,11 +199,11 @@ public class RootFileOperateUtil {
     /**
      * 重命名文件夹
      *
-     * @param filePath 源文件地址
+     * @param filePath    源文件地址
      * @param newFileName 目标文件地址
-     *            <p>
-     *            请保证其路径一定存在
-     *            <p>
+     *                    <p>
+     *                    请保证其路径一定存在
+     *                    <p>
      * @return 重命名是否成功
      */
     public static boolean renameFolder(String resFoloder, String desFolder) {

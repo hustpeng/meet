@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -48,7 +48,7 @@ public class DESCrypt {
     /**
      * Encrypt the text using DES and specified key.
      *
-     * @param key The key used to encrypt.
+     * @param key  The key used to encrypt.
      * @param text The text to encrypt;
      * @return Ciphered bytes.
      */
@@ -101,7 +101,7 @@ public class DESCrypt {
     /**
      * Encrypt the text using DES and specified key.
      *
-     * @param key The key used to encrypt.
+     * @param key  The key used to encrypt.
      * @param text The text to encrypt;
      * @return Ciphered bytes.
      */
@@ -126,7 +126,7 @@ public class DESCrypt {
 
     /**
      * 根据指定key数据生成Key对象
-     * 
+     *
      * @param key
      * @return
      * @throws Exception

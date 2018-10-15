@@ -24,6 +24,10 @@ public class MeetApplication extends Application {
 
     private static Application sInstance;
 
+    public static Application getInstance() {
+        return sInstance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -43,10 +47,6 @@ public class MeetApplication extends Application {
             ConnectionReceiver.register(this);
         }
         initDatabaseBrowser();
-    }
-
-    public static Application getInstance(){
-        return sInstance;
     }
 
     private void initPhotoError() {

@@ -9,12 +9,12 @@ public class DbConfig {
         return mAllowTransaction;
     }
 
-    public void setDbName(String name) {
-        mDbName = name;
-    }
-
     public String getDbName() {
         return mDbName;
+    }
+
+    public void setDbName(String name) {
+        mDbName = name;
     }
 
 }

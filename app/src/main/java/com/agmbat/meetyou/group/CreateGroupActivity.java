@@ -117,6 +117,38 @@ public class CreateGroupActivity extends Activity {
      * 索引
      */
     private int mSelectedGroupIndex;
+    private List<GroupCategory> mGroupCategories;
+    private Handler mHandler = new Handler();
+    private ISLoadingDialog mCreateProgressDialog;
+    private Runnable mTimeoutTask = new Runnable() {
+        @Override
+        public void run() {
+            dismissCreateProgressDialog();
+            ToastUtil.showToast("群聊创建失败");
+        }
+    };
+    private PacketListener mGroupCreateListener = new PacketListener() {
+
+        @Override
+        public void processPacket(Packet packet) {
+            mHandler.removeCallbacks(mTimeoutTask);
+            if (packet instanceof CreateGroupResultIQ) {
+                CreateGroupResultIQ createGroupIQ = (CreateGroupResultIQ) packet;
+                Log.d("Create group success, groupJid: " + createGroupIQ.getGroupJid());
+                if (TextUtils.isEmpty(createGroupIQ.getGroupJid())) {
+                    ToastUtil.showToast("因超过建群数量或网络异常创建群失败");
+                    return;
+                }
+
+                if (!TextUtils.isEmpty(mAvatarPath)) {
+                    uploadGroupAvatar(mAvatarPath, createGroupIQ.getGroupJid());
+                } else {
+                    dismissCreateProgressDialog();
+                    showSuccessDialog();
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -138,9 +170,6 @@ public class CreateGroupActivity extends Activity {
         showPage1();
     }
 
-
-    private List<GroupCategory> mGroupCategories;
-
     private void loadGroupCategories() {
         List<GroupCategory> cachedGroupCategories = GroupDBCache.getGroupCategories();
         if ((null == cachedGroupCategories || cachedGroupCategories.size() == 0)) {
@@ -159,7 +188,6 @@ public class CreateGroupActivity extends Activity {
         }
     }
 
-
     private void fillGroupTags(List<GroupCategory> groupTags) {
         List<String> tagsText = new ArrayList<>();
         for (int i = 0; i < groupTags.size(); i++) {
@@ -171,7 +199,6 @@ public class CreateGroupActivity extends Activity {
         }
         mGroupCategories = groupTags;
     }
-
 
     @Override
     public void finish() {
@@ -252,7 +279,6 @@ public class CreateGroupActivity extends Activity {
         });
     }
 
-
     @OnClick(R.id.btn_create_group)
     void onClickCreateGroup() {
         if (mSelectedGroupIndex < 0 || mSelectedGroupIndex >= mGroupCategories.size()) {
@@ -272,18 +298,6 @@ public class CreateGroupActivity extends Activity {
         mHandler.postDelayed(mTimeoutTask, 10000);
     }
 
-    private Handler mHandler = new Handler();
-
-    private Runnable mTimeoutTask = new Runnable() {
-        @Override
-        public void run() {
-            dismissCreateProgressDialog();
-            ToastUtil.showToast("群聊创建失败");
-        }
-    };
-
-    private ISLoadingDialog mCreateProgressDialog;
-
     private void showCreateProgressDialog() {
         if (null == mCreateProgressDialog || !mCreateProgressDialog.isShowing()) {
             // 添加loading框
@@ -301,7 +315,6 @@ public class CreateGroupActivity extends Activity {
         }
     }
 
-
     /**
      * 上传群头像
      *
@@ -318,31 +331,7 @@ public class CreateGroupActivity extends Activity {
         });
     }
 
-
-    private PacketListener mGroupCreateListener = new PacketListener() {
-
-        @Override
-        public void processPacket(Packet packet) {
-            mHandler.removeCallbacks(mTimeoutTask);
-            if (packet instanceof CreateGroupResultIQ) {
-                CreateGroupResultIQ createGroupIQ = (CreateGroupResultIQ) packet;
-                Log.d("Create group success, groupJid: " + createGroupIQ.getGroupJid());
-                if (TextUtils.isEmpty(createGroupIQ.getGroupJid())) {
-                    ToastUtil.showToast("因超过建群数量或网络异常创建群失败");
-                    return;
-                }
-
-                if (!TextUtils.isEmpty(mAvatarPath)) {
-                    uploadGroupAvatar(mAvatarPath, createGroupIQ.getGroupJid());
-                } else {
-                    dismissCreateProgressDialog();
-                    showSuccessDialog();
-                }
-            }
-        }
-    };
-
-    private void showSuccessDialog(){
+    private void showSuccessDialog() {
         ISAlertDialog dialog = new ISAlertDialog(this);
         dialog.setMessage(String.format("你已成功创建%s群，你是该群群主，请管理好本群，勿让该群出现违法信息。", mInputNicknameView.getText().toString()));
         dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {

@@ -11,7 +11,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.agmbat.imagepicker.ImagePicker;
 import com.agmbat.imagepicker.R;
 import com.agmbat.imagepicker.view.SystemBarTintManager;
 

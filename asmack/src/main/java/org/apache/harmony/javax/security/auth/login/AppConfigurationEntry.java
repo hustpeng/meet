@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Map;
 
 
-
 public class AppConfigurationEntry {
 
     // the login module options
@@ -34,7 +33,7 @@ public class AppConfigurationEntry {
     private final String loginModuleName;
 
     public AppConfigurationEntry(String loginModuleName,
-            AppConfigurationEntry.LoginModuleControlFlag controlFlag, Map<String, ?> options) {
+                                 AppConfigurationEntry.LoginModuleControlFlag controlFlag, Map<String, ?> options) {
 
         if (loginModuleName == null || loginModuleName.length() == 0) {
             throw new IllegalArgumentException("auth.26"); //$NON-NLS-1$
@@ -67,20 +66,16 @@ public class AppConfigurationEntry {
 
     public static class LoginModuleControlFlag {
 
-        // the control flag
-        private final String flag;
-
         public static final LoginModuleControlFlag REQUIRED = new LoginModuleControlFlag(
                 "LoginModuleControlFlag: required"); //$NON-NLS-1$
-
         public static final LoginModuleControlFlag REQUISITE = new LoginModuleControlFlag(
                 "LoginModuleControlFlag: requisite"); //$NON-NLS-1$
-
         public static final LoginModuleControlFlag OPTIONAL = new LoginModuleControlFlag(
                 "LoginModuleControlFlag: optional"); //$NON-NLS-1$
-
         public static final LoginModuleControlFlag SUFFICIENT = new LoginModuleControlFlag(
                 "LoginModuleControlFlag: sufficient"); //$NON-NLS-1$
+        // the control flag
+        private final String flag;
 
         // Creates the LoginModuleControlFlag object with specified a flag
         private LoginModuleControlFlag(String flag) {

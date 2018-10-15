@@ -21,19 +21,16 @@ import org.apache.harmony.javax.security.auth.AuthPermission;
 
 public abstract class Configuration {
 
-    // the current configuration
-    private static Configuration configuration;
-
     // creates a AuthPermission object with a specify property
     private static final AuthPermission GET_LOGIN_CONFIGURATION = new AuthPermission(
             "getLoginConfiguration"); //$NON-NLS-1$
-
     // creates a AuthPermission object with a specify property
     private static final AuthPermission SET_LOGIN_CONFIGURATION = new AuthPermission(
             "setLoginConfiguration"); //$NON-NLS-1$
-
     // Key to security properties, defining default configuration provider.
     private static final String LOGIN_CONFIGURATION_PROVIDER = "login.configuration.provider"; //$NON-NLS-1$
+    // the current configuration
+    private static Configuration configuration;
 
     protected Configuration() {
         super();
@@ -45,6 +42,14 @@ public abstract class Configuration {
             sm.checkPermission(GET_LOGIN_CONFIGURATION);
         }
         return getAccessibleConfiguration();
+    }
+
+    public static void setConfiguration(Configuration configuration) {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(SET_LOGIN_CONFIGURATION);
+        }
+        Configuration.configuration = configuration;
     }
 
     /**
@@ -84,14 +89,6 @@ public abstract class Configuration {
             }
         }
         return current;
-    }
-
-    public static void setConfiguration(Configuration configuration) {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPermission(SET_LOGIN_CONFIGURATION);
-        }
-        Configuration.configuration = configuration;
     }
 
     public abstract AppConfigurationEntry[] getAppConfigurationEntry(String applicationName);

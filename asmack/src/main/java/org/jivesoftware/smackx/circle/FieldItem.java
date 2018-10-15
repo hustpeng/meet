@@ -5,7 +5,7 @@ public class FieldItem {
     private static final String TYPE_TEXT = "text-single";
     private static final String TYPE_BOOLEAN = "boolean";
     private static final String TYPE_LIST_SINGLE = "list-single";
-    
+
     public String type;
     public String var;
     public String label;

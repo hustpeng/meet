@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2015 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * Tab Manager
  *
  * @author mayimchen
@@ -8,13 +8,13 @@
  */
 package com.agmbat.tab;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Container for a tabbed window view. This object holds two children: a set of tab labels that the
@@ -26,14 +26,14 @@ import android.widget.FrameLayout;
  */
 public class TabHost implements TabWidget.OnTabSelectionChanged {
 
-    private TabWidget mTabWidget;
-    private FrameLayout mTabContent;
-    private List<TabInfo> mTabs = new ArrayList<TabInfo>(2);
     /**
      * This field should be made private, so it is hidden from the SDK.
      * {@hide}
      */
     protected int mCurrentTab = -1;
+    private TabWidget mTabWidget;
+    private FrameLayout mTabContent;
+    private List<TabInfo> mTabs = new ArrayList<TabInfo>(2);
     private View mCurrentView = null;
 
     private OnTabChangeListener mOnTabChangeListener;
@@ -100,41 +100,6 @@ public class TabHost implements TabWidget.OnTabSelectionChanged {
         return mCurrentTab;
     }
 
-    public String getCurrentTabTag() {
-        if (mCurrentTab >= 0 && mCurrentTab < mTabs.size()) {
-            return mTabs.get(mCurrentTab).getTag();
-        }
-        return null;
-    }
-
-    public View getCurrentTabView() {
-        if (mCurrentTab >= 0 && mCurrentTab < mTabs.size()) {
-            return mTabWidget.getChildTabViewAt(mCurrentTab);
-        }
-        return null;
-    }
-
-    public View getCurrentView() {
-        return mCurrentView;
-    }
-
-    public void setCurrentTabByTag(String tag) {
-        int i;
-        for (i = 0; i < mTabs.size(); i++) {
-            if (mTabs.get(i).getTag().equals(tag)) {
-                setCurrentTab(i);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Get the FrameLayout which holds tab content
-     */
-    public FrameLayout getTabContentView() {
-        return mTabContent;
-    }
-
     public void setCurrentTab(int index) {
         if (index < 0 || index >= mTabs.size()) {
             return;
@@ -174,6 +139,41 @@ public class TabHost implements TabWidget.OnTabSelectionChanged {
 
         // mTabContent.requestFocus(View.FOCUS_FORWARD);
         invokeOnTabChangeListener();
+    }
+
+    public String getCurrentTabTag() {
+        if (mCurrentTab >= 0 && mCurrentTab < mTabs.size()) {
+            return mTabs.get(mCurrentTab).getTag();
+        }
+        return null;
+    }
+
+    public View getCurrentTabView() {
+        if (mCurrentTab >= 0 && mCurrentTab < mTabs.size()) {
+            return mTabWidget.getChildTabViewAt(mCurrentTab);
+        }
+        return null;
+    }
+
+    public View getCurrentView() {
+        return mCurrentView;
+    }
+
+    public void setCurrentTabByTag(String tag) {
+        int i;
+        for (i = 0; i < mTabs.size(); i++) {
+            if (mTabs.get(i).getTag().equals(tag)) {
+                setCurrentTab(i);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Get the FrameLayout which holds tab content
+     */
+    public FrameLayout getTabContentView() {
+        return mTabContent;
     }
 
     /**
@@ -220,6 +220,23 @@ public class TabHost implements TabWidget.OnTabSelectionChanged {
          * @return The view to display the contents of the selected tab.
          */
         View createTabContent(String tag);
+    }
+
+    /**
+     * Specifies what you do to manage the tab content.
+     */
+    private static interface ContentStrategy {
+
+        /**
+         * Return the content view.  The view should may be cached locally.
+         */
+        View getContentView();
+
+        /**
+         * Perhaps do something when the tab associated with this content has
+         * been closed (i.e make it invisible, or remove it).
+         */
+        void tabClosed();
     }
 
     /**
@@ -271,23 +288,6 @@ public class TabHost implements TabWidget.OnTabSelectionChanged {
     }
 
     /**
-     * Specifies what you do to manage the tab content.
-     */
-    private static interface ContentStrategy {
-
-        /**
-         * Return the content view.  The view should may be cached locally.
-         */
-        View getContentView();
-
-        /**
-         * Perhaps do something when the tab associated with this content has
-         * been closed (i.e make it invisible, or remove it).
-         */
-        void tabClosed();
-    }
-
-    /**
      * How to create the tab content via a view id.
      */
     private class ViewIdContentStrategy implements ContentStrategy {
@@ -319,8 +319,8 @@ public class TabHost implements TabWidget.OnTabSelectionChanged {
      */
     private class FactoryContentStrategy implements ContentStrategy {
 
-        private View mTabContent;
         private final CharSequence mTag;
+        private View mTabContent;
         private TabContentFactory mFactory;
 
         public FactoryContentStrategy(CharSequence tag, TabContentFactory factory) {
@@ -342,8 +342,8 @@ public class TabHost implements TabWidget.OnTabSelectionChanged {
     }
 
     private class ContentViewStrategy implements ContentStrategy {
-        private View mTabContent;
         private final CharSequence mTag;
+        private View mTabContent;
 
         public ContentViewStrategy(CharSequence tag, View content) {
             mTag = tag;

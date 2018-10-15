@@ -40,6 +40,20 @@ public class WhereBuilder {
         return result;
     }
 
+    private static void appendColumnName(StringBuilder builder, String columnName) {
+        builder.append("\"").append(columnName).append("\"");
+    }
+
+    /**
+     * Mysql 不需要引号
+     *
+     * @param builder
+     * @param columnName
+     */
+    private static void appendColumnName2(StringBuilder builder, String columnName) {
+        builder.append(columnName);
+    }
+
     /**
      * add AND condition
      *
@@ -116,20 +130,6 @@ public class WhereBuilder {
             sb.append(item);
         }
         return sb.toString();
-    }
-
-    private static void appendColumnName(StringBuilder builder, String columnName) {
-        builder.append("\"").append(columnName).append("\"");
-    }
-
-    /**
-     * Mysql 不需要引号
-     *
-     * @param builder
-     * @param columnName
-     */
-    private static void appendColumnName2(StringBuilder builder, String columnName) {
-        builder.append(columnName);
     }
 
     private void appendCondition(String conj, String columnName, String op, Object value) {

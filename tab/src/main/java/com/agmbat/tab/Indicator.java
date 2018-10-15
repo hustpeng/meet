@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2015 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * Tab Manager
  *
  * @author mayimchen
@@ -8,13 +8,13 @@
  */
 package com.agmbat.tab;
 
-import com.agmbat.android.SysResources;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.agmbat.android.SysResources;
 
 /**
  * How to create a tab indicator

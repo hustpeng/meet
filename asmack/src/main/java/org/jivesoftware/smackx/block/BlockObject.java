@@ -12,6 +12,7 @@ public class BlockObject implements ICacheStoreObject {
     private String status;
 
     private boolean isSelect;
+
     @Override
     public String getKey() {
         if (jid != null) {
@@ -21,15 +22,15 @@ public class BlockObject implements ICacheStoreObject {
         return "";
     }
 
-    public void setJid(String jid) {
-        this.jid = jid;
-    }
-
     public String getJid() {
         if (null == jid) {
             return "";
         }
         return this.jid;
+    }
+
+    public void setJid(String jid) {
+        this.jid = jid;
     }
 
     public String getNickname() {

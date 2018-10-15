@@ -34,9 +34,8 @@ public class MeetNotificationManager {
 
     public static final String ACTION_RCV_NEW_MESSAGE = "ACTION_MEET_RCV_NEW_MESSAGE";
     public static final String EXTRA_NEW_MESSAGE = "new_message";
-
-    private NotificationManager mNotificationManager;
     private static MeetNotificationManager sInstance;
+    private NotificationManager mNotificationManager;
     private Context mContext;
 
     private MeetNotificationManager(Context context) {

@@ -10,11 +10,11 @@ public class GroupChatReply extends IQ {
 
     private List<MessageObject> mMessages = new ArrayList<>();
 
-    public void addMessage(MessageObject messageObject){
+    public void addMessage(MessageObject messageObject) {
         mMessages.add(messageObject);
     }
 
-    public List<MessageObject> getMessages(){
+    public List<MessageObject> getMessages() {
         return mMessages;
     }
 

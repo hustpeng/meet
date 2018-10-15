@@ -2,15 +2,15 @@
  * $RCSfile$
  * $Revision$
  * $Date$
- *
+ * <p>
  * Copyright 2003-2007 Jive Software.
- *
+ * <p>
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,12 +22,17 @@ package org.jivesoftware.smack.provider;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -122,6 +127,11 @@ public class ProviderManager {
     private Map<String, Object> extensionProviders = new ConcurrentHashMap<String, Object>();
     private Map<String, Object> iqProviders = new ConcurrentHashMap<String, Object>();
 
+    private ProviderManager() {
+        super();
+        initialize();
+    }
+
     /**
      * Returns the only ProviderManager valid instance.  Use {@link #setInstance(ProviderManager)}
      * to configure your own provider manager. If non was provided then an instance of this
@@ -193,17 +203,14 @@ public class ProviderManager {
                                             Class<?> provider = Class.forName(className);
                                             if (IQProvider.class.isAssignableFrom(provider)) {
                                                 iqProviders.put(key, provider.newInstance());
-                                            }
-                                            else if (IQ.class.isAssignableFrom(provider)) {
+                                            } else if (IQ.class.isAssignableFrom(provider)) {
                                                 iqProviders.put(key, provider);
                                             }
-                                        }
-                                        catch (ClassNotFoundException cnfe) {
+                                        } catch (ClassNotFoundException cnfe) {
                                             cnfe.printStackTrace();
                                         }
                                     }
-                                }
-                                else if (parser.getName().equals("extensionProvider")) {
+                                } else if (parser.getName().equals("extensionProvider")) {
                                     parser.next();
                                     parser.next();
                                     String elementName = parser.nextText();
@@ -228,13 +235,11 @@ public class ProviderManager {
                                             if (PacketExtensionProvider.class.isAssignableFrom(
                                                     provider)) {
                                                 extensionProviders.put(key, provider.newInstance());
-                                            }
-                                            else if (PacketExtension.class.isAssignableFrom(
+                                            } else if (PacketExtension.class.isAssignableFrom(
                                                     provider)) {
                                                 extensionProviders.put(key, provider);
                                             }
-                                        }
-                                        catch (ClassNotFoundException cnfe) {
+                                        } catch (ClassNotFoundException cnfe) {
                                             cnfe.printStackTrace();
                                         }
                                     }
@@ -243,19 +248,16 @@ public class ProviderManager {
                             eventType = parser.next();
                         }
                         while (eventType != XmlPullParser.END_DOCUMENT);
-                    }
-                    finally {
+                    } finally {
                         try {
                             providerStream.close();
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             // Ignore.
                         }
                     }
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -306,11 +308,9 @@ public class ProviderManager {
      * @param provider the IQ provider.
      */
     public void addIQProvider(String elementName, String namespace,
-            Object provider)
-    {
+                              Object provider) {
         if (!(provider instanceof IQProvider || (provider instanceof Class &&
-                IQ.class.isAssignableFrom((Class<?>)provider))))
-        {
+                IQ.class.isAssignableFrom((Class<?>) provider)))) {
             throw new IllegalArgumentException("Provider must be an IQProvider " +
                     "or a Class instance.");
         }
@@ -365,8 +365,7 @@ public class ProviderManager {
      * @param provider the extension provider.
      */
     public void addExtensionProvider(String elementName, String namespace,
-            Object provider)
-    {
+                                     Object provider) {
         if (!(provider instanceof PacketExtensionProvider || provider instanceof Class)) {
             throw new IllegalArgumentException("Provider must be a PacketExtensionProvider " +
                     "or a Class instance.");
@@ -429,10 +428,5 @@ public class ProviderManager {
             }
         }
         return loaders.toArray(new ClassLoader[loaders.size()]);
-    }
-
-    private ProviderManager() {
-        super();
-        initialize();
     }
 }

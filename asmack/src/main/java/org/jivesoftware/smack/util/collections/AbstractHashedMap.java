@@ -19,7 +19,15 @@ package org.jivesoftware.smack.util.collections;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.*;
+import java.util.AbstractCollection;
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * An abstract implementation of a hash-based map which provides numerous points for
@@ -43,7 +51,7 @@ import java.util.*;
  * @version $Revision: 1.1 $ $Date: 2005/10/11 17:05:32 $
  * @since Commons Collections 3.0
  */
-public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements IterableMap<K, V> {
+public class AbstractHashedMap<K, V> extends AbstractMap<K, V> implements IterableMap<K, V> {
 
     protected static final String NO_NEXT_ENTRY = "No next() entry in the iteration";
     protected static final String NO_PREVIOUS_ENTRY = "No previous() entry in the iteration";
@@ -181,6 +189,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the value mapped to the key specified.
      *
@@ -218,6 +227,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks whether the map contains the specified key.
      *
@@ -268,6 +278,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Puts a key-value mapping into this map.
      *
@@ -308,7 +319,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
         int newSize = (int) ((size + mapSize) / loadFactor + 1);
         ensureCapacity(calculateNewCapacity(newSize));
         // Have to cast here because of compiler inference problems.
-        for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
+        for (Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
             Entry<? extends K, ? extends V> entry = (Entry<? extends K, ? extends V>) it.next();
             put(entry.getKey(), entry.getValue());
         }
@@ -408,6 +419,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the entry mapped to the key specified.
      * <p/>
@@ -431,6 +443,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Updates an existing key-value mapping to change the value.
      * <p/>
@@ -464,6 +477,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Adds a new key-value mapping into this map.
      * <p/>
@@ -516,6 +530,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Removes a mapping from the map.
      * <p/>
@@ -568,6 +583,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks the capacity of the map and enlarges it if necessary.
      * <p/>
@@ -653,6 +669,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the <code>next</code> field from a <code>HashEntry</code>.
      * Used in subclasses that have no visibility of the field.
@@ -706,6 +723,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets an iterator over the map.
      * Changes made to the iterator affect this map.
@@ -725,9 +743,266 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     /**
+     * Gets the entrySet view of the map.
+     * Changes made to the view affect this map.
+     * To simply iterate through the entries, use {@link #mapIterator()}.
+     *
+     * @return the entrySet view
+     */
+    public Set<Entry<K, V>> entrySet() {
+        if (entrySet == null) {
+            entrySet = new EntrySet<K, V>(this);
+        }
+        return entrySet;
+    }
+
+    //-----------------------------------------------------------------------
+
+    /**
+     * Creates an entry set iterator.
+     * Subclasses can override this to return iterators with different properties.
+     *
+     * @return the entrySet iterator
+     */
+    protected Iterator<Entry<K, V>> createEntrySetIterator() {
+        if (size() == 0) {
+            return EmptyIterator.INSTANCE;
+        }
+        return new EntrySetIterator<K, V>(this);
+    }
+
+    /**
+     * Gets the keySet view of the map.
+     * Changes made to the view affect this map.
+     * To simply iterate through the keys, use {@link #mapIterator()}.
+     *
+     * @return the keySet view
+     */
+    public Set<K> keySet() {
+        if (keySet == null) {
+            keySet = new KeySet<K, V>(this);
+        }
+        return keySet;
+    }
+
+    /**
+     * Creates a key set iterator.
+     * Subclasses can override this to return iterators with different properties.
+     *
+     * @return the keySet iterator
+     */
+    protected Iterator<K> createKeySetIterator() {
+        if (size() == 0) {
+            return EmptyIterator.INSTANCE;
+        }
+        return new KeySetIterator<K, V>(this);
+    }
+
+    /**
+     * Gets the values view of the map.
+     * Changes made to the view affect this map.
+     * To simply iterate through the values, use {@link #mapIterator()}.
+     *
+     * @return the values view
+     */
+    public Collection<V> values() {
+        if (values == null) {
+            values = new Values(this);
+        }
+        return values;
+    }
+
+    //-----------------------------------------------------------------------
+
+    /**
+     * Creates a values iterator.
+     * Subclasses can override this to return iterators with different properties.
+     *
+     * @return the values iterator
+     */
+    protected Iterator<V> createValuesIterator() {
+        if (size() == 0) {
+            return EmptyIterator.INSTANCE;
+        }
+        return new ValuesIterator<K, V>(this);
+    }
+
+    /**
+     * Writes the map data to the stream. This method must be overridden if a
+     * subclass must be setup before <code>put()</code> is used.
+     * <p/>
+     * Serialization is not one of the JDK's nicest topics. Normal serialization will
+     * initialise the superclass before the subclass. Sometimes however, this isn't
+     * what you want, as in this case the <code>put()</code> method on read can be
+     * affected by subclass state.
+     * <p/>
+     * The solution adopted here is to serialize the state data of this class in
+     * this protected method. This method must be called by the
+     * <code>writeObject()</code> of the first serializable subclass.
+     * <p/>
+     * Subclasses may override if they have a specific field that must be present
+     * on read before this implementation will work. Generally, the read determines
+     * what must be serialized here, if anything.
+     *
+     * @param out the output stream
+     */
+    protected void doWriteObject(ObjectOutputStream out) throws IOException {
+        out.writeFloat(loadFactor);
+        out.writeInt(data.length);
+        out.writeInt(size);
+        for (MapIterator it = mapIterator(); it.hasNext(); ) {
+            out.writeObject(it.next());
+            out.writeObject(it.getValue());
+        }
+    }
+
+    /**
+     * Reads the map data from the stream. This method must be overridden if a
+     * subclass must be setup before <code>put()</code> is used.
+     * <p/>
+     * Serialization is not one of the JDK's nicest topics. Normal serialization will
+     * initialise the superclass before the subclass. Sometimes however, this isn't
+     * what you want, as in this case the <code>put()</code> method on read can be
+     * affected by subclass state.
+     * <p/>
+     * The solution adopted here is to deserialize the state data of this class in
+     * this protected method. This method must be called by the
+     * <code>readObject()</code> of the first serializable subclass.
+     * <p/>
+     * Subclasses may override if the subclass has a specific field that must be present
+     * before <code>put()</code> or <code>calculateThreshold()</code> will work correctly.
+     *
+     * @param in the input stream
+     */
+    protected void doReadObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        loadFactor = in.readFloat();
+        int capacity = in.readInt();
+        int size = in.readInt();
+        init();
+        data = new HashEntry[capacity];
+        for (int i = 0; i < size; i++) {
+            K key = (K) in.readObject();
+            V value = (V) in.readObject();
+            put(key, value);
+        }
+        threshold = calculateThreshold(data.length, loadFactor);
+    }
+
+    /**
+     * Clones the map without cloning the keys or values.
+     * <p/>
+     * To implement <code>clone()</code>, a subclass must implement the
+     * <code>Cloneable</code> interface and make this method public.
+     *
+     * @return a shallow clone
+     */
+    protected Object clone() {
+        try {
+            AbstractHashedMap cloned = (AbstractHashedMap) super.clone();
+            cloned.data = new HashEntry[data.length];
+            cloned.entrySet = null;
+            cloned.keySet = null;
+            cloned.values = null;
+            cloned.modCount = 0;
+            cloned.size = 0;
+            cloned.init();
+            cloned.putAll(this);
+            return cloned;
+
+        } catch (CloneNotSupportedException ex) {
+            return null;  // should never happen
+        }
+    }
+
+    //-----------------------------------------------------------------------
+
+    /**
+     * Compares this map with another.
+     *
+     * @param obj the object to compare to
+     * @return true if equal
+     */
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof Map == false) {
+            return false;
+        }
+        Map map = (Map) obj;
+        if (map.size() != size()) {
+            return false;
+        }
+        MapIterator it = mapIterator();
+        try {
+            while (it.hasNext()) {
+                Object key = it.next();
+                Object value = it.getValue();
+                if (value == null) {
+                    if (map.get(key) != null || map.containsKey(key) == false) {
+                        return false;
+                    }
+                } else {
+                    if (value.equals(map.get(key)) == false) {
+                        return false;
+                    }
+                }
+            }
+        } catch (ClassCastException ignored) {
+            return false;
+        } catch (NullPointerException ignored) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Gets the standard Map hashCode.
+     *
+     * @return the hash code defined in the Map interface
+     */
+    public int hashCode() {
+        int total = 0;
+        Iterator it = createEntrySetIterator();
+        while (it.hasNext()) {
+            total += it.next().hashCode();
+        }
+        return total;
+    }
+
+    /**
+     * Gets the map as a String.
+     *
+     * @return a string version of the map
+     */
+    public String toString() {
+        if (size() == 0) {
+            return "{}";
+        }
+        StringBuilder buf = new StringBuilder(32 * size());
+        buf.append('{');
+
+        MapIterator it = mapIterator();
+        boolean hasNext = it.hasNext();
+        while (hasNext) {
+            Object key = it.next();
+            Object value = it.getValue();
+            buf.append(key == this ? "(this Map)" : key).append('=').append(value == this ? "(this Map)" : value);
+
+            hasNext = it.hasNext();
+            if (hasNext) {
+                buf.append(',').append(' ');
+            }
+        }
+
+        buf.append('}');
+        return buf.toString();
+    }
+
+    /**
      * MapIterator implementation.
      */
-    protected static class HashMapIterator <K,V> extends HashIterator<K, V> implements MapIterator<K, V> {
+    protected static class HashMapIterator<K, V> extends HashIterator<K, V> implements MapIterator<K, V> {
 
         protected HashMapIterator(AbstractHashedMap<K, V> parent) {
             super(parent);
@@ -763,37 +1038,11 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the entrySet view of the map.
-     * Changes made to the view affect this map.
-     * To simply iterate through the entries, use {@link #mapIterator()}.
-     *
-     * @return the entrySet view
-     */
-    public Set<Entry<K, V>> entrySet() {
-        if (entrySet == null) {
-            entrySet = new EntrySet<K, V>(this);
-        }
-        return entrySet;
-    }
-
-    /**
-     * Creates an entry set iterator.
-     * Subclasses can override this to return iterators with different properties.
-     *
-     * @return the entrySet iterator
-     */
-    protected Iterator<Entry<K, V>> createEntrySetIterator() {
-        if (size() == 0) {
-            return EmptyIterator.INSTANCE;
-        }
-        return new EntrySetIterator<K, V>(this);
-    }
 
     /**
      * EntrySet implementation.
      */
-    protected static class EntrySet <K,V> extends AbstractSet<Entry<K, V>> {
+    protected static class EntrySet<K, V> extends AbstractSet<Entry<K, V>> {
         /**
          * The parent map
          */
@@ -839,7 +1088,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     /**
      * EntrySet iterator.
      */
-    protected static class EntrySetIterator <K,V> extends HashIterator<K, V> implements Iterator<Entry<K, V>> {
+    protected static class EntrySetIterator<K, V> extends HashIterator<K, V> implements Iterator<Entry<K, V>> {
 
         protected EntrySetIterator(AbstractHashedMap<K, V> parent) {
             super(parent);
@@ -851,37 +1100,11 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the keySet view of the map.
-     * Changes made to the view affect this map.
-     * To simply iterate through the keys, use {@link #mapIterator()}.
-     *
-     * @return the keySet view
-     */
-    public Set<K> keySet() {
-        if (keySet == null) {
-            keySet = new KeySet<K, V>(this);
-        }
-        return keySet;
-    }
-
-    /**
-     * Creates a key set iterator.
-     * Subclasses can override this to return iterators with different properties.
-     *
-     * @return the keySet iterator
-     */
-    protected Iterator<K> createKeySetIterator() {
-        if (size() == 0) {
-            return EmptyIterator.INSTANCE;
-        }
-        return new KeySetIterator<K, V>(this);
-    }
 
     /**
      * KeySet implementation.
      */
-    protected static class KeySet <K,V> extends AbstractSet<K> {
+    protected static class KeySet<K, V> extends AbstractSet<K> {
         /**
          * The parent map
          */
@@ -918,7 +1141,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     /**
      * KeySet iterator.
      */
-    protected static class KeySetIterator <K,V> extends HashIterator<K, V> implements Iterator<K> {
+    protected static class KeySetIterator<K, V> extends HashIterator<K, V> implements Iterator<K> {
 
         protected KeySetIterator(AbstractHashedMap<K, V> parent) {
             super(parent);
@@ -930,37 +1153,11 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the values view of the map.
-     * Changes made to the view affect this map.
-     * To simply iterate through the values, use {@link #mapIterator()}.
-     *
-     * @return the values view
-     */
-    public Collection<V> values() {
-        if (values == null) {
-            values = new Values(this);
-        }
-        return values;
-    }
-
-    /**
-     * Creates a values iterator.
-     * Subclasses can override this to return iterators with different properties.
-     *
-     * @return the values iterator
-     */
-    protected Iterator<V> createValuesIterator() {
-        if (size() == 0) {
-            return EmptyIterator.INSTANCE;
-        }
-        return new ValuesIterator<K, V>(this);
-    }
 
     /**
      * Values implementation.
      */
-    protected static class Values <K,V> extends AbstractCollection<V> {
+    protected static class Values<K, V> extends AbstractCollection<V> {
         /**
          * The parent map
          */
@@ -991,7 +1188,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     /**
      * Values iterator.
      */
-    protected static class ValuesIterator <K,V> extends HashIterator<K, V> implements Iterator<V> {
+    protected static class ValuesIterator<K, V> extends HashIterator<K, V> implements Iterator<V> {
 
         protected ValuesIterator(AbstractHashedMap<K, V> parent) {
             super(parent);
@@ -1002,7 +1199,6 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
         }
     }
 
-    //-----------------------------------------------------------------------
     /**
      * HashEntry used to store the data.
      * <p/>
@@ -1011,7 +1207,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
      * The <code>entryXxx()</code> methods on <code>AbstractHashedMap</code> exist
      * to provide the necessary access.
      */
-    protected static class HashEntry <K,V> implements Entry<K, V>, KeyValue<K, V> {
+    protected static class HashEntry<K, V> implements Entry<K, V>, KeyValue<K, V> {
         /**
          * The next entry in the hash chain
          */
@@ -1078,7 +1274,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
     /**
      * Base Iterator
      */
-    protected static abstract class HashIterator <K,V> {
+    protected static abstract class HashIterator<K, V> {
 
         /**
          * The parent map
@@ -1162,177 +1358,5 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
                 return "Iterator[]";
             }
         }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Writes the map data to the stream. This method must be overridden if a
-     * subclass must be setup before <code>put()</code> is used.
-     * <p/>
-     * Serialization is not one of the JDK's nicest topics. Normal serialization will
-     * initialise the superclass before the subclass. Sometimes however, this isn't
-     * what you want, as in this case the <code>put()</code> method on read can be
-     * affected by subclass state.
-     * <p/>
-     * The solution adopted here is to serialize the state data of this class in
-     * this protected method. This method must be called by the
-     * <code>writeObject()</code> of the first serializable subclass.
-     * <p/>
-     * Subclasses may override if they have a specific field that must be present
-     * on read before this implementation will work. Generally, the read determines
-     * what must be serialized here, if anything.
-     *
-     * @param out the output stream
-     */
-    protected void doWriteObject(ObjectOutputStream out) throws IOException {
-        out.writeFloat(loadFactor);
-        out.writeInt(data.length);
-        out.writeInt(size);
-        for (MapIterator it = mapIterator(); it.hasNext();) {
-            out.writeObject(it.next());
-            out.writeObject(it.getValue());
-        }
-    }
-
-    /**
-     * Reads the map data from the stream. This method must be overridden if a
-     * subclass must be setup before <code>put()</code> is used.
-     * <p/>
-     * Serialization is not one of the JDK's nicest topics. Normal serialization will
-     * initialise the superclass before the subclass. Sometimes however, this isn't
-     * what you want, as in this case the <code>put()</code> method on read can be
-     * affected by subclass state.
-     * <p/>
-     * The solution adopted here is to deserialize the state data of this class in
-     * this protected method. This method must be called by the
-     * <code>readObject()</code> of the first serializable subclass.
-     * <p/>
-     * Subclasses may override if the subclass has a specific field that must be present
-     * before <code>put()</code> or <code>calculateThreshold()</code> will work correctly.
-     *
-     * @param in the input stream
-     */
-    protected void doReadObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        loadFactor = in.readFloat();
-        int capacity = in.readInt();
-        int size = in.readInt();
-        init();
-        data = new HashEntry[capacity];
-        for (int i = 0; i < size; i++) {
-            K key = (K) in.readObject();
-            V value = (V) in.readObject();
-            put(key, value);
-        }
-        threshold = calculateThreshold(data.length, loadFactor);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Clones the map without cloning the keys or values.
-     * <p/>
-     * To implement <code>clone()</code>, a subclass must implement the
-     * <code>Cloneable</code> interface and make this method public.
-     *
-     * @return a shallow clone
-     */
-    protected Object clone() {
-        try {
-            AbstractHashedMap cloned = (AbstractHashedMap) super.clone();
-            cloned.data = new HashEntry[data.length];
-            cloned.entrySet = null;
-            cloned.keySet = null;
-            cloned.values = null;
-            cloned.modCount = 0;
-            cloned.size = 0;
-            cloned.init();
-            cloned.putAll(this);
-            return cloned;
-
-        } catch (CloneNotSupportedException ex) {
-            return null;  // should never happen
-        }
-    }
-
-    /**
-     * Compares this map with another.
-     *
-     * @param obj the object to compare to
-     * @return true if equal
-     */
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof Map == false) {
-            return false;
-        }
-        Map map = (Map) obj;
-        if (map.size() != size()) {
-            return false;
-        }
-        MapIterator it = mapIterator();
-        try {
-            while (it.hasNext()) {
-                Object key = it.next();
-                Object value = it.getValue();
-                if (value == null) {
-                    if (map.get(key) != null || map.containsKey(key) == false) {
-                        return false;
-                    }
-                } else {
-                    if (value.equals(map.get(key)) == false) {
-                        return false;
-                    }
-                }
-            }
-        } catch (ClassCastException ignored) {
-            return false;
-        } catch (NullPointerException ignored) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Gets the standard Map hashCode.
-     *
-     * @return the hash code defined in the Map interface
-     */
-    public int hashCode() {
-        int total = 0;
-        Iterator it = createEntrySetIterator();
-        while (it.hasNext()) {
-            total += it.next().hashCode();
-        }
-        return total;
-    }
-
-    /**
-     * Gets the map as a String.
-     *
-     * @return a string version of the map
-     */
-    public String toString() {
-        if (size() == 0) {
-            return "{}";
-        }
-        StringBuilder buf = new StringBuilder(32 * size());
-        buf.append('{');
-
-        MapIterator it = mapIterator();
-        boolean hasNext = it.hasNext();
-        while (hasNext) {
-            Object key = it.next();
-            Object value = it.getValue();
-            buf.append(key == this ? "(this Map)" : key).append('=').append(value == this ? "(this Map)" : value);
-
-            hasNext = it.hasNext();
-            if (hasNext) {
-                buf.append(',').append(' ');
-            }
-        }
-
-        buf.append('}');
-        return buf.toString();
     }
 }

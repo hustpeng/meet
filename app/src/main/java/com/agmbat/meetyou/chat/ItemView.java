@@ -484,7 +484,7 @@ public abstract class ItemView extends LinearLayout {
     }
 
 
-    public interface OnItemLongClickListener{
+    public interface OnItemLongClickListener {
 
         public void onContentLongClick(View view);
 

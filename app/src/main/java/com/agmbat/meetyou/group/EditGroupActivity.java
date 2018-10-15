@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.agmbat.android.SysResources;
 import com.agmbat.android.image.ImageManager;
@@ -30,12 +35,6 @@ import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.discovery.search.TagSelectedView;
 import com.agmbat.meetyou.helper.AvatarHelper;
 import com.agmbat.meetyou.util.CircleDrawable;
-
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -71,14 +70,55 @@ public class EditGroupActivity extends Activity {
     private String mGroupJid;
     private String mAvatarPath;
     private String mAvatarUrl;
+    private PacketListener mGroupFormListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof GroupFormReply) {
+                GroupFormReply groupFormReply = (GroupFormReply) packet;
+                GroupForm groupForm = new GroupForm();
+                groupForm.setName(groupFormReply.getName());
+                groupForm.setHeadline(groupFormReply.getHeadline());
+                groupForm.setDescription(groupFormReply.getDescription());
+                groupForm.setNeedVerify(groupFormReply.isNeedVerify());
+                groupForm.setAvatar(groupFormReply.getAvatar());
+                groupForm.setCategoryId(groupFormReply.getCategoryId());
+                groupForm.setCategories(groupFormReply.getCategories());
+                EventBus.getDefault().post(groupForm);
+            }
+        }
+    };
+    private int mCategoryId;
+    private ISLoadingDialog mUpdateProgressDialog;
+    private PacketListener mUpdateGroupListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof UpdateGroupReply) {
+                UpdateGroupReply updateGroupReply = (UpdateGroupReply) packet;
+                dismissUpdateProgressDialog();
+                if (updateGroupReply.isSuccess()) {
+                    ToastUtil.showToast("修改成功");
+                    EditGroupEvent editGroupEvent = new EditGroupEvent(mGroupJid);
+                    editGroupEvent.setAvatar(mAvatarUrl);
+                    editGroupEvent.setGroupName(mGroupNameTv.getText().toString());
+                    editGroupEvent.setHeadline(mHeadlineTv.getText().toString());
+                    editGroupEvent.setDescription(mDescriptionTv.getText().toString());
+                    editGroupEvent.setNeedVerify(mVerifyCheckBox.isChecked());
+                    editGroupEvent.setCategoryId(mCategoryId);
+                    EventBus.getDefault().post(editGroupEvent);
+                    finish();
+                } else {
+                    ToastUtil.showToast("修改失败");
+                }
+            }
+        }
+    };
 
-    public static void launch(Context context, String groupJid){
+    public static void launch(Context context, String groupJid) {
         Intent intent = new Intent(context, EditGroupActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRA_GROUP_JID, groupJid);
         context.startActivity(intent);
     }
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,58 +133,15 @@ public class EditGroupActivity extends Activity {
 
     }
 
-    private PacketListener mGroupFormListener = new PacketListener() {
-        @Override
-        public void processPacket(Packet packet) {
-            if(packet instanceof GroupFormReply){
-                GroupFormReply groupFormReply = (GroupFormReply) packet;
-                GroupForm groupForm = new GroupForm();
-                groupForm.setName(groupFormReply.getName());
-                groupForm.setHeadline(groupFormReply.getHeadline());
-                groupForm.setDescription(groupFormReply.getDescription());
-                groupForm.setNeedVerify(groupFormReply.isNeedVerify());
-                groupForm.setAvatar(groupFormReply.getAvatar());
-                groupForm.setCategoryId(groupFormReply.getCategoryId());
-                groupForm.setCategories(groupFormReply.getCategories());
-                EventBus.getDefault().post(groupForm);
-            }
-        }
-    };
-
-    private PacketListener mUpdateGroupListener = new PacketListener() {
-        @Override
-        public void processPacket(Packet packet) {
-            if(packet instanceof UpdateGroupReply){
-                UpdateGroupReply updateGroupReply = (UpdateGroupReply) packet;
-                dismissUpdateProgressDialog();
-                if(updateGroupReply.isSuccess()){
-                    ToastUtil.showToast("修改成功");
-                    EditGroupEvent editGroupEvent = new EditGroupEvent(mGroupJid);
-                    editGroupEvent.setAvatar(mAvatarUrl);
-                    editGroupEvent.setGroupName(mGroupNameTv.getText().toString());
-                    editGroupEvent.setHeadline(mHeadlineTv.getText().toString());
-                    editGroupEvent.setDescription(mDescriptionTv.getText().toString());
-                    editGroupEvent.setNeedVerify(mVerifyCheckBox.isChecked());
-                    editGroupEvent.setCategoryId(mCategoryId);
-                    EventBus.getDefault().post(editGroupEvent);
-                    finish();
-                }else{
-                    ToastUtil.showToast("修改失败");
-                }
-            }
-        }
-    };
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(GroupForm groupForm) {
         fillGroupForm(groupForm);
     }
 
-
-    private void fillGroupForm(GroupForm groupForm){
+    private void fillGroupForm(GroupForm groupForm) {
         mAvatarUrl = groupForm.getAvatar();
         Log.d("Fill the group to form:" + groupForm.toString());
-        if(!TextUtils.isEmpty(mAvatarUrl)){
+        if (!TextUtils.isEmpty(mAvatarUrl)) {
             ImageManager.displayImage(mAvatarUrl, mAvatarView, AvatarHelper.getGroupOptions());
         }
         mGroupNameTv.setText(groupForm.getName());
@@ -158,7 +155,7 @@ public class EditGroupActivity extends Activity {
         for (int i = 0; i < categories.size(); i++) {
             GroupCategory current = categories.get(i);
             categoryTags.add(current.getName());
-            if(current.getId() == groupForm.getCategoryId()){
+            if (current.getId() == groupForm.getCategoryId()) {
                 selectedTag = current.getName();
             }
         }
@@ -173,8 +170,6 @@ public class EditGroupActivity extends Activity {
         mCategorysView.setEnabled(false);
     }
 
-    private int mCategoryId;
-
     @OnClick(R.id.title_btn_back)
     void onClickBack() {
         finish();
@@ -183,14 +178,14 @@ public class EditGroupActivity extends Activity {
     @OnClick(R.id.title_btn_next)
     void onClickSave() {
         showUpdateProgressDialog();
-        if(!TextUtils.isEmpty(mAvatarPath)){
+        if (!TextUtils.isEmpty(mAvatarPath)) {
             uploadGroupAvatar(mAvatarPath, mGroupJid);
-        }else{
+        } else {
             sendUpdatePacket(mAvatarUrl);
         }
     }
 
-    private void sendUpdatePacket(String avatarUrl){
+    private void sendUpdatePacket(String avatarUrl) {
         UpdateGroupIQ updateGroupIQ = new UpdateGroupIQ(mGroupJid);
         updateGroupIQ.setGroupName(mGroupNameTv.getText().toString());
         updateGroupIQ.setHeadline(mHeadlineTv.getText().toString());
@@ -200,7 +195,6 @@ public class EditGroupActivity extends Activity {
         updateGroupIQ.setAvatar(avatarUrl);
         XMPPManager.getInstance().getXmppConnection().sendPacket(updateGroupIQ);
     }
-
 
     /**
      * 点击头像, 添加群头像
@@ -231,7 +225,6 @@ public class EditGroupActivity extends Activity {
         });
     }
 
-
     /**
      * 上传群头像
      *
@@ -243,15 +236,13 @@ public class EditGroupActivity extends Activity {
             @Override
             public void onUpload(FileApiResult apiResult) {
                 Log.d("Upload group avatar result: " + apiResult.mResult + "url: " + apiResult.url + ", errorMsg: " + apiResult.mErrorMsg);
-                if(apiResult.mResult) {
+                if (apiResult.mResult) {
                     mAvatarUrl = apiResult.url;
                 }
                 sendUpdatePacket(apiResult.url);
             }
         });
     }
-
-    private ISLoadingDialog mUpdateProgressDialog;
 
     private void showUpdateProgressDialog() {
         if (null == mUpdateProgressDialog || !mUpdateProgressDialog.isShowing()) {

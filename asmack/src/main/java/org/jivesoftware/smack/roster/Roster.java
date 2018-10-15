@@ -91,30 +91,6 @@ public class Roster {
     private String requestPacketId;
 
 
-    /**
-     * Returns the default subscription processing mode to use when a new Roster is created. The
-     * subscription processing mode dictates what action Smack will take when subscription
-     * requests from other users are made. The default subscription mode
-     * is {@link SubscriptionMode#accept_all}.
-     *
-     * @return the default subscription mode to use for new Rosters
-     */
-    public static SubscriptionMode getDefaultSubscriptionMode() {
-        return defaultSubscriptionMode;
-    }
-
-    /**
-     * Sets the default subscription processing mode to use when a new Roster is created. The
-     * subscription processing mode dictates what action Smack will take when subscription
-     * requests from other users are made. The default subscription mode
-     * is {@link SubscriptionMode#accept_all}.
-     *
-     * @param subscriptionMode the default subscription mode to use for new Rosters.
-     */
-    public static void setDefaultSubscriptionMode(SubscriptionMode subscriptionMode) {
-        defaultSubscriptionMode = subscriptionMode;
-    }
-
     public Roster(final Connection connection, RosterStorage persistentStorage) {
         this(connection);
     }
@@ -174,6 +150,30 @@ public class Roster {
         } else {
             connection.addConnectionListener(connectionListener);
         }
+    }
+
+    /**
+     * Returns the default subscription processing mode to use when a new Roster is created. The
+     * subscription processing mode dictates what action Smack will take when subscription
+     * requests from other users are made. The default subscription mode
+     * is {@link SubscriptionMode#accept_all}.
+     *
+     * @return the default subscription mode to use for new Rosters
+     */
+    public static SubscriptionMode getDefaultSubscriptionMode() {
+        return defaultSubscriptionMode;
+    }
+
+    /**
+     * Sets the default subscription processing mode to use when a new Roster is created. The
+     * subscription processing mode dictates what action Smack will take when subscription
+     * requests from other users are made. The default subscription mode
+     * is {@link SubscriptionMode#accept_all}.
+     *
+     * @param subscriptionMode the default subscription mode to use for new Rosters.
+     */
+    public static void setDefaultSubscriptionMode(SubscriptionMode subscriptionMode) {
+        defaultSubscriptionMode = subscriptionMode;
     }
 
     /**
@@ -868,6 +868,60 @@ public class Roster {
     }
 
     /**
+     * 申请添加指定的用户为好友
+     *
+     * @param userJid
+     */
+    public void sendSubscribe(String userJid) {
+        if (!connection.isAuthenticated()) {
+            throw new IllegalStateException("Not logged in to server.");
+        }
+        if (connection.isAnonymous()) {
+            throw new IllegalStateException("Anonymous users can't have a roster.");
+        }
+        // Create a presence subscription packet and send.
+        Presence presencePacket = new Presence(Presence.Type.subscribe);
+        presencePacket.setTo(userJid);
+        connection.sendPacket(presencePacket);
+    }
+
+    /**
+     * 同意对方申请加自己好友
+     *
+     * @param toJid
+     */
+    public void sendSubscribed(String toJid) {
+        if (!connection.isAuthenticated()) {
+            throw new IllegalStateException("Not logged in to server.");
+        }
+        if (connection.isAnonymous()) {
+            throw new IllegalStateException("Anonymous users can't have a roster.");
+        }
+        // Accept  subscription requests.
+        Presence response = new Presence(Presence.Type.subscribed);
+        response.setTo(toJid);
+        connection.sendPacket(response);
+    }
+
+    /**
+     * 通过jid获取groupName
+     *
+     * @param jid
+     * @return
+     */
+    public String getGroupName(String jid) {
+        Collection<RosterGroup> groups = getGroups();
+        for (RosterGroup group : groups) {
+            for (RosterEntry entry : group.getEntries()) {
+                if (entry.getUser().equals(jid)) {
+                    return group.getName();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * An enumeration for the subscription mode options.
      */
     public enum SubscriptionMode {
@@ -1053,42 +1107,6 @@ public class Roster {
     }
 
     /**
-     * 申请添加指定的用户为好友
-     *
-     * @param userJid
-     */
-    public void sendSubscribe(String userJid) {
-        if (!connection.isAuthenticated()) {
-            throw new IllegalStateException("Not logged in to server.");
-        }
-        if (connection.isAnonymous()) {
-            throw new IllegalStateException("Anonymous users can't have a roster.");
-        }
-        // Create a presence subscription packet and send.
-        Presence presencePacket = new Presence(Presence.Type.subscribe);
-        presencePacket.setTo(userJid);
-        connection.sendPacket(presencePacket);
-    }
-
-    /**
-     * 同意对方申请加自己好友
-     *
-     * @param toJid
-     */
-    public void sendSubscribed(String toJid) {
-        if (!connection.isAuthenticated()) {
-            throw new IllegalStateException("Not logged in to server.");
-        }
-        if (connection.isAnonymous()) {
-            throw new IllegalStateException("Anonymous users can't have a roster.");
-        }
-        // Accept  subscription requests.
-        Presence response = new Presence(Presence.Type.subscribed);
-        response.setTo(toJid);
-        connection.sendPacket(response);
-    }
-
-    /**
      * Listen for empty IQ results which indicate that the client has already a current
      * roster version
      *
@@ -1157,24 +1175,6 @@ public class Roster {
 
             fireRosterOnLoad(rosterItems);
         }
-    }
-
-    /**
-     * 通过jid获取groupName
-     *
-     * @param jid
-     * @return
-     */
-    public String getGroupName(String jid) {
-        Collection<RosterGroup> groups = getGroups();
-        for (RosterGroup group : groups) {
-            for (RosterEntry entry : group.getEntries()) {
-                if (entry.getUser().equals(jid)) {
-                    return group.getName();
-                }
-            }
-        }
-        return null;
     }
 
 }

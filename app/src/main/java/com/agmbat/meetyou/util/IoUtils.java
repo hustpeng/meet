@@ -19,6 +19,12 @@ import java.io.StringWriter;
  */
 public class IoUtils {
 
+    private static final int EOF = -1;
+    private static final int BUFFER_SIZE = 1024;
+
+    private IoUtils() {
+    }
+
     public static void close(Closeable closeable) {
         if (closeable != null) {
             try {
@@ -37,13 +43,6 @@ public class IoUtils {
 
             }
         }
-    }
-
-    private static final int EOF = -1;
-
-    private static final int BUFFER_SIZE = 1024;
-
-    private IoUtils() {
     }
 
     /**

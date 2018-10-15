@@ -20,6 +20,11 @@
 
 package org.jivesoftware.smack.util;
 
+import android.net.ParseException;
+import android.text.TextUtils;
+
+import com.agmbat.log.Log;
+
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.packet.Authentication;
 import org.jivesoftware.smack.packet.Bind;
@@ -43,11 +48,6 @@ import org.jivesoftware.smack.roster.RosterPacketItemType;
 import org.jivesoftware.smack.sasl.SASLMechanism.Failure;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import android.net.ParseException;
-import android.text.TextUtils;
-
-import com.agmbat.log.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -105,18 +105,16 @@ public class PacketParserUtils {
                 if (elementName.equals("body")) {
                     // 由于内容为xml标签, parse.nextText()会出Bug
                     message.setBody(parseContent(parser));
-                }
-                else if (elementName.equals("nick")) {
+                } else if (elementName.equals("nick")) {
                     message.setSenderNickName(parser.nextText());
-                }
-                else if(elementName.equals("sender")){
+                } else if (elementName.equals("sender")) {
                     String nickName = parser.getAttributeValue("", "nickname");
                     String avatar = parser.getAttributeValue("", "avatar");
                     String senderJid = geTagText(parser, "sender ");
                     message.setSenderNickName(nickName);
                     message.setSenderAvatar(avatar);
                     message.setSenderJid(senderJid);
-                }else if (elementName.equals("delay")) {
+                } else if (elementName.equals("delay")) {
                     Date date = parseOfflineMessageDate(parser);
                     if (date != null) {
                         message.setOffline(true);

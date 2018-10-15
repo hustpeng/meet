@@ -20,6 +20,19 @@ public class Option<T> {
     @SerializedName("option")
     public T[] mItems;
 
+    /**
+     * 从json中转为对象
+     *
+     * @param text
+     * @param <T>
+     * @return
+     */
+    public static <T> Option<T> fromJson(String text) {
+        Type jsonType = new TypeToken<Option<T>>() {
+        }.getType();
+        return GsonHelper.fromJson(text, jsonType);
+    }
+
     private int defaultIndex() {
         int index = ArrayUtils.indexOf(mItems, mDefault);
         if (index < 0) {
@@ -59,19 +72,6 @@ public class Option<T> {
             }
         }
         return defaultIndex();
-    }
-
-    /**
-     * 从json中转为对象
-     *
-     * @param text
-     * @param <T>
-     * @return
-     */
-    public static <T> Option<T> fromJson(String text) {
-        Type jsonType = new TypeToken<Option<T>>() {
-        }.getType();
-        return GsonHelper.fromJson(text, jsonType);
     }
 
 

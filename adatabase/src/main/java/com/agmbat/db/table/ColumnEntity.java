@@ -33,18 +33,16 @@ public final class ColumnEntity {
      * 字段名称
      */
     protected final String columnName;
-    private final String property;
-    private final boolean isId;
-    private final boolean isAutoId;
-
     protected final Method getMethod;
     protected final Method setMethod;
-
     /**
      * 字段变量名及数据类型
      */
     protected final Field columnField;
     protected final ColumnConverter columnConverter;
+    private final String property;
+    private final boolean isId;
+    private final boolean isAutoId;
 
     /* package */
     ColumnEntity(Class<?> entityType, Field field, Column column) {
@@ -117,7 +115,7 @@ public final class ColumnEntity {
 
     /**
      * 获取值
-     * 
+     *
      * @param entity
      * @return
      */
@@ -176,7 +174,7 @@ public final class ColumnEntity {
 
     /**
      * 将所给的entity中的值转成KeyValue
-     * 
+     *
      * @param entity
      * @return
      */

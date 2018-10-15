@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.agmbat.imsdk.asmack.roster.ContactGroup;
 import com.agmbat.meetyou.R;
 
 /**

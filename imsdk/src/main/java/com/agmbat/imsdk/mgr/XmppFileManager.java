@@ -14,11 +14,9 @@ import java.util.LinkedList;
 public class XmppFileManager {
 
     private static final String APPLICATION_DIR = Environment.getExternalStorageDirectory() + File.separator + "Meet";
-
+    public static final String RECEIVE_FILE_PATH = APPLICATION_DIR + File.separator + "ReceiveFiles";
     private static final String AVATAR_DIR = APPLICATION_DIR + File.separator + "Avatar";
     private static final String CROP_DIR = AVATAR_DIR + File.separator + "Crop";
-    public static final String RECEIVE_FILE_PATH = APPLICATION_DIR + File.separator + "ReceiveFiles";
-
     private static final String CAMERA_DIR = Environment.getExternalStorageDirectory() + "/DCIM/Camera";
 
     public static File getRecordFile(String url) {

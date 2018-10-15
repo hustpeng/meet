@@ -2,15 +2,15 @@
  * $RCSfile$
  * $Revision$
  * $Date$
- *
+ * <p>
  * Copyright 2003-2007 Jive Software.
- *
+ * <p>
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,13 +20,15 @@
 
 package org.jivesoftware.smack.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An ObservableReader is a wrapper on a Reader that notifies to its listeners when
  * reading character streams.
- * 
+ *
  * @author Gaston Dombiak
  */
 public class ObservableReader extends Reader {
@@ -37,7 +39,7 @@ public class ObservableReader extends Reader {
     public ObservableReader(Reader wrappedReader) {
         this.wrappedReader = wrappedReader;
     }
-        
+
     public int read(char[] cbuf, int off, int len) throws IOException {
         int count = wrappedReader.read(cbuf, off, len);
         if (count > 0) {

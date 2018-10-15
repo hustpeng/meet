@@ -1,10 +1,5 @@
 package com.agmbat.android.utils;
 
-import com.agmbat.log.Log;
-import com.agmbat.task.Method;
-import com.agmbat.task.SyncResult;
-import com.agmbat.task.SyncRunnable;
-
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Build;
@@ -12,6 +7,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+
+import com.agmbat.log.Log;
+import com.agmbat.task.Method;
+import com.agmbat.task.SyncResult;
+import com.agmbat.task.SyncRunnable;
 
 /**
  * 将一些方法放在主线程运行

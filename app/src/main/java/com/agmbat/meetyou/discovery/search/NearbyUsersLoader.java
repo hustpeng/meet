@@ -6,9 +6,6 @@ import android.widget.ImageView;
 import com.agmbat.android.AppResources;
 import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.meetyou.R;
-import com.agmbat.menu.MenuInfo;
-import com.agmbat.menu.OnClickMenuListener;
-import com.agmbat.menu.PopupMenu;
 
 /**
  * 附近的人,联系人列表
@@ -22,7 +19,7 @@ public class NearbyUsersLoader implements DiscoveryLoader {
         return AppResources.getString(R.string.discovery_nearby_users);
     }
 
-    public void setGender(int gender){
+    public void setGender(int gender) {
         mGender = gender;
     }
 

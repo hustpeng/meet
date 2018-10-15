@@ -17,16 +17,15 @@ import java.util.ArrayList;
 
 public class VisitorRecordDBStoreProvider {
 
-    static String getTableName() {
-        return "visitor_record";
+    private DatabaseHelper mOpenHelper;
+
+
+    public VisitorRecordDBStoreProvider() {
+        mOpenHelper = new DatabaseHelper(AppResources.getAppContext());
     }
 
-
-    public interface Columns extends BaseColumns {
-        public static final String WHO_VISITOR_JID = "who_visitor_jid";
-        public static final String VISITOR_WHO_JID = "visitor_who_jid";
-        public static final String VISITOR_ENTRANCE = "visitor_entrance";
-        public static final String VISITOR_TIME = "visitor_time";
+    static String getTableName() {
+        return "visitor_record";
     }
 
     static public String getCreateTableStr() {
@@ -47,13 +46,6 @@ public class VisitorRecordDBStoreProvider {
         values.put(Columns.VISITOR_ENTRANCE, obj.getEntrance());
         values.put(Columns.VISITOR_TIME, obj.getVisitorTime());
         return values;
-    }
-
-
-    private DatabaseHelper mOpenHelper;
-
-    public VisitorRecordDBStoreProvider() {
-        mOpenHelper = new DatabaseHelper(AppResources.getAppContext());
     }
 
     public int delete(String selection, String[] selectionArgs) {
@@ -110,5 +102,12 @@ public class VisitorRecordDBStoreProvider {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count = db.update(getTableName(), values, selection, selectionArgs);
         return count;
+    }
+
+    public interface Columns extends BaseColumns {
+        public static final String WHO_VISITOR_JID = "who_visitor_jid";
+        public static final String VISITOR_WHO_JID = "visitor_who_jid";
+        public static final String VISITOR_ENTRANCE = "visitor_entrance";
+        public static final String VISITOR_TIME = "visitor_time";
     }
 }

@@ -33,8 +33,7 @@ public class GroupFormIQProvider implements IQProvider {
         List<GroupCategory> groupCategories = new ArrayList<>();
         boolean done = false;
         // 判断事件是否到最后
-        while(!done)
-        {
+        while (!done) {
             // 进入下一个元素并触发相应事件
             int eventType = parser.next();
             switch (eventType) {
@@ -43,35 +42,35 @@ public class GroupFormIQProvider implements IQProvider {
                 case XmlPullParser.START_TAG:
                     if (parser.getName().equals("field")) {
                         String var = parser.getAttributeValue("", "var");
-                        if("muc#circleprofile_circle_name".equals(var)){
+                        if ("muc#circleprofile_circle_name".equals(var)) {
                             parser.next();
                             parser.next();
                             groupFormReply.setName(parser.getText());
-                        }else if("muc#circleprofile_headline".equals(var)){
+                        } else if ("muc#circleprofile_headline".equals(var)) {
                             parser.next();
                             parser.next();
                             groupFormReply.setHeadline(parser.getText());
-                        }else if("muc#circleprofile_description".equals(var)){
+                        } else if ("muc#circleprofile_description".equals(var)) {
                             parser.next();
                             parser.next();
                             groupFormReply.setDescription(parser.getText());
-                        }else if("muc#circleprofile_cover".equals(var)){
+                        } else if ("muc#circleprofile_cover".equals(var)) {
                             parser.next();
                             parser.next();
                             groupFormReply.setAvatar(parser.getText());
-                        }else if("muc#circleprofile_is_verify".equals(var)){
+                        } else if ("muc#circleprofile_is_verify".equals(var)) {
                             parser.next();
                             parser.next();
                             groupFormReply.setNeedVerify("1".equals(parser.getText()));
-                        }else if("muc#circleprofile_category_id".equals(var)){
+                        } else if ("muc#circleprofile_category_id".equals(var)) {
                             parser.next();
                             parser.next();
                             String categoryId = parser.getText();
-                            if(!TextUtils.isEmpty(categoryId) && TextUtils.isDigitsOnly(categoryId)){
+                            if (!TextUtils.isEmpty(categoryId) && TextUtils.isDigitsOnly(categoryId)) {
                                 groupFormReply.setCategoryId(Integer.parseInt(categoryId));
                             }
                         }
-                    }else if(parser.getName().equals("option")) {
+                    } else if (parser.getName().equals("option")) {
                         GroupCategory groupCategory = new GroupCategory();
                         String label = parser.getAttributeValue("", "label");
                         groupCategory.setName(label);
@@ -82,28 +81,28 @@ public class GroupFormIQProvider implements IQProvider {
                             groupCategory.setId(Integer.parseInt(id));
                         }
                         groupCategories.add(groupCategory);
-                    } else if(parser.getName().equals("x")){
+                    } else if (parser.getName().equals("x")) {
                         hasX = true;
                     } else if (parser.getName().equals("circle")) {
                         hasCircle = true;
                         String jid = parser.getAttributeValue("", "jid");
                         createGroupResultIQ.setGroupJid(jid);
-                     }
+                    }
                     break;
                 // 判断当前事件是否为标签元素结束事件
                 case XmlPullParser.END_TAG:
-                    if(parser.getName().equals("query")){
+                    if (parser.getName().equals("query")) {
                         done = true;
                     }
                     break;
             }
         }
-        if(hasX){
+        if (hasX) {
             groupFormReply.setCategories(groupCategories);
             return groupFormReply;
-        }else if(hasCircle){
+        } else if (hasCircle) {
             return createGroupResultIQ;
-        }else{
+        } else {
             return updateGroupReply;
         }
     }

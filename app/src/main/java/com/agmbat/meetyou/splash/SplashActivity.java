@@ -46,7 +46,19 @@ import java.util.List;
 public class SplashActivity extends Activity {
 
     private Handler mHandler = new Handler();
-
+    private ViewPager mViewPager;
+    private ImageView mSplashImageView;
+    /**
+     * 跳过button
+     */
+    private TextView mSkipButton;
+    private CirclePageIndicator mIndicator;
+    /**
+     * splash 显示时长
+     */
+    private long mSplashShowTime = 3000;
+    private int mTabIndex;
+    private String mLaunchActivity;
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
@@ -54,27 +66,6 @@ public class SplashActivity extends Activity {
             entryMainPager();
         }
     };
-
-
-    private ViewPager mViewPager;
-
-    private ImageView mSplashImageView;
-
-    /**
-     * 跳过button
-     */
-    private TextView mSkipButton;
-
-    private CirclePageIndicator mIndicator;
-
-    /**
-     * splash 显示时长
-     */
-    private long mSplashShowTime = 3000;
-
-    private int mTabIndex;
-    private String mLaunchActivity;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

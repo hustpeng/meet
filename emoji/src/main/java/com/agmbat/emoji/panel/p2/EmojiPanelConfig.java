@@ -14,10 +14,9 @@ import java.util.List;
 
 public class EmojiPanelConfig {
 
+    private final List<EmoticonPageSetEntity> mPageSetEntityList = new ArrayList<>();
     private EditText mEditText;
     private EmoticonClickListener mEmoticonClickListener;
-
-    private final List<EmoticonPageSetEntity> mPageSetEntityList = new ArrayList<>();
 
     public void setEditText(EditText etChat) {
         mEditText = etChat;

@@ -10,14 +10,17 @@ package com.agmbat.net;
 
 import com.agmbat.io.IoUtils;
 import com.agmbat.log.Log;
-import com.agmbat.text.StringUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
@@ -53,7 +56,7 @@ public class HttpRequester {
             "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.8) Gecko/20100202 Firefox/3.5.8 GTB6";
 
 
-//    private static HttpParams createDefaultHttpParams() {
+    //    private static HttpParams createDefaultHttpParams() {
 //        final HttpParams params = new BasicHttpParams();
 //
 //        // Increase the connection count for the connection manager.
@@ -74,16 +77,32 @@ public class HttpRequester {
 //        HttpClientParams.setRedirecting(params, false);
 //        return params;
 //    }
+    private final HttpRequesterData mData;
 
+    private HttpRequester(HttpRequesterData data) {
+        mData = data;
+    }
 
     public static String getDefaultUserAgent() {
         return DEFAULT_USER_AGENT;
     }
 
-    private final HttpRequesterData mData;
-
-    private HttpRequester(HttpRequesterData data) {
-        mData = data;
+    /**
+     * 获取InputStream
+     *
+     * @param connection
+     * @return
+     * @throws IOException
+     */
+    private static InputStream getInputStream(HttpURLConnection connection) throws IOException {
+        InputStream is = connection.getInputStream();
+        String encoding = connection.getContentEncoding();
+        if (COMPRESS_FORMAT_GZIP.equalsIgnoreCase(encoding)) {
+            is = new GZIPInputStream(is);
+        } else if (COMPRESS_FORMAT_DEFLATE.equalsIgnoreCase(encoding)) {
+            is = new InflaterInputStream(is);
+        }
+        return is;
     }
 
     /**
@@ -220,6 +239,47 @@ public class HttpRequester {
             IoUtils.closeQuietly(is);
             HttpUtils.disconnect(connection);
         }
+    }
+
+    /**
+     * Adds a form field to the request
+     *
+     * @param name  field name
+     * @param value field value
+     */
+    public void addFormField(PrintWriter writer, String boundary, String name, String value) {
+        writer.append("--" + boundary).append(LINE_FEED);
+        writer.append("Content-Disposition: form-data; name=\"" + name + "\"").append(LINE_FEED);
+        writer.append("Content-Type: text/plain; charset=" + mData.mMultipartCharset).append(LINE_FEED);
+        writer.append(LINE_FEED);
+        writer.append(value).append(LINE_FEED);
+        writer.flush();
+    }
+
+    /**
+     * Adds a upload file section to the request
+     *
+     * @param fieldName  name attribute in <input type="file" name="..." />
+     * @param uploadFile a File to be uploaded
+     * @throws IOException
+     */
+    public void addFilePart(PrintWriter writer, OutputStream outputStream, String boundary, String fieldName, File uploadFile) throws IOException {
+        String fileName = uploadFile.getName();
+        writer.append("--" + boundary).append(LINE_FEED);
+        writer.append(
+                "Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + fileName + "\"").append(LINE_FEED);
+        writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(fileName)).append(LINE_FEED);
+        writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
+        writer.append(LINE_FEED);
+        writer.flush();
+
+        FileInputStream inputStream = new FileInputStream(uploadFile);
+        IoUtils.copyStream(inputStream, outputStream);
+        outputStream.flush();
+        inputStream.close();
+
+        writer.append(LINE_FEED);
+        writer.flush();
     }
 
     public static class Builder {
@@ -377,66 +437,6 @@ public class HttpRequester {
             return new HttpRequester(mData);
         }
 
-    }
-
-    /**
-     * 获取InputStream
-     *
-     * @param connection
-     * @return
-     * @throws IOException
-     */
-    private static InputStream getInputStream(HttpURLConnection connection) throws IOException {
-        InputStream is = connection.getInputStream();
-        String encoding = connection.getContentEncoding();
-        if (COMPRESS_FORMAT_GZIP.equalsIgnoreCase(encoding)) {
-            is = new GZIPInputStream(is);
-        } else if (COMPRESS_FORMAT_DEFLATE.equalsIgnoreCase(encoding)) {
-            is = new InflaterInputStream(is);
-        }
-        return is;
-    }
-
-
-    /**
-     * Adds a form field to the request
-     *
-     * @param name  field name
-     * @param value field value
-     */
-    public void addFormField(PrintWriter writer, String boundary, String name, String value) {
-        writer.append("--" + boundary).append(LINE_FEED);
-        writer.append("Content-Disposition: form-data; name=\"" + name + "\"").append(LINE_FEED);
-        writer.append("Content-Type: text/plain; charset=" + mData.mMultipartCharset).append(LINE_FEED);
-        writer.append(LINE_FEED);
-        writer.append(value).append(LINE_FEED);
-        writer.flush();
-    }
-
-    /**
-     * Adds a upload file section to the request
-     *
-     * @param fieldName  name attribute in <input type="file" name="..." />
-     * @param uploadFile a File to be uploaded
-     * @throws IOException
-     */
-    public void addFilePart(PrintWriter writer, OutputStream outputStream, String boundary, String fieldName, File uploadFile) throws IOException {
-        String fileName = uploadFile.getName();
-        writer.append("--" + boundary).append(LINE_FEED);
-        writer.append(
-                "Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + fileName + "\"").append(LINE_FEED);
-        writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(fileName)).append(LINE_FEED);
-        writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
-        writer.append(LINE_FEED);
-        writer.flush();
-
-        FileInputStream inputStream = new FileInputStream(uploadFile);
-        IoUtils.copyStream(inputStream, outputStream);
-        outputStream.flush();
-        inputStream.close();
-
-        writer.append(LINE_FEED);
-        writer.flush();
     }
 
 }

@@ -37,18 +37,14 @@ public class AlarmManager {
 
     private final Map<String, Alarm> mMap = new HashMap<String, Alarm>();
 
-    private static class SingletonHolder {
-        private static final AlarmManager INSTANCE = new AlarmManager();
-    }
-
-    public static AlarmManager getInstance() {
-        return SingletonHolder.INSTANCE;
-    }
-
     private AlarmManager() {
         mContext = SystemManager.getContext();
         mSysAlarm = SystemManager.getAlarmManager();
         registerReceiver();
+    }
+
+    public static AlarmManager getInstance() {
+        return SingletonHolder.INSTANCE;
     }
 
     private void registerReceiver() {
@@ -99,6 +95,10 @@ public class AlarmManager {
         Intent intent = new Intent(AlarmReceiver.ACTION);
         intent.putExtra(AlarmReceiver.KEY_ALARM_ID, alarm.getId());
         return PendingIntent.getBroadcast(mContext, alarm.getRequestCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private static class SingletonHolder {
+        private static final AlarmManager INSTANCE = new AlarmManager();
     }
 
     public static class AlarmReceiver extends BroadcastReceiver {

@@ -51,6 +51,18 @@ public final class BeepManager implements
         updatePrefs();
     }
 
+    private static boolean shouldBeep(SharedPreferences prefs, Context activity) {
+        boolean shouldPlayBeep = prefs.getBoolean(PreferencesActivity.KEY_PLAY_BEEP, true);
+        if (shouldPlayBeep) {
+            // See if sound settings overrides this
+            AudioManager audioService = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
+            if (audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
+                shouldPlayBeep = false;
+            }
+        }
+        return shouldPlayBeep;
+    }
+
     public synchronized void updatePrefs() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
         playBeep = shouldBeep(prefs, activity);
@@ -71,18 +83,6 @@ public final class BeepManager implements
             Vibrator vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
             vibrator.vibrate(VIBRATE_DURATION);
         }
-    }
-
-    private static boolean shouldBeep(SharedPreferences prefs, Context activity) {
-        boolean shouldPlayBeep = prefs.getBoolean(PreferencesActivity.KEY_PLAY_BEEP, true);
-        if (shouldPlayBeep) {
-            // See if sound settings overrides this
-            AudioManager audioService = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
-            if (audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
-                shouldPlayBeep = false;
-            }
-        }
-        return shouldPlayBeep;
     }
 
     private MediaPlayer buildMediaPlayer(Context activity) {

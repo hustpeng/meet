@@ -5,8 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
-import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.asmack.roster.ContactGroup;
+import com.agmbat.imsdk.asmack.roster.ContactInfo;
 
 import java.util.List;
 

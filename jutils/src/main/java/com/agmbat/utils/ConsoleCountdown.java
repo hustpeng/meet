@@ -7,13 +7,15 @@ import com.agmbat.task.ThreadUtil;
  */
 public class ConsoleCountdown {
 
-    public interface Callback {
-        String getText(long total, long remain);
-    }
-
     private ConsoleLinePrinter mPrinter;
     private long mTime;
     private Callback mCallback;
+
+    public ConsoleCountdown(Callback callback) {
+        mPrinter = new ConsoleLinePrinter();
+        mTime = 10000;
+        mCallback = callback;
+    }
 
     public static void main(String[] args) {
         new ConsoleCountdown(new Callback() {
@@ -23,13 +25,6 @@ public class ConsoleCountdown {
             }
         }).start();
     }
-
-    public ConsoleCountdown(Callback callback) {
-        mPrinter = new ConsoleLinePrinter();
-        mTime = 10000;
-        mCallback = callback;
-    }
-
 
     public void start() {
         final long current = System.currentTimeMillis();
@@ -51,6 +46,11 @@ public class ConsoleCountdown {
                 }
             }
         }).start();
+    }
+
+
+    public interface Callback {
+        String getText(long total, long remain);
     }
 
 }

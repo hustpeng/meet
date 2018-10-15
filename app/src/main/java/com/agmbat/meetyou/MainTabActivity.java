@@ -74,6 +74,38 @@ public class MainTabActivity extends FragmentActivity {
 
     private int mTabIndex;
     private String mLaunchActivity;
+    private PacketListener mQueryGroupListener = new PacketListener() {
+
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof QueryGroupResultIQ) {
+                final QueryGroupResultIQ queryGroupResultIQ = (QueryGroupResultIQ) packet;
+                GroupManager.getInstance().setMemCacheGroups(queryGroupResultIQ.getGroups());
+            }
+        }
+    };
+    private TabManager mTabManager;
+    private MsgFragment mMsgFragment;
+    private Runnable mInitRunnable = new Runnable() {
+        @Override
+        public void run() {
+            //预先下载群分类
+            List<GroupCategory> cachedGroupCategories = GroupDBCache.getGroupCategories();
+            if ((null == cachedGroupCategories || cachedGroupCategories.size() == 0)) {
+                SearchManager.getGroupCategory(new OnGetGroupCategoryListener() {
+                    @Override
+                    public void onGetGroupCategory(GroupCategoryResult result) {
+                        if (result.mResult && null != result.mData) {
+                            GroupDBCache.saveGroupCategories(result.mData);
+                        }
+                    }
+
+                });
+            }
+            mMsgFragment.refreshRecentChat();
+            SplashManager.update();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,18 +174,6 @@ public class MainTabActivity extends FragmentActivity {
         }
     }
 
-    private PacketListener mQueryGroupListener = new PacketListener() {
-
-        @Override
-        public void processPacket(Packet packet) {
-            if (packet instanceof QueryGroupResultIQ) {
-                final QueryGroupResultIQ queryGroupResultIQ = (QueryGroupResultIQ) packet;
-                GroupManager.getInstance().setMemCacheGroups(queryGroupResultIQ.getGroups());
-            }
-        }
-    };
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -165,10 +185,6 @@ public class MainTabActivity extends FragmentActivity {
         super.startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
-
-    private TabManager mTabManager;
-
-    private MsgFragment mMsgFragment;
 
     private void setupViews() {
         mTabManager = new TabManager(getSupportFragmentManager(), findViewById(android.R.id.content));
@@ -255,27 +271,6 @@ public class MainTabActivity extends FragmentActivity {
         View unreadView = mTabManager.getTabWidget().getChildTabViewAt(0).findViewById(R.id.unread_count);
         unreadView.setVisibility(event.hasUnread() ? View.VISIBLE : View.GONE);
     }
-
-    private Runnable mInitRunnable = new Runnable() {
-        @Override
-        public void run() {
-            //预先下载群分类
-            List<GroupCategory> cachedGroupCategories = GroupDBCache.getGroupCategories();
-            if ((null == cachedGroupCategories || cachedGroupCategories.size() == 0)) {
-                SearchManager.getGroupCategory(new OnGetGroupCategoryListener() {
-                    @Override
-                    public void onGetGroupCategory(GroupCategoryResult result) {
-                        if (result.mResult && null != result.mData) {
-                            GroupDBCache.saveGroupCategories(result.mData);
-                        }
-                    }
-
-                });
-            }
-            mMsgFragment.refreshRecentChat();
-            SplashManager.update();
-        }
-    };
 
     @Override
     protected void onResume() {

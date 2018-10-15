@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -18,21 +18,21 @@ public class ShortUtil {
     public static final boolean IS_BIG_ENDING = ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN;
 
     public static byte[] averageShortByteArray(byte firstShortHighByte, byte firstShortLowByte,
-            byte secondShortHighByte, byte secondShortLowByte) {
+                                               byte secondShortHighByte, byte secondShortLowByte) {
         short firstShort = getShort(firstShortHighByte, firstShortLowByte);
         short secondShort = getShort(secondShortHighByte, secondShortLowByte);
         return getBytes((short) (firstShort / 2 + secondShort / 2));
     }
 
     public static short averageShort(byte firstShortHighByte, byte firstShortLowByte, byte secondShortHighByte,
-            byte secondShortLowByte) {
+                                     byte secondShortLowByte) {
         short firstShort = getShort(firstShortHighByte, firstShortLowByte);
         short secondShort = getShort(secondShortHighByte, secondShortLowByte);
         return (short) (firstShort / 2 + secondShort / 2);
     }
 
     public static short weightShort(byte firstShortHighByte, byte firstShortLowByte, byte secondShortHighByte,
-            byte secondShortLowByte, float firstWeight, float secondWeight) {
+                                    byte secondShortLowByte, float firstWeight, float secondWeight) {
         short firstShort = getShort(firstShortHighByte, firstShortLowByte);
         short secondShort = getShort(secondShortHighByte, secondShortLowByte);
         return (short) (firstShort * firstWeight + secondShort * secondWeight);

@@ -1,2 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.agmbat.swipemenulist" />
+<manifest package="com.agmbat.swipemenulist" />

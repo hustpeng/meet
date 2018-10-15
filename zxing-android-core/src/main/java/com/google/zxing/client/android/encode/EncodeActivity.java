@@ -16,19 +16,6 @@
 
 package com.google.zxing.client.android.encode;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.regex.Pattern;
-
-import com.agmbat.android.utils.DeviceUtils;
-import com.google.zxing.WriterException;
-import com.google.zxing.client.android.Contents;
-import com.google.zxing.client.android.FinishListener;
-import com.google.zxing.client.android.Intents;
-import com.google.zxing.client.android.R;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -43,6 +30,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.agmbat.android.utils.DeviceUtils;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.android.Contents;
+import com.google.zxing.client.android.FinishListener;
+import com.google.zxing.client.android.Intents;
+import com.google.zxing.client.android.R;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 
 /**
@@ -60,6 +60,14 @@ public final class EncodeActivity extends Activity {
     private static final String USE_VCARD_KEY = "USE_VCARD";
 
     private QRCodeEncoder qrCodeEncoder;
+
+    private static CharSequence makeBarcodeFileName(CharSequence contents) {
+        String fileName = NOT_ALPHANUMERIC.matcher(contents).replaceAll("_");
+        if (fileName.length() > MAX_BARCODE_FILENAME_LENGTH) {
+            fileName = fileName.substring(0, MAX_BARCODE_FILENAME_LENGTH);
+        }
+        return fileName;
+    }
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -168,14 +176,6 @@ public final class EncodeActivity extends Activity {
         intent.setType("image/png");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         startActivity(Intent.createChooser(intent, null));
-    }
-
-    private static CharSequence makeBarcodeFileName(CharSequence contents) {
-        String fileName = NOT_ALPHANUMERIC.matcher(contents).replaceAll("_");
-        if (fileName.length() > MAX_BARCODE_FILENAME_LENGTH) {
-            fileName = fileName.substring(0, MAX_BARCODE_FILENAME_LENGTH);
-        }
-        return fileName;
     }
 
     @Override

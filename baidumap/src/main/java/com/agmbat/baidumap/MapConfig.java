@@ -57,10 +57,6 @@ public class MapConfig {
         mMapCenter = center;
     }
 
-    public void setMarkerList(List<MarkerOptions> list) {
-        mMarkerList = list;
-    }
-
     /**
      * 获取maker列表
      *
@@ -68,5 +64,9 @@ public class MapConfig {
      */
     public List<MarkerOptions> getMarkerList() {
         return mMarkerList;
+    }
+
+    public void setMarkerList(List<MarkerOptions> list) {
+        mMarkerList = list;
     }
 }

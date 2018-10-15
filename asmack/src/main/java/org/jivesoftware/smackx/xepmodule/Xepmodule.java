@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.xepmodule;
 
 import org.jivesoftware.smack.Connection;
@@ -10,11 +9,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Xepmodule {
 
-    public void clearResource() {
-    }
-
     private final Map<String, XepQueryInfo> pendingQueries = new ConcurrentHashMap<String, XepQueryInfo>();
     public Connection xmppConnection;
+
+    public void clearResource() {
+    }
 
     public void addQueryInfo(XepQueryInfo aQuery, final String key, PacketListener aPacketListener) {
         aQuery.getTimer().schedule(new TimerTask() {

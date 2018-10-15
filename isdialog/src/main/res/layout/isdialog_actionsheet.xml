@@ -12,10 +12,10 @@
         android:background="@drawable/actionsheet_top_normal"
         android:gravity="center"
         android:minHeight="45dp"
-        android:paddingBottom="10dp"
         android:paddingLeft="15dp"
-        android:paddingRight="15dp"
         android:paddingTop="10dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="10dp"
         android:textColor="@color/actionsheet_gray"
         android:textSize="13sp"
         android:visibility="gone" />

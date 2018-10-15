@@ -5,8 +5,8 @@
     android:background="@drawable/listview_item_selector"
     android:gravity="center"
     android:orientation="horizontal"
-    android:paddingBottom="8dp"
-    android:paddingTop="8dp">
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <RelativeLayout
         android:layout_width="0dp"

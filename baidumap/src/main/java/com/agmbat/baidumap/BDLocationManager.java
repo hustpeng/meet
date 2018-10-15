@@ -1,13 +1,13 @@
 package com.agmbat.baidumap;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.agmbat.android.SystemManager;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 百度Location

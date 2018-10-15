@@ -1,15 +1,15 @@
 package com.agmbat.android.utils;
 
-import java.io.File;
-import java.io.IOException;
+import android.media.MediaMetadataRetriever;
+import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import com.agmbat.file.FileExtension;
 import com.agmbat.log.Log;
 import com.agmbat.utils.ReflectionUtils;
 
-import android.media.MediaMetadataRetriever;
-import android.text.TextUtils;
-import android.webkit.MimeTypeMap;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Android文件管理工具, Java常用文件操作需使用FileUtils类

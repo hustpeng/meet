@@ -102,7 +102,7 @@ public final class DbModelSelector {
         return this;
     }
 
-    public DbModelSelector select(String...columnExpressions) {
+    public DbModelSelector select(String... columnExpressions) {
         this.columnExpressions = columnExpressions;
         return this;
     }

@@ -1,7 +1,5 @@
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.proxy.ProxyInfo;
-
 import android.os.Build;
 
 import java.io.File;

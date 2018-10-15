@@ -5,6 +5,6 @@
     android:cacheColorHint="#000000"
     android:listSelector="#000000"
     android:paddingLeft="19dip"
-    android:paddingRight="3dip"
     android:paddingTop="10dip"
+    android:paddingRight="3dip"
     android:verticalSpacing="13.3dip" />

@@ -1,10 +1,10 @@
 package org.jivesoftware.smackx.block;
 
-import java.util.ArrayList;
-
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+
+import java.util.ArrayList;
 
 public class BlockProvider implements IQProvider {
     public BlockProvider() {

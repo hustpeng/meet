@@ -54,46 +54,6 @@ public final class HybridBinarizer extends GlobalHistogramBinarizer {
     }
 
     /**
-     * Calculates the final BitMatrix once for all requests. This could be called once from the
-     * constructor instead, but there are some advantages to doing it lazily, such as making
-     * profiling easier, and not doing heavy lifting when callers don't expect it.
-     */
-    @Override
-    public BitMatrix getBlackMatrix() throws NotFoundException {
-        if (matrix != null) {
-            return matrix;
-        }
-        LuminanceSource source = getLuminanceSource();
-        int width = source.getWidth();
-        int height = source.getHeight();
-        if (width >= MINIMUM_DIMENSION && height >= MINIMUM_DIMENSION) {
-            byte[] luminances = source.getMatrix();
-            int subWidth = width >> BLOCK_SIZE_POWER;
-            if ((width & BLOCK_SIZE_MASK) != 0) {
-                subWidth++;
-            }
-            int subHeight = height >> BLOCK_SIZE_POWER;
-            if ((height & BLOCK_SIZE_MASK) != 0) {
-                subHeight++;
-            }
-            int[][] blackPoints = calculateBlackPoints(luminances, subWidth, subHeight, width, height);
-
-            BitMatrix newMatrix = new BitMatrix(width, height);
-            calculateThresholdForBlock(luminances, subWidth, subHeight, width, height, blackPoints, newMatrix);
-            matrix = newMatrix;
-        } else {
-            // If the image is too small, fall back to the global histogram approach.
-            matrix = super.getBlackMatrix();
-        }
-        return matrix;
-    }
-
-    @Override
-    public Binarizer createBinarizer(LuminanceSource source) {
-        return new HybridBinarizer(source);
-    }
-
-    /**
      * For each block in the image, calculate the average black point using a 5x5 grid
      * of the blocks around it. Also handles the corner cases (fractional blocks are computed based
      * on the last pixels in the row/column which are also used in the previous block).
@@ -232,6 +192,46 @@ public final class HybridBinarizer extends GlobalHistogramBinarizer {
             }
         }
         return blackPoints;
+    }
+
+    /**
+     * Calculates the final BitMatrix once for all requests. This could be called once from the
+     * constructor instead, but there are some advantages to doing it lazily, such as making
+     * profiling easier, and not doing heavy lifting when callers don't expect it.
+     */
+    @Override
+    public BitMatrix getBlackMatrix() throws NotFoundException {
+        if (matrix != null) {
+            return matrix;
+        }
+        LuminanceSource source = getLuminanceSource();
+        int width = source.getWidth();
+        int height = source.getHeight();
+        if (width >= MINIMUM_DIMENSION && height >= MINIMUM_DIMENSION) {
+            byte[] luminances = source.getMatrix();
+            int subWidth = width >> BLOCK_SIZE_POWER;
+            if ((width & BLOCK_SIZE_MASK) != 0) {
+                subWidth++;
+            }
+            int subHeight = height >> BLOCK_SIZE_POWER;
+            if ((height & BLOCK_SIZE_MASK) != 0) {
+                subHeight++;
+            }
+            int[][] blackPoints = calculateBlackPoints(luminances, subWidth, subHeight, width, height);
+
+            BitMatrix newMatrix = new BitMatrix(width, height);
+            calculateThresholdForBlock(luminances, subWidth, subHeight, width, height, blackPoints, newMatrix);
+            matrix = newMatrix;
+        } else {
+            // If the image is too small, fall back to the global histogram approach.
+            matrix = super.getBlackMatrix();
+        }
+        return matrix;
+    }
+
+    @Override
+    public Binarizer createBinarizer(LuminanceSource source) {
+        return new HybridBinarizer(source);
     }
 
 }

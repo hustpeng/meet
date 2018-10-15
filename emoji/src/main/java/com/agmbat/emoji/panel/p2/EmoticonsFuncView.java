@@ -11,6 +11,7 @@ public class EmoticonsFuncView extends ViewPager {
 
     protected PageSetAdapter mPageSetAdapter;
     protected int mCurrentPagePosition;
+    private OnEmoticonsPageViewListener mOnEmoticonsPageViewListener;
 
     public EmoticonsFuncView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -92,8 +93,6 @@ public class EmoticonsFuncView extends ViewPager {
             end += size;
         }
     }
-
-    private OnEmoticonsPageViewListener mOnEmoticonsPageViewListener;
 
     public void setOnIndicatorListener(OnEmoticonsPageViewListener listener) {
         mOnEmoticonsPageViewListener = listener;

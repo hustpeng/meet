@@ -7,8 +7,6 @@ import com.agmbat.imsdk.asmack.api.FetchContactInfoRunnable;
 import com.agmbat.imsdk.asmack.api.OnFetchContactListener;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
 import com.agmbat.imsdk.chat.body.Body;
-import com.agmbat.imsdk.chat.body.BodyParser;
-import com.agmbat.imsdk.chat.body.EventsBody;
 import com.agmbat.imsdk.group.CircleInfo;
 import com.agmbat.imsdk.group.GroupManager;
 import com.agmbat.imsdk.imevent.ReceiveMessageEvent;
@@ -54,25 +52,6 @@ public class MessageManager extends Xepmodule {
      * 内存中消息列表
      */
     private Map<String, List<MessageObject>> mMessageMap = new HashMap<>();
-
-    private ConnectionListener myConnectionListener = new ConnectionListener() {
-        @Override
-        public void loginSuccessful() {
-        }
-
-        @Override
-        public void connectionClosedOnError(Exception e) {
-            abortAllQuery();
-            xmppConnection.removePacketListener(messagePacketListener);
-        }
-
-        @Override
-        public void connectionClosed() {
-            abortAllQuery();
-            xmppConnection.removePacketListener(messagePacketListener);
-        }
-    };
-
     private PacketFilter messagePacketFilter = new PacketFilter() {
         public boolean accept(Packet packet) {
             if (!(packet instanceof Message)) {
@@ -154,6 +133,23 @@ public class MessageManager extends Xepmodule {
             sendChatStates(messageObject.getMsgId(), sendMsgState, messageObject.getFromJid());
         }
     };
+    private ConnectionListener myConnectionListener = new ConnectionListener() {
+        @Override
+        public void loginSuccessful() {
+        }
+
+        @Override
+        public void connectionClosedOnError(Exception e) {
+            abortAllQuery();
+            xmppConnection.removePacketListener(messagePacketListener);
+        }
+
+        @Override
+        public void connectionClosed() {
+            abortAllQuery();
+            xmppConnection.removePacketListener(messagePacketListener);
+        }
+    };
 
     public MessageManager(final Connection connection) {
         this.xmppConnection = connection;
@@ -167,6 +163,68 @@ public class MessageManager extends Xepmodule {
         listeners = new CopyOnWriteArrayList<MessageListener>();
         messageStorage = new MessageStorage();
         correctMessagesStatus();
+    }
+
+    /**
+     * 获取对话的人
+     *
+     * @param messageObject
+     * @return
+     */
+    public static ContactInfo getTalkContactInfo(MessageObject messageObject) {
+        String jid = getTalkJid(messageObject);
+        return XMPPManager.getInstance().getRosterManager().getContactFromMemCache(jid);
+    }
+
+    /**
+     * 判断两个消息是否为同一个对话者
+     *
+     * @param m1
+     * @param m2
+     * @return
+     */
+    public static boolean isSameTalk(MessageObject m1, MessageObject m2) {
+        String talk1 = getTalkJid(m1);
+        String talk2 = getTalkJid(m2);
+        return talk1.equals(talk2);
+    }
+
+    /**
+     * 获取对话者的jid
+     *
+     * @param messageObject
+     * @return
+     */
+    public static String getTalkJid(MessageObject messageObject) {
+        String jid = null;
+        if (isToOthers(messageObject)) {
+            jid = messageObject.getToJid();
+        } else {
+            jid = messageObject.getFromJid();
+        }
+        return jid;
+    }
+
+    /**
+     * 判断消息是否是当前用户发送的
+     *
+     * @param messageObject
+     * @return
+     */
+    public static boolean isToOthers(MessageObject messageObject) {
+        String loginUserJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        return messageObject.getFromJid().equals(loginUserJid);
+    }
+
+    /**
+     * 是否为系统消息
+     *
+     * @return
+     */
+    public static boolean isSystemMessage(MessageObject messageObject) {
+        String jid = getTalkJid(messageObject);
+        String userName = XmppStringUtils.parseName(jid);
+        return ("support".equals(userName) || "system".equals(userName));
     }
 
     public void addListener(MessageListener listener) {
@@ -290,7 +348,6 @@ public class MessageManager extends Xepmodule {
         addMessage(toJidString, messageObject);
         return messageObject;
     }
-
 
     public void setMessageRead(String msgId, String myJid) {
         if (TextUtils.isEmpty(msgId)) {
@@ -461,7 +518,6 @@ public class MessageManager extends Xepmodule {
         messageStorage.deleteAllMsg();
     }
 
-
     public void deleteMessage(List<MessageObject> msgs) {
         for (int i = 0; i < msgs.size(); i++) {
             messageStorage.deleteChatMessage(msgs.get(i));
@@ -529,7 +585,6 @@ public class MessageManager extends Xepmodule {
 
     }
 
-
     /**
      * 查询与指定人对话的聊天记录
      *
@@ -583,32 +638,6 @@ public class MessageManager extends Xepmodule {
         mMessageMap.clear();
     }
 
-
-    /**
-     * 获取对话的人
-     *
-     * @param messageObject
-     * @return
-     */
-    public static ContactInfo getTalkContactInfo(MessageObject messageObject) {
-        String jid = getTalkJid(messageObject);
-        return XMPPManager.getInstance().getRosterManager().getContactFromMemCache(jid);
-    }
-
-
-    /**
-     * 判断两个消息是否为同一个对话者
-     *
-     * @param m1
-     * @param m2
-     * @return
-     */
-    public static boolean isSameTalk(MessageObject m1, MessageObject m2) {
-        String talk1 = getTalkJid(m1);
-        String talk2 = getTalkJid(m2);
-        return talk1.equals(talk2);
-    }
-
     /**
      * 删除两个的聊天记录
      *
@@ -629,44 +658,6 @@ public class MessageManager extends Xepmodule {
     public void deleteMessage(String loginUserId, String bareJid) {
         removeMessage(bareJid);
         messageStorage.deleteChatMessage(loginUserId, bareJid, xmppConnection.getBareJid());
-    }
-
-    /**
-     * 获取对话者的jid
-     *
-     * @param messageObject
-     * @return
-     */
-    public static String getTalkJid(MessageObject messageObject) {
-        String jid = null;
-        if (isToOthers(messageObject)) {
-            jid = messageObject.getToJid();
-        } else {
-            jid = messageObject.getFromJid();
-        }
-        return jid;
-    }
-
-    /**
-     * 判断消息是否是当前用户发送的
-     *
-     * @param messageObject
-     * @return
-     */
-    public static boolean isToOthers(MessageObject messageObject) {
-        String loginUserJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
-        return messageObject.getFromJid().equals(loginUserJid);
-    }
-
-    /**
-     * 是否为系统消息
-     *
-     * @return
-     */
-    public static boolean isSystemMessage(MessageObject messageObject) {
-        String jid = getTalkJid(messageObject);
-        String userName = XmppStringUtils.parseName(jid);
-        return ("support".equals(userName) || "system".equals(userName));
     }
 
     /**

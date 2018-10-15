@@ -17,6 +17,10 @@ public class DataHolder {
     private static DataHolder mInstance;
     private Map<String, List<ImageItem>> data;
 
+    private DataHolder() {
+        data = new HashMap<>();
+    }
+
     public static DataHolder getInstance() {
         if (mInstance == null) {
             synchronized (DataHolder.class) {
@@ -26,10 +30,6 @@ public class DataHolder {
             }
         }
         return mInstance;
-    }
-
-    private DataHolder() {
-        data = new HashMap<>();
     }
 
     public void save(String id, List<ImageItem> object) {

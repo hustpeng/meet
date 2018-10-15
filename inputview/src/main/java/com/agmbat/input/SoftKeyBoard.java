@@ -15,33 +15,17 @@ import com.agmbat.app.PreferenceUtils;
 public class SoftKeyBoard {
 
     /**
-     * 软键盘高度发生了变化
-     */
-    public interface OnSoftKeyBoardHeightChangeListener {
-
-        /**
-         * 回调高度变化
-         *
-         * @param height
-         */
-        public void onSoftKeyBoardHeightChange(int height);
-    }
-
-    /**
      * prefence key
      */
     private static final String KEY_SOFTKEYBOARD_HEIGHT = "inputview_SoftKeyBoardHeight";
-
     /**
      * 默认高度
      */
     private int mSoftKeyBoardHeight = getHeightFromPrefs();
-
     /**
      * 默认不显示
      */
     private boolean mIsSoftKeyBoardShown = false;
-
     private OnSoftKeyBoardHeightChangeListener mListener;
 
     public SoftKeyBoard(View view) {
@@ -67,6 +51,46 @@ public class SoftKeyBoard {
         });
     }
 
+    /**
+     * 计算软键盘高度
+     *
+     * @return
+     */
+    private static int calcSoftKeyBoardHeight(View rootView) {
+        Rect rect = new Rect();
+        rootView.getWindowVisibleDisplayFrame(rect);
+        // 屏幕当前可见高度，不包括状态栏
+        int displayHeight = rect.bottom - rect.top;
+        // 屏幕可用高度
+        int availableHeight = DeviceUtils.getScreenSize().y;
+        // 用于计算键盘高度
+        int inputMethodHeight = availableHeight - displayHeight - SysResources.getStatusBarHeight();
+        if (inputMethodHeight < 0) {
+            inputMethodHeight = 0;
+        }
+        return inputMethodHeight;
+    }
+
+    /**
+     * 从Prefs中读取高度
+     *
+     * @return
+     */
+    private static int getHeightFromPrefs() {
+        // 默认295dp
+        int defaultHeight = (int) SysResources.dipToPixel(295);
+        return PreferenceUtils.getInt(KEY_SOFTKEYBOARD_HEIGHT, defaultHeight, AppResources.getAppContext());
+    }
+
+    /**
+     * 将高度保存到Prefs文件中
+     *
+     * @param height
+     */
+    private static void saveHeightToPrefs(int height) {
+        PreferenceUtils.putInt(KEY_SOFTKEYBOARD_HEIGHT, height, AppResources.getAppContext());
+    }
+
     public void setOnSoftKeyBoardHeightChangeListener(OnSoftKeyBoardHeightChangeListener l) {
         mListener = l;
     }
@@ -90,44 +114,16 @@ public class SoftKeyBoard {
     }
 
     /**
-     * 计算软键盘高度
-     *
-     * @return
+     * 软键盘高度发生了变化
      */
-    private static int calcSoftKeyBoardHeight(View rootView) {
-        Rect rect = new Rect();
-        rootView.getWindowVisibleDisplayFrame(rect);
-        // 屏幕当前可见高度，不包括状态栏
-        int displayHeight = rect.bottom - rect.top;
-        // 屏幕可用高度
-        int availableHeight = DeviceUtils.getScreenSize().y;
-        // 用于计算键盘高度
-        int inputMethodHeight = availableHeight - displayHeight - SysResources.getStatusBarHeight();
-        if (inputMethodHeight < 0) {
-            inputMethodHeight = 0;
-        }
-        return inputMethodHeight;
-    }
+    public interface OnSoftKeyBoardHeightChangeListener {
 
-
-    /**
-     * 从Prefs中读取高度
-     *
-     * @return
-     */
-    private static int getHeightFromPrefs() {
-        // 默认295dp
-        int defaultHeight = (int) SysResources.dipToPixel(295);
-        return PreferenceUtils.getInt(KEY_SOFTKEYBOARD_HEIGHT, defaultHeight, AppResources.getAppContext());
-    }
-
-    /**
-     * 将高度保存到Prefs文件中
-     *
-     * @param height
-     */
-    private static void saveHeightToPrefs(int height) {
-        PreferenceUtils.putInt(KEY_SOFTKEYBOARD_HEIGHT, height, AppResources.getAppContext());
+        /**
+         * 回调高度变化
+         *
+         * @param height
+         */
+        public void onSoftKeyBoardHeightChange(int height);
     }
 
 }

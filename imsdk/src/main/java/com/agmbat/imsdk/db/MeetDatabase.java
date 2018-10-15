@@ -34,12 +34,11 @@ public class MeetDatabase {
      * 数据库版本
      */
     private static final int DB_VERSION = 1;
-
-
+    private static final MeetDatabase INSTANCE = new MeetDatabase();
     private static Map<String, SqliteDbConfig> sDbMap = new HashMap<>();
 
-
-    private static final MeetDatabase INSTANCE = new MeetDatabase();
+    private MeetDatabase() {
+    }
 
     /**
      * 创建对应的config
@@ -67,12 +66,8 @@ public class MeetDatabase {
         return daoConfig;
     }
 
-
     public static MeetDatabase getInstance() {
         return INSTANCE;
-    }
-
-    private MeetDatabase() {
     }
 
     /**

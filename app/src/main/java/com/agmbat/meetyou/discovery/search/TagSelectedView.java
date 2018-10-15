@@ -19,13 +19,8 @@ import java.util.List;
 
 public class TagSelectedView extends LinearLayout {
 
-    public interface OnSelectedListener {
-        public void onSelected(int index, String tag);
-    }
-
     private String mSelectedTag;
     private List<String> mTagList = new ArrayList<>();
-
     private OnSelectedListener mOnSelectedListener;
 
     public TagSelectedView(Context context) {
@@ -89,12 +84,11 @@ public class TagSelectedView extends LinearLayout {
         mTagList = tagList;
     }
 
-
     @Override
     public void setEnabled(boolean enabled) {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
-            ViewGroup line =(ViewGroup) getChildAt(i);
+            ViewGroup line = (ViewGroup) getChildAt(i);
             int childCount = line.getChildCount();
             for (int j = 0; j < childCount; j++) {
                 View view = line.getChildAt(j);
@@ -126,15 +120,8 @@ public class TagSelectedView extends LinearLayout {
         }
         if (mOnSelectedListener != null) {
             int index = mTagList.indexOf(tag);
-                mOnSelectedListener.onSelected(index, mSelectedTag);
+            mOnSelectedListener.onSelected(index, mSelectedTag);
         }
-    }
-
-    public void setSelectedTag(int index){
-        if(index < 0 || index >= mTagList.size()){
-            return;
-        }
-        setSelectedTag(mTagList.get(index));
     }
 
     public void setOnSelectedListener(OnSelectedListener l) {
@@ -143,5 +130,16 @@ public class TagSelectedView extends LinearLayout {
 
     public String getSelectedTag() {
         return mSelectedTag;
+    }
+
+    public void setSelectedTag(int index) {
+        if (index < 0 || index >= mTagList.size()) {
+            return;
+        }
+        setSelectedTag(mTagList.get(index));
+    }
+
+    public interface OnSelectedListener {
+        public void onSelected(int index, String tag);
     }
 }

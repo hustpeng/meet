@@ -1,6 +1,5 @@
 package com.agmbat.picker;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -9,10 +8,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.agmbat.picker.wheelview.WheelView;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.agmbat.picker.wheelview.WheelView;
 
 /**
  * 双项选择器，选择两项，数据不联动。

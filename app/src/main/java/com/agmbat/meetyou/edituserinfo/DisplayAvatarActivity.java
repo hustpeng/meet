@@ -3,19 +3,13 @@ package com.agmbat.meetyou.edituserinfo;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.Gravity;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.meetyou.R;
 import com.agmbat.meetyou.helper.AvatarHelper;
-import com.agmbat.meetyou.util.SystemUtil;
 import com.agmbat.photoview.PhotoView;
-import com.bumptech.glide.load.engine.Resource;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

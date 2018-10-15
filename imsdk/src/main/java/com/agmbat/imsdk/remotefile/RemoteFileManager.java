@@ -69,6 +69,7 @@ public class RemoteFileManager {
 
     /**
      * 上传头像文件
+     *
      * @param path
      * @param circleJid 如果是群头像，请传群ID，否则传空值
      * @param l
@@ -98,6 +99,7 @@ public class RemoteFileManager {
 
     /**
      * 上传图像文件
+     *
      * @param path
      * @param circleJid 如果是群头像，请传群ID，否则为空
      * @return
@@ -131,7 +133,7 @@ public class RemoteFileManager {
         String phone = XMPPManager.getInstance().getConnectionUserName();
         String ticket = XMPPManager.getInstance().getTokenManager().getTokenRetry();
         String format = FileUtils.getExtension(file.getPath());
-        FileApiResult result = FileApi.uploadTempFile(phone, ticket, format,circleJid, file);
+        FileApiResult result = FileApi.uploadTempFile(phone, ticket, format, circleJid, file);
         if (result == null) {
             result = new FileApiResult();
             result.mResult = false;

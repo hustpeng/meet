@@ -2,7 +2,6 @@ package com.agmbat.meetyou.chat;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.Menu;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.RelativeLayout;

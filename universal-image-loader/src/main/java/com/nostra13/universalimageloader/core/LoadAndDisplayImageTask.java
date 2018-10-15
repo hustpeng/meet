@@ -73,24 +73,22 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
     private static final String ERROR_PRE_PROCESSOR_NULL = "Pre-processor returned null [%s]";
     private static final String ERROR_POST_PROCESSOR_NULL = "Post-processor returned null [%s]";
     private static final String ERROR_PROCESSOR_FOR_DISK_CACHE_NULL = "Bitmap processor for disk cache returned null [%s]";
-
+    final String uri;
+    final ImageAware imageAware;
+    final DisplayImageOptions options;
+    final ImageLoadingListener listener;
+    final ImageLoadingProgressListener progressListener;
     private final ImageLoaderEngine engine;
     private final ImageLoadingInfo imageLoadingInfo;
     private final Handler handler;
-
     // Helper references
     private final ImageLoaderConfiguration configuration;
     private final ImageDownloader downloader;
     private final ImageDownloader networkDeniedDownloader;
     private final ImageDownloader slowNetworkDownloader;
     private final ImageDecoder decoder;
-    final String uri;
     private final String memoryCacheKey;
-    final ImageAware imageAware;
     private final ImageSize targetSize;
-    final DisplayImageOptions options;
-    final ImageLoadingListener listener;
-    final ImageLoadingProgressListener progressListener;
     private final boolean syncLoading;
 
     // State vars
@@ -114,6 +112,16 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
         listener = imageLoadingInfo.listener;
         progressListener = imageLoadingInfo.progressListener;
         syncLoading = options.isSyncLoading();
+    }
+
+    static void runTask(Runnable r, boolean sync, Handler handler, ImageLoaderEngine engine) {
+        if (sync) {
+            r.run();
+        } else if (handler == null) {
+            engine.fireCallback(r);
+        } else {
+            handler.post(r);
+        }
     }
 
     @Override
@@ -481,16 +489,6 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
 
     String getLoadingUri() {
         return uri;
-    }
-
-    static void runTask(Runnable r, boolean sync, Handler handler, ImageLoaderEngine engine) {
-        if (sync) {
-            r.run();
-        } else if (handler == null) {
-            engine.fireCallback(r);
-        } else {
-            handler.post(r);
-        }
     }
 
     /**

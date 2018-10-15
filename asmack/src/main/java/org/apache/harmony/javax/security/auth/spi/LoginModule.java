@@ -17,16 +17,16 @@
 
 package org.apache.harmony.javax.security.auth.spi;
 
-import java.util.Map;
-
 import org.apache.harmony.javax.security.auth.Subject;
 import org.apache.harmony.javax.security.auth.callback.CallbackHandler;
 import org.apache.harmony.javax.security.auth.login.LoginException;
 
+import java.util.Map;
+
 public interface LoginModule {
 
     void initialize(Subject subject, CallbackHandler callbackHandler,
-            Map<String, ?> sharedState, Map<String, ?> options);
+                    Map<String, ?> sharedState, Map<String, ?> options);
 
     boolean login() throws LoginException;
 

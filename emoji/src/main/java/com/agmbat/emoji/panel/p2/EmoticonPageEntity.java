@@ -52,12 +52,12 @@ public class EmoticonPageEntity extends PageEntity<EmoticonPageEntity> {
         mEmoticonClickListener = l;
     }
 
-    public void setGridAdapterFactory(GridAdapterFactory factory) {
-        mGridAdapterFactory = factory;
-    }
-
     public GridAdapterFactory getGridAdapterFactory() {
         return mGridAdapterFactory;
+    }
+
+    public void setGridAdapterFactory(GridAdapterFactory factory) {
+        mGridAdapterFactory = factory;
     }
 
     public List<EmojiBean> getEmoticonList() {

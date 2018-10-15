@@ -17,8 +17,9 @@
 
 package org.apache.harmony.javax.security.sasl;
 
-import java.io.Serializable;
 import org.apache.harmony.javax.security.auth.callback.Callback;
+
+import java.io.Serializable;
 
 public class AuthorizeCallback implements Callback, Serializable {
 
@@ -63,17 +64,17 @@ public class AuthorizeCallback implements Callback, Serializable {
         return (authorized ? authorizedID : null);
     }
 
+    public void setAuthorizedID(String id) {
+        if (id != null) {
+            authorizedID = id;
+        }
+    }
+
     public boolean isAuthorized() {
         return authorized;
     }
 
     public void setAuthorized(boolean ok) {
         authorized = ok;
-    }
-
-    public void setAuthorizedID(String id) {
-        if (id != null) {
-            authorizedID = id;
-        }
     }
 }

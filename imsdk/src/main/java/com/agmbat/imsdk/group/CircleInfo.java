@@ -14,7 +14,7 @@ public class CircleInfo implements Serializable {
 
     private String ownerJid;
 
-    public CircleInfo(String groupJid, String name){
+    public CircleInfo(String groupJid, String name) {
         this.groupJid = groupJid;
         this.name = name;
     }

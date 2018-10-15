@@ -31,7 +31,7 @@ import org.jivesoftware.smack.util.XmppStringUtils;
  * IQ packets can contain a single child element that exists in a specific XML
  * namespace. The combination of the element name and namespace determines what
  * type of IQ packet it is. Some example IQ subpacket snippets:<ul>
- * <p>
+ *
  * <li>&lt;query xmlns="jabber:iq:auth"&gt; -- an authentication IQ.
  * <li>&lt;query xmlns="jabber:iq:private"&gt; -- a private storage IQ.
  * <li>&lt;pubsub xmlns="http://jabber.org/protocol/pubsub"&gt; -- a pubsub IQ.
@@ -51,70 +51,6 @@ public abstract class IQ extends Packet {
         super(iq);
         type = iq.getType();
     }
-
-    /**
-     * Returns the type of the IQ packet.
-     *
-     * @return the type of the IQ packet.
-     */
-    public Type getType() {
-        return type;
-    }
-
-    /**
-     * Sets the type of the IQ packet.
-     *
-     * @param type the type of the IQ packet.
-     */
-    public void setType(Type type) {
-        if (type == null) {
-            this.type = Type.GET;
-        } else {
-            this.type = type;
-        }
-    }
-
-    @Override
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<iq ");
-        if (getPacketID() != null) {
-            buf.append("id=\"" + getPacketID() + "\" ");
-        }
-        if (getTo() != null) {
-            buf.append("to=\"").append(XmppStringUtils.escapeForXML(getTo())).append("\" ");
-        }
-        if (getFrom() != null) {
-            buf.append("from=\"").append(XmppStringUtils.escapeForXML(getFrom())).append("\" ");
-        }
-        if (type == null) {
-            buf.append("type=\"get\">");
-        } else {
-            buf.append("type=\"").append(getType()).append("\">");
-        }
-        // Add the query section if there is one.
-        String queryXML = getChildElementXML();
-        if (queryXML != null) {
-            buf.append(queryXML);
-        }
-        // Add the error sub-packet, if there is one.
-        XMPPError error = getError();
-        if (error != null) {
-            buf.append(error.toXML());
-        }
-        buf.append("</iq>");
-        return buf.toString();
-    }
-
-    /**
-     * Returns the sub-element XML section of the IQ packet, or <tt>null</tt> if there
-     * isn't one. Packet extensions <b>must</b> be included, if any are defined.<p>
-     * <p>
-     * Extensions of this class must override this method.
-     *
-     * @return the child element section of the IQ XML.
-     */
-    public abstract String getChildElementXML();
 
     /**
      * Convenience method to create a new empty {@link Type#RESULT IQ.Type.RESULT}
@@ -186,8 +122,72 @@ public abstract class IQ extends Packet {
     }
 
     /**
-     * A class to represent the type of the IQ packet. The types are:
+     * Returns the type of the IQ packet.
+     *
+     * @return the type of the IQ packet.
+     */
+    public Type getType() {
+        return type;
+    }
+
+    /**
+     * Sets the type of the IQ packet.
+     *
+     * @param type the type of the IQ packet.
+     */
+    public void setType(Type type) {
+        if (type == null) {
+            this.type = Type.GET;
+        } else {
+            this.type = type;
+        }
+    }
+
+    @Override
+    public String toXML() {
+        StringBuilder buf = new StringBuilder();
+        buf.append("<iq ");
+        if (getPacketID() != null) {
+            buf.append("id=\"" + getPacketID() + "\" ");
+        }
+        if (getTo() != null) {
+            buf.append("to=\"").append(XmppStringUtils.escapeForXML(getTo())).append("\" ");
+        }
+        if (getFrom() != null) {
+            buf.append("from=\"").append(XmppStringUtils.escapeForXML(getFrom())).append("\" ");
+        }
+        if (type == null) {
+            buf.append("type=\"get\">");
+        } else {
+            buf.append("type=\"").append(getType()).append("\">");
+        }
+        // Add the query section if there is one.
+        String queryXML = getChildElementXML();
+        if (queryXML != null) {
+            buf.append(queryXML);
+        }
+        // Add the error sub-packet, if there is one.
+        XMPPError error = getError();
+        if (error != null) {
+            buf.append(error.toXML());
+        }
+        buf.append("</iq>");
+        return buf.toString();
+    }
+
+    /**
+     * Returns the sub-element XML section of the IQ packet, or <tt>null</tt> if there
+     * isn't one. Packet extensions <b>must</b> be included, if any are defined.<p>
      * <p>
+     * Extensions of this class must override this method.
+     *
+     * @return the child element section of the IQ XML.
+     */
+    public abstract String getChildElementXML();
+
+    /**
+     * A class to represent the type of the IQ packet. The types are:
+     *
      * <ul>
      * <li>IQ.Type.GET
      * <li>IQ.Type.SET
@@ -201,6 +201,11 @@ public abstract class IQ extends Packet {
         public static final Type SET = new Type("set");
         public static final Type RESULT = new Type("result");
         public static final Type ERROR = new Type("error");
+        private String value;
+
+        private Type(String value) {
+            this.value = value;
+        }
 
         /**
          * Converts a String into the corresponding types. Valid String values
@@ -225,12 +230,6 @@ public abstract class IQ extends Packet {
             } else {
                 return null;
             }
-        }
-
-        private String value;
-
-        private Type(String value) {
-            this.value = value;
         }
 
         public String toString() {

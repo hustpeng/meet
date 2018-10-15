@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -8,8 +8,8 @@
  */
 package com.agmbat.file;
 
-import com.agmbat.text.StringUtils;
 import com.agmbat.io.IoUtils;
+import com.agmbat.text.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,25 +26,6 @@ import java.util.List;
 import java.util.Queue;
 
 public class FileScanner {
-
-    public interface OnScanFileListener extends FileFilter, Comparator<File> {
-
-        /**
-         * 扫描文件
-         * 
-         * @param file
-         * @param isDirectory
-         */
-        public void onScanFile(File file, boolean isDirectory);
-
-        // 判断是否中断，user cancel
-        public boolean interrupted();
-
-    }
-
-    public interface OnScanLineListener {
-        public void onScanLine(String text);
-    }
 
     public static void scanFolder(String folder, OnScanFileListener l) {
         scanFolder(folder, true, l);
@@ -104,5 +85,24 @@ public class FileScanner {
         } finally {
             IoUtils.closeQuietly(bw);
         }
+    }
+
+    public interface OnScanFileListener extends FileFilter, Comparator<File> {
+
+        /**
+         * 扫描文件
+         *
+         * @param file
+         * @param isDirectory
+         */
+        public void onScanFile(File file, boolean isDirectory);
+
+        // 判断是否中断，user cancel
+        public boolean interrupted();
+
+    }
+
+    public interface OnScanLineListener {
+        public void onScanLine(String text);
     }
 }

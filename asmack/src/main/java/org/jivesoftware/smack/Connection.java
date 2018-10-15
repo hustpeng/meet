@@ -152,43 +152,35 @@ public abstract class Connection {
      */
     protected final Map<PacketInterceptor, InterceptorWrapper> interceptors =
             new ConcurrentHashMap<PacketInterceptor, InterceptorWrapper>();
-
-    /**
-     * The AccountManager allows creation and management of accounts on an XMPP server.
-     */
-    private AccountManager accountManager = null;
-
-    /**
-     * The SmackDebugger allows to log and debug XML traffic.
-     */
-    protected SmackDebugger debugger = null;
-
-    /**
-     * The Reader which is used for the {@see debugger}.
-     */
-    protected Reader reader;
-
-    /**
-     * The Writer which is used for the {@see debugger}.
-     */
-    protected Writer writer;
-
-    /**
-     * The SASLAuthentication manager that is responsible for authenticating with the server.
-     */
-    protected SASLAuthentication saslAuthentication = new SASLAuthentication(this);
-
     /**
      * A number to uniquely identify connections that are created. This is distinct from the
      * connection ID, which is a value sent by the server once a connection is made.
      */
     protected final int connectionCounterValue = connectionCounter.getAndIncrement();
-
     /**
      * Holds the initial configuration used while creating the connection.
      */
     protected final ConnectionConfiguration config;
-
+    /**
+     * The SmackDebugger allows to log and debug XML traffic.
+     */
+    protected SmackDebugger debugger = null;
+    /**
+     * The Reader which is used for the {@see debugger}.
+     */
+    protected Reader reader;
+    /**
+     * The Writer which is used for the {@see debugger}.
+     */
+    protected Writer writer;
+    /**
+     * The SASLAuthentication manager that is responsible for authenticating with the server.
+     */
+    protected SASLAuthentication saslAuthentication = new SASLAuthentication(this);
+    /**
+     * The AccountManager allows creation and management of accounts on an XMPP server.
+     */
+    private AccountManager accountManager = null;
     private String serviceCapsNode;
 
     /**
@@ -198,6 +190,36 @@ public abstract class Connection {
      */
     protected Connection(ConnectionConfiguration configuration) {
         config = configuration;
+    }
+
+    /**
+     * Adds a new listener that will be notified when new Connections are created. Note
+     * that newly created connections will not be actually connected to the server.
+     *
+     * @param connectionCreationListener a listener interested on new connections.
+     */
+    public static void addConnectionCreationListener(
+            ConnectionCreationListener connectionCreationListener) {
+        connectionEstablishedListeners.add(connectionCreationListener);
+    }
+
+    /**
+     * Removes a listener that was interested in connection creation events.
+     *
+     * @param connectionCreationListener a listener interested on new connections.
+     */
+    public static void removeConnectionCreationListener(
+            ConnectionCreationListener connectionCreationListener) {
+        connectionEstablishedListeners.remove(connectionCreationListener);
+    }
+
+    /**
+     * Get the collection of listeners that are interested in connection creation events.
+     *
+     * @return a collection of listeners interested on new connections.
+     */
+    public static Collection<ConnectionCreationListener> getConnectionCreationListeners() {
+        return Collections.unmodifiableCollection(connectionEstablishedListeners);
     }
 
     /**
@@ -463,36 +485,6 @@ public abstract class Connection {
      * @param unavailablePresence the presence packet to send during shutdown.
      */
     public abstract void disconnect(Presence unavailablePresence);
-
-    /**
-     * Adds a new listener that will be notified when new Connections are created. Note
-     * that newly created connections will not be actually connected to the server.
-     *
-     * @param connectionCreationListener a listener interested on new connections.
-     */
-    public static void addConnectionCreationListener(
-            ConnectionCreationListener connectionCreationListener) {
-        connectionEstablishedListeners.add(connectionCreationListener);
-    }
-
-    /**
-     * Removes a listener that was interested in connection creation events.
-     *
-     * @param connectionCreationListener a listener interested on new connections.
-     */
-    public static void removeConnectionCreationListener(
-            ConnectionCreationListener connectionCreationListener) {
-        connectionEstablishedListeners.remove(connectionCreationListener);
-    }
-
-    /**
-     * Get the collection of listeners that are interested in connection creation events.
-     *
-     * @return a collection of listeners interested on new connections.
-     */
-    public static Collection<ConnectionCreationListener> getConnectionCreationListeners() {
-        return Collections.unmodifiableCollection(connectionEstablishedListeners);
-    }
 
     /**
      * Adds a connection listener to this connection that will be notified when
@@ -769,18 +761,6 @@ public abstract class Connection {
     }
 
     /**
-     * Set the servers Entity Caps node
-     * <p>
-     * Connection holds this information in order to avoid a dependency to
-     * smackx where EntityCapsManager lives from smack.
-     *
-     * @param node
-     */
-    protected void setServiceCapsNode(String node) {
-        serviceCapsNode = node;
-    }
-
-    /**
      * Retrieve the servers Entity Caps node
      * <p>
      * Connection holds this information in order to avoid a dependency to
@@ -790,6 +770,18 @@ public abstract class Connection {
      */
     public String getServiceCapsNode() {
         return serviceCapsNode;
+    }
+
+    /**
+     * Set the servers Entity Caps node
+     * <p>
+     * Connection holds this information in order to avoid a dependency to
+     * smackx where EntityCapsManager lives from smack.
+     *
+     * @param node
+     */
+    protected void setServiceCapsNode(String node) {
+        serviceCapsNode = node;
     }
 
     /**

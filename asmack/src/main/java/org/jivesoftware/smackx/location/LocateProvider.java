@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.location;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -10,13 +9,11 @@ public class LocateProvider implements IQProvider {
     public LocateProvider() {
     }
 
-    public static String elementName()
-    {
+    public static String elementName() {
         return "geoloc";
     }
 
-    public static String namespace()
-    {
+    public static String namespace() {
         return "http://jabber.org/protocol/geoloc";
     }
 
@@ -36,8 +33,7 @@ public class LocateProvider implements IQProvider {
                     } catch (Exception e) {
                         item.setLat(0);
                     }
-                }
-                else if ("lon".equals(parser.getName())) {
+                } else if ("lon".equals(parser.getName())) {
                     String lonStr = parser.nextText();
                     try {
                         Double lonDouble = Double.valueOf(lonStr);
@@ -45,12 +41,10 @@ public class LocateProvider implements IQProvider {
                     } catch (Exception e) {
                         item.setLon(0);
                     }
-                }
-                else if ("str".equals(parser.getName())) {
+                } else if ("str".equals(parser.getName())) {
                     item.setLocationStr(parser.nextText());
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.END_TAG) {
                 if ("geoloc".equals(parser.getName())) {
                     done = true;
                 }

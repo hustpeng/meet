@@ -35,8 +35,9 @@ import java.util.Properties;
  */
 public class CrashReporter implements UncaughtExceptionHandler {
 
+    static final String EXTRA_REPORT_FILE_NAME = "REPORT_FILE_NAME";
+    static final String EXTRA_REPORT_EMAIL = "REPORT_EMAIL";
     private static final String CRASH_FILE = "crash.txt";
-
     private static final String VERSION_NAME_KEY = "VersionName";
     private static final String VERSION_CODE_KEY = "VersionCode";
     private static final String PACKAGE_NAME_KEY = "PackageName";
@@ -60,23 +61,20 @@ public class CrashReporter implements UncaughtExceptionHandler {
     private static final String AVAILABLE_MEM_SIZE_KEY = "AvailableMem";
     private static final String STACK_TRACE_KEY = "StackTrace";
     private static final String LOCAL_KEY = "Local";
-
-    static final String EXTRA_REPORT_FILE_NAME = "REPORT_FILE_NAME";
-    static final String EXTRA_REPORT_EMAIL = "REPORT_EMAIL";
-
     private static CrashReporter sInstance;
-
-    private Context mContext;
-
-    private String mStackString;
-
     // This is where we collect crash data
     private final Properties mCrashProperties = new Properties();
-
+    private Context mContext;
+    private String mStackString;
     /**
      * 使用weixin发送crash文件
      */
     private boolean mUseWinXinSendFile = true;
+
+    private CrashReporter(Context context) {
+        mContext = context;
+        Thread.setDefaultUncaughtExceptionHandler(this);
+    }
 
     public static void init(Context context) {
         if (sInstance == null) {
@@ -86,11 +84,6 @@ public class CrashReporter implements UncaughtExceptionHandler {
 
     public static CrashReporter getInstance() {
         return sInstance;
-    }
-
-    private CrashReporter(Context context) {
-        mContext = context;
-        Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
     @Override

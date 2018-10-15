@@ -1,16 +1,6 @@
 package com.agmbat.imagepicker.util;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
-import android.os.Environment;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.Display;
-import android.view.KeyCharacterMap;
-import android.view.KeyEvent;
-import android.view.ViewConfiguration;
-import android.view.WindowManager;
 
 /**
  */

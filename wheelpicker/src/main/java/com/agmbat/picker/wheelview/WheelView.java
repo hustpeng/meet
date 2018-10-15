@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.agmbat.android.SysResources;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,9 +29,6 @@ import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
-import com.agmbat.android.SysResources;
-import com.agmbat.picker.util.ConvertUtils;
 
 /**
  * 3D滚轮控件，参阅：http://blog.csdn.net/qq_22393017/article/details/59488906
@@ -825,6 +824,16 @@ public class WheelView extends View {
     }
 
 
+    public interface OnItemSelectListener {
+        /**
+         * 滑动选择回调
+         *
+         * @param index 当前选择项的索引
+         */
+        void onSelected(int index);
+
+    }
+
     /**
      * 用于兼容旧版本的纯字符串条目
      */
@@ -839,16 +848,6 @@ public class WheelView extends View {
         public String getName() {
             return name;
         }
-
-    }
-
-    public interface OnItemSelectListener {
-        /**
-         * 滑动选择回调
-         *
-         * @param index 当前选择项的索引
-         */
-        void onSelected(int index);
 
     }
 
@@ -880,10 +879,10 @@ public class WheelView extends View {
     }
 
     private static class SmoothScrollTimerTask extends TimerTask {
+        final WheelView view;
         int realTotalOffset = Integer.MAX_VALUE;
         int realOffset = 0;
         int offset;
-        final WheelView view;
 
         SmoothScrollTimerTask(WheelView view, int offset) {
             this.view = view;
@@ -928,9 +927,9 @@ public class WheelView extends View {
     }
 
     private static class InertiaTimerTask extends TimerTask {
-        float a = Integer.MAX_VALUE;
         final float velocityY;
         final WheelView view;
+        float a = Integer.MAX_VALUE;
 
         InertiaTimerTask(WheelView view, float velocityY) {
             this.view = view;

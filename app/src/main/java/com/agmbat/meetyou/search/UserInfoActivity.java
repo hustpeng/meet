@@ -76,6 +76,7 @@ public class UserInfoActivity extends Activity {
 
     private ContactInfo mContactInfo;
     private BusinessHandler mBusinessHandler;
+    private boolean hasMoreUserInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,8 +99,6 @@ public class UserInfoActivity extends Activity {
             }
         });
     }
-
-    private boolean hasMoreUserInfo;
 
     private void loadMoreUserInfo() {
         XMPPApi.fetchLoginUser(mContactInfo.getBareJid(), new OnFetchLoginUserListener() {
@@ -216,7 +215,7 @@ public class UserInfoActivity extends Activity {
     void onClickAddToContact() {
         List<ContactInfo> contactInfos = ContactDBCache.getContactList();
         LoginUser loginUser = XMPPManager.getInstance().getRosterManager().getLoginUser();
-        if(null != contactInfos && null != loginUser) {
+        if (null != contactInfos && null != loginUser) {
             if (loginUser.getAuth() == ContactInfo.AUTH_STATE_NOT_SUBMIT
                     || loginUser.getAuth() == ContactInfo.AUTH_STATE_SUBMITED
                     || loginUser.getAuth() == ContactInfo.AUTH_STATE_DENIED) {

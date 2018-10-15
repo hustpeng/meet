@@ -51,18 +51,15 @@ import java.util.Map;
 public class RosterManager {
 
 
-    private static final String TAG = RosterManager.class.getSimpleName();
-
     /**
      * 好友分组-默认我的好友
      */
     public static final String GROUP_FRIENDS = "MyFriends";
-
     /**
      * 好友分组-未分组
      */
     public static final String GROUP_UNGROUPED = "Ungrouped";
-
+    private static final String TAG = RosterManager.class.getSimpleName();
     /**
      * 管理好友列表
      */
@@ -103,7 +100,10 @@ public class RosterManager {
      * 好友申请列表
      */
     private List<ContactInfo> mFriendRequestList;
-
+    /**
+     * 服务器上的用户列表, 以此这标准
+     */
+    private List<ContactInfo> mNetworkContactList = new ArrayList<>();
 
     public RosterManager(Connection connection, Roster roster) {
         mRoster = roster;
@@ -111,6 +111,25 @@ public class RosterManager {
         mConnection = connection;
         mGroupList = new ArrayList<>();
         registerLoginEvent();
+    }
+
+    /**
+     * 查找old列表中被删除的item项目
+     *
+     * @param newList
+     * @param oldList
+     * @return
+     */
+    private static List<ContactInfo> findDeleteList(List<ContactInfo> newList, List<ContactInfo> oldList) {
+        List<ContactInfo> toDelete = new ArrayList<>();
+        for (ContactInfo old : oldList) {
+            ContactInfo exist = RosterHelper.findContactInfo(old.getBareJid(), newList);
+            if (exist == null) {
+                // 如果在新列表中找不到对应的item, 则表示需要删除
+                toDelete.add(old);
+            }
+        }
+        return toDelete;
     }
 
     /**
@@ -230,7 +249,6 @@ public class RosterManager {
         });
     }
 
-
     /**
      * 请求添加好友
      *
@@ -251,7 +269,6 @@ public class RosterManager {
     public boolean addContactToFriend(ContactInfo contact) {
         return addContact(contact, getFriendGroup().getGroupName());
     }
-
 
     /**
      * 添加好友
@@ -317,7 +334,6 @@ public class RosterManager {
         }
     }
 
-
     @Deprecated
     public List<ContactInfo> getContactList() {
         Collection<RosterEntry> list = mRoster.getEntries();
@@ -345,32 +361,6 @@ public class RosterManager {
         RosterEntry rosterEntry = mRoster.getEntry(jid);
         if (null != rosterEntry) {
             rosterEntry.changeNickName(nickName);
-        }
-    }
-
-    @Deprecated
-    public void addContactToGroup(String groupName, String jid) {
-        createGroup(groupName);
-        RosterGroup group = mRoster.getGroup(groupName);
-        try {
-            group.addEntry(mRoster.getEntry(jid));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Deprecated
-    public void removeContactFromGroup(String groupName, String jid) {
-        RosterGroup group = mRoster.getGroup(groupName);
-        try {
-            if (null != group) {
-                RosterEntry rosterEntry = mRoster.getEntry(jid);
-                if (null != rosterEntry) {
-                    group.removeEntry(rosterEntry);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -459,6 +449,31 @@ public class RosterManager {
 //        return profile;
 //    }
 
+    @Deprecated
+    public void addContactToGroup(String groupName, String jid) {
+        createGroup(groupName);
+        RosterGroup group = mRoster.getGroup(groupName);
+        try {
+            group.addEntry(mRoster.getEntry(jid));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Deprecated
+    public void removeContactFromGroup(String groupName, String jid) {
+        RosterGroup group = mRoster.getGroup(groupName);
+        try {
+            if (null != group) {
+                RosterEntry rosterEntry = mRoster.getEntry(jid);
+                if (null != rosterEntry) {
+                    group.removeEntry(rosterEntry);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 接受申请人请求成为好友,同意加对话为好友
@@ -471,245 +486,6 @@ public class RosterManager {
         removeFriendRequest(contactInfo);
         mRoster.sendSubscribed(contactInfo.getBareJid());
     }
-
-
-    /**
-     * Listener for the roster events. It will call the remote listeners registered.
-     */
-    private class RosterListenerAdapter implements RosterListener {
-
-        @Override
-        public void entriesAdded(Collection<String> addresses) {
-            Log.d(TAG, "[RosterListenerAdapter][entriesAdded]:" + addresses);
-            // 登陆成功后刷新一次服务器数据
-            // 登陆成功后, 加载完联系列表后, 不在些方法中回调..
-
-//            for (final String address : addresses) {
-//                com.agmbat.log.Log.d(TAG, "==>onEntriesAdded(Thread): [address=" + address);
-//                String bareAddress = XmppStringUtils.parseBareAddress(address);
-//                String userName = XmppStringUtils.parseName(address);
-//                XMPPApi.fetchContactInfo(address, new OnFetchContactListener() {
-//                    @Override
-//                    public void onFetchContactInfo(ContactInfo contactInfo) {
-//                        if (contactInfo != null) {
-//                            com.agmbat.log.Log.d("contact:" + contactInfo.toString());
-//                            saveOrUpdateContact(contactInfo);
-//                        }
-//                        if (last.equals(address)) {
-//                            // 最后一个需要发送消息到UI
-//                            updateGroupList();
-//                            EventBus.getDefault().post(new ContactUpdateEvent());
-//                        }
-//                    }
-//                });
-//            }
-        }
-
-        @Override
-        public void entriesDeleted(Collection<String> addresses) {
-//            for (String address : addresses) {
-//                Log.d(TAG, "==>onEntriesDeleted(Thread):" + address);
-//                deleteContactFromTable(XmppStringUtils.parseName(address));
-//            }
-            List<String> tab = new ArrayList<String>(addresses);
-        }
-
-        @Override
-        public void entriesUpdated(Collection<String> addresses) {
-//            for (String address : addresses) {
-//                ContactInfo contact = getContact(address);
-//                if (null != contact) {
-//                    Log.d(TAG,
-//                            "==>onEntriesUpdated(Thread): [UserName=" + contact.getUserName()
-//                                    + ",PersonalMsg=" + contact.getPersonalMsg() + ",Name="
-//                                    + contact.getName() + ",NickName=" + contact.getNickName()
-//                                    + ",AvatarId=" + contact.getAvatarId() + ",Lat="
-//                                    + contact.getLatitude() + ",Lon=" + contact.getLongitude()
-//                                    + ",isRobot=" + contact.isRobot() + "]");
-//                }
-//            }
-            List<String> tab = new ArrayList<String>(addresses);
-        }
-
-        @Override
-        public void presenceChanged(Presence presence) {
-//            PresenceAdapter presenceAdapter = new PresenceAdapter(presence);
-//            ContactInfo contactInfo = getContact(XmppStringUtils.parseBareAddress(presenceAdapter
-//                    .getFrom()));
-//            Log.i(TAG, "==>onPresenceChanged(Thread):" + contactInfo.getBareJid() + " ==> status="
-//                    + contactInfo.getStatus() + ";personalMsg=" + contactInfo.getPersonalMsg()
-//                    + ";name=" + contactInfo.getName() + ";avatarId=" + contactInfo.getAvatarId());
-//            if (null != contactInfo) {
-//                updateContactPresence(contactInfo);
-//            }
-//            for (IRosterListener l : mRemoteRosListeners) {
-//                l.onPresenceChanged(presenceAdapter);
-//            }
-            Log.d(presence.toString());
-        }
-
-        @Override
-        public void presenceSubscribe(final Presence presence) {
-            // 收到添加好友请求
-            OnFetchContactListener listener = new OnFetchContactListener() {
-                @Override
-                public void onFetchContactInfo(final ContactInfo contactInfo) {
-                    //未认证用户不能通过好友申请
-                    if (contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_NOT_SUBMIT
-                            || contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_SUBMITED
-                            || contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_DENIED) {
-                        //发送拒绝包
-                        if (AppConfigUtils.isUnauthDeniedEnable(AppResources.getAppContext())) {
-                            VLog.d("Refuse unauth user as my friend");
-                            Presence response = new Presence(Presence.Type.unsubscribed);
-                            response.setTo(presence.getFrom());
-                            mConnection.sendPacket(response);
-                            return;
-                        }
-                    }
-                    LoginUser loginUser = getLoginUser();
-                    List<ContactInfo> contactInfos = ContactDBCache.getContactList();
-                    if (null != contactInfos) {
-                        if (loginUser.getAuth() == ContactInfo.AUTH_STATE_NOT_SUBMIT
-                                || loginUser.getAuth() == ContactInfo.AUTH_STATE_SUBMITED
-                                || loginUser.getAuth() == ContactInfo.AUTH_STATE_DENIED) {
-                            if (contactInfos.size() >= ContactInfo.CONTACT_LIMIT_UNAUTH) {
-                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_UNAUTH));
-                                return;
-                            }
-                        } else if (loginUser.getAuth() == ContactInfo.AUTH_STATE_AUTHENTICATED) {
-                            if (loginUser.getGrade() == 0 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH) {
-                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH));
-                                return;
-                            } else if (loginUser.getGrade() == 1 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1) {
-                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1));
-                                return;
-                            } else if (loginUser.getGrade() == 2 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2) {
-                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2));
-                                return;
-                            } else if (loginUser.getGrade() == 3 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3) {
-                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3));
-                                return;
-                            } else if (loginUser.getGrade() == 4 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4) {
-                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4));
-                                return;
-                            } else if (loginUser.getGrade() == 5 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5) {
-                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5));
-                                return;
-                            }
-                        }
-                    }
-
-                    // 需要用本地数据库存为列表
-                    UiUtils.runOnUIThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
-                            contactInfo.setRosterType(ContactInfo.ROSTER_SUBSCRIBE_ME);
-                            addFriendRequest(contactInfo);
-                            EventBus.getDefault().post(new PresenceSubscribeEvent(contactInfo));
-                        }
-                    });
-
-                }
-            };
-            loadContactFromPresence(presence, listener);
-        }
-
-        @Override
-        public void presenceSubscribed(Presence presence) {
-            Log.d(TAG, "presenceSubscribed:" + presence);
-            // 收到对方同意加我为好友
-            OnFetchContactListener listener = new OnFetchContactListener() {
-                @Override
-                public void onFetchContactInfo(final ContactInfo contactInfo) {
-                    // 需要用本地数据库存为列表
-                    final boolean success = addContactToFriend(contactInfo);
-                    if (success) {
-                        // 保存到数据库缓存中
-                        contactInfo.setGroupName(getFriendGroup().getGroupName());
-                        ContactDBCache.saveOrUpdateContact(contactInfo);
-                    }
-                    UiUtils.runOnUIThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // 添加到内存中
-                            XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
-
-                            // 添加对方为好友
-                            if (success) {
-                                getFriendGroup().addContact(contactInfo);
-                                ContactGroup ungroup = getUngroup();
-                                if (ungroup != null) {
-                                    ungroup.removeContact(contactInfo);
-                                }
-                                //   将mGroupList保存一次
-                                EventBus.getDefault().post(new PresenceSubscribedEvent(contactInfo));
-                                EventBus.getDefault().post(new ContactListUpdateEvent(mGroupList));
-                            }
-                        }
-                    });
-
-                }
-            };
-            loadContactFromPresence(presence, listener);
-        }
-
-        @Override
-        public void onRosterLoad(final List<RosterPacketItem> list) {
-            Debug.printStackTrace();
-            new Thread("onRosterLoad") {
-                @Override
-                public void run() {
-                    super.run();
-                    // 下面方法会阻塞[包处理]回调线程
-                    final List<ContactInfo> contactInfoList = new ArrayList<>();
-                    VLog.d("RCV roster size: " + list.size());
-                    for (RosterPacketItem item : list) {
-                        if (item.getItemType() == RosterPacketItemType.none) {
-                            continue;
-                        }
-                        ContactInfo info = RosterHelper.loadContactInfo(item.getUser());
-                        info.setLocalUpdateTime(System.currentTimeMillis());
-                        info.setRosterType(RosterHelper.getRosterType(item.getItemType()));
-                        info.setGroupName(mRoster.getGroupName(item.getUser()));
-                        contactInfoList.add(info);
-                        if (getContactFromMemCache(info.getBareJid()) == null) {
-                            addContactToMemCache(info);
-                        }
-                    }
-
-                    UiUtils.runOnUIThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mNetworkLoaded = true;
-                            mNetworkContactList.clear();
-                            mNetworkContactList.addAll(contactInfoList);
-
-                            //  重新刷新界面, 保存数据到缓存
-                            List<ContactGroup> groupList = RosterHelper.toGroupList(contactInfoList);
-                            mGroupList.clear();
-                            mGroupList.addAll(groupList);
-
-                            // 将列表同步到数据库中
-                            ContactDBCache.saveAndClearOldList(contactInfoList);
-
-                            VLog.d("Load contacts from server: " + contactInfoList.size());
-                            //clearMessage(contactInfoList);
-                            EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));
-                        }
-                    });
-
-                }
-            }.start();
-        }
-    }
-
-    /**
-     * 服务器上的用户列表, 以此这标准
-     */
-    private List<ContactInfo> mNetworkContactList = new ArrayList<>();
-
 
     private void loadContactFromPresence(Presence presence, OnFetchContactListener l) {
         String from = presence.getFrom();
@@ -1002,27 +778,6 @@ public class RosterManager {
         }
     }
 
-
-    /**
-     * 查找old列表中被删除的item项目
-     *
-     * @param newList
-     * @param oldList
-     * @return
-     */
-    private static List<ContactInfo> findDeleteList(List<ContactInfo> newList, List<ContactInfo> oldList) {
-        List<ContactInfo> toDelete = new ArrayList<>();
-        for (ContactInfo old : oldList) {
-            ContactInfo exist = RosterHelper.findContactInfo(old.getBareJid(), newList);
-            if (exist == null) {
-                // 如果在新列表中找不到对应的item, 则表示需要删除
-                toDelete.add(old);
-            }
-        }
-        return toDelete;
-    }
-
-
     /**
      * 获取联系人信息，基本上信息为空
      *
@@ -1046,7 +801,6 @@ public class RosterManager {
     public List<ContactGroup> getContactGroupList() {
         return mGroupList;
     }
-
 
     /**
      * 将所有的用户转成列表
@@ -1099,6 +853,238 @@ public class RosterManager {
         mGroupList.clear();
         mGroupList.addAll(RosterHelper.toGroupList(newList));
         addGroupListToMemCache(mGroupList);
+    }
+
+    /**
+     * Listener for the roster events. It will call the remote listeners registered.
+     */
+    private class RosterListenerAdapter implements RosterListener {
+
+        @Override
+        public void entriesAdded(Collection<String> addresses) {
+            Log.d(TAG, "[RosterListenerAdapter][entriesAdded]:" + addresses);
+            // 登陆成功后刷新一次服务器数据
+            // 登陆成功后, 加载完联系列表后, 不在些方法中回调..
+
+//            for (final String address : addresses) {
+//                com.agmbat.log.Log.d(TAG, "==>onEntriesAdded(Thread): [address=" + address);
+//                String bareAddress = XmppStringUtils.parseBareAddress(address);
+//                String userName = XmppStringUtils.parseName(address);
+//                XMPPApi.fetchContactInfo(address, new OnFetchContactListener() {
+//                    @Override
+//                    public void onFetchContactInfo(ContactInfo contactInfo) {
+//                        if (contactInfo != null) {
+//                            com.agmbat.log.Log.d("contact:" + contactInfo.toString());
+//                            saveOrUpdateContact(contactInfo);
+//                        }
+//                        if (last.equals(address)) {
+//                            // 最后一个需要发送消息到UI
+//                            updateGroupList();
+//                            EventBus.getDefault().post(new ContactUpdateEvent());
+//                        }
+//                    }
+//                });
+//            }
+        }
+
+        @Override
+        public void entriesDeleted(Collection<String> addresses) {
+//            for (String address : addresses) {
+//                Log.d(TAG, "==>onEntriesDeleted(Thread):" + address);
+//                deleteContactFromTable(XmppStringUtils.parseName(address));
+//            }
+            List<String> tab = new ArrayList<String>(addresses);
+        }
+
+        @Override
+        public void entriesUpdated(Collection<String> addresses) {
+//            for (String address : addresses) {
+//                ContactInfo contact = getContact(address);
+//                if (null != contact) {
+//                    Log.d(TAG,
+//                            "==>onEntriesUpdated(Thread): [UserName=" + contact.getUserName()
+//                                    + ",PersonalMsg=" + contact.getPersonalMsg() + ",Name="
+//                                    + contact.getName() + ",NickName=" + contact.getNickName()
+//                                    + ",AvatarId=" + contact.getAvatarId() + ",Lat="
+//                                    + contact.getLatitude() + ",Lon=" + contact.getLongitude()
+//                                    + ",isRobot=" + contact.isRobot() + "]");
+//                }
+//            }
+            List<String> tab = new ArrayList<String>(addresses);
+        }
+
+        @Override
+        public void presenceChanged(Presence presence) {
+//            PresenceAdapter presenceAdapter = new PresenceAdapter(presence);
+//            ContactInfo contactInfo = getContact(XmppStringUtils.parseBareAddress(presenceAdapter
+//                    .getFrom()));
+//            Log.i(TAG, "==>onPresenceChanged(Thread):" + contactInfo.getBareJid() + " ==> status="
+//                    + contactInfo.getStatus() + ";personalMsg=" + contactInfo.getPersonalMsg()
+//                    + ";name=" + contactInfo.getName() + ";avatarId=" + contactInfo.getAvatarId());
+//            if (null != contactInfo) {
+//                updateContactPresence(contactInfo);
+//            }
+//            for (IRosterListener l : mRemoteRosListeners) {
+//                l.onPresenceChanged(presenceAdapter);
+//            }
+            Log.d(presence.toString());
+        }
+
+        @Override
+        public void presenceSubscribe(final Presence presence) {
+            // 收到添加好友请求
+            OnFetchContactListener listener = new OnFetchContactListener() {
+                @Override
+                public void onFetchContactInfo(final ContactInfo contactInfo) {
+                    //未认证用户不能通过好友申请
+                    if (contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_NOT_SUBMIT
+                            || contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_SUBMITED
+                            || contactInfo.getAuthStatus() == ContactInfo.AUTH_STATE_DENIED) {
+                        //发送拒绝包
+                        if (AppConfigUtils.isUnauthDeniedEnable(AppResources.getAppContext())) {
+                            VLog.d("Refuse unauth user as my friend");
+                            Presence response = new Presence(Presence.Type.unsubscribed);
+                            response.setTo(presence.getFrom());
+                            mConnection.sendPacket(response);
+                            return;
+                        }
+                    }
+                    LoginUser loginUser = getLoginUser();
+                    List<ContactInfo> contactInfos = ContactDBCache.getContactList();
+                    if (null != contactInfos) {
+                        if (loginUser.getAuth() == ContactInfo.AUTH_STATE_NOT_SUBMIT
+                                || loginUser.getAuth() == ContactInfo.AUTH_STATE_SUBMITED
+                                || loginUser.getAuth() == ContactInfo.AUTH_STATE_DENIED) {
+                            if (contactInfos.size() >= ContactInfo.CONTACT_LIMIT_UNAUTH) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_UNAUTH));
+                                return;
+                            }
+                        } else if (loginUser.getAuth() == ContactInfo.AUTH_STATE_AUTHENTICATED) {
+                            if (loginUser.getGrade() == 0 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH));
+                                return;
+                            } else if (loginUser.getGrade() == 1 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_1));
+                                return;
+                            } else if (loginUser.getGrade() == 2 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_2));
+                                return;
+                            } else if (loginUser.getGrade() == 3 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_3));
+                                return;
+                            } else if (loginUser.getGrade() == 4 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_4));
+                                return;
+                            } else if (loginUser.getGrade() == 5 && contactInfos.size() >= ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5) {
+                                EventBus.getDefault().post(new ContactLimitEvent(ContactInfo.CONTACT_LIMIT_AUTH_GRADE_5));
+                                return;
+                            }
+                        }
+                    }
+
+                    // 需要用本地数据库存为列表
+                    UiUtils.runOnUIThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
+                            contactInfo.setRosterType(ContactInfo.ROSTER_SUBSCRIBE_ME);
+                            addFriendRequest(contactInfo);
+                            EventBus.getDefault().post(new PresenceSubscribeEvent(contactInfo));
+                        }
+                    });
+
+                }
+            };
+            loadContactFromPresence(presence, listener);
+        }
+
+        @Override
+        public void presenceSubscribed(Presence presence) {
+            Log.d(TAG, "presenceSubscribed:" + presence);
+            // 收到对方同意加我为好友
+            OnFetchContactListener listener = new OnFetchContactListener() {
+                @Override
+                public void onFetchContactInfo(final ContactInfo contactInfo) {
+                    // 需要用本地数据库存为列表
+                    final boolean success = addContactToFriend(contactInfo);
+                    if (success) {
+                        // 保存到数据库缓存中
+                        contactInfo.setGroupName(getFriendGroup().getGroupName());
+                        ContactDBCache.saveOrUpdateContact(contactInfo);
+                    }
+                    UiUtils.runOnUIThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 添加到内存中
+                            XMPPManager.getInstance().getRosterManager().addContactToMemCache(contactInfo);
+
+                            // 添加对方为好友
+                            if (success) {
+                                getFriendGroup().addContact(contactInfo);
+                                ContactGroup ungroup = getUngroup();
+                                if (ungroup != null) {
+                                    ungroup.removeContact(contactInfo);
+                                }
+                                //   将mGroupList保存一次
+                                EventBus.getDefault().post(new PresenceSubscribedEvent(contactInfo));
+                                EventBus.getDefault().post(new ContactListUpdateEvent(mGroupList));
+                            }
+                        }
+                    });
+
+                }
+            };
+            loadContactFromPresence(presence, listener);
+        }
+
+        @Override
+        public void onRosterLoad(final List<RosterPacketItem> list) {
+            Debug.printStackTrace();
+            new Thread("onRosterLoad") {
+                @Override
+                public void run() {
+                    super.run();
+                    // 下面方法会阻塞[包处理]回调线程
+                    final List<ContactInfo> contactInfoList = new ArrayList<>();
+                    VLog.d("RCV roster size: " + list.size());
+                    for (RosterPacketItem item : list) {
+                        if (item.getItemType() == RosterPacketItemType.none) {
+                            continue;
+                        }
+                        ContactInfo info = RosterHelper.loadContactInfo(item.getUser());
+                        info.setLocalUpdateTime(System.currentTimeMillis());
+                        info.setRosterType(RosterHelper.getRosterType(item.getItemType()));
+                        info.setGroupName(mRoster.getGroupName(item.getUser()));
+                        contactInfoList.add(info);
+                        if (getContactFromMemCache(info.getBareJid()) == null) {
+                            addContactToMemCache(info);
+                        }
+                    }
+
+                    UiUtils.runOnUIThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mNetworkLoaded = true;
+                            mNetworkContactList.clear();
+                            mNetworkContactList.addAll(contactInfoList);
+
+                            //  重新刷新界面, 保存数据到缓存
+                            List<ContactGroup> groupList = RosterHelper.toGroupList(contactInfoList);
+                            mGroupList.clear();
+                            mGroupList.addAll(groupList);
+
+                            // 将列表同步到数据库中
+                            ContactDBCache.saveAndClearOldList(contactInfoList);
+
+                            VLog.d("Load contacts from server: " + contactInfoList.size());
+                            //clearMessage(contactInfoList);
+                            EventBus.getDefault().post(new ContactGroupLoadEvent(mGroupList));
+                        }
+                    });
+
+                }
+            }.start();
+        }
     }
 
 }

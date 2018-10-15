@@ -23,20 +23,14 @@ public abstract class LoadingLayout extends FrameLayout {
     static final String LOG_TAG = "PullToRefresh-LoadingLayout";
 
     static final Interpolator ANIMATION_INTERPOLATOR = new LinearInterpolator();
-
-    private FrameLayout mInnerLayout;
-
     protected final ImageView mHeaderImage;
     protected final ProgressBar mHeaderProgress;
-
-    private boolean mUseIntrinsicAnimation;
-
-    private final TextView mHeaderText;
-    private final TextView mSubHeaderText;
-
     protected final PullToRefreshBase.Mode mMode;
     protected final PullToRefreshBase.Orientation mScrollDirection;
-
+    private final TextView mHeaderText;
+    private final TextView mSubHeaderText;
+    private FrameLayout mInnerLayout;
+    private boolean mUseIntrinsicAnimation;
     private CharSequence mPullLabel;
     private CharSequence mRefreshingLabel;
     private CharSequence mReleaseLabel;

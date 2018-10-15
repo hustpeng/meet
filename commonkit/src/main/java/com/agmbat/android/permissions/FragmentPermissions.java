@@ -1,16 +1,16 @@
 package com.agmbat.android.permissions;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Fragment中权限管理
@@ -123,7 +123,7 @@ public class FragmentPermissions {
      * @param action
      */
     private void requestPermission(String permission, final PermissionAction action) {
-        String[] permissions = new String[] {permission};
+        String[] permissions = new String[]{permission};
         boolean[] result = new boolean[1];
         result[0] = false;
         PermissionArrayAction arrayAction = new PermissionArrayAction() {

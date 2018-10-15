@@ -54,7 +54,14 @@ public class VoiceInputController {
             return true;
         }
     };
-
+    /**
+     * 录音Button状态drawable
+     */
+    private Drawable mVoiceButtonBgDrawable;
+    /**
+     * 输入内容回调
+     */
+    private OnInputListener mOnInputListener;
     private View.OnTouchListener mInternalTouchListener = new View.OnTouchListener() {
 
         @Override
@@ -85,16 +92,6 @@ public class VoiceInputController {
             return false;
         }
     };
-
-    /**
-     * 录音Button状态drawable
-     */
-    private Drawable mVoiceButtonBgDrawable;
-
-    /**
-     * 输入内容回调
-     */
-    private OnInputListener mOnInputListener;
 
     public VoiceInputController(View view) {
         mVoiceButton = view;

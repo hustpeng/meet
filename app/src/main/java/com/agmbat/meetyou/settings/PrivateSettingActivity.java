@@ -21,7 +21,7 @@ public class PrivateSettingActivity extends Activity {
     @BindView(R.id.unauth_user_denied_switch)
     CheckBox mUnauthDeniedCheckBox;
 
-    public static void launch(Context context){
+    public static void launch(Context context) {
         Intent intent = new Intent(context, PrivateSettingActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -36,16 +36,16 @@ public class PrivateSettingActivity extends Activity {
     }
 
     @OnClick(R.id.title_btn_back)
-    void onClickBackBtn(){
+    void onClickBackBtn() {
         finish();
     }
 
     @OnClick(R.id.block_list_item)
-    void onClickBlockList(){
+    void onClickBlockList() {
         BlockListActivity.launch(getApplicationContext());
     }
 
-    private void initContentView(){
+    private void initContentView() {
         mUnauthDeniedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

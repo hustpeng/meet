@@ -2,7 +2,6 @@ package com.agmbat.meetyou.discovery.meeting;
 
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.meetyou.coins.CoinsApi;
-import com.agmbat.meetyou.coins.CoinsRecords;
 import com.agmbat.pagedataloader.PageData;
 import com.agmbat.pagedataloader.PageDataLoader;
 import com.google.gson.annotations.SerializedName;

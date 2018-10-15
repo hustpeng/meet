@@ -61,8 +61,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="12dp">
 
                 <EditText
                     android:id="@+id/input_name"
@@ -92,8 +92,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="12dp">
 
                 <EditText
                     android:id="@+id/input_identity"
@@ -164,8 +164,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1.0dip"
-                android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:background="#ffeeeeee" />
 
             <FrameLayout

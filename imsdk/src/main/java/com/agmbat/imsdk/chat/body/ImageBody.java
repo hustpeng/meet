@@ -10,37 +10,8 @@ import java.io.File;
 
 public class ImageBody extends Body {
 
-    public static class Image {
-
-        public Image(String xmlText) {
-            rotation = StringParser.parseInt(XmlUtils.getNodeValue(xmlText, "rotation"));
-            latitude = StringParser.parseDouble(XmlUtils.getNodeValue(xmlText, "latitude"));
-            longitude = StringParser.parseDouble(XmlUtils.getNodeValue(xmlText, "longitude"));
-            width = StringParser.parseInt(XmlUtils.getNodeValue(xmlText, "width"));
-            height = StringParser.parseInt(XmlUtils.getNodeValue(xmlText, "height"));
-        }
-
-        public Image(LocalImage image) {
-            rotation = image.rotation;
-            latitude = image.latitude;
-            longitude = image.longitude;
-            width = image.width;
-            height = image.height;
-        }
-
-        public Image() {
-        }
-
-        public int rotation;
-        public double latitude;
-        public double longitude;
-        public int width;
-        public int height;
-    }
-
     private final Image mImage;
     private final String mFileUrl;
-
     public ImageBody(String fileUrl, LocalImage image) {
         this(fileUrl, new Image(image));
     }
@@ -80,5 +51,30 @@ public class ImageBody extends Body {
     @Override
     public BodyType getBodyType() {
         return BodyType.IMAGE;
+    }
+
+    public static class Image {
+
+        public int rotation;
+        public double latitude;
+        public double longitude;
+        public int width;
+        public int height;
+        public Image(String xmlText) {
+            rotation = StringParser.parseInt(XmlUtils.getNodeValue(xmlText, "rotation"));
+            latitude = StringParser.parseDouble(XmlUtils.getNodeValue(xmlText, "latitude"));
+            longitude = StringParser.parseDouble(XmlUtils.getNodeValue(xmlText, "longitude"));
+            width = StringParser.parseInt(XmlUtils.getNodeValue(xmlText, "width"));
+            height = StringParser.parseInt(XmlUtils.getNodeValue(xmlText, "height"));
+        }
+        public Image(LocalImage image) {
+            rotation = image.rotation;
+            latitude = image.latitude;
+            longitude = image.longitude;
+            width = image.width;
+            height = image.height;
+        }
+        public Image() {
+        }
     }
 }

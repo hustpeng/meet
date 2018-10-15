@@ -32,53 +32,39 @@ import butterknife.OnClick;
 public class FilterView extends FrameLayout {
 
     /**
-     * 过虑器内容变化监听器
-     */
-    private OnFilterInfoChangeListener mListener;
-
-    private FilterInfo mFilterInfo;
-
-    /**
      * 性别
      */
     @BindView(R.id.input_gender)
     TextView mGenderView;
-
     @BindView(R.id.input_age_start)
     TextView mAgeStartView;
-
     @BindView(R.id.input_age_end)
     TextView mAgeEndView;
-
     @BindView(R.id.input_height_start)
     TextView mHeightStartView;
-
     @BindView(R.id.input_height_end)
     TextView mHeightEndView;
-
     @BindView(R.id.input_marriage)
     TextView mMarriageView;
-
     @BindView(R.id.input_birthplace)
     TextView mBirthplaceView;
-
     @BindView(R.id.input_workarea)
     TextView mWorkareaView;
-
     @BindView(R.id.input_education)
     TextView mEducationView;
-
     @BindView(R.id.input_wage)
     TextView mWageView;
-
     @BindView(R.id.input_career)
     TextView mCareerView;
-
     @BindView(R.id.input_house)
     TextView mHouseView;
-
     @BindView(R.id.input_car)
     TextView mCarView;
+    /**
+     * 过虑器内容变化监听器
+     */
+    private OnFilterInfoChangeListener mListener;
+    private FilterInfo mFilterInfo;
 
 
     public FilterView(@NonNull Context context) {
@@ -89,6 +75,25 @@ public class FilterView extends FrameLayout {
     public FilterView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
+    }
+
+    public static void showNumberPicker(Context context, int selected, int start, int end,
+                                        NumberPicker.OnNumberPickListener l) {
+        if (selected < start) {
+            selected = start;
+        } else if (selected > end) {
+            selected = end;
+        }
+        NumberPicker picker = new NumberPicker(context);
+        picker.setCanceledOnTouchOutside(false);
+        picker.setOffset(3);
+        picker.setCycleDisable(true);
+        picker.setDividerRatio(0.0F);
+        picker.setRange(start, end, 1);
+        picker.setSelectedItem(selected);
+        picker.setOnNumberPickListener(l);
+        picker.setAnimationStyle(com.agmbat.picker.R.style.PickerPopupAnimation);
+        picker.show();
     }
 
     public void setOnFilterInfoChangeListener(OnFilterInfoChangeListener l) {
@@ -256,7 +261,6 @@ public class FilterView extends FrameLayout {
                 });
     }
 
-
     @OnClick(R.id.btn_age_start)
     void onClickAgeStart() {
         showNumberPicker(getContext(), mFilterInfo.getStartAge(), mFilterInfo.getMinAge(), mFilterInfo.getMaxAge(),
@@ -303,24 +307,5 @@ public class FilterView extends FrameLayout {
                         mFilterInfo.setEndHeight(number.intValue());
                     }
                 });
-    }
-
-    public static void showNumberPicker(Context context, int selected, int start, int end,
-                                        NumberPicker.OnNumberPickListener l) {
-        if (selected < start) {
-            selected = start;
-        } else if (selected > end) {
-            selected = end;
-        }
-        NumberPicker picker = new NumberPicker(context);
-        picker.setCanceledOnTouchOutside(false);
-        picker.setOffset(3);
-        picker.setCycleDisable(true);
-        picker.setDividerRatio(0.0F);
-        picker.setRange(start, end, 1);
-        picker.setSelectedItem(selected);
-        picker.setOnNumberPickListener(l);
-        picker.setAnimationStyle(com.agmbat.picker.R.style.PickerPopupAnimation);
-        picker.show();
     }
 }

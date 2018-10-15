@@ -91,7 +91,7 @@ public class BodyParser {
             return new FileBody(url, fileName);
         }
 
-        if(bodyType == BodyType.EVENTS){
+        if (bodyType == BodyType.EVENTS) {
             String content = XmlUtils.getNodeValue(bodyText, "content");
             return new EventsBody(content);
         }
@@ -105,22 +105,22 @@ public class BodyParser {
             Document document = DocumentHelper.parseText(xmlString);
             Element ele = document.getRootElement();
             Iterator<Element> it = ele.elementIterator();
-            while (it.hasNext()){
+            while (it.hasNext()) {
                 Element node = it.next();
                 if ("at".equals(node.getName())) {
                     //result = node.getText();
                     result = new ArrayList<>();
                     Iterator<Element> userNodes = node.elementIterator();
-                    while (userNodes.hasNext()){
+                    while (userNodes.hasNext()) {
                         atUser = new TextBody.AtUser();
                         result.add(atUser);
                         Element userNode = userNodes.next();
                         Iterator<Element> userInfoNodes = userNode.elementIterator();
-                        while (userInfoNodes.hasNext()){
+                        while (userInfoNodes.hasNext()) {
                             Element userInfoNode = userInfoNodes.next();
-                            if("jid".equals(userInfoNode.getName())){
+                            if ("jid".equals(userInfoNode.getName())) {
                                 atUser.setJid(userInfoNode.getText());
-                            }else if("nickname".equals(userInfoNode.getName())){
+                            } else if ("nickname".equals(userInfoNode.getName())) {
                                 atUser.setNickName(userInfoNode.getText());
                             }
                         }

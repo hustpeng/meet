@@ -14,12 +14,11 @@ import java.lang.reflect.Type;
  */
 public class CoinsApi {
 
-    private static final boolean ENABLE_MOCK = false;
-
     /**
      * 每页数据20
      */
     public static final int PAGE_SIZE = 20;
+    private static final boolean ENABLE_MOCK = false;
 
     /**
      * 我的缘币明细, 每页返回20条记录，按记录发生时间倒序排列

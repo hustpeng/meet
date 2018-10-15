@@ -47,12 +47,12 @@ public class ContactGroup {
         mGroupName = group;
     }
 
-    public void setGroupName(String name) {
-        mGroupName = name;
-    }
-
     public String getGroupName() {
         return mGroupName;
+    }
+
+    public void setGroupName(String name) {
+        mGroupName = name;
     }
 
     public boolean isExpanded() {
@@ -63,12 +63,12 @@ public class ContactGroup {
         mIsExpanded = isExpanded;
     }
 
-    public void setContactList(List<ContactInfo> contacts) {
-        mContactList = contacts;
-    }
-
     public List<ContactInfo> getContactList() {
         return mContactList;
+    }
+
+    public void setContactList(List<ContactInfo> contacts) {
+        mContactList = contacts;
     }
 
     public void addContact(ContactInfo contactInfo) {

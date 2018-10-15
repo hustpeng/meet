@@ -15,9 +15,6 @@
  *******************************************************************************/
 package com.nostra13.universalimageloader.sample.ext;
 
-import android.content.Context;
-
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 
 import org.apache.http.HttpEntity;

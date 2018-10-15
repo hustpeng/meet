@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -26,7 +26,7 @@ public class AESCrypt {
 
     /**
      * 加密字符串,输出base64字符串
-     * 
+     *
      * @param text
      * @return
      * @throws Exception
@@ -38,7 +38,7 @@ public class AESCrypt {
 
     /**
      * 加密字符串,输出16进制字符串
-     * 
+     *
      * @param value
      * @return
      * @throws Exception
@@ -58,7 +58,7 @@ public class AESCrypt {
 
     /**
      * 解密base64字符串
-     * 
+     *
      * @param value
      * @return
      * @throws Exception
@@ -69,7 +69,7 @@ public class AESCrypt {
 
     /**
      * 解密16进制字符串
-     * 
+     *
      * @param value
      * @return
      * @throws Exception
@@ -80,7 +80,7 @@ public class AESCrypt {
 
     /**
      * 解密数据
-     * 
+     *
      * @param data
      * @return
      * @throws Exception

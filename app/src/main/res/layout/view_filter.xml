@@ -487,10 +487,10 @@
             android:layout_width="match_parent"
             android:layout_height="70dip"
             android:background="#fff0f3f5"
-            android:paddingBottom="15dip"
             android:paddingLeft="10dip"
+            android:paddingTop="15dip"
             android:paddingRight="10dip"
-            android:paddingTop="15dip">
+            android:paddingBottom="15dip">
 
             <TextView
                 android:id="@+id/btn_confirm"

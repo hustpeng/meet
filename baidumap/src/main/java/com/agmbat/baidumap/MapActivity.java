@@ -26,30 +26,25 @@ import java.util.List;
 public class MapActivity extends Activity {
 
     /**
+     * 当前中心点标记
+     */
+    protected Marker mPlaceMarker;
+    /**
      * 地图view
      */
     private MapView mMapView;
-
     /**
      * 地图对象
      */
     private BaiduMap mBaiduMap;
-
     /**
      * UI配置
      */
     private UiSettings mUiSettings;
-
     /**
      * 当前中心点
      */
     private BitmapDescriptor mBitmapCenterDes = BitmapDescriptorFactory.fromResource(R.drawable.icon_geo);
-
-    /**
-     * 当前中心点标记
-     */
-    protected Marker mPlaceMarker;
-
     /**
      * Location管理
      */

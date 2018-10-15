@@ -20,20 +20,20 @@ public class DiscoveryGroup {
      */
     private List<ContactInfo> mUserList;
 
-    public void setTitle(String title) {
-        mTitle = title;
-    }
-
     public String getTitle() {
         return mTitle;
     }
 
-    public void setUserList(List<ContactInfo> list) {
-        mUserList = list;
+    public void setTitle(String title) {
+        mTitle = title;
     }
 
     public List<ContactInfo> getUserList() {
         return mUserList;
+    }
+
+    public void setUserList(List<ContactInfo> list) {
+        mUserList = list;
     }
 
 }

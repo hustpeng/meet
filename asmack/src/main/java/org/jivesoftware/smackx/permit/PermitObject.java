@@ -11,6 +11,7 @@ public class PermitObject implements ICacheStoreObject {
 
     private boolean isSectct;
     private String action;
+
     public String getJid() {
         if (null != jid) {
             return jid;
@@ -65,7 +66,7 @@ public class PermitObject implements ICacheStoreObject {
     }
 
     public String getAction() {
-        if(null != action){
+        if (null != action) {
             return action;
         }
         return "";

@@ -67,39 +67,10 @@ import java.util.Map;
 
 public class XMPPManager {
 
+    public static final String GROUP_CHAT_SERVER = "circle.yuan520.com";
     private static final String TAG = "XMPPManager";
-
-    private static XMPPManager sInstance;
-
-    private XMPPConnection xmppConnection;
-
-    private BlockManager blockManager;
-    private PermitManager permitManager;
-    private FavoritesManager favoritesManager;
-    private FavoritedMeManager favoritedMeManager;
-    private VCardManager vCardManager;
-    private VCardExtendManager vCardExtendManager;
-    private PaidManager paidManager;
-    private FindServerManager findServerManager;
-    private TokenManager tokenManager;
-    private LocateManager locateManager;
-    private VisitorManager visitorManager;
-    private MessageManager messageManager;
-    private LocationHelper locationHelper;
-    private LocationAutoSync locationAutoSync;
-    private ReconnectionManager reconnectionManager;
-
-    private CircleManager circleManager;
-    /**
-     * 好友列表管理
-     */
-    private RosterManager mRosterManager;
-
     // 47.106.77.125
     private static final String URL = "http://yuan520.com";
-
-    public static final String GROUP_CHAT_SERVER = "circle.yuan520.com";
-
     /**
      * 端口
      */
@@ -109,8 +80,8 @@ public class XMPPManager {
      */
     private static final String HOST = "47.106.77.125";
     private static final String TIGASE_SERVER = "yuan520.com";
-
-
+    private static XMPPManager sInstance;
+    private XMPPConnection xmppConnection;
     /**
      * Listener for Ping request. It will respond with a Pong.
      */
@@ -132,13 +103,26 @@ public class XMPPManager {
         }
 
     };
-
-    public static synchronized XMPPManager getInstance() {
-        if (sInstance == null) {
-            sInstance = new XMPPManager();
-        }
-        return sInstance;
-    }
+    private BlockManager blockManager;
+    private PermitManager permitManager;
+    private FavoritesManager favoritesManager;
+    private FavoritedMeManager favoritedMeManager;
+    private VCardManager vCardManager;
+    private VCardExtendManager vCardExtendManager;
+    private PaidManager paidManager;
+    private FindServerManager findServerManager;
+    private TokenManager tokenManager;
+    private LocateManager locateManager;
+    private VisitorManager visitorManager;
+    private MessageManager messageManager;
+    private LocationHelper locationHelper;
+    private LocationAutoSync locationAutoSync;
+    private ReconnectionManager reconnectionManager;
+    private CircleManager circleManager;
+    /**
+     * 好友列表管理
+     */
+    private RosterManager mRosterManager;
 
     private XMPPManager() {
         configureProviderManager();
@@ -189,6 +173,12 @@ public class XMPPManager {
 //        reconnectionManager.autoLogin();
     }
 
+    public static synchronized XMPPManager getInstance() {
+        if (sInstance == null) {
+            sInstance = new XMPPManager();
+        }
+        return sInstance;
+    }
 
     private void configureProviderManager() {
         ProviderManager pm = ProviderManager.getInstance();

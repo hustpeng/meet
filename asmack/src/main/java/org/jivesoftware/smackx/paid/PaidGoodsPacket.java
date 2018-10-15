@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.paid;
 
 import org.jivesoftware.smack.packet.IQ;

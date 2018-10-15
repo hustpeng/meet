@@ -29,7 +29,7 @@ import com.google.zxing.client.result.ParsedResult;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class ISBNResultHandler extends ResultHandler {
-    
+
     private static final int[] buttons = {
             R.string.button_product_search,
             R.string.button_book_search,

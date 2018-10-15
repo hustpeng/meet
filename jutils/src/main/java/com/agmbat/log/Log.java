@@ -1,7 +1,7 @@
 package com.agmbat.log;
 
-import com.agmbat.utils.Platform;
 import com.agmbat.text.StringUtils;
+import com.agmbat.utils.Platform;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -70,20 +70,21 @@ public class Log {
      */
     private static ILogger sLogger;
 
+    static {
+        // 当前平台
+        boolean isAndroid = Platform.isAndroid();
+        if (isAndroid) {
+            sLogger = new AndroidLogger();
+        } else {
+            sLogger = new JavaLogger();
+        }
+    }
+
     private Log() {
     }
 
     public static void setLogger(ILogger logger) {
         sLogger = logger;
-    }
-
-    /**
-     * Sets the filter level of logs.
-     *
-     * @param level The filter level.
-     */
-    public static void setFilterLevel(int level) {
-        sFilterLevel = level;
     }
 
     /**
@@ -93,6 +94,15 @@ public class Log {
      */
     public static int getFilterLevel() {
         return sFilterLevel;
+    }
+
+    /**
+     * Sets the filter level of logs.
+     *
+     * @param level The filter level.
+     */
+    public static void setFilterLevel(int level) {
+        sFilterLevel = level;
     }
 
     /**
@@ -418,16 +428,5 @@ public class Log {
             e.printStackTrace();
         }
         return "";
-    }
-
-
-    static {
-        // 当前平台
-        boolean isAndroid = Platform.isAndroid();
-        if (isAndroid) {
-            sLogger = new AndroidLogger();
-        } else {
-            sLogger = new JavaLogger();
-        }
     }
 }

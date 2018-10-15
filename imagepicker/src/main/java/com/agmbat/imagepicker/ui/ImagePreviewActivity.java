@@ -17,7 +17,6 @@ import com.agmbat.imagepicker.ImagePicker;
 import com.agmbat.imagepicker.R;
 import com.agmbat.imagepicker.bean.ImageItem;
 import com.agmbat.imagepicker.util.NavigationBarChangeListener;
-import com.agmbat.imagepicker.util.Utils;
 import com.agmbat.imagepicker.view.SuperCheckBox;
 
 /**
@@ -122,7 +121,6 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements Im
                     }
                 });
     }
-
 
 
     /**

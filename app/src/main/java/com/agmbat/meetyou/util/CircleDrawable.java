@@ -39,10 +39,10 @@ public class CircleDrawable extends Drawable {
         initWithBitmap(bitmap);
     }
 
-    private void initWithBitmap(Bitmap bitmap){
+    private void initWithBitmap(Bitmap bitmap) {
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
-        if(bitmapWidth != bitmapHeight){
+        if (bitmapWidth != bitmapHeight) {
             //创建一个正方形bitmap，把原来的bitmap图像绘制到正中间
             Paint paint = new Paint();
             int size = Math.max(bitmapWidth, bitmapHeight); //按最长的边来确定正方形边长（或者按最小的边来确定也可以）
@@ -54,7 +54,7 @@ public class CircleDrawable extends Drawable {
             canvas.drawBitmap(bitmap, left, top, paint);
             bitmap.recycle();
             mRadius = size / 2;
-        }else{
+        } else {
             mBitmap = bitmap;
             mRadius = bitmapWidth / 2;
         }

@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -61,8 +61,8 @@ public class DurationFormat {
 
     /**
      * 格式化数字
-     * 
-     * @param num 需要格式化的数
+     *
+     * @param num   需要格式化的数
      * @param width 格式化后数的宽度
      * @return
      */

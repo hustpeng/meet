@@ -27,7 +27,6 @@ import android.view.View.MeasureSpec;
 
 import com.agmbat.io.IoUtils;
 import com.agmbat.log.Log;
-import com.agmbat.text.StringUtils;
 import com.agmbat.utils.Asserts;
 import com.agmbat.utils.MathUtils;
 import com.agmbat.utils.ReflectionUtils;
@@ -43,9 +42,9 @@ import java.lang.reflect.Method;
  */
 public class BitmapUtils {
 
+    public static final int UNCONSTRAINED = -1;
     private static final String TAG = "BitmapUtils";
     private static final int DEFAULT_JPEG_QUALITY = 90;
-    public static final int UNCONSTRAINED = -1;
 
 
     private BitmapUtils() {

@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -138,7 +138,7 @@ public class FileExtension {
 
     /**
      * 是否为图片类型
-     * 
+     *
      * @param ext
      * @return
      */
@@ -150,7 +150,7 @@ public class FileExtension {
 
     /**
      * 是否为音频类型
-     * 
+     *
      * @param ext
      * @return
      */

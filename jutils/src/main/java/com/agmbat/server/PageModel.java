@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -15,7 +15,6 @@ import java.util.List;
 
 /**
  * 封装分页信息
- * 
  */
 public class PageModel<E> {
 
@@ -49,7 +48,7 @@ public class PageModel<E> {
 
     /**
      * 总页数
-     * 
+     *
      * @return
      */
     public int getTotalPages() {
@@ -59,7 +58,7 @@ public class PageModel<E> {
 
     /**
      * 取得首页
-     * 
+     *
      * @return
      */
     public int getTopPageNum() {
@@ -68,7 +67,7 @@ public class PageModel<E> {
 
     /**
      * 上一页
-     * 
+     *
      * @return
      */
     public int getPreviousPageNum() {
@@ -81,7 +80,7 @@ public class PageModel<E> {
 
     /**
      * 下一页
-     * 
+     *
      * @return
      */
     public int getNextPageNum() {
@@ -94,7 +93,7 @@ public class PageModel<E> {
 
     /**
      * 取得尾页
-     * 
+     *
      * @return
      */
     public int getBottomPageNum() {

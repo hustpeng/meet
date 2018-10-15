@@ -83,16 +83,16 @@ public class ImageFolderAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public int getSelectIndex() {
+        return lastSelected;
+    }
+
     public void setSelectIndex(int i) {
         if (lastSelected == i) {
             return;
         }
         lastSelected = i;
         notifyDataSetChanged();
-    }
-
-    public int getSelectIndex() {
-        return lastSelected;
     }
 
     private static class ViewHolder {

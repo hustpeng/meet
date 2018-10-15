@@ -1,18 +1,18 @@
 package com.agmbat.android.utils;
 
-import com.agmbat.android.SystemManager;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.view.WindowManager;
 
+import com.agmbat.android.SystemManager;
+
 public class Brightness {
 
     /**
      * 设置屏幕亮度，这会反映到真实屏幕上
-     * 
+     *
      * @param activity
      * @param brightness
      */
@@ -20,16 +20,6 @@ public class Brightness {
         WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
         lp.screenBrightness = brightness * (1f / 255f);
         activity.getWindow().setAttributes(lp);
-    }
-
-    /**
-     * 保存亮度设置状态
-     * 
-     * @param brightness
-     */
-    public static void setScreenBrightness(int brightness) {
-        ContentResolver resolver = SystemManager.getContentResolver();
-        Settings.System.putInt(resolver, Settings.System.SCREEN_BRIGHTNESS, brightness);
     }
 
     /**
@@ -42,6 +32,16 @@ public class Brightness {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    /**
+     * 保存亮度设置状态
+     *
+     * @param brightness
+     */
+    public static void setScreenBrightness(int brightness) {
+        ContentResolver resolver = SystemManager.getContentResolver();
+        Settings.System.putInt(resolver, Settings.System.SCREEN_BRIGHTNESS, brightness);
     }
 
     /**
@@ -66,13 +66,6 @@ public class Brightness {
     }
 
     /**
-     * 保存亮度的显示模式
-     */
-    public static void setBrightnessMode(int mode) {
-        Settings.System.putInt(SystemManager.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, mode);
-    }
-
-    /**
      * 获取亮度的显示模式
      */
     public static int getBrightnessMode() {
@@ -82,5 +75,12 @@ public class Brightness {
             e.printStackTrace();
         }
         return Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
+    }
+
+    /**
+     * 保存亮度的显示模式
+     */
+    public static void setBrightnessMode(int mode) {
+        Settings.System.putInt(SystemManager.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, mode);
     }
 }

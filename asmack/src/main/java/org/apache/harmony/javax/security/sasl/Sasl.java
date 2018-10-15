@@ -17,49 +17,34 @@
 
 package org.apache.harmony.javax.security.sasl;
 
-import java.security.Provider;
-import java.security.Security;
 import org.apache.harmony.javax.security.auth.callback.CallbackHandler;
 
-
-
+import java.security.Provider;
+import java.security.Security;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 public class Sasl {
+    public static final String POLICY_NOPLAINTEXT = "javax.security.sasl.policy.noplaintext"; //$NON-NLS-1$
+    public static final String POLICY_NOACTIVE = "javax.security.sasl.policy.noactive"; //$NON-NLS-1$
+    public static final String POLICY_NODICTIONARY = "javax.security.sasl.policy.nodictionary"; //$NON-NLS-1$
+    public static final String POLICY_NOANONYMOUS = "javax.security.sasl.policy.noanonymous"; //$NON-NLS-1$
+    public static final String POLICY_FORWARD_SECRECY = "javax.security.sasl.policy.forward"; //$NON-NLS-1$
+    public static final String POLICY_PASS_CREDENTIALS = "javax.security.sasl.policy.credentials"; //$NON-NLS-1$
+    public static final String MAX_BUFFER = "javax.security.sasl.maxbuffer"; //$NON-NLS-1$
+    public static final String RAW_SEND_SIZE = "javax.security.sasl.rawsendsize"; //$NON-NLS-1$
+    public static final String REUSE = "javax.security.sasl.reuse"; //$NON-NLS-1$
+    public static final String QOP = "javax.security.sasl.qop"; //$NON-NLS-1$
+    public static final String STRENGTH = "javax.security.sasl.strength"; //$NON-NLS-1$
+    public static final String SERVER_AUTH = "javax.security.sasl.server.authentication"; //$NON-NLS-1$
     // SaslClientFactory service name
     private static final String CLIENTFACTORYSRV = "SaslClientFactory"; //$NON-NLS-1$
-
     // SaslServerFactory service name
     private static final String SERVERFACTORYSRV = "SaslServerFactory"; //$NON-NLS-1$
-
-    public static final String POLICY_NOPLAINTEXT = "javax.security.sasl.policy.noplaintext"; //$NON-NLS-1$
-
-    public static final String POLICY_NOACTIVE = "javax.security.sasl.policy.noactive"; //$NON-NLS-1$
-
-    public static final String POLICY_NODICTIONARY = "javax.security.sasl.policy.nodictionary"; //$NON-NLS-1$
-
-    public static final String POLICY_NOANONYMOUS = "javax.security.sasl.policy.noanonymous"; //$NON-NLS-1$
-
-    public static final String POLICY_FORWARD_SECRECY = "javax.security.sasl.policy.forward"; //$NON-NLS-1$
-
-    public static final String POLICY_PASS_CREDENTIALS = "javax.security.sasl.policy.credentials"; //$NON-NLS-1$
-
-    public static final String MAX_BUFFER = "javax.security.sasl.maxbuffer"; //$NON-NLS-1$
-
-    public static final String RAW_SEND_SIZE = "javax.security.sasl.rawsendsize"; //$NON-NLS-1$
-
-    public static final String REUSE = "javax.security.sasl.reuse"; //$NON-NLS-1$
-
-    public static final String QOP = "javax.security.sasl.qop"; //$NON-NLS-1$
-
-    public static final String STRENGTH = "javax.security.sasl.strength"; //$NON-NLS-1$
-
-    public static final String SERVER_AUTH = "javax.security.sasl.server.authentication"; //$NON-NLS-1$
 
     // Default public constructor is overridden
     private Sasl() {
@@ -132,7 +117,7 @@ public class Sasl {
     }
 
     public static SaslServer createSaslServer(String mechanism, String protocol,
-            String serverName, Map<String, ?> prop, CallbackHandler cbh) throws SaslException {
+                                              String serverName, Map<String, ?> prop, CallbackHandler cbh) throws SaslException {
         if (mechanism == null) {
             throw new NullPointerException("auth.32"); //$NON-NLS-1$
         }
@@ -166,7 +151,7 @@ public class Sasl {
     }
 
     public static SaslClient createSaslClient(String[] mechanisms, String authanticationID,
-            String protocol, String serverName, Map<String, ?> prop, CallbackHandler cbh)
+                                              String protocol, String serverName, Map<String, ?> prop, CallbackHandler cbh)
             throws SaslException {
         if (mechanisms == null) {
             throw new NullPointerException("auth.33"); //$NON-NLS-1$

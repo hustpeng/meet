@@ -1,9 +1,9 @@
 package com.agmbat.android.utils;
 
-import com.agmbat.android.AppResources;
-
 import android.content.Context;
 import android.widget.Toast;
+
+import com.agmbat.android.AppResources;
 
 /**
  * Toast工具类

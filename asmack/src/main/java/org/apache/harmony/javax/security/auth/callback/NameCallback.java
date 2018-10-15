@@ -30,20 +30,6 @@ public class NameCallback implements Callback, Serializable {
 
     private String inputName;
 
-    private void setPrompt(String prompt) {
-        if (prompt == null || prompt.length() == 0) {
-            throw new IllegalArgumentException("auth.14"); //$NON-NLS-1$
-        }
-        this.prompt = prompt;
-    }
-
-    private void setDefaultName(String defaultName) {
-        if (defaultName == null || defaultName.length() == 0) {
-            throw new IllegalArgumentException("auth.1E"); //$NON-NLS-1$
-        }
-        this.defaultName = defaultName;
-    }
-
     public NameCallback(String prompt) {
         super();
         setPrompt(prompt);
@@ -59,15 +45,29 @@ public class NameCallback implements Callback, Serializable {
         return prompt;
     }
 
+    private void setPrompt(String prompt) {
+        if (prompt == null || prompt.length() == 0) {
+            throw new IllegalArgumentException("auth.14"); //$NON-NLS-1$
+        }
+        this.prompt = prompt;
+    }
+
     public String getDefaultName() {
         return defaultName;
     }
 
-    public void setName(String name) {
-        this.inputName = name;
+    private void setDefaultName(String defaultName) {
+        if (defaultName == null || defaultName.length() == 0) {
+            throw new IllegalArgumentException("auth.1E"); //$NON-NLS-1$
+        }
+        this.defaultName = defaultName;
     }
 
     public String getName() {
         return inputName;
+    }
+
+    public void setName(String name) {
+        this.inputName = name;
     }
 }

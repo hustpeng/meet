@@ -141,10 +141,6 @@ public interface DbManager extends Closeable {
      */
     public <T> String buildCreateTableSql(TableEntity<T> tableEntity);
 
-    public interface DbUpgradeListener {
-        public void onUpgrade(DbManager db, int oldVersion, int newVersion);
-    }
-
     /**
      * 判断表是否存在
      *
@@ -153,5 +149,9 @@ public interface DbManager extends Closeable {
      * @throws DbException
      */
     public boolean existTable(TableEntity<?> entity) throws DbException;
+
+    public interface DbUpgradeListener {
+        public void onUpgrade(DbManager db, int oldVersion, int newVersion);
+    }
 
 }

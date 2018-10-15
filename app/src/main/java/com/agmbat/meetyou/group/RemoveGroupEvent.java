@@ -7,11 +7,11 @@ public class RemoveGroupEvent {
 
     private String groupJid;
 
-    public RemoveGroupEvent(String groupJid){
+    public RemoveGroupEvent(String groupJid) {
         this.groupJid = groupJid;
     }
 
-    public String getGroupJid(){
+    public String getGroupJid() {
         return groupJid;
     }
 }

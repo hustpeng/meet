@@ -26,6 +26,8 @@ import java.util.List;
  */
 public class CommitCircleInfoPacket extends Packet {
 
+    private List<FieldItem> mFieldList = new ArrayList<>();
+
     public CommitCircleInfoPacket(String to) {
         setTo(to);
     }
@@ -61,8 +63,6 @@ public class CommitCircleInfoPacket extends Packet {
         buf.append("</iq>");
         return buf.toString();
     }
-
-    private List<FieldItem> mFieldList = new ArrayList<>();
 
     /**
      * * <query xmlns="http://jabber.org/protocol/muc#owner">

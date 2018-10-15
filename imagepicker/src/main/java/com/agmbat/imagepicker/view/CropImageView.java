@@ -41,25 +41,6 @@ import java.util.Locale;
  */
 public class CropImageView extends ImageView {
 
-    /******************************** 中间的FocusView绘图相关的参数 *****************************/
-    public enum Style {
-        RECTANGLE, CIRCLE
-    }
-
-    private Style[] styles = {Style.RECTANGLE, Style.CIRCLE};
-
-    private int mMaskColor = 0xAF000000;   //暗色
-    private int mBorderColor = 0xAA808080; //焦点框的边框颜色
-    private int mBorderWidth = 1;         //焦点边框的宽度（画笔宽度）
-    private int mFocusWidth = 250;         //焦点框的宽度
-    private int mFocusHeight = 250;        //焦点框的高度
-    private int mDefaultStyleIndex = 0;    //默认焦点框的形状
-
-    private Style mStyle = styles[mDefaultStyleIndex];
-    private Paint mBorderPaint = new Paint();
-    private Path mFocusPath = new Path();
-    private RectF mFocusRect = new RectF();
-
     /******************************** 图片缩放位移控制的参数 ************************************/
     private static final float MAX_SCALE = 4.0f;  //最大缩放比，图片缩放后的大小与中间选中区域的比值
     private static final int NONE = 0;   // 初始化
@@ -67,10 +48,24 @@ public class CropImageView extends ImageView {
     private static final int ZOOM = 2;   // 缩放
     private static final int ROTATE = 3; // 旋转
     private static final int ZOOM_OR_ROTATE = 4;  // 缩放或旋转
-
     private static final int SAVE_SUCCESS = 1001;  // 缩放或旋转
     private static final int SAVE_ERROR = 1002;  // 缩放或旋转
-
+    private static Handler mHandler = new InnerHandler();
+    /**
+     * 图片保存完成的监听
+     */
+    private static OnBitmapSaveCompleteListener mListener;
+    private Style[] styles = {Style.RECTANGLE, Style.CIRCLE};
+    private int mMaskColor = 0xAF000000;   //暗色
+    private int mBorderColor = 0xAA808080; //焦点框的边框颜色
+    private int mBorderWidth = 1;         //焦点边框的宽度（画笔宽度）
+    private int mFocusWidth = 250;         //焦点框的宽度
+    private int mFocusHeight = 250;        //焦点框的高度
+    private int mDefaultStyleIndex = 0;    //默认焦点框的形状
+    private Style mStyle = styles[mDefaultStyleIndex];
+    private Paint mBorderPaint = new Paint();
+    private Path mFocusPath = new Path();
+    private RectF mFocusRect = new RectF();
     private int mImageWidth;
     private int mImageHeight;
     private int mRotatedImageWidth;
@@ -90,7 +85,6 @@ public class CropImageView extends ImageView {
     private float mMaxScale = MAX_SCALE;//程序根据不同图片的大小，动态得到的最大缩放比
     private boolean isInited = false;   //是否经过了 onSizeChanged 初始化
     private boolean mSaving = false;    //是否正在保存
-    private static Handler mHandler = new InnerHandler();
 
     public CropImageView(Context context) {
         this(context, null);
@@ -600,36 +594,6 @@ public class CropImageView extends ImageView {
         croppedImage.recycle();
     }
 
-    private static class InnerHandler extends Handler {
-        public InnerHandler() {
-            super(Looper.getMainLooper());
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            File saveFile = (File) msg.obj;
-            switch (msg.what) {
-                case SAVE_SUCCESS:
-                    if (mListener != null) mListener.onBitmapSaveSuccess(saveFile);
-                    break;
-                case SAVE_ERROR:
-                    if (mListener != null) mListener.onBitmapSaveError(saveFile);
-                    break;
-            }
-        }
-    }
-
-    /**
-     * 图片保存完成的监听
-     */
-    private static OnBitmapSaveCompleteListener mListener;
-
-    public interface OnBitmapSaveCompleteListener {
-        void onBitmapSaveSuccess(File file);
-
-        void onBitmapSaveError(File file);
-    }
-
     public void setOnBitmapSaveCompleteListener(OnBitmapSaveCompleteListener listener) {
         mListener = listener;
     }
@@ -710,6 +674,13 @@ public class CropImageView extends ImageView {
     }
 
     /**
+     * 获取焦点框的形状
+     */
+    public Style getFocusStyle() {
+        return mStyle;
+    }
+
+    /**
      * 设置焦点框的形状
      */
     public void setFocusStyle(Style style) {
@@ -717,10 +688,33 @@ public class CropImageView extends ImageView {
         invalidate();
     }
 
-    /**
-     * 获取焦点框的形状
-     */
-    public Style getFocusStyle() {
-        return mStyle;
+    /******************************** 中间的FocusView绘图相关的参数 *****************************/
+    public enum Style {
+        RECTANGLE, CIRCLE
+    }
+
+    public interface OnBitmapSaveCompleteListener {
+        void onBitmapSaveSuccess(File file);
+
+        void onBitmapSaveError(File file);
+    }
+
+    private static class InnerHandler extends Handler {
+        public InnerHandler() {
+            super(Looper.getMainLooper());
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            File saveFile = (File) msg.obj;
+            switch (msg.what) {
+                case SAVE_SUCCESS:
+                    if (mListener != null) mListener.onBitmapSaveSuccess(saveFile);
+                    break;
+                case SAVE_ERROR:
+                    if (mListener != null) mListener.onBitmapSaveError(saveFile);
+                    break;
+            }
+        }
     }
 }

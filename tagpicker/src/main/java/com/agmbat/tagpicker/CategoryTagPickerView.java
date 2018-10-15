@@ -79,22 +79,6 @@ public class CategoryTagPickerView extends ScrollView {
     }
 
     /**
-     * 设置选中的item项
-     *
-     * @param list
-     */
-    public void setCheckedList(List<String> list) {
-        if (list == null) {
-            return;
-        }
-        if (list.size() > mMaxSelectedCount) {
-            return;
-        }
-        mCheckedList.clear();
-        mCheckedList.addAll(list);
-    }
-
-    /**
      * 更新view显示
      */
     public void update() {
@@ -113,5 +97,21 @@ public class CategoryTagPickerView extends ScrollView {
 
     public List<String> getCheckedList() {
         return mCheckedList;
+    }
+
+    /**
+     * 设置选中的item项
+     *
+     * @param list
+     */
+    public void setCheckedList(List<String> list) {
+        if (list == null) {
+            return;
+        }
+        if (list.size() > mMaxSelectedCount) {
+            return;
+        }
+        mCheckedList.clear();
+        mCheckedList.addAll(list);
     }
 }

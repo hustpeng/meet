@@ -219,6 +219,57 @@ public class Debug {
     }
 
     /**
+     * 打印函数调用栈
+     */
+    public static void printStackTrace() {
+        printStackTrace(null);
+    }
+
+    /**
+     * 打印函数调用栈
+     */
+    public static void printStackTrace(Object object) {
+        printStackTrace(object, 10);
+    }
+
+    public static void printStackTrace(Object object, int stackMaxCount) {
+        if (!DEBUG) {
+            return;
+        }
+        StackTraceElement[] elements = new Throwable().getStackTrace();
+        final String currentClsName = Debug.class.getName();
+        List<StackTraceElement> list = new ArrayList<StackTraceElement>();
+        for (StackTraceElement e : elements) {
+            if (!currentClsName.equals(e.getClassName())) {
+                list.add(e);
+            }
+        }
+        int count = Math.min(stackMaxCount, list.size());
+        list = list.subList(0, count);
+        StackTraceElement[] array = list.toArray(new StackTraceElement[count]);
+        String msg = getStackTraceText(array);
+        String name = (object == null) ? null : String.valueOf(object.hashCode());
+        msg = "=========begin=========\n" + msg + "=========end=========\n";
+        if (!StringUtils.isEmpty(name)) {
+            msg = "[object:" + name + "]" + msg;
+        }
+        msg = ThreadInfo.get().toString() + msg;
+        Log.d(TAG, msg);
+    }
+
+    /**
+     * @param stack the parent stack trace to suppress duplicates from, or null if this stack trace has no parent.
+     */
+    private static String getStackTraceText(StackTraceElement[] stack) {
+        StringBuilder builder = new StringBuilder();
+        for (StackTraceElement ele : stack) {
+            builder.append(ele.toString());
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
+
+    /**
      * 线程信息
      */
     private static class ThreadInfo {
@@ -227,15 +278,15 @@ public class Debug {
         private String mName;
         private int mPriority;
 
-        public static ThreadInfo get() {
-            Thread thread = Thread.currentThread();
-            return new ThreadInfo(thread);
-        }
-
         private ThreadInfo(Thread thread) {
             mId = thread.getId();
             mName = thread.getName();
             mPriority = thread.getPriority();
+        }
+
+        public static ThreadInfo get() {
+            Thread thread = Thread.currentThread();
+            return new ThreadInfo(thread);
         }
 
         @Override
@@ -360,57 +411,6 @@ public class Debug {
             }
             return name;
         }
-    }
-
-    /**
-     * 打印函数调用栈
-     */
-    public static void printStackTrace() {
-        printStackTrace(null);
-    }
-
-    /**
-     * 打印函数调用栈
-     */
-    public static void printStackTrace(Object object) {
-        printStackTrace(object, 10);
-    }
-
-    public static void printStackTrace(Object object, int stackMaxCount) {
-        if (!DEBUG) {
-            return;
-        }
-        StackTraceElement[] elements = new Throwable().getStackTrace();
-        final String currentClsName = Debug.class.getName();
-        List<StackTraceElement> list = new ArrayList<StackTraceElement>();
-        for (StackTraceElement e : elements) {
-            if (!currentClsName.equals(e.getClassName())) {
-                list.add(e);
-            }
-        }
-        int count = Math.min(stackMaxCount, list.size());
-        list = list.subList(0, count);
-        StackTraceElement[] array = list.toArray(new StackTraceElement[count]);
-        String msg = getStackTraceText(array);
-        String name = (object == null) ? null : String.valueOf(object.hashCode());
-        msg = "=========begin=========\n" + msg + "=========end=========\n";
-        if (!StringUtils.isEmpty(name)) {
-            msg = "[object:" + name + "]" + msg;
-        }
-        msg = ThreadInfo.get().toString() + msg;
-        Log.d(TAG, msg);
-    }
-
-    /**
-     * @param stack the parent stack trace to suppress duplicates from, or null if this stack trace has no parent.
-     */
-    private static String getStackTraceText(StackTraceElement[] stack) {
-        StringBuilder builder = new StringBuilder();
-        for (StackTraceElement ele : stack) {
-            builder.append(ele.toString());
-            builder.append("\n");
-        }
-        return builder.toString();
     }
 
 }

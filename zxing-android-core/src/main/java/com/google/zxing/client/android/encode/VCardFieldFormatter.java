@@ -40,16 +40,6 @@ final class VCardFieldFormatter implements Formatter {
         this.metadataForIndex = metadataForIndex;
     }
 
-    @Override
-    public CharSequence format(CharSequence value, int index) {
-        value = RESERVED_VCARD_CHARS.matcher(value).replaceAll("\\\\$1");
-        value = NEWLINE.matcher(value).replaceAll("");
-        Map<String, Set<String>> metadata =
-                metadataForIndex == null || metadataForIndex.size() <= index ? null : metadataForIndex.get(index);
-        value = formatMetadata(value, metadata);
-        return value;
-    }
-
     private static CharSequence formatMetadata(CharSequence value, Map<String, Set<String>> metadata) {
         StringBuilder withMetadata = new StringBuilder();
         if (metadata != null) {
@@ -74,6 +64,16 @@ final class VCardFieldFormatter implements Formatter {
         }
         withMetadata.append(':').append(value);
         return withMetadata;
+    }
+
+    @Override
+    public CharSequence format(CharSequence value, int index) {
+        value = RESERVED_VCARD_CHARS.matcher(value).replaceAll("\\\\$1");
+        value = NEWLINE.matcher(value).replaceAll("");
+        Map<String, Set<String>> metadata =
+                metadataForIndex == null || metadataForIndex.size() <= index ? null : metadataForIndex.get(index);
+        value = formatMetadata(value, metadata);
+        return value;
     }
 
 }

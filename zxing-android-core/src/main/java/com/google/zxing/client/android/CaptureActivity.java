@@ -80,15 +80,11 @@ import java.util.Map;
  */
 public final class CaptureActivity extends Activity implements SurfaceHolder.Callback, DecodeHandler.IActivity {
 
+    public static final int HISTORY_REQUEST_CODE = 0x0000bacc;
     private static final String TAG = CaptureActivity.class.getSimpleName();
-
     private static final long DEFAULT_INTENT_RESULT_DURATION_MS = 1500L;
     private static final long BULK_MODE_SCAN_DELAY_MS = 1000L;
-
     private static final String[] ZXING_URLS = {"http://zxing.appspot.com/scan", "zxing://scan/"};
-
-    public static final int HISTORY_REQUEST_CODE = 0x0000bacc;
-
     private static final Collection<ResultMetadataType> DISPLAYABLE_METADATA_TYPES = EnumSet.of(
             ResultMetadataType.ISSUE_NUMBER, ResultMetadataType.SUGGESTED_PRICE,
             ResultMetadataType.ERROR_CORRECTION_LEVEL, ResultMetadataType.POSSIBLE_COUNTRY);
@@ -112,6 +108,25 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
     private AmbientLightManager ambientLightManager;
+
+    private static boolean isZXingURL(String dataString) {
+        if (dataString == null) {
+            return false;
+        }
+        for (String url : ZXING_URLS) {
+            if (dataString.startsWith(url)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b, float scaleFactor) {
+        if (a != null && b != null) {
+            canvas.drawLine(scaleFactor * a.getX(), scaleFactor * a.getY(), scaleFactor * b.getX(),
+                    scaleFactor * b.getY(), paint);
+        }
+    }
 
     @Override
     public ViewfinderView getViewfinderView() {
@@ -273,18 +288,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             default:
                 return ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
         }
-    }
-
-    private static boolean isZXingURL(String dataString) {
-        if (dataString == null) {
-            return false;
-        }
-        for (String url : ZXING_URLS) {
-            if (dataString.startsWith(url)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -498,13 +501,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                     }
                 }
             }
-        }
-    }
-
-    private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b, float scaleFactor) {
-        if (a != null && b != null) {
-            canvas.drawLine(scaleFactor * a.getX(), scaleFactor * a.getY(), scaleFactor * b.getX(),
-                    scaleFactor * b.getY(), paint);
         }
     }
 

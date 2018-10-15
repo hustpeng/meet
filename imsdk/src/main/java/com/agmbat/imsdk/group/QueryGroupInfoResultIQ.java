@@ -34,12 +34,12 @@ public class QueryGroupInfoResultIQ extends IQ {
         return null;
     }
 
-    public void setGroupJid(String groupJid) {
-        this.groupJid = groupJid;
-    }
-
     public String getGroupJid() {
         return groupJid;
+    }
+
+    public void setGroupJid(String groupJid) {
+        this.groupJid = groupJid;
     }
 
     public String getName() {

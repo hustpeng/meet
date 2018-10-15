@@ -1,5 +1,9 @@
 package com.agmbat.io;
 
+import com.agmbat.bit.BitUtil;
+import com.agmbat.file.FileUtils;
+import com.agmbat.text.StringUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -13,30 +17,23 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 
-import com.agmbat.bit.BitUtil;
-import com.agmbat.file.FileUtils;
-import com.agmbat.text.StringUtils;
-
 /**
  * IO操作工具类
  */
 public class IoUtils {
 
     /**
+     * utf-8编码
+     */
+    public static final String UTF_8 = "utf-8";
+    /**
      * 流结束标志
      */
     private static final int EOF = -1;
-
     /**
      * buffer 大小 256K
      */
     private static final int BUFFER_SIZE = 256 * 1024;
-
-    /**
-     * utf-8编码
-     */
-    public static final String UTF_8 = "utf-8";
-
     /**
      * UTF_BOM,utf-8文件首字符
      */

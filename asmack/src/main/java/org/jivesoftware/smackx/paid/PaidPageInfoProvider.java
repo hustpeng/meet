@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.paid;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -11,13 +10,11 @@ public class PaidPageInfoProvider implements IQProvider {
     public PaidPageInfoProvider() {
     }
 
-    public static String elementName()
-    {
+    public static String elementName() {
         return "query";
     }
 
-    public static String namespace()
-    {
+    public static String namespace() {
         return "http://jabber.org/protocol/vip#privilege";
     }
 
@@ -32,8 +29,7 @@ public class PaidPageInfoProvider implements IQProvider {
                 if ("item".equals(parser.getName())) {
                     item.getSubscriptionPageInfo().add(parseItem(parser));
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.END_TAG) {
                 if ("query".equals(parser.getName())) {
                     done = true;
                 }

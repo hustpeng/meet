@@ -1,10 +1,15 @@
 package com.agmbat.android.sysprovider;
 
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Locale;
-
-import org.json.JSONObject;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.text.TextUtils;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.android.task.AsyncTaskUtils;
@@ -18,103 +23,33 @@ import com.agmbat.sql.SqlUtils;
 import com.agmbat.sql.TableSqlBuilder;
 import com.agmbat.text.JsonUtils;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.location.Location;
-import android.location.LocationManager;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.text.TextUtils;
+import org.json.JSONObject;
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class GeoDecoder {
 
     private static final String TAG = GeoDecoder.class.getSimpleName();
-
-    private static class SingletonHolder {
-        private static final GeoDecoder INSTANCE = new GeoDecoder();
-    }
-
-    public static GeoDecoder getInstance() {
-        return SingletonHolder.INSTANCE;
-    }
-
-    public static interface DecodeCallback {
-        void onDecodeFinished(Location location, String address);
-    }
-
     private static final String API_URL_QUERY_NEARBY =
             "http://restapi.amap.com/rgeocode/simple?resType=json&encode=UTF-8&range=3000&roadnum=10&crossnum=3"
                     + "&poinum=10&retvalue=10&sid=7001&rid=170562&region=%f,"
                     + "%f&ia=1&key=cb39f62d5ff2ec36194532c8d93a7866";
-
     private static final String API_URL_DECODE =
             "http://restapi.amap.com/v3/geocode/regeo?location=%f,%f&radius=100&key=cb39f62d5ff2ec36194532c8d93a7866";
-
     private static final String API_URL_SEARCH_KEYWORD =
             "http://restapi.amap.com/v3/place/text?keywords=%s&key=cb39f62d5ff2ec36194532c8d93a7866&offset=5&page=1&s"
                     + "=rsv3";
-
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_ORIGINAL_ADDRESS = "oaddr";
     private static final String COLUMN_MODIFIED_ADDRESS = "maddr";
     private static final String COLUMN_LATITUDE = "latitude";
     private static final String COLUMN_LONGITUDE = "longitude";
-
     private static final double CACHE_DISTANCE = 100;
     private static final String TABLE_CACHE = "cache";
-
-    private static class DatabaseHelper extends SQLiteOpenHelper {
-
-        private static final String DATABASE_NAME = "geo_address_cache.db";
-        private static final int DATABASE_VERSION = 1;
-
-        /**
-         * Initiate a new instance of {@link DatabaseHelper}.
-         *
-         * @param context
-         */
-        public DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            TableSqlBuilder builder = new TableSqlBuilder(TABLE_CACHE);
-            builder.addColumn(COLUMN_ID, DataType.INTEGER, Param.PRIMARY_KEY, Param.AUTOINCREMENT);
-            builder.addColumn(COLUMN_ORIGINAL_ADDRESS, DataType.TEXT);
-            builder.addColumn(COLUMN_MODIFIED_ADDRESS, DataType.TEXT);
-            builder.addColumn(COLUMN_LATITUDE, DataType.DOUBLE);
-            builder.addColumn(COLUMN_LONGITUDE, DataType.DOUBLE);
-            String sql = builder.buildSql();
-            db.execSQL(sql);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL(SqlUtils.dropTableSql(TABLE_CACHE));
-            onCreate(db);
-        }
-
-        @Override
-        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            onUpgrade(db, oldVersion, newVersion);
-        }
-
-    }
-
-    private static class CacheItem {
-        long id;
-        String originalAddress;
-        String modifiedAddress;
-        Location location;
-    }
-
     private ArrayList<CacheItem> mCacheItems;
     private DatabaseHelper mDatabaseHelper;
-
     private Handler mHandler;
 
     private GeoDecoder() {
@@ -125,16 +60,8 @@ public class GeoDecoder {
         loadCache();
     }
 
-    private void loadCache() {
-        mCacheItems = new ArrayList<CacheItem>();
-        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_CACHE, null, null, null, null, null, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                mCacheItems.add(createCacheItemFromCursor(cursor));
-            }
-            cursor.close();
-        }
+    public static GeoDecoder getInstance() {
+        return SingletonHolder.INSTANCE;
     }
 
     private static CacheItem createCacheItemFromCursor(Cursor cursor) {
@@ -149,6 +76,18 @@ public class GeoDecoder {
         cacheItem.originalAddress = cursor.getString(cursor.getColumnIndex(COLUMN_ORIGINAL_ADDRESS));
         cacheItem.modifiedAddress = cursor.getString(cursor.getColumnIndex(COLUMN_MODIFIED_ADDRESS));
         return cacheItem;
+    }
+
+    private void loadCache() {
+        mCacheItems = new ArrayList<CacheItem>();
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_CACHE, null, null, null, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                mCacheItems.add(createCacheItemFromCursor(cursor));
+            }
+            cursor.close();
+        }
     }
 
     private void addToCache(String address, Location location) {
@@ -278,6 +217,60 @@ public class GeoDecoder {
             Log.w(TAG, e);
         }
         return null;
+    }
+
+    public static interface DecodeCallback {
+        void onDecodeFinished(Location location, String address);
+    }
+
+    private static class SingletonHolder {
+        private static final GeoDecoder INSTANCE = new GeoDecoder();
+    }
+
+    private static class DatabaseHelper extends SQLiteOpenHelper {
+
+        private static final String DATABASE_NAME = "geo_address_cache.db";
+        private static final int DATABASE_VERSION = 1;
+
+        /**
+         * Initiate a new instance of {@link DatabaseHelper}.
+         *
+         * @param context
+         */
+        public DatabaseHelper(Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            TableSqlBuilder builder = new TableSqlBuilder(TABLE_CACHE);
+            builder.addColumn(COLUMN_ID, DataType.INTEGER, Param.PRIMARY_KEY, Param.AUTOINCREMENT);
+            builder.addColumn(COLUMN_ORIGINAL_ADDRESS, DataType.TEXT);
+            builder.addColumn(COLUMN_MODIFIED_ADDRESS, DataType.TEXT);
+            builder.addColumn(COLUMN_LATITUDE, DataType.DOUBLE);
+            builder.addColumn(COLUMN_LONGITUDE, DataType.DOUBLE);
+            String sql = builder.buildSql();
+            db.execSQL(sql);
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL(SqlUtils.dropTableSql(TABLE_CACHE));
+            onCreate(db);
+        }
+
+        @Override
+        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            onUpgrade(db, oldVersion, newVersion);
+        }
+
+    }
+
+    private static class CacheItem {
+        long id;
+        String originalAddress;
+        String modifiedAddress;
+        Location location;
     }
 
 }

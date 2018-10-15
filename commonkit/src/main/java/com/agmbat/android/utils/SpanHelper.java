@@ -18,11 +18,9 @@ import java.util.regex.Pattern;
 
 public class SpanHelper {
 
+    public static final Pattern URL_PATTERN = Pattern
+            .compile("(http://[a-zA-Z0-9+&@#/%?=~_\\-|!:\\.]*?)([^a-zA-Z0-9+&@#/%?=~_\\-|!:\\.]|$)");
     private static final boolean ENABLE_HTML_FORMAT = false;
-
-    public interface LinkCallback {
-        void onClick(String url);
-    }
 
     public static CharSequence getUrlText(CharSequence text, LinkCallback callback) {
         SpannableStringBuilder builder = new SpannableStringBuilder(text);
@@ -36,93 +34,6 @@ public class SpanHelper {
             builder.setSpan(new UrlClickableSpan(span.getURL(), callback), start, end, flag);
         }
         return builder;
-    }
-
-    private static class UrlClickableSpan extends ClickableSpan {
-        private String mUrl;
-        private LinkCallback mCallback;
-
-        UrlClickableSpan(String url, LinkCallback callback) {
-            mUrl = url;
-            mCallback = callback;
-        }
-
-        @Override
-        public void onClick(View widget) {
-            mCallback.onClick(mUrl);
-        }
-    }
-
-    public static class HtmlCharSequence implements Spanned {
-        private String mHtml;
-        private Spanned mCharSequence;
-
-        /**
-         * Initiate a new instance of {@link HtmlCharSequence}.
-         *
-         * @param html
-         * @param charSequence
-         */
-        public HtmlCharSequence(String html, Spanned charSequence) {
-            super();
-            mHtml = html;
-            mCharSequence = charSequence;
-        }
-
-        @Override
-        public int length() {
-            return mCharSequence.length();
-        }
-
-        @Override
-        public char charAt(int index) {
-            return mCharSequence.charAt(index);
-        }
-
-        @Override
-        public CharSequence subSequence(int start, int end) {
-            return mCharSequence.subSequence(start, end);
-        }
-
-        @Override
-        public <T> T[] getSpans(int start, int end, Class<T> type) {
-            return mCharSequence.getSpans(start, end, type);
-        }
-
-        @Override
-        public int getSpanStart(Object tag) {
-            return mCharSequence.getSpanStart(tag);
-        }
-
-        @Override
-        public int getSpanEnd(Object tag) {
-            return mCharSequence.getSpanEnd(tag);
-        }
-
-        @Override
-        public int getSpanFlags(Object tag) {
-            return mCharSequence.getSpanFlags(tag);
-        }
-
-        @Override
-        public int nextSpanTransition(int start, int limit, Class type) {
-            return mCharSequence.nextSpanTransition(start, limit, type);
-        }
-
-        @Override
-        public String toString() {
-            return mCharSequence.toString();
-        }
-
-        /**
-         * Retrieve the html.
-         *
-         * @return the html
-         */
-        public String getHtml() {
-            return mHtml;
-        }
-
     }
 
     public static CharSequence formatCharSequence(CharSequence charSequence) {
@@ -170,9 +81,6 @@ public class SpanHelper {
         }
         return result;
     }
-
-    public static final Pattern URL_PATTERN = Pattern
-            .compile("(http://[a-zA-Z0-9+&@#/%?=~_\\-|!:\\.]*?)([^a-zA-Z0-9+&@#/%?=~_\\-|!:\\.]|$)");
 
     /**
      * Applies a regex to a Spannable turning the matches into links.
@@ -277,5 +185,96 @@ public class SpanHelper {
             return ((HtmlCharSequence) charSequence).getHtml();
         }
         return charSequence.toString();
+    }
+
+    public interface LinkCallback {
+        void onClick(String url);
+    }
+
+    private static class UrlClickableSpan extends ClickableSpan {
+        private String mUrl;
+        private LinkCallback mCallback;
+
+        UrlClickableSpan(String url, LinkCallback callback) {
+            mUrl = url;
+            mCallback = callback;
+        }
+
+        @Override
+        public void onClick(View widget) {
+            mCallback.onClick(mUrl);
+        }
+    }
+
+    public static class HtmlCharSequence implements Spanned {
+        private String mHtml;
+        private Spanned mCharSequence;
+
+        /**
+         * Initiate a new instance of {@link HtmlCharSequence}.
+         *
+         * @param html
+         * @param charSequence
+         */
+        public HtmlCharSequence(String html, Spanned charSequence) {
+            super();
+            mHtml = html;
+            mCharSequence = charSequence;
+        }
+
+        @Override
+        public int length() {
+            return mCharSequence.length();
+        }
+
+        @Override
+        public char charAt(int index) {
+            return mCharSequence.charAt(index);
+        }
+
+        @Override
+        public CharSequence subSequence(int start, int end) {
+            return mCharSequence.subSequence(start, end);
+        }
+
+        @Override
+        public <T> T[] getSpans(int start, int end, Class<T> type) {
+            return mCharSequence.getSpans(start, end, type);
+        }
+
+        @Override
+        public int getSpanStart(Object tag) {
+            return mCharSequence.getSpanStart(tag);
+        }
+
+        @Override
+        public int getSpanEnd(Object tag) {
+            return mCharSequence.getSpanEnd(tag);
+        }
+
+        @Override
+        public int getSpanFlags(Object tag) {
+            return mCharSequence.getSpanFlags(tag);
+        }
+
+        @Override
+        public int nextSpanTransition(int start, int limit, Class type) {
+            return mCharSequence.nextSpanTransition(start, limit, type);
+        }
+
+        @Override
+        public String toString() {
+            return mCharSequence.toString();
+        }
+
+        /**
+         * Retrieve the html.
+         *
+         * @return the html
+         */
+        public String getHtml() {
+            return mHtml;
+        }
+
     }
 }

@@ -198,6 +198,47 @@ public class VCardExtendObject implements ICacheStoreObject {
     //update date
     private Date update_date;
 
+    public static String getXmlNode(VCardExtendObject object) {
+        if (object == null) {
+            return null;
+        }
+
+        StringBuilder buf = new StringBuilder();
+        buf.append("<");
+        buf.append(VCardExtendProvider.elementName());
+        buf.append(" xmlns=\"");
+        buf.append(VCardExtendProvider.namespace());
+        buf.append("\">");
+        // public
+        buf.append("<public>");
+        XmppStringUtils.appendXml(buf, KEY_HEIGHT, String.valueOf(object.getHeight()));
+        XmppStringUtils.appendXml(buf, KEY_EDUCATION, String.valueOf(object.getEducation()));
+        XmppStringUtils.appendXml(buf, KEY_WAGE, String.valueOf(object.getWage()));
+        XmppStringUtils.appendXml(buf, KEY_WORKAREA, object.getWorkarea());
+        XmppStringUtils.appendXml(buf, KEY_MARRIAGE, String.valueOf(object.getMarriage()));
+        XmppStringUtils.appendXml(buf, KEY_WEIGHT, String.valueOf(object.getWeight()));
+        XmppStringUtils.appendXml(buf, KEY_BIRTHPLACE, object.getBirthplace());
+        XmppStringUtils.appendXml(buf, KEY_RESIDENCE, object.getResidence());
+        XmppStringUtils.appendXml(buf, KEY_INDUSTRY, object.getIndustry());
+        XmppStringUtils.appendXml(buf, KEY_CAREER, object.getCareer());
+        XmppStringUtils.appendXml(buf, KEY_HOUSE, String.valueOf(object.getHouse()));
+        XmppStringUtils.appendXml(buf, KEY_CAR, String.valueOf(object.getCar()));
+        XmppStringUtils.appendXml(buf, KEY_HOBBY, object.getHobby());
+        XmppStringUtils.appendXml(buf, KEY_INTRODUCE, object.getIntroduce());
+        XmppStringUtils.appendXml(buf, KEY_DEMAND, object.getDemand());
+        XmppStringUtils.appendXml(buf, KEY_STATUS, object.getStatus());
+        buf.append("</public>");
+
+        // private info
+        buf.append("<private>");
+        buf.append("</private>");
+
+        buf.append("</");
+        buf.append(VCardExtendProvider.elementName());
+        buf.append(">");
+        return buf.toString();
+    }
+
     public int getHeight() {
         return height;
     }
@@ -362,7 +403,6 @@ public class VCardExtendObject implements ICacheStoreObject {
         this.astrological = astrological;
     }
 
-
     public String getBodyType() {
         return bodyType;
     }
@@ -489,48 +529,6 @@ public class VCardExtendObject implements ICacheStoreObject {
 
     public void setUpdate_date(Date update_date) {
         this.update_date = update_date;
-    }
-
-
-    public static String getXmlNode(VCardExtendObject object) {
-        if (object == null) {
-            return null;
-        }
-
-        StringBuilder buf = new StringBuilder();
-        buf.append("<");
-        buf.append(VCardExtendProvider.elementName());
-        buf.append(" xmlns=\"");
-        buf.append(VCardExtendProvider.namespace());
-        buf.append("\">");
-        // public
-        buf.append("<public>");
-        XmppStringUtils.appendXml(buf, KEY_HEIGHT, String.valueOf(object.getHeight()));
-        XmppStringUtils.appendXml(buf, KEY_EDUCATION, String.valueOf(object.getEducation()));
-        XmppStringUtils.appendXml(buf, KEY_WAGE, String.valueOf(object.getWage()));
-        XmppStringUtils.appendXml(buf, KEY_WORKAREA, object.getWorkarea());
-        XmppStringUtils.appendXml(buf, KEY_MARRIAGE, String.valueOf(object.getMarriage()));
-        XmppStringUtils.appendXml(buf, KEY_WEIGHT, String.valueOf(object.getWeight()));
-        XmppStringUtils.appendXml(buf, KEY_BIRTHPLACE, object.getBirthplace());
-        XmppStringUtils.appendXml(buf, KEY_RESIDENCE, object.getResidence());
-        XmppStringUtils.appendXml(buf, KEY_INDUSTRY, object.getIndustry());
-        XmppStringUtils.appendXml(buf, KEY_CAREER, object.getCareer());
-        XmppStringUtils.appendXml(buf, KEY_HOUSE, String.valueOf(object.getHouse()));
-        XmppStringUtils.appendXml(buf, KEY_CAR, String.valueOf(object.getCar()));
-        XmppStringUtils.appendXml(buf, KEY_HOBBY, object.getHobby());
-        XmppStringUtils.appendXml(buf, KEY_INTRODUCE, object.getIntroduce());
-        XmppStringUtils.appendXml(buf, KEY_DEMAND, object.getDemand());
-        XmppStringUtils.appendXml(buf, KEY_STATUS, object.getStatus());
-        buf.append("</public>");
-
-        // private info
-        buf.append("<private>");
-        buf.append("</private>");
-
-        buf.append("</");
-        buf.append(VCardExtendProvider.elementName());
-        buf.append(">");
-        return buf.toString();
     }
 
     @Override

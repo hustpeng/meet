@@ -1,6 +1,5 @@
 package com.agmbat.picker;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -10,14 +9,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.agmbat.android.SysResources;
+import com.agmbat.picker.wheelview.WheelView;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.agmbat.android.SysResources;
-import com.agmbat.picker.util.ConvertUtils;
-import com.agmbat.picker.wheelview.WheelView;
 
 /**
  * 单项选择器
@@ -90,22 +88,6 @@ public class SinglePicker<T> extends WheelPicker {
      */
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    /**
-     * 设置默认选中的项的索引
-     */
-    public void setSelectedIndex(int index) {
-        if (index >= 0 && index < items.size()) {
-            selectedItemIndex = index;
-        }
-    }
-
-    /**
-     * 设置默认选中的项
-     */
-    public void setSelectedItem(@NonNull T item) {
-        setSelectedIndex(itemStrings.indexOf(formatToString(item)));
     }
 
     /**
@@ -200,8 +182,24 @@ public class SinglePicker<T> extends WheelPicker {
         return items.get(selectedItemIndex);
     }
 
+    /**
+     * 设置默认选中的项
+     */
+    public void setSelectedItem(@NonNull T item) {
+        setSelectedIndex(itemStrings.indexOf(formatToString(item)));
+    }
+
     public int getSelectedIndex() {
         return selectedItemIndex;
+    }
+
+    /**
+     * 设置默认选中的项的索引
+     */
+    public void setSelectedIndex(int index) {
+        if (index >= 0 && index < items.size()) {
+            selectedItemIndex = index;
+        }
     }
 
     public WheelView getWheelView() {

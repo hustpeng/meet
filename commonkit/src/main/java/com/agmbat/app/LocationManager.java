@@ -22,12 +22,12 @@ import android.location.Location;
 import android.location.LocationProvider;
 import android.os.Bundle;
 
+import com.agmbat.android.SystemManager;
+import com.agmbat.log.Log;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-
-import com.agmbat.android.SystemManager;
-import com.agmbat.log.Log;
 
 /**
  * A class that handles everything about location.
@@ -37,19 +37,15 @@ public class LocationManager {
     private static final String TAG = LocationManager.class.getSimpleName();
 
     private static final int LOCATION_MAX_RESULT = 5;
-
+    LocationListener[] mLocationListeners = new LocationListener[]{
+            new LocationListener(android.location.LocationManager.GPS_PROVIDER),
+            new LocationListener(android.location.LocationManager.NETWORK_PROVIDER)};
     private Listener mListener;
     private android.location.LocationManager mLocationManager;
     private boolean mRecordLocation;
 
-    LocationListener[] mLocationListeners = new LocationListener[]{
-            new LocationListener(android.location.LocationManager.GPS_PROVIDER),
-            new LocationListener(android.location.LocationManager.NETWORK_PROVIDER)};
-
-    public interface Listener {
-        public void showGpsOnScreenIndicator(boolean hasSignal);
-
-        public void hideGpsOnScreenIndicator();
+    public LocationManager(Listener listener) {
+        mListener = listener;
     }
 
     /**
@@ -72,8 +68,41 @@ public class LocationManager {
         return location;
     }
 
-    public LocationManager(Listener listener) {
-        mListener = listener;
+    /**
+     * 通过经纬度获取地址
+     *
+     * @param lat
+     * @param lon
+     * @return address
+     */
+    public static String getDetailAddress(Context context, double latitude, double longitude) {
+        StringBuilder builder = new StringBuilder();
+        try {
+            final Geocoder geocoder = new Geocoder(context, Locale.US);
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, LOCATION_MAX_RESULT);
+            if (null != addresses && addresses.size() > 0) {
+                Address address = addresses.get(0);
+                for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+                    builder.append(address.getAddressLine(i));
+                }
+                //For test
+                for (int i = 0; i < addresses.size(); i++) {
+                    Address current = addresses.get(i);
+                    String locate = current.getCountryName()
+                            + " " + current.getAdminArea()
+                            + " " + current.getSubAdminArea()
+                            + " " + current.getLocality()
+                            + " " + current.getSubLocality()
+                            + " " + current.getFeatureName()
+                            + " " + current.getPremises()
+                            + " " + current.getThoroughfare();
+                    Log.d(TAG, locate);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return builder.toString();
     }
 
     public Location getCurrentLocation() {
@@ -146,6 +175,12 @@ public class LocationManager {
         }
     }
 
+    public interface Listener {
+        public void showGpsOnScreenIndicator(boolean hasSignal);
+
+        public void hideGpsOnScreenIndicator();
+    }
+
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
         boolean mValid = false;
@@ -201,42 +236,5 @@ public class LocationManager {
         public Location current() {
             return mValid ? mLastLocation : null;
         }
-    }
-
-    /**
-     * 通过经纬度获取地址
-     *
-     * @param lat
-     * @param lon
-     * @return address
-     */
-    public static String getDetailAddress(Context context, double latitude, double longitude) {
-        StringBuilder builder = new StringBuilder();
-        try {
-            final Geocoder geocoder = new Geocoder(context, Locale.US);
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, LOCATION_MAX_RESULT);
-            if (null != addresses && addresses.size() > 0) {
-                Address address = addresses.get(0);
-                for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                    builder.append(address.getAddressLine(i));
-                }
-                //For test
-                for (int i = 0; i < addresses.size(); i++) {
-                    Address current = addresses.get(i);
-                    String locate = current.getCountryName()
-                            + " " + current.getAdminArea()
-                            + " " + current.getSubAdminArea()
-                            + " " + current.getLocality()
-                            + " " + current.getSubLocality()
-                            + " " + current.getFeatureName()
-                            + " " + current.getPremises()
-                            + " " + current.getThoroughfare();
-                    Log.d(TAG, locate);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return builder.toString();
     }
 }

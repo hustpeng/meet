@@ -40,19 +40,18 @@ import java.util.List;
 public class RosterEntry {
 
     private final String user;
-    /**
-     * 用户自己取的昵称
-     */
-    private String name;
-
-    /**
-     * 我给好友取的备注名称
-     */
-    private String nickName;
     private final RosterPacketItemType type;
     private final RosterPacketItemStatus status;
     final private Roster roster;
     final private Connection connection;
+    /**
+     * 用户自己取的昵称
+     */
+    private String name;
+    /**
+     * 我给好友取的备注名称
+     */
+    private String nickName;
     private String avatarId;
     private String personalMsg;
     private double latitude;
@@ -78,6 +77,24 @@ public class RosterEntry {
         this.connection = connection;
     }
 
+    public static RosterPacketItem toRosterItem(RosterEntry entry) {
+        RosterPacketItem item = new RosterPacketItem(entry.getUser(), entry.getName());
+        item.setItemType(entry.getType());
+        item.setItemStatus(entry.getStatus());
+        item.setAvatarId(entry.getAvatarId());
+        item.setLatitude(entry.getLatitude());
+        item.setLongitude(entry.getLongitude());
+        item.setName(entry.getName());
+        item.setNickName(entry.getNickName());
+        item.setPersonalMsg(entry.getPersonalMsg());
+        item.setRobot(entry.isRobot());
+        // Set the correct group names for the item.
+        for (RosterGroup group : entry.getGroups()) {
+            item.addGroupName(group.getName());
+        }
+        return item;
+    }
+
     /**
      * Returns the JID of the user associated with this entry.
      *
@@ -86,7 +103,6 @@ public class RosterEntry {
     public String getUser() {
         return user;
     }
-
 
     /**
      * Change the name and upload the change to server
@@ -220,30 +236,12 @@ public class RosterEntry {
         return true;
     }
 
-    public static RosterPacketItem toRosterItem(RosterEntry entry) {
-        RosterPacketItem item = new RosterPacketItem(entry.getUser(), entry.getName());
-        item.setItemType(entry.getType());
-        item.setItemStatus(entry.getStatus());
-        item.setAvatarId(entry.getAvatarId());
-        item.setLatitude(entry.getLatitude());
-        item.setLongitude(entry.getLongitude());
-        item.setName(entry.getName());
-        item.setNickName(entry.getNickName());
-        item.setPersonalMsg(entry.getPersonalMsg());
-        item.setRobot(entry.isRobot());
-        // Set the correct group names for the item.
-        for (RosterGroup group : entry.getGroups()) {
-            item.addGroupName(group.getName());
-        }
-        return item;
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getAvatarId() {
@@ -274,16 +272,16 @@ public class RosterEntry {
         return latitude;
     }
 
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
     public boolean isRobot() {
         return isRobot;
     }
 
     public void setRobot(boolean isRobot) {
         this.isRobot = isRobot;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
     }
 
     public double getLongitude() {

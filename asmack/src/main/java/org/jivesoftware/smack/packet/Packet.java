@@ -51,18 +51,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class Packet {
 
-    protected static final String DEFAULT_LANGUAGE =
-            java.util.Locale.getDefault().getLanguage().toLowerCase();
-
-    private static String DEFAULT_XML_NS = null;
-
     /**
      * Constant used as packetID to indicate that a packet has no id. To indicate that a packet
      * has no id set this constant as the packet's id. When the packet is asked for its id the
      * answer will be <tt>null</tt>.
      */
     public static final String ID_NOT_AVAILABLE = "ID_NOT_AVAILABLE";
-
     /**
      * Date format as defined in XEP-0082 - XMPP Date and Time Profiles.
      * The time zone is set to UTC.
@@ -72,24 +66,45 @@ public abstract class Packet {
      */
     public static final DateFormat XEP_0082_UTC_FORMAT = new SimpleDateFormat(
             "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
-    static {
-        XEP_0082_UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
-    }
-
-
+    protected static final String DEFAULT_LANGUAGE =
+            java.util.Locale.getDefault().getLanguage().toLowerCase();
+    private static String DEFAULT_XML_NS = null;
     /**
      * A prefix helps to make sure that ID's are unique across mutliple instances.
      */
     private static String prefix = XmppStringUtils.randomString(5) + "-";
-
     /**
      * Keeps track of the current increment, which is appended to the prefix to
      * forum a unique ID.
      */
     private static long id = 0;
 
+    static {
+        XEP_0082_UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
+
+    private final List<PacketExtension> packetExtensions = new CopyOnWriteArrayList<PacketExtension>();
+    private final Map<String, Object> properties = new HashMap<String, Object>();
     private String xmlns = DEFAULT_XML_NS;
+    private String packetID = null;
+    private String to = null;
+    private String from = null;
+    private XMPPError error = null;
+
+    public Packet() {
+    }
+    public Packet(Packet p) {
+        packetID = p.getPacketID();
+        to = p.getTo();
+        from = p.getFrom();
+        xmlns = p.xmlns;
+        error = p.error;
+
+        // Copy extensions
+        for (PacketExtension pe : p.getExtensions()) {
+            addExtension(pe);
+        }
+    }
 
     /**
      * Returns the next unique id. Each id made up of a short alphanumeric
@@ -105,28 +120,13 @@ public abstract class Packet {
         DEFAULT_XML_NS = defaultXmlns;
     }
 
-    private String packetID = null;
-    private String to = null;
-    private String from = null;
-    private final List<PacketExtension> packetExtensions = new CopyOnWriteArrayList<PacketExtension>();
-
-    private final Map<String, Object> properties = new HashMap<String, Object>();
-    private XMPPError error = null;
-
-    public Packet() {
-    }
-
-    public Packet(Packet p) {
-        packetID = p.getPacketID();
-        to = p.getTo();
-        from = p.getFrom();
-        xmlns = p.xmlns;
-        error = p.error;
-
-        // Copy extensions
-        for (PacketExtension pe : p.getExtensions()) {
-            addExtension(pe);
-        }
+    /**
+     * Returns the default language used for all messages containing localized content.
+     *
+     * @return the default language
+     */
+    public static String getDefaultLanguage() {
+        return DEFAULT_LANGUAGE;
     }
 
     /**
@@ -454,15 +454,6 @@ public abstract class Packet {
 
     public String getXmlns() {
         return this.xmlns;
-    }
-
-    /**
-     * Returns the default language used for all messages containing localized content.
-     *
-     * @return the default language
-     */
-    public static String getDefaultLanguage() {
-        return DEFAULT_LANGUAGE;
     }
 
     public boolean equals(Object o) {

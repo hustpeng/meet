@@ -1,10 +1,8 @@
-
 package org.jivesoftware.smackx.favorites;
 
 
 /**
  * A listener that is fired any time a favorites is changed
- *
  */
 public interface FavoritesListener {
 

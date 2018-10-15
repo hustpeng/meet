@@ -41,7 +41,7 @@ public class JoinGroupProvider implements IQProvider {
                         quitGroupReplay.setSuccess(success);
                     } else if ("dismisscircle".equals(action)) {
                         dismissGroupReply.setSuccess(success);
-                    }else if("changenickname".equals(action)){
+                    } else if ("changenickname".equals(action)) {
                         changeGroupNicknameReply.setSuccess(success);
                     }
                 } else if (parser.getName().equals("wait")) {
@@ -57,8 +57,8 @@ public class JoinGroupProvider implements IQProvider {
                     } else if ("dismisscircle".equals(action)) {
                         dismissGroupReply.setReason(reason);
                     }
-                }else if(parser.getName().equals("sendername")){
-                    if("changenickname".equals(action)){
+                } else if (parser.getName().equals("sendername")) {
+                    if ("changenickname".equals(action)) {
                         changeGroupNicknameReply.setGroupNickname(parser.nextText());
                     }
                 }

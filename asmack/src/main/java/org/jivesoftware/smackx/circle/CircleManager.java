@@ -13,10 +13,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CircleManager extends Xepmodule {
 
-    public Connection xmppConnection;
-
     private final List<TokenListener> listeners;
-
+    public Connection xmppConnection;
     private String circleServer = null;
 
     private boolean requestTokenAfterSetServer = false;
@@ -66,12 +64,6 @@ public class CircleManager extends Xepmodule {
             }
         }
     }
-
-
-
-
-
-
 
 
 }

@@ -24,7 +24,6 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
-
 import com.agmbat.android.utils.ToastUtil;
 
 import java.io.File;
@@ -39,24 +38,6 @@ import static android.content.Context.CLIPBOARD_SERVICE;
  */
 public class SystemUtil {
 
-
-    /**
-     * App是否已经安装
-     *
-     * @param context
-     * @param packageName
-     * @return
-     */
-    public boolean isAppInstalled(Context context, String packageName) {
-        if (packageName == null || "".equals(packageName))
-            return false;
-        try {
-            PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
-            return info != null;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
-    }
 
     /**
      * 获取当前进程名
@@ -109,7 +90,6 @@ public class SystemUtil {
         return version;
     }
 
-
     /**
      * 获取软件版本号
      *
@@ -128,7 +108,6 @@ public class SystemUtil {
         }
         return versionCode;
     }
-
 
     /**
      * 获取自己应用程序的名称
@@ -361,6 +340,24 @@ public class SystemUtil {
             ToastUtil.showToast("找不到可用的邮件客户端");
         }
 
+    }
+
+    /**
+     * App是否已经安装
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public boolean isAppInstalled(Context context, String packageName) {
+        if (packageName == null || "".equals(packageName))
+            return false;
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
+            return info != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
 }

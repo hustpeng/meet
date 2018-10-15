@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2015 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * Tab Manager
  *
  * @author mayimchen
@@ -8,12 +8,12 @@
  */
 package com.agmbat.tab;
 
+import android.graphics.drawable.Drawable;
+
 import com.facebook.rebound.BaseSpringSystem;
 import com.facebook.rebound.SimpleSpringListener;
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringSystem;
-
-import android.graphics.drawable.Drawable;
 
 /**
  * 选中Tab后，以动画的方式移动下标
@@ -22,10 +22,9 @@ public class AnimTabSelection implements TabWidget.OnTabSelectionChanged {
 
     private final TabWidget.OnTabSelectionChanged mListener;
     private final TabWidget mTabWidget;
-
+    private final BaseSpringSystem mSpringSystem = SpringSystem.create();
     // anim spring
     private Spring mScrollSpring;
-    private final BaseSpringSystem mSpringSystem = SpringSystem.create();
 
     public AnimTabSelection(TabWidget tabWidget, TabWidget.OnTabSelectionChanged l) {
         mTabWidget = tabWidget;

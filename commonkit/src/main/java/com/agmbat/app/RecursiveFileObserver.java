@@ -1,20 +1,17 @@
-
 package com.agmbat.app;
+
+import android.os.FileObserver;
+
+import com.agmbat.log.Log;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import com.agmbat.log.Log;
-
-import android.os.FileObserver;
-
 public class RecursiveFileObserver extends FileObserver {
 
-    public interface OnEventListener {
-        public void onEvent(int event, String path);
-    }
+    private static final String TAG = "RecursiveFileObserver";
 
     // 可以监听的事件类型：
     // ACCESS ： 即文件被访问
@@ -31,21 +28,19 @@ public class RecursiveFileObserver extends FileObserver {
     // MOVE_SELF ： 自移动，即一个可执行文件在执行时移动自己
     // CLOSE ： 文件被关闭，等同于(IN_CLOSE_WRITE | IN_CLOSE_NOWRITE)
     // ALL_EVENTS ： 包括上面的所有事件
-
-    private static final String TAG = "RecursiveFileObserver";
-
     private static final int CREATE2 = 0x40000100;
     private static final int DELETE2 = 0x40000200;
-
     private List<SingleFileObserver> mObservers;
     private String mPath;
     private int mMask;
-
     private OnEventListener mEventListener;
+    private OnEventListener mChildEventListener = new OnEventListener() {
 
-    private static int mask(int mask) {
-        return mask | FileObserver.CREATE | FileObserver.DELETE | CREATE2 | DELETE2;
-    }
+        @Override
+        public void onEvent(int event, String path) {
+            RecursiveFileObserver.this.onEvent(event, path);
+        }
+    };
 
     public RecursiveFileObserver(String path) {
         this(path, ALL_EVENTS);
@@ -57,17 +52,13 @@ public class RecursiveFileObserver extends FileObserver {
         mMask = mask(mask);
     }
 
+    private static int mask(int mask) {
+        return mask | FileObserver.CREATE | FileObserver.DELETE | CREATE2 | DELETE2;
+    }
+
     public void setOnEventListener(OnEventListener l) {
         mEventListener = l;
     }
-
-    private OnEventListener mChildEventListener = new OnEventListener() {
-
-        @Override
-        public void onEvent(int event, String path) {
-            RecursiveFileObserver.this.onEvent(event, path);
-        }
-    };
 
     @Override
     public void startWatching() {
@@ -96,7 +87,7 @@ public class RecursiveFileObserver extends FileObserver {
             SingleFileObserver sfo = mObservers.get(i);
             sfo.startWatching();
         }
-    };
+    }
 
     @Override
     public void stopWatching() {
@@ -109,7 +100,9 @@ public class RecursiveFileObserver extends FileObserver {
         }
         mObservers.clear();
         mObservers = null;
-    };
+    }
+
+    ;
 
     @Override
     public final void onEvent(int event, String path) {
@@ -178,6 +171,8 @@ public class RecursiveFileObserver extends FileObserver {
 
     }
 
+    ;
+
     private SingleFileObserver getFileObserver(String path) {
         for (SingleFileObserver observer : mObservers) {
             if (observer.mPath.equals(path)) {
@@ -185,6 +180,10 @@ public class RecursiveFileObserver extends FileObserver {
             }
         }
         return null;
+    }
+
+    public interface OnEventListener {
+        public void onEvent(int event, String path);
     }
 
     /**

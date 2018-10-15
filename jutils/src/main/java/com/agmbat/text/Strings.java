@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -15,7 +15,7 @@ public class Strings {
 
     /**
      * 返回四个空格
-     * 
+     *
      * @return
      */
     public static String tab() {
@@ -24,7 +24,7 @@ public class Strings {
 
     /**
      * 返回对应的tab个数
-     * 
+     *
      * @param count
      * @return
      */
@@ -38,7 +38,7 @@ public class Strings {
 
     /**
      * 将给定的字符串按行添加tab键
-     * 
+     *
      * @param count
      * @param text
      * @return
@@ -58,7 +58,7 @@ public class Strings {
 
     /**
      * 新起一行
-     * 
+     *
      * @return
      */
     public static String newLine() {

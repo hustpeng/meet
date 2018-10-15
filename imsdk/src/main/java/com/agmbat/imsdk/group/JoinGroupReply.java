@@ -8,20 +8,20 @@ public class JoinGroupReply extends IQ {
 
     private boolean waitForAgree;
 
-    public void setSuccess(boolean success){
-        this.success = success;
-    }
-
-    public void setWaitForAgree(boolean waitForAgree){
-        this.waitForAgree = waitForAgree;
-    }
-
     public boolean isSuccess() {
         return success;
     }
 
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
     public boolean isWaitForAgree() {
         return waitForAgree;
+    }
+
+    public void setWaitForAgree(boolean waitForAgree) {
+        this.waitForAgree = waitForAgree;
     }
 
     @Override

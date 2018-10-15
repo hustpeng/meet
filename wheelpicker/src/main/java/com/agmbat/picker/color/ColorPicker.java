@@ -12,10 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.agmbat.android.SysResources;
-import com.agmbat.picker.widget.ColorPanelView;
-import com.agmbat.picker.widget.StrokeTextView;
 import com.agmbat.picker.popup.ConfirmPopup;
 import com.agmbat.picker.util.ConvertUtils;
+import com.agmbat.picker.widget.ColorPanelView;
+import com.agmbat.picker.widget.StrokeTextView;
 
 import java.util.Locale;
 

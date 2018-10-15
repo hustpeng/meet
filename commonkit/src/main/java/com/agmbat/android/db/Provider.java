@@ -20,12 +20,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class Provider {
 
 
+    private final long mId;
+
+    public Provider() {
+        this(-1);
+    }
+
+    public Provider(long id) {
+        mId = id;
+    }
 
     public static final void copyInteger(String key, ContentValues from, ContentValues to) {
         Integer i = from.getAsInteger(key);
@@ -49,22 +55,12 @@ public abstract class Provider {
     }
 
     public static final void copyStringWithDefault(String key, ContentValues from,
-            ContentValues to,
-            String defaultValue) {
+                                                   ContentValues to,
+                                                   String defaultValue) {
         copyString(key, from, to);
         if (!to.containsKey(key)) {
             to.put(key, defaultValue);
         }
-    }
-
-    private final long mId;
-
-    public Provider() {
-        this(-1);
-    }
-
-    public Provider(long id) {
-        mId = id;
     }
 
     public long getId() {
@@ -85,7 +81,7 @@ public abstract class Provider {
     }
 
     public Cursor query(SQLiteDatabase db, String[] projection, String selection,
-            String[] selectionArgs, String sortOrder) {
+                        String[] selectionArgs, String sortOrder) {
         SqlSelection fullSelection = getWhereClause(selection, selectionArgs);
         return db.query(getTable(), projection, fullSelection.getSelection(),
                 fullSelection.getParameters(), null, null, sortOrder);
@@ -104,7 +100,7 @@ public abstract class Provider {
     }
 
     public int update(SQLiteDatabase db, ContentValues values, String where,
-            String[] whereArgs) {
+                      String[] whereArgs) {
         int count;
         if (values.size() > 0) {
             SqlSelection selection = getWhereClause(where, whereArgs);

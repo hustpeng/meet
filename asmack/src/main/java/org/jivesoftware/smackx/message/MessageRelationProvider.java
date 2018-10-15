@@ -1,10 +1,10 @@
 package org.jivesoftware.smackx.message;
 
+import android.text.TextUtils;
+
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
-
-import android.text.TextUtils;
 
 public class MessageRelationProvider implements PacketExtensionProvider {
 

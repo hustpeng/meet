@@ -23,7 +23,7 @@ package org.jivesoftware.smack.packet;
  * Represents a stream error packet. Stream errors are unrecoverable errors where the server
  * will close the unrelying TCP connection after the stream error was sent to the client.
  * These is the list of stream errors as defined in the XMPP spec:<p>
- * <p>
+ *
  * <table border=1>
  * <tr><td><b>Code</b></td><td><b>Description</b></td></tr>
  * <tr><td> bad-format </td><td> the entity has sent XML that cannot be processed </td></tr>

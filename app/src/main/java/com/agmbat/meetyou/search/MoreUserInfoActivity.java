@@ -12,8 +12,6 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.asmack.api.OnFetchLoginUserListener;
 import com.agmbat.imsdk.asmack.api.XMPPApi;
 import com.agmbat.imsdk.asmack.roster.ContactInfo;
-import com.agmbat.imsdk.asmack.roster.RosterManager;
-import com.agmbat.imsdk.imevent.LoginUserUpdateEvent;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.log.Debug;
 import com.agmbat.meetyou.R;
@@ -23,8 +21,6 @@ import com.agmbat.picker.helper.EducationItem;
 import com.agmbat.picker.helper.HouseItem;
 import com.agmbat.picker.helper.MarriageItem;
 import com.agmbat.picker.helper.WageItem;
-
-import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -142,7 +138,7 @@ public class MoreUserInfoActivity extends Activity {
         loadMoreUserInfo(contactInfo.getBareJid());
     }
 
-    private void loadMoreUserInfo(String jid){
+    private void loadMoreUserInfo(String jid) {
         XMPPApi.fetchLoginUser(jid, new OnFetchLoginUserListener() {
             @Override
             public void onFetchLoginUser(final LoginUser user) {

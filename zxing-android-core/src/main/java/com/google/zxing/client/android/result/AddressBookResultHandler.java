@@ -45,13 +45,6 @@ public final class AddressBookResultHandler extends ResultHandler {
             new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH),
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH),
     };
-
-    static {
-        for (DateFormat format : DATE_FORMATS) {
-            format.setLenient(false);
-        }
-    }
-
     private static final int[] BUTTON_TEXTS = {
             R.string.button_add_contact,
             R.string.button_show_map,
@@ -59,25 +52,14 @@ public final class AddressBookResultHandler extends ResultHandler {
             R.string.button_email,
     };
 
+    static {
+        for (DateFormat format : DATE_FORMATS) {
+            format.setLenient(false);
+        }
+    }
+
     private final boolean[] fields;
     private int buttonCount;
-
-    // This takes all the work out of figuring out which buttons/actions should be in which
-    // positions, based on which fields are present in this barcode.
-    private int mapIndexToAction(int index) {
-        if (index < buttonCount) {
-            int count = -1;
-            for (int x = 0; x < MAX_BUTTON_COUNT; x++) {
-                if (fields[x]) {
-                    count++;
-                }
-                if (count == index) {
-                    return x;
-                }
-            }
-        }
-        return -1;
-    }
 
     public AddressBookResultHandler(Activity activity, ParsedResult result) {
         super(activity, result);
@@ -101,6 +83,34 @@ public final class AddressBookResultHandler extends ResultHandler {
                 buttonCount++;
             }
         }
+    }
+
+    private static Date parseDate(String s) {
+        for (DateFormat currentFormat : DATE_FORMATS) {
+            try {
+                return currentFormat.parse(s);
+            } catch (ParseException e) {
+                // continue
+            }
+        }
+        return null;
+    }
+
+    // This takes all the work out of figuring out which buttons/actions should be in which
+    // positions, based on which fields are present in this barcode.
+    private int mapIndexToAction(int index) {
+        if (index < buttonCount) {
+            int count = -1;
+            for (int x = 0; x < MAX_BUTTON_COUNT; x++) {
+                if (fields[x]) {
+                    count++;
+                }
+                if (count == index) {
+                    return x;
+                }
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -152,17 +162,6 @@ public final class AddressBookResultHandler extends ResultHandler {
             default:
                 break;
         }
-    }
-
-    private static Date parseDate(String s) {
-        for (DateFormat currentFormat : DATE_FORMATS) {
-            try {
-                return currentFormat.parse(s);
-            } catch (ParseException e) {
-                // continue
-            }
-        }
-        return null;
     }
 
     // Overriden so we can hyphenate phone numbers, format birthdays, and bold the name.

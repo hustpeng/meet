@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.token;
 
 import android.text.TextUtils;
@@ -22,27 +21,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class TokenManager extends Xepmodule {
 
     private final static int getToken = 0;
-
-    private String tokenServer = null;
-
-    private boolean requestTokenAfterSetServer = false;
-
-    private TokenObject tokenObject = null;
-
+    private static final String TAG = "";
     private final List<TokenListener> listeners;
-
-    public TokenManager(final Connection connection) {
-        this.xmppConnection = connection;
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-
-            @Override
-            public void connectionCreated(Connection connection) {
-                connection.addConnectionListener(myConnectionListener);
-            }
-        });
-        listeners = new CopyOnWriteArrayList<TokenListener>();
-    }
-
+    private String tokenServer = null;
+    private boolean requestTokenAfterSetServer = false;
+    private TokenObject tokenObject = null;
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {
@@ -65,6 +48,19 @@ public class TokenManager extends Xepmodule {
             abortAllQuery();
         }
     };
+    private Object tokenLock = new Object();
+
+    public TokenManager(final Connection connection) {
+        this.xmppConnection = connection;
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(myConnectionListener);
+            }
+        });
+        listeners = new CopyOnWriteArrayList<TokenListener>();
+    }
 
     public void addListener(TokenListener listener) {
         if (!listeners.contains(listener)) {
@@ -112,24 +108,6 @@ public class TokenManager extends Xepmodule {
 
             default:
                 break;
-        }
-    }
-
-    public class getTokenPacket extends IQ {
-
-        public getTokenPacket() {
-            setTo(tokenServer);
-        }
-
-        @Override
-        public String getChildElementXML() {
-            return new StringBuffer()
-                    .append("<")
-                    .append(TokenProvider.elementName())
-                    .append(" xmlns=\"")
-                    .append(TokenProvider.namespace())
-                    .append("\"/>")
-                    .toString();
         }
     }
 
@@ -181,22 +159,6 @@ public class TokenManager extends Xepmodule {
         }
     }
 
-    private class GetTokenResultListener implements PacketListener {
-        @Override
-        public void processPacket(Packet packet) {
-            String packetIdString = packet.getPacketID();
-            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
-            if (queryInfo != null) {
-                removeQueryInfo(queryInfo, packetIdString);
-                processQueryResponse(packet, queryInfo);
-            }
-        }
-    }
-
-    private static final String TAG = "";
-
-    private Object tokenLock = new Object();
-
     /**
      * 获取token
      *
@@ -222,5 +184,35 @@ public class TokenManager extends Xepmodule {
             }
         }
         return tokenString;
+    }
+
+    public class getTokenPacket extends IQ {
+
+        public getTokenPacket() {
+            setTo(tokenServer);
+        }
+
+        @Override
+        public String getChildElementXML() {
+            return new StringBuffer()
+                    .append("<")
+                    .append(TokenProvider.elementName())
+                    .append(" xmlns=\"")
+                    .append(TokenProvider.namespace())
+                    .append("\"/>")
+                    .toString();
+        }
+    }
+
+    private class GetTokenResultListener implements PacketListener {
+        @Override
+        public void processPacket(Packet packet) {
+            String packetIdString = packet.getPacketID();
+            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
+            if (queryInfo != null) {
+                removeQueryInfo(queryInfo, packetIdString);
+                processQueryResponse(packet, queryInfo);
+            }
+        }
     }
 }

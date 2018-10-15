@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -18,15 +18,15 @@ public final class BitUtil {
     /**
      * The Byte Ordering Mark of Unicode encoding for Windows-based files.
      */
-    private static final byte[] UNICODE_BOE = new byte[] {(byte) 0xFF, (byte) 0xFE};
+    private static final byte[] UNICODE_BOE = new byte[]{(byte) 0xFF, (byte) 0xFE};
     /**
      * The Byte Ordering Mark of UTF-8 encoding for Windows-based files.
      */
-    private static final byte[] UTF8_BOE = new byte[] {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
+    private static final byte[] UTF8_BOE = new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
 
-    private static final int[] BYTE_MASKS = new int[] {0xFF, 0x7F, 0x3F, 0x1F, 0x0F, 0x07, 0x03, 0x01};
+    private static final int[] BYTE_MASKS = new int[]{0xFF, 0x7F, 0x3F, 0x1F, 0x0F, 0x07, 0x03, 0x01};
 
-    private static final int[] SHORT_MASKS = new int[] {0xFFFF, 0x7FFF, 0x3FFF, 0x1FFF, 0x0FFF, 0x07FF, 0x03FF, 0x01FF,
+    private static final int[] SHORT_MASKS = new int[]{0xFFFF, 0x7FFF, 0x3FFF, 0x1FFF, 0x0FFF, 0x07FF, 0x03FF, 0x01FF,
             0x00FF, 0x007F, 0x003F, 0x001F, 0x000F, 0x0007, 0x0003, 0x0001};
 
     private BitUtil() {
@@ -39,7 +39,7 @@ public final class BitUtil {
      * @return value 在内存中的字节数组表示。
      */
     public static byte[] getBytes(boolean value) {
-        return new byte[] {(byte) (value ? 1 : 0)};
+        return new byte[]{(byte) (value ? 1 : 0)};
     }
 
     /**
@@ -49,7 +49,7 @@ public final class BitUtil {
      * @return value 在内存中的字节数组表示。
      */
     public static byte[] getBytes(byte value) {
-        return new byte[] {value};
+        return new byte[]{value};
     }
 
     /**
@@ -59,7 +59,7 @@ public final class BitUtil {
      * @return value 在内存中的字节数组表示。
      */
     public static byte[] getBytes(char value) {
-        return new byte[] {(byte) (value & 0xFF), (byte) (value >>> 8)};
+        return new byte[]{(byte) (value & 0xFF), (byte) (value >>> 8)};
     }
 
     /**
@@ -69,7 +69,7 @@ public final class BitUtil {
      * @return value 在内存中的字节数组表示。
      */
     public static byte[] getBytes(short value) {
-        return new byte[] {(byte) (value & 0xFF), (byte) (value >>> 8)};
+        return new byte[]{(byte) (value & 0xFF), (byte) (value >>> 8)};
     }
 
     /**
@@ -79,7 +79,7 @@ public final class BitUtil {
      * @return value 在内存中的字节数组表示。
      */
     public static byte[] getBytes(int value) {
-        return new byte[] {(byte) (value & 0xFF), (byte) (value >>> 8), (byte) (value >>> 16), (byte) (value >>> 24)};
+        return new byte[]{(byte) (value & 0xFF), (byte) (value >>> 8), (byte) (value >>> 16), (byte) (value >>> 24)};
     }
 
     /**
@@ -89,7 +89,7 @@ public final class BitUtil {
      * @return value 在内存中的字节数组表示。
      */
     public static byte[] getBytes(long value) {
-        return new byte[] {(byte) (value & 0xFF), (byte) (value >>> 8), (byte) (value >>> 16), (byte) (value >>> 24),
+        return new byte[]{(byte) (value & 0xFF), (byte) (value >>> 8), (byte) (value >>> 16), (byte) (value >>> 24),
                 (byte) (value >>> 32), (byte) (value >>> 40), (byte) (value >>> 48), (byte) (value >>> 56)};
     }
 
@@ -296,23 +296,23 @@ public final class BitUtil {
     }
 
     public static byte[] toByteArray(byte value) {
-        return new byte[] {value};
+        return new byte[]{value};
     }
 
     public static byte[] toByteArray(short value) {
-        return new byte[] {(byte) (value & 0xFF), (byte) (value >>> 8)};
+        return new byte[]{(byte) (value & 0xFF), (byte) (value >>> 8)};
     }
 
     public static byte[] toByteArray(char value) {
-        return new byte[] {(byte) (value & 0xFF), (byte) (value >>> 8)};
+        return new byte[]{(byte) (value & 0xFF), (byte) (value >>> 8)};
     }
 
     public static byte[] toByteArray(int value) {
-        return new byte[] {(byte) (value & 0xFF), (byte) (value >>> 8), (byte) (value >>> 16), (byte) (value >>> 24)};
+        return new byte[]{(byte) (value & 0xFF), (byte) (value >>> 8), (byte) (value >>> 16), (byte) (value >>> 24)};
     }
 
     public static byte[] toByteArray(long value) {
-        return new byte[] {(byte) (value & 0xFF), (byte) (value >>> 8), (byte) (value >>> 16), (byte) (value >>> 24),
+        return new byte[]{(byte) (value & 0xFF), (byte) (value >>> 8), (byte) (value >>> 16), (byte) (value >>> 24),
                 (byte) (value >>> 32), (byte) (value >>> 40), (byte) (value >>> 48), (byte) (value >>> 56)};
     }
 

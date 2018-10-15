@@ -41,12 +41,135 @@ import java.util.List;
 
 public class MessageStorage {
 
+    ////
+    private static MessageIndex sMessageIndex;
     private DatabaseHelper mOpenHelper;
+
 
     public MessageStorage() {
         mOpenHelper = new DatabaseHelper(AppResources.getAppContext());
     }
 
+    private static String getTableName() {
+        return "messages_data";
+    }
+
+    static public String getCreateTableStr() {
+        TableSqlBuilder builder = new TableSqlBuilder(getTableName());
+        builder.addColumn(Columns._ID, DataType.INTEGER, Param.PRIMARY_KEY, Param.AUTOINCREMENT);
+        builder.addColumn(Columns.MSG_FROM_JID, DataType.TEXT);
+        builder.addColumn(Columns.MSG_TO_JID, DataType.TEXT);
+        builder.addColumn(Columns.MSG_SENDER_JID, DataType.TEXT);
+        builder.addColumn(Columns.MSG_SENDER_NAME, DataType.TEXT);
+        builder.addColumn(Columns.MSG_SENDER_AVATAR, DataType.TEXT);
+        builder.addColumn(Columns.MSG_CHAT_TYPE, DataType.TEXT);
+        builder.addColumn(Columns.MSG_BODY, DataType.TEXT);
+        builder.addColumn(Columns.MSG_HTML, DataType.TEXT);
+        builder.addColumn(Columns.MSG_IS_OUTGOING, DataType.BOOLEAN);
+        builder.addColumn(Columns.MSG_ID, DataType.TEXT);
+        builder.addColumn(Columns.MSG_TYPE, DataType.INTEGER);
+        builder.addColumn(Columns.MSG_STATUS, DataType.INTEGER);
+        builder.addColumn(Columns.MSG_DATE, DataType.INTEGER);
+        builder.addColumn(Columns.MSG_ACCOUNT, DataType.TEXT);
+        return builder.buildSql();
+    }
+
+    /**
+     * 将相关信息添加的ContentValues中
+     *
+     * @param obj
+     * @param values
+     */
+    public static void onAddToDatabase(MessageObject obj, ContentValues values) {
+        if (obj == null || values == null) {
+            return;
+        }
+        values.put(Columns.MSG_FROM_JID, obj.getFromJid());
+        values.put(Columns.MSG_TO_JID, obj.getToJid());
+        values.put(Columns.MSG_SENDER_JID, obj.getSenderJid());
+        values.put(Columns.MSG_SENDER_NAME, obj.getSenderNickName());
+        values.put(Columns.MSG_SENDER_AVATAR, obj.getSenderAvatar());
+        if (null != obj.getChatType()) {
+            values.put(Columns.MSG_CHAT_TYPE, obj.getChatType().name());
+        }
+        values.put(Columns.MSG_BODY, obj.getBody());
+        values.put(Columns.MSG_HTML, obj.getHtml());
+        values.put(Columns.MSG_IS_OUTGOING, obj.isOutgoing());
+        values.put(Columns.MSG_ID, obj.getMsgId());
+        if (null != obj.getMsgType()) {
+            values.put(Columns.MSG_TYPE, obj.getMsgType().ordinal());
+        }
+        values.put(Columns.MSG_STATUS, obj.getMsgStatus().ordinal());
+        values.put(Columns.MSG_DATE, obj.getDate());
+        values.put(Columns.MSG_ACCOUNT, obj.getAccount());
+    }
+
+    /**
+     * 合并消息
+     *
+     * @param senderArray
+     * @param receiverArray
+     * @return
+     */
+    private static List<MessageObject> mergeMessage(List<MessageObject> senderArray,
+                                                    List<MessageObject> receiverArray) {
+        List<MessageObject> resultArray = new ArrayList<>();
+        if (senderArray.size() > 0 && receiverArray.size() > 0) {
+            for (MessageObject senderMessageObject : senderArray) {
+                boolean found = false;
+                for (MessageObject receiverMessageObject : receiverArray) {
+                    if (senderMessageObject.getToJid().equals(receiverMessageObject.getFromJid())) {
+                        if (senderMessageObject.getDate() > receiverMessageObject.getDate()) {
+                            resultArray.add(senderMessageObject);
+                        } else {
+                            resultArray.add(receiverMessageObject);
+                        }
+                        found = true;
+                        receiverArray.remove(receiverMessageObject);
+                        break;
+                    }
+                }
+                if (!found) {
+                    resultArray.add(senderMessageObject);
+                }
+            }
+            resultArray.addAll(receiverArray);
+        } else if (senderArray.size() > 0) {
+            resultArray.addAll(senderArray);
+        } else if (receiverArray.size() > 0) {
+            resultArray.addAll(receiverArray);
+        }
+        return resultArray;
+    }
+
+    private static MessageObject cursorToMessage(Cursor cursor) {
+        if (sMessageIndex == null) {
+            sMessageIndex = new MessageIndex(cursor);
+        }
+        MessageObject obj = new MessageObject();
+        obj.setFromJid(cursor.getString(sMessageIndex.fromJidIndex));
+        obj.setToJid(cursor.getString(sMessageIndex.toJidIndex));
+        obj.setSenderJid(cursor.getString(sMessageIndex.senderJidIndex));
+        obj.setSenderAvatar(cursor.getString(sMessageIndex.senderAvatarIndex));
+        obj.setSenderNickName(cursor.getString(sMessageIndex.senderNameIndex));
+        String chatType = cursor.getString(sMessageIndex.chatTypeIndex);
+        if (!TextUtils.isEmpty(chatType)) {
+            obj.setChatType(Message.Type.fromString(chatType));
+        }
+        obj.setBody(cursor.getString(sMessageIndex.bodyIndex));
+        obj.setMsgId(cursor.getString(sMessageIndex.msgIdIndex));
+        obj.setMsgType(MessageSubType.values()[cursor.getInt(sMessageIndex.msgTypeIndex)]);
+        obj.setMsgStatus(MessageObjectStatus.values()[cursor.getInt(sMessageIndex.msgStatusIndex)]);
+        obj.setDate(cursor.getLong(sMessageIndex.dateIndex));
+        obj.setHtml(cursor.getString(sMessageIndex.htmlIndex));
+        if (cursor.getInt(sMessageIndex.outgoingIndex) != 0) {
+            obj.setOutgoing(true);
+        } else {
+            obj.setOutgoing(false);
+        }
+        obj.setAccount(cursor.getString(sMessageIndex.accountIndex));
+        return obj;
+    }
 
     public int update(MessageObject t, String selection, String[] selectionArgs) {
         ContentValues values = new ContentValues();
@@ -104,7 +227,6 @@ public class MessageStorage {
         });
     }
 
-
     public MessageObject getMsg(String msgId, String myJid) {
         if (TextUtils.isEmpty(msgId)) {
             return null;
@@ -142,7 +264,7 @@ public class MessageStorage {
         return array;
     }
 
-    public List<MessageObject> search(String myJid, String chatJid, String keyword){
+    public List<MessageObject> search(String myJid, String chatJid, String keyword) {
         List<MessageObject> array = new ArrayList<MessageObject>();
         Cursor cursor = null;
         try {
@@ -153,7 +275,7 @@ public class MessageStorage {
                     + Columns.MSG_FROM_JID + "=? AND " + Columns.MSG_TO_JID + "=?) OR ("
                     + Columns.MSG_FROM_JID + "=? AND " + Columns.MSG_TO_JID + "=?)) AND ("
                     + Columns.MSG_BODY + " LIKE ? OR " + Columns.MSG_SENDER_NAME + " LIKE ?)";
-            String likeArgs =  "%" + keyword + "%";
+            String likeArgs = "%" + keyword + "%";
             String[] args = new String[]{myJid, myJid, chatJid, chatJid, myJid, likeArgs, likeArgs};
             cursor = qb.query(db, null, where, args, null, null, Columns.MSG_DATE + " DESC");
             while (cursor.moveToNext()) {
@@ -169,7 +291,6 @@ public class MessageStorage {
         }
         return array;
     }
-
 
     public void deleteMsg(String[] msgIds) {
         if (msgIds == null || msgIds.length == 0) {
@@ -241,78 +362,6 @@ public class MessageStorage {
         delete(where, selectionArgs);
     }
 
-    private static String getTableName() {
-        return "messages_data";
-    }
-
-    public interface Columns extends BaseColumns {
-
-        public static final String MSG_FROM_JID = "from_jid";
-        public static final String MSG_TO_JID = "to_jid";
-        public static final String MSG_SENDER_JID = "sender_jid";
-        public static final String MSG_SENDER_NAME = "sender_name";
-        public static final String MSG_SENDER_AVATAR = "sender_avatar";
-        public static final String MSG_CHAT_TYPE = "chat_type";
-        public static final String MSG_BODY = "body";
-        public static final String MSG_HTML = "html";
-        public static final String MSG_IS_OUTGOING = "outgoing";
-        public static final String MSG_ID = "msg_id";
-        public static final String MSG_TYPE = "msg_type";
-        public static final String MSG_STATUS = "msg_status";
-        public static final String MSG_DATE = "msg_date";
-        public static final String MSG_ACCOUNT = "account";
-    }
-
-    static public String getCreateTableStr() {
-        TableSqlBuilder builder = new TableSqlBuilder(getTableName());
-        builder.addColumn(Columns._ID, DataType.INTEGER, Param.PRIMARY_KEY, Param.AUTOINCREMENT);
-        builder.addColumn(Columns.MSG_FROM_JID, DataType.TEXT);
-        builder.addColumn(Columns.MSG_TO_JID, DataType.TEXT);
-        builder.addColumn(Columns.MSG_SENDER_JID, DataType.TEXT);
-        builder.addColumn(Columns.MSG_SENDER_NAME, DataType.TEXT);
-        builder.addColumn(Columns.MSG_SENDER_AVATAR, DataType.TEXT);
-        builder.addColumn(Columns.MSG_CHAT_TYPE, DataType.TEXT);
-        builder.addColumn(Columns.MSG_BODY, DataType.TEXT);
-        builder.addColumn(Columns.MSG_HTML, DataType.TEXT);
-        builder.addColumn(Columns.MSG_IS_OUTGOING, DataType.BOOLEAN);
-        builder.addColumn(Columns.MSG_ID, DataType.TEXT);
-        builder.addColumn(Columns.MSG_TYPE, DataType.INTEGER);
-        builder.addColumn(Columns.MSG_STATUS, DataType.INTEGER);
-        builder.addColumn(Columns.MSG_DATE, DataType.INTEGER);
-        builder.addColumn(Columns.MSG_ACCOUNT, DataType.TEXT);
-        return builder.buildSql();
-    }
-
-    /**
-     * 将相关信息添加的ContentValues中
-     *
-     * @param obj
-     * @param values
-     */
-    public static void onAddToDatabase(MessageObject obj, ContentValues values) {
-        if (obj == null || values == null) {
-            return;
-        }
-        values.put(Columns.MSG_FROM_JID, obj.getFromJid());
-        values.put(Columns.MSG_TO_JID, obj.getToJid());
-        values.put(Columns.MSG_SENDER_JID, obj.getSenderJid());
-        values.put(Columns.MSG_SENDER_NAME, obj.getSenderNickName());
-        values.put(Columns.MSG_SENDER_AVATAR, obj.getSenderAvatar());
-        if (null != obj.getChatType()) {
-            values.put(Columns.MSG_CHAT_TYPE, obj.getChatType().name());
-        }
-        values.put(Columns.MSG_BODY, obj.getBody());
-        values.put(Columns.MSG_HTML, obj.getHtml());
-        values.put(Columns.MSG_IS_OUTGOING, obj.isOutgoing());
-        values.put(Columns.MSG_ID, obj.getMsgId());
-        if (null != obj.getMsgType()) {
-            values.put(Columns.MSG_TYPE, obj.getMsgType().ordinal());
-        }
-        values.put(Columns.MSG_STATUS, obj.getMsgStatus().ordinal());
-        values.put(Columns.MSG_DATE, obj.getDate());
-        values.put(Columns.MSG_ACCOUNT, obj.getAccount());
-    }
-
     // MessageFragment data
     public List<MessageObject> getAllMessage(String myJid) {
         if (null == myJid) {
@@ -344,7 +393,6 @@ public class MessageStorage {
         return messages;
     }
 
-
     /**
      * 获取已发送的信息
      *
@@ -371,44 +419,6 @@ public class MessageStorage {
     }
 
     /**
-     * 合并消息
-     *
-     * @param senderArray
-     * @param receiverArray
-     * @return
-     */
-    private static List<MessageObject> mergeMessage(List<MessageObject> senderArray,
-                                                    List<MessageObject> receiverArray) {
-        List<MessageObject> resultArray = new ArrayList<>();
-        if (senderArray.size() > 0 && receiverArray.size() > 0) {
-            for (MessageObject senderMessageObject : senderArray) {
-                boolean found = false;
-                for (MessageObject receiverMessageObject : receiverArray) {
-                    if (senderMessageObject.getToJid().equals(receiverMessageObject.getFromJid())) {
-                        if (senderMessageObject.getDate() > receiverMessageObject.getDate()) {
-                            resultArray.add(senderMessageObject);
-                        } else {
-                            resultArray.add(receiverMessageObject);
-                        }
-                        found = true;
-                        receiverArray.remove(receiverMessageObject);
-                        break;
-                    }
-                }
-                if (!found) {
-                    resultArray.add(senderMessageObject);
-                }
-            }
-            resultArray.addAll(receiverArray);
-        } else if (senderArray.size() > 0) {
-            resultArray.addAll(senderArray);
-        } else if (receiverArray.size() > 0) {
-            resultArray.addAll(receiverArray);
-        }
-        return resultArray;
-    }
-
-    /**
      * 查询两个人的消息记录
      *
      * @param myJid
@@ -416,14 +426,14 @@ public class MessageStorage {
      * @return
      */
     public List<MessageObject> getMessages(String myJid, String chatJid, long since, int limit, boolean dateAsc) {
-        if(TextUtils.isEmpty(myJid) || TextUtils.isEmpty(chatJid)){
+        if (TextUtils.isEmpty(myJid) || TextUtils.isEmpty(chatJid)) {
             return new ArrayList<MessageObject>();
         }
         List<MessageObject> resultArray = new ArrayList<MessageObject>();
         String orderBy = null;
-        if(dateAsc){
+        if (dateAsc) {
             orderBy = Columns.MSG_DATE + " ASC";
-        }else{
+        } else {
             orderBy = Columns.MSG_DATE + " DESC";
         }
         String where = "((" + Columns.MSG_FROM_JID + "=? And " + Columns.MSG_TO_JID + "=?) Or ("
@@ -431,15 +441,15 @@ public class MessageStorage {
                 + Columns.MSG_ACCOUNT + "=?";
 
         String[] args = null;
-        if(since != -1){
+        if (since != -1) {
             where += " And " + Columns.MSG_DATE + "<?";
             args = new String[]{myJid, chatJid, chatJid, myJid, myJid, String.valueOf(since)};
-        }else{
+        } else {
             args = new String[]{myJid, chatJid, chatJid, myJid, myJid};
         }
 
         String limitArgs = null;
-        if(limit != -1){
+        if (limit != -1) {
             limitArgs = String.valueOf(limit);
         }
         Cursor cursor = mOpenHelper.getReadableDatabase().query(getTableName(), null, where,
@@ -477,36 +487,22 @@ public class MessageStorage {
         return count;
     }
 
-    ////
-    private static MessageIndex sMessageIndex;
+    public interface Columns extends BaseColumns {
 
-    private static MessageObject cursorToMessage(Cursor cursor) {
-        if (sMessageIndex == null) {
-            sMessageIndex = new MessageIndex(cursor);
-        }
-        MessageObject obj = new MessageObject();
-        obj.setFromJid(cursor.getString(sMessageIndex.fromJidIndex));
-        obj.setToJid(cursor.getString(sMessageIndex.toJidIndex));
-        obj.setSenderJid(cursor.getString(sMessageIndex.senderJidIndex));
-        obj.setSenderAvatar(cursor.getString(sMessageIndex.senderAvatarIndex));
-        obj.setSenderNickName(cursor.getString(sMessageIndex.senderNameIndex));
-        String chatType = cursor.getString(sMessageIndex.chatTypeIndex);
-        if (!TextUtils.isEmpty(chatType)) {
-            obj.setChatType(Message.Type.fromString(chatType));
-        }
-        obj.setBody(cursor.getString(sMessageIndex.bodyIndex));
-        obj.setMsgId(cursor.getString(sMessageIndex.msgIdIndex));
-        obj.setMsgType(MessageSubType.values()[cursor.getInt(sMessageIndex.msgTypeIndex)]);
-        obj.setMsgStatus(MessageObjectStatus.values()[cursor.getInt(sMessageIndex.msgStatusIndex)]);
-        obj.setDate(cursor.getLong(sMessageIndex.dateIndex));
-        obj.setHtml(cursor.getString(sMessageIndex.htmlIndex));
-        if (cursor.getInt(sMessageIndex.outgoingIndex) != 0) {
-            obj.setOutgoing(true);
-        } else {
-            obj.setOutgoing(false);
-        }
-        obj.setAccount(cursor.getString(sMessageIndex.accountIndex));
-        return obj;
+        public static final String MSG_FROM_JID = "from_jid";
+        public static final String MSG_TO_JID = "to_jid";
+        public static final String MSG_SENDER_JID = "sender_jid";
+        public static final String MSG_SENDER_NAME = "sender_name";
+        public static final String MSG_SENDER_AVATAR = "sender_avatar";
+        public static final String MSG_CHAT_TYPE = "chat_type";
+        public static final String MSG_BODY = "body";
+        public static final String MSG_HTML = "html";
+        public static final String MSG_IS_OUTGOING = "outgoing";
+        public static final String MSG_ID = "msg_id";
+        public static final String MSG_TYPE = "msg_type";
+        public static final String MSG_STATUS = "msg_status";
+        public static final String MSG_DATE = "msg_date";
+        public static final String MSG_ACCOUNT = "account";
     }
 
     private static class MessageIndex {

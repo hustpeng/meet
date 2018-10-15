@@ -16,32 +16,22 @@ public class SqliteDbConfig extends DbConfig {
         mAllowTransaction = true;
     }
 
+    public int getDbVersion() {
+        return dbVersion;
+    }
+
     public SqliteDbConfig setDbVersion(int dbVersion) {
         this.dbVersion = dbVersion;
         return this;
     }
 
-    public SqliteDbConfig setDbUpgradeListener(DbUpgradeListener dbUpgradeListener) {
-        this.dbUpgradeListener = dbUpgradeListener;
-        return this;
-    }
-
-    public SqliteDbConfig setDbDir(File dbDir) {
-        this.dbDir = dbDir;
-        return this;
+    public boolean isAllowTransaction() {
+        return mAllowTransaction;
     }
 
     public SqliteDbConfig setAllowTransaction(boolean allowTransaction) {
         this.mAllowTransaction = allowTransaction;
         return this;
-    }
-
-    public int getDbVersion() {
-        return dbVersion;
-    }
-
-    public boolean isAllowTransaction() {
-        return mAllowTransaction;
     }
 
     public String getDbName() {
@@ -52,8 +42,18 @@ public class SqliteDbConfig extends DbConfig {
         return dbUpgradeListener;
     }
 
+    public SqliteDbConfig setDbUpgradeListener(DbUpgradeListener dbUpgradeListener) {
+        this.dbUpgradeListener = dbUpgradeListener;
+        return this;
+    }
+
     public File getDbDir() {
         return dbDir;
+    }
+
+    public SqliteDbConfig setDbDir(File dbDir) {
+        this.dbDir = dbDir;
+        return this;
     }
 
 }

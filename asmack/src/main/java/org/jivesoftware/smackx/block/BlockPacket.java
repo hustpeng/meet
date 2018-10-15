@@ -1,10 +1,10 @@
 package org.jivesoftware.smackx.block;
 
-import java.util.ArrayList;
+import android.text.TextUtils;
 
 import org.jivesoftware.smack.packet.IQ;
 
-import android.text.TextUtils;
+import java.util.ArrayList;
 
 public class BlockPacket extends IQ {
     private final ArrayList<BlockObject> BlockItems = new ArrayList<BlockObject>();
@@ -25,10 +25,6 @@ public class BlockPacket extends IQ {
         }
     }
 
-    public void setListName(String name) {
-        mListName = name;
-    }
-
     public String getListName() {
         if (null == mListName) {
             return "";
@@ -36,8 +32,8 @@ public class BlockPacket extends IQ {
         return mListName;
     }
 
-    public void setDefaultName(String name) {
-        mDefaultName = name;
+    public void setListName(String name) {
+        mListName = name;
     }
 
     public String getDefaultName() {
@@ -47,8 +43,8 @@ public class BlockPacket extends IQ {
         return mDefaultName;
     }
 
-    public void setActiveName(String name) {
-        mActiveName = name;
+    public void setDefaultName(String name) {
+        mDefaultName = name;
     }
 
     public String getActiveName() {
@@ -56,6 +52,10 @@ public class BlockPacket extends IQ {
             return "";
         }
         return mActiveName;
+    }
+
+    public void setActiveName(String name) {
+        mActiveName = name;
     }
 
     @Override

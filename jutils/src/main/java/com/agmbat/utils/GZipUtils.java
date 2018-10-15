@@ -8,6 +8,8 @@
  */
 package com.agmbat.utils;
 
+import com.agmbat.io.IoUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,8 +18,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
-import com.agmbat.io.IoUtils;
 
 public class GZipUtils {
 

@@ -1,29 +1,12 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * Android Common Kit
  *
  * @author mayimchen
  * @since 2016-07-23
  */
 package com.agmbat.android.utils;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.security.MessageDigest;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import com.agmbat.android.SystemManager;
-import com.agmbat.security.SecurityUtil;
-import com.agmbat.text.StringUtils;
-import com.agmbat.io.IoUtils;
 
 import android.annotation.TargetApi;
 import android.content.ComponentName;
@@ -41,6 +24,23 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+
+import com.agmbat.android.SystemManager;
+import com.agmbat.io.IoUtils;
+import com.agmbat.security.SecurityUtil;
+import com.agmbat.text.StringUtils;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.security.MessageDigest;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 提供从apk包中获取相关信息的操作

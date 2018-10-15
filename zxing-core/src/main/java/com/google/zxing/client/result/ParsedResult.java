@@ -35,17 +35,6 @@ public abstract class ParsedResult {
         this.type = type;
     }
 
-    public final ParsedResultType getType() {
-        return type;
-    }
-
-    public abstract String getDisplayResult();
-
-    @Override
-    public final String toString() {
-        return getDisplayResult();
-    }
-
     public static void maybeAppend(String value, StringBuilder result) {
         if (value != null && !value.isEmpty()) {
             // Don't add a newline before the first value
@@ -62,6 +51,17 @@ public abstract class ParsedResult {
                 maybeAppend(value, result);
             }
         }
+    }
+
+    public final ParsedResultType getType() {
+        return type;
+    }
+
+    public abstract String getDisplayResult();
+
+    @Override
+    public final String toString() {
+        return getDisplayResult();
     }
 
 }

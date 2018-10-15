@@ -26,6 +26,7 @@ public class EmoticonsToolBarView extends RelativeLayout {
 
     protected HorizontalScrollView hsv_toolbar;
     protected LinearLayout ly_tool;
+    protected OnToolBarItemClickListener mItemClickListeners;
 
     public EmoticonsToolBarView(Context context) {
         this(context, null);
@@ -179,14 +180,12 @@ public class EmoticonsToolBarView extends RelativeLayout {
         mBtnWidth = width;
     }
 
-    protected OnToolBarItemClickListener mItemClickListeners;
+    public void setOnToolBarItemClickListener(OnToolBarItemClickListener listener) {
+        this.mItemClickListeners = listener;
+    }
 
     public interface OnToolBarItemClickListener {
         void onToolBarItemClick(PageSetEntity pageSetEntity);
-    }
-
-    public void setOnToolBarItemClickListener(OnToolBarItemClickListener listener) {
-        this.mItemClickListeners = listener;
     }
 }
 

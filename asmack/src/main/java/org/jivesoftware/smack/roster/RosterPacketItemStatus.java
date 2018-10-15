@@ -15,6 +15,16 @@ public class RosterPacketItemStatus {
      * Request to unsubscribe.
      */
     public static final RosterPacketItemStatus UNSUBSCRIPTION_PENDING = new RosterPacketItemStatus("unsubscribe");
+    private final String value;
+
+    /**
+     * Returns the item status associated with the specified string.
+     *
+     * @param value the item status.
+     */
+    private RosterPacketItemStatus(String value) {
+        this.value = value;
+    }
 
     public static RosterPacketItemStatus fromString(String value) {
         if (value == null) {
@@ -28,17 +38,6 @@ public class RosterPacketItemStatus {
         } else {
             return null;
         }
-    }
-
-    private final String value;
-
-    /**
-     * Returns the item status associated with the specified string.
-     *
-     * @param value the item status.
-     */
-    private RosterPacketItemStatus(String value) {
-        this.value = value;
     }
 
     @Override

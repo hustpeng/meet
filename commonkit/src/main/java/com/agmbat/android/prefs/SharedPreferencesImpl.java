@@ -1,5 +1,8 @@
 package com.agmbat.android.prefs;
 
+import android.content.SharedPreferences;
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,19 +15,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import android.content.SharedPreferences;
-import android.util.Log;
-
 public final class SharedPreferencesImpl implements SharedPreferences {
 
     private static final String TAG = SharedPreferencesImpl.class.getSimpleName();
-
+    private static final Object mContent = new Object();
     private final File mFile;
     private final File mBackupFile;
     private Map mMap;
     private long mTimestamp;
-
-    private static final Object mContent = new Object();
     private WeakHashMap<OnSharedPreferenceChangeListener, Object> mListeners;
 
     SharedPreferencesImpl(File file, Map initialContents) {
@@ -35,6 +33,10 @@ public final class SharedPreferencesImpl implements SharedPreferences {
             mTimestamp = file.lastModified();
         }
         mListeners = new WeakHashMap<OnSharedPreferenceChangeListener, Object>();
+    }
+
+    static File makeBackupFile(File prefsFile) {
+        return new File(prefsFile.getPath() + ".bak");
     }
 
     public boolean hasFileChanged() {
@@ -126,6 +128,74 @@ public final class SharedPreferencesImpl implements SharedPreferences {
         synchronized (this) {
             return mMap.containsKey(key);
         }
+    }
+
+    public Editor edit() {
+        return new EditorImpl();
+    }
+
+    private FileOutputStream createFileOutputStream(File file) {
+        FileOutputStream str = null;
+        try {
+            str = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            File parent = file.getParentFile();
+            if (!parent.mkdir()) {
+                Log.e(TAG, "Couldn't create directory for SharedPreferences file " + file);
+                return null;
+            }
+            try {
+                str = new FileOutputStream(file);
+            } catch (FileNotFoundException e2) {
+                Log.e(TAG, "Couldn't create SharedPreferences file " + file, e2);
+            }
+        }
+        return str;
+    }
+
+    private boolean writeFileLocked() {
+        // Rename the current file so it may be used as a backup during the next
+        // read
+        if (mFile.exists()) {
+            if (!mBackupFile.exists()) {
+                if (!mFile.renameTo(mBackupFile)) {
+                    Log.e(TAG, "Couldn't rename file " + mFile + " to backup file " + mBackupFile);
+                    return false;
+                }
+            } else {
+                mFile.delete();
+            }
+        }
+
+        // Attempt to write the file, delete the backup and return true as
+        // atomically as
+        // possible. If any exception occurs, delete the new file; next time we
+        // will restore
+        // from the backup.
+        try {
+            FileOutputStream str = createFileOutputStream(mFile);
+            if (str == null) {
+                return false;
+            }
+            XmlUtils.writeMapXml(mMap, str);
+            str.close();
+            if (mFile.exists()) {
+                mTimestamp = mFile.lastModified();
+            }
+
+            // Writing was successful, delete the backup file if there is one.
+            mBackupFile.delete();
+            return true;
+        } catch (Exception e) {
+            Log.w(TAG, "writeFileLocked: Got exception:", e);
+        }
+        // Clean up an unsuccessfully written file
+        if (mFile.exists()) {
+            if (!mFile.delete()) {
+                Log.e(TAG, "Couldn't clean up partially-written file " + mFile);
+            }
+        }
+        return false;
     }
 
     public final class EditorImpl implements Editor {
@@ -246,78 +316,6 @@ public final class SharedPreferencesImpl implements SharedPreferences {
         public void apply() {
         }
 
-    }
-
-    public Editor edit() {
-        return new EditorImpl();
-    }
-
-    private FileOutputStream createFileOutputStream(File file) {
-        FileOutputStream str = null;
-        try {
-            str = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            File parent = file.getParentFile();
-            if (!parent.mkdir()) {
-                Log.e(TAG, "Couldn't create directory for SharedPreferences file " + file);
-                return null;
-            }
-            try {
-                str = new FileOutputStream(file);
-            } catch (FileNotFoundException e2) {
-                Log.e(TAG, "Couldn't create SharedPreferences file " + file, e2);
-            }
-        }
-        return str;
-    }
-
-    private boolean writeFileLocked() {
-        // Rename the current file so it may be used as a backup during the next
-        // read
-        if (mFile.exists()) {
-            if (!mBackupFile.exists()) {
-                if (!mFile.renameTo(mBackupFile)) {
-                    Log.e(TAG, "Couldn't rename file " + mFile + " to backup file " + mBackupFile);
-                    return false;
-                }
-            } else {
-                mFile.delete();
-            }
-        }
-
-        // Attempt to write the file, delete the backup and return true as
-        // atomically as
-        // possible. If any exception occurs, delete the new file; next time we
-        // will restore
-        // from the backup.
-        try {
-            FileOutputStream str = createFileOutputStream(mFile);
-            if (str == null) {
-                return false;
-            }
-            XmlUtils.writeMapXml(mMap, str);
-            str.close();
-            if (mFile.exists()) {
-                mTimestamp = mFile.lastModified();
-            }
-
-            // Writing was successful, delete the backup file if there is one.
-            mBackupFile.delete();
-            return true;
-        } catch (Exception e) {
-            Log.w(TAG, "writeFileLocked: Got exception:", e);
-        }
-        // Clean up an unsuccessfully written file
-        if (mFile.exists()) {
-            if (!mFile.delete()) {
-                Log.e(TAG, "Couldn't clean up partially-written file " + mFile);
-            }
-        }
-        return false;
-    }
-
-    static File makeBackupFile(File prefsFile) {
-        return new File(prefsFile.getPath() + ".bak");
     }
 
 }

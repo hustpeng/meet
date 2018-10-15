@@ -17,12 +17,12 @@ import java.util.ArrayList;
 
 public class ImagePageAdapter extends PagerAdapter {
 
+    public PhotoViewClickListener listener;
     private int screenWidth;
     private int screenHeight;
     private ImagePicker imagePicker;
     private ArrayList<ImageItem> images = new ArrayList<>();
     private Activity mActivity;
-    public PhotoViewClickListener listener;
 
     public ImagePageAdapter(Activity activity, ArrayList<ImageItem> images) {
         this.mActivity = activity;

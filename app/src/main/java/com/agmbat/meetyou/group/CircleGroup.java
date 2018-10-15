@@ -49,12 +49,12 @@ public class CircleGroup {
         mGroupName = group;
     }
 
-    public void setGroupName(String name) {
-        mGroupName = name;
-    }
-
     public String getGroupName() {
         return mGroupName;
+    }
+
+    public void setGroupName(String name) {
+        mGroupName = name;
     }
 
     public boolean isExpanded() {
@@ -65,12 +65,12 @@ public class CircleGroup {
         mIsExpanded = isExpanded;
     }
 
-    public void setContactList(List<CircleInfo> contacts) {
-        mContacts = contacts;
-    }
-
     public List<CircleInfo> getContactList() {
         return mContacts;
+    }
+
+    public void setContactList(List<CircleInfo> contacts) {
+        mContacts = contacts;
     }
 
     public void addContact(CircleInfo contactInfo) {

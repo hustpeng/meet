@@ -96,6 +96,8 @@ public class MsgFragment extends Fragment {
     private ISLoadingDialog mISLoadingDialog;
 
     private List<MessageObject> mRecentMessages = new ArrayList<>();
+    private boolean isInitialed;
+    private InitRecentChatTask mInitRecentChatTask;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -142,16 +144,12 @@ public class MsgFragment extends Fragment {
         isInitialed = true;
     }
 
-    private boolean isInitialed;
-
     @Override
     public void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
         refreshRecentChat();
     }
-
-    private InitRecentChatTask mInitRecentChatTask;
 
     public void refreshRecentChat() {
         if (!isInitialed) {
@@ -272,14 +270,14 @@ public class MsgFragment extends Fragment {
             @Override
             public void onScan(String text) {
                 if (!TextUtils.isEmpty(text)) {
-                    if(text.startsWith(SearchManager.PREFIX_USER)) {
+                    if (text.startsWith(SearchManager.PREFIX_USER)) {
                         searchUser(text.replace(SearchManager.PREFIX_USER, ""));
-                    }else if(text.startsWith(SearchManager.PREFIX_GROUP)){
+                    } else if (text.startsWith(SearchManager.PREFIX_GROUP)) {
                         searchGroup(text.replace(SearchManager.PREFIX_GROUP, ""));
-                    }else{
+                    } else {
                         ToastUtil.showToast("二维码格式有误");
                     }
-                }else{
+                } else {
                     ToastUtil.showToast("二维码内容为空");
                 }
             }
@@ -397,34 +395,6 @@ public class MsgFragment extends Fragment {
         }
     }
 
-    private class InitRecentChatTask extends AsyncTask<Void, Void, List<MessageObject>> {
-
-        @Override
-        protected void onPreExecute() {
-            if (mRecentMessages.size() == 0) {
-                setState(STATE_LOADING);
-            }
-        }
-
-        @Override
-        protected List<MessageObject> doInBackground(Void... params) {
-            XMPPManager.getInstance().getRosterManager().loadContactGroupFromDBSync();
-            String user = XMPPManager.getInstance().getXmppConnection().getBareJid();
-            return XMPPManager.getInstance().getMessageManager().getRecentMessage(user);
-        }
-
-        @Override
-        protected void onPostExecute(List<MessageObject> recentChatList) {
-            mRecentMessages.clear();
-            mRecentMessages.addAll(recentChatList);
-            mAdapter.notifyDataSetChanged();
-            refreshState();
-            boolean hasUnread = hasUnreadMessage(recentChatList);
-            EventBus.getDefault().post(new UnreadMessageEvent(hasUnread));
-            mInitRecentChatTask = null;
-        }
-    }
-
     private boolean hasUnreadMessage(List<MessageObject> recentChatList) {
         boolean hasUnread = false;
         for (int i = 0; i < recentChatList.size(); i++) {
@@ -502,6 +472,34 @@ public class MsgFragment extends Fragment {
     private void hideLoadingDialog() {
         if (mISLoadingDialog != null) {
             mISLoadingDialog.dismiss();
+        }
+    }
+
+    private class InitRecentChatTask extends AsyncTask<Void, Void, List<MessageObject>> {
+
+        @Override
+        protected void onPreExecute() {
+            if (mRecentMessages.size() == 0) {
+                setState(STATE_LOADING);
+            }
+        }
+
+        @Override
+        protected List<MessageObject> doInBackground(Void... params) {
+            XMPPManager.getInstance().getRosterManager().loadContactGroupFromDBSync();
+            String user = XMPPManager.getInstance().getXmppConnection().getBareJid();
+            return XMPPManager.getInstance().getMessageManager().getRecentMessage(user);
+        }
+
+        @Override
+        protected void onPostExecute(List<MessageObject> recentChatList) {
+            mRecentMessages.clear();
+            mRecentMessages.addAll(recentChatList);
+            mAdapter.notifyDataSetChanged();
+            refreshState();
+            boolean hasUnread = hasUnreadMessage(recentChatList);
+            EventBus.getDefault().post(new UnreadMessageEvent(hasUnread));
+            mInitRecentChatTask = null;
         }
     }
 }

@@ -4,14 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.agmbat.file.FileUtils;
-
 import org.jivesoftware.smackx.favoritedme.FavoritedMeDBStoreProvider;
 import org.jivesoftware.smackx.message.MessageStorage;
 import org.jivesoftware.smackx.visitor.VisitorMeReadFlagDBStoreProvider;
 import org.jivesoftware.smackx.visitor.VisitorRecordDBStoreProvider;
-
-import java.io.File;
 
 /**
  * TODO 用户数据库, 需要将登陆用户隔离, 一个用户是一个数据文件夹

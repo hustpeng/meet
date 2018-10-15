@@ -16,6 +16,12 @@ import java.util.ArrayList;
 
 public class FavoritedMeDBStoreProvider {
 
+    private Context mContext;
+
+    public FavoritedMeDBStoreProvider(Context context) {
+        mContext = context;
+    }
+
     static String getTableName() {
         return "favoritedme_read_flag";
     }
@@ -35,11 +41,6 @@ public class FavoritedMeDBStoreProvider {
                 + "/" + id + "?" + DataContentProvider.URI_PARAMETER_NOTIFY + "=" + notify);
     }
 
-    public interface Columns extends BaseColumns {
-        public static final String FAVORITEDME_READ_JID = "jid";
-        public static final String FAVORITEDME_READ_DATE = "date";
-    }
-
     static public String getCreateTableStr() {
         TableSqlBuilder builder = new TableSqlBuilder(getTableName());
         builder.addColumn(Columns._ID, DataType.INTEGER, Param.PRIMARY_KEY, Param.AUTOINCREMENT);
@@ -55,12 +56,6 @@ public class FavoritedMeDBStoreProvider {
         values.put(Columns.FAVORITEDME_READ_JID, obj.getJid());
         values.put(Columns.FAVORITEDME_READ_DATE, obj.getCreate_date());
         return values;
-    }
-
-    private Context mContext;
-
-    public FavoritedMeDBStoreProvider(Context context) {
-        mContext = context;
     }
 
     public int delete(String selection, String[] selectionArgs) {
@@ -124,5 +119,10 @@ public class FavoritedMeDBStoreProvider {
         }
 
         return ret;
+    }
+
+    public interface Columns extends BaseColumns {
+        public static final String FAVORITEDME_READ_JID = "jid";
+        public static final String FAVORITEDME_READ_DATE = "date";
     }
 }

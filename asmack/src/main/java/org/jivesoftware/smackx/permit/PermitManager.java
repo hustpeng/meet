@@ -1,9 +1,5 @@
 package org.jivesoftware.smackx.permit;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
@@ -18,31 +14,17 @@ import org.jivesoftware.smackx.vcard.VCardObject;
 import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
 import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 public class PermitManager extends Xepmodule {
     private static final int fetchPermits = 11;
     private static final int addPermit = 22;
     private static final int removePermit = 33;
-
-    private CacheStoreBase<PermitObject> cacheStorage;
-
-    boolean hasPermit = false;
     private final List<PermitListener> listeners;
-
-    public PermitManager(final Connection connection) {
-        this.xmppConnection = connection;
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-
-            @Override
-            public void connectionCreated(Connection connection) {
-                connection.addConnectionListener(myConnectionListener);
-            }
-        });
-        listeners = new CopyOnWriteArrayList<PermitListener>();
-
-        cacheStorage = new CacheStoreBase<PermitObject>();
-
-    }
-
+    boolean hasPermit = false;
+    private CacheStoreBase<PermitObject> cacheStorage;
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {
@@ -60,6 +42,21 @@ public class PermitManager extends Xepmodule {
             abortAllQuery();
         }
     };
+
+    public PermitManager(final Connection connection) {
+        this.xmppConnection = connection;
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(myConnectionListener);
+            }
+        });
+        listeners = new CopyOnWriteArrayList<PermitListener>();
+
+        cacheStorage = new CacheStoreBase<PermitObject>();
+
+    }
 
     @Override
     public void clearResource() {
@@ -168,32 +165,6 @@ public class PermitManager extends Xepmodule {
         xmppConnection.sendPacket(packet);
     }
 
-    public class AddPermitPacket extends IQ {
-
-        private String jid;
-
-        public AddPermitPacket(String jid) {
-            this.jid = jid;
-            setType(Type.SET);
-        }
-
-        @Override
-        public String getChildElementXML() {
-            StringBuilder buffer = new StringBuilder();
-
-            buffer.append("<");
-            buffer.append(PermitProvider.elementName());
-            buffer.append(" xmlns=\"");
-            buffer.append(PermitProvider.namespace());
-            buffer.append("\">");
-            buffer.append("<item jid=\"");
-            buffer.append(XmppStringUtils.escapeForXML(jid));
-            buffer.append("\"/></query>");
-            return buffer.toString();
-        }
-
-    }
-
     public void addPermit(VCardObject vcard) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             notifyAddPermitResult(vcard.getJid(), false);
@@ -215,33 +186,6 @@ public class PermitManager extends Xepmodule {
         xmppConnection.sendPacket(packet);
     }
 
-    public class RemovePermitPacket extends IQ {
-
-        private String jid;
-
-        public RemovePermitPacket(String jid) {
-            this.jid = jid;
-            setType(Type.SET);
-        }
-
-        @Override
-        public String getChildElementXML() {
-            StringBuilder buffer = new StringBuilder();
-
-            buffer.append("<");
-            buffer.append(PermitProvider.elementName());
-            buffer.append(" xmlns=\"");
-            buffer.append(PermitProvider.namespace());
-            buffer.append("\">");
-            buffer.append("<item jid=\"");
-            buffer.append(XmppStringUtils.escapeForXML(jid));
-            buffer.append("\" action=\"");
-            buffer.append("remove");
-            buffer.append("\"/></query>");
-            return buffer.toString();
-        }
-    }
-
     public void removePermit(String jid) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             notifyRemovePermitResult(jid, false);
@@ -261,18 +205,6 @@ public class PermitManager extends Xepmodule {
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
-    }
-
-    private class PermitResultListener implements PacketListener {
-        @Override
-        public void processPacket(Packet packet) {
-            String packetId = packet.getPacketID();
-            XepQueryInfo queryInfo = getQueryInfo(packetId);
-            if (queryInfo != null) {
-                removeQueryInfo(queryInfo, packetId);
-                processQueryResponse(packet, queryInfo);
-            }
-        }
     }
 
     private void notifyFetchPermitResult(Boolean success) {
@@ -306,5 +238,70 @@ public class PermitManager extends Xepmodule {
             }
         }
         return result;
+    }
+
+    public class AddPermitPacket extends IQ {
+
+        private String jid;
+
+        public AddPermitPacket(String jid) {
+            this.jid = jid;
+            setType(Type.SET);
+        }
+
+        @Override
+        public String getChildElementXML() {
+            StringBuilder buffer = new StringBuilder();
+
+            buffer.append("<");
+            buffer.append(PermitProvider.elementName());
+            buffer.append(" xmlns=\"");
+            buffer.append(PermitProvider.namespace());
+            buffer.append("\">");
+            buffer.append("<item jid=\"");
+            buffer.append(XmppStringUtils.escapeForXML(jid));
+            buffer.append("\"/></query>");
+            return buffer.toString();
+        }
+
+    }
+
+    public class RemovePermitPacket extends IQ {
+
+        private String jid;
+
+        public RemovePermitPacket(String jid) {
+            this.jid = jid;
+            setType(Type.SET);
+        }
+
+        @Override
+        public String getChildElementXML() {
+            StringBuilder buffer = new StringBuilder();
+
+            buffer.append("<");
+            buffer.append(PermitProvider.elementName());
+            buffer.append(" xmlns=\"");
+            buffer.append(PermitProvider.namespace());
+            buffer.append("\">");
+            buffer.append("<item jid=\"");
+            buffer.append(XmppStringUtils.escapeForXML(jid));
+            buffer.append("\" action=\"");
+            buffer.append("remove");
+            buffer.append("\"/></query>");
+            return buffer.toString();
+        }
+    }
+
+    private class PermitResultListener implements PacketListener {
+        @Override
+        public void processPacket(Packet packet) {
+            String packetId = packet.getPacketID();
+            XepQueryInfo queryInfo = getQueryInfo(packetId);
+            if (queryInfo != null) {
+                removeQueryInfo(queryInfo, packetId);
+                processQueryResponse(packet, queryInfo);
+            }
+        }
     }
 }

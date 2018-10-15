@@ -25,39 +25,32 @@ import android.widget.OverScroller;
 public class PhotoViewAttacher implements View.OnTouchListener,
         View.OnLayoutChangeListener {
 
-    private static float DEFAULT_MAX_SCALE = 3.0f;
-    private static float DEFAULT_MID_SCALE = 1.75f;
-    private static float DEFAULT_MIN_SCALE = 1.0f;
-    private static int DEFAULT_ZOOM_DURATION = 200;
-
     private static final int EDGE_NONE = -1;
     private static final int EDGE_LEFT = 0;
     private static final int EDGE_RIGHT = 1;
     private static final int EDGE_BOTH = 2;
+    private static float DEFAULT_MAX_SCALE = 3.0f;
+    private static float DEFAULT_MID_SCALE = 1.75f;
+    private static float DEFAULT_MIN_SCALE = 1.0f;
+    private static int DEFAULT_ZOOM_DURATION = 200;
     private static int SINGLE_TOUCH = 1;
-
-    private Interpolator mInterpolator = new AccelerateDecelerateInterpolator();
-    private int mZoomDuration = DEFAULT_ZOOM_DURATION;
-    private float mMinScale = DEFAULT_MIN_SCALE;
-    private float mMidScale = DEFAULT_MID_SCALE;
-    private float mMaxScale = DEFAULT_MAX_SCALE;
-
-    private boolean mAllowParentInterceptOnEdge = true;
-    private boolean mBlockParentIntercept = false;
-
-    private ImageView mImageView;
-
-    // Gesture Detectors
-    private GestureDetector mGestureDetector;
-    private CustomGestureDetector mScaleDragDetector;
-
     // These are set so we don't keep allocating them on the heap
     private final Matrix mBaseMatrix = new Matrix();
     private final Matrix mDrawMatrix = new Matrix();
     private final Matrix mSuppMatrix = new Matrix();
     private final RectF mDisplayRect = new RectF();
     private final float[] mMatrixValues = new float[9];
-
+    private Interpolator mInterpolator = new AccelerateDecelerateInterpolator();
+    private int mZoomDuration = DEFAULT_ZOOM_DURATION;
+    private float mMinScale = DEFAULT_MIN_SCALE;
+    private float mMidScale = DEFAULT_MID_SCALE;
+    private float mMaxScale = DEFAULT_MAX_SCALE;
+    private boolean mAllowParentInterceptOnEdge = true;
+    private boolean mBlockParentIntercept = false;
+    private ImageView mImageView;
+    // Gesture Detectors
+    private GestureDetector mGestureDetector;
+    private CustomGestureDetector mScaleDragDetector;
     // Listeners
     private OnMatrixChangedListener mMatrixChangeListener;
     private OnPhotoTapListener mPhotoTapListener;
@@ -89,15 +82,15 @@ public class PhotoViewAttacher implements View.OnTouchListener,
             mSuppMatrix.postTranslate(dx, dy);
             checkAndDisplayMatrix();
 
-        /*
-         * Here we decide whether to let the ImageView's parent to start taking
-         * over the touch event.
-         *
-         * First we check whether this function is enabled. We never want the
-         * parent to take over if we're scaling. We then check the edge we're
-         * on, and the direction of the scroll (i.e. if we're pulling against
-         * the edge, aka 'overscrolling', let the parent take over).
-         */
+            /*
+             * Here we decide whether to let the ImageView's parent to start taking
+             * over the touch event.
+             *
+             * First we check whether this function is enabled. We never want the
+             * parent to take over if we're scaling. We then check the edge we're
+             * on, and the direction of the scroll (i.e. if we're pulling against
+             * the edge, aka 'overscrolling', let the parent take over).
+             */
             ViewParent parent = mImageView.getParent();
             if (mAllowParentInterceptOnEdge && !mScaleDragDetector.isScaling() && !mBlockParentIntercept) {
                 if (mScrollEdge == EDGE_BOTH
@@ -301,20 +294,46 @@ public class PhotoViewAttacher implements View.OnTouchListener,
         return mMinScale;
     }
 
+    public void setMinimumScale(float minimumScale) {
+        Util.checkZoomLevels(minimumScale, mMidScale, mMaxScale);
+        mMinScale = minimumScale;
+    }
+
     public float getMediumScale() {
         return mMidScale;
+    }
+
+    public void setMediumScale(float mediumScale) {
+        Util.checkZoomLevels(mMinScale, mediumScale, mMaxScale);
+        mMidScale = mediumScale;
     }
 
     public float getMaximumScale() {
         return mMaxScale;
     }
 
+    public void setMaximumScale(float maximumScale) {
+        Util.checkZoomLevels(mMinScale, mMidScale, maximumScale);
+        mMaxScale = maximumScale;
+    }
+
     public float getScale() {
         return (float) Math.sqrt((float) Math.pow(getValue(mSuppMatrix, Matrix.MSCALE_X), 2) + (float) Math.pow(getValue(mSuppMatrix, Matrix.MSKEW_Y), 2));
     }
 
+    public void setScale(float scale) {
+        setScale(scale, false);
+    }
+
     public ScaleType getScaleType() {
         return mScaleType;
+    }
+
+    public void setScaleType(ScaleType scaleType) {
+        if (Util.isSupportedScaleType(scaleType) && scaleType != mScaleType) {
+            mScaleType = scaleType;
+            update();
+        }
     }
 
     @Override
@@ -393,21 +412,6 @@ public class PhotoViewAttacher implements View.OnTouchListener,
         mAllowParentInterceptOnEdge = allow;
     }
 
-    public void setMinimumScale(float minimumScale) {
-        Util.checkZoomLevels(minimumScale, mMidScale, mMaxScale);
-        mMinScale = minimumScale;
-    }
-
-    public void setMediumScale(float mediumScale) {
-        Util.checkZoomLevels(mMinScale, mediumScale, mMaxScale);
-        mMidScale = mediumScale;
-    }
-
-    public void setMaximumScale(float maximumScale) {
-        Util.checkZoomLevels(mMinScale, mMidScale, maximumScale);
-        mMaxScale = maximumScale;
-    }
-
     public void setScaleLevels(float minimumScale, float mediumScale, float maximumScale) {
         Util.checkZoomLevels(minimumScale, mediumScale, maximumScale);
         mMinScale = minimumScale;
@@ -443,10 +447,6 @@ public class PhotoViewAttacher implements View.OnTouchListener,
         mOnViewDragListener = listener;
     }
 
-    public void setScale(float scale) {
-        setScale(scale, false);
-    }
-
     public void setScale(float scale, boolean animate) {
         setScale(scale,
                 (mImageView.getRight()) / 2,
@@ -477,13 +477,6 @@ public class PhotoViewAttacher implements View.OnTouchListener,
      */
     public void setZoomInterpolator(Interpolator interpolator) {
         mInterpolator = interpolator;
-    }
-
-    public void setScaleType(ScaleType scaleType) {
-        if (Util.isSupportedScaleType(scaleType) && scaleType != mScaleType) {
-            mScaleType = scaleType;
-            update();
-        }
     }
 
     public boolean isZoomable() {

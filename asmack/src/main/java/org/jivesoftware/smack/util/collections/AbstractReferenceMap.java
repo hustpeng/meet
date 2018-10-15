@@ -28,7 +28,15 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * An abstract implementation of a hash-based map that allows the entries to
@@ -76,7 +84,7 @@ import java.util.*;
  * @see Reference
  * @since Commons Collections 3.1 (extracted from ReferenceMap in 3.0)
  */
-public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V> {
+public abstract class AbstractReferenceMap<K, V> extends AbstractHashedMap<K, V> {
 
     /**
      * Constant indicating that hard references should be used
@@ -119,6 +127,7 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     private transient ReferenceQueue queue;
 
     //-----------------------------------------------------------------------
+
     /**
      * Constructor used during deserialization.
      */
@@ -149,14 +158,6 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     }
 
     /**
-     * Initialise this subclass during construction, cloning or deserialization.
-     */
-    protected void init() {
-        queue = new ReferenceQueue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks the type int is a valid value.
      *
      * @param name the name for error messages
@@ -170,6 +171,16 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     }
 
     //-----------------------------------------------------------------------
+
+    /**
+     * Initialise this subclass during construction, cloning or deserialization.
+     */
+    protected void init() {
+        queue = new ReferenceQueue();
+    }
+
+    //-----------------------------------------------------------------------
+
     /**
      * Gets the size of the map.
      *
@@ -280,6 +291,7 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets a MapIterator over the reference map.
      * The iterator only returns valid key/value pairs.
@@ -329,6 +341,7 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Purges stale mappings from this map before read operations.
      * <p/>
@@ -393,6 +406,7 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the entry mapped to the key specified.
      *
@@ -479,10 +493,84 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     }
 
     //-----------------------------------------------------------------------
+
+    /**
+     * Replaces the superclass method to store the state of this class.
+     * <p/>
+     * Serialization is not one of the JDK's nicest topics. Normal serialization will
+     * initialise the superclass before the subclass. Sometimes however, this isn't
+     * what you want, as in this case the <code>put()</code> method on read can be
+     * affected by subclass state.
+     * <p/>
+     * The solution adopted here is to serialize the state data of this class in
+     * this protected method. This method must be called by the
+     * <code>writeObject()</code> of the first serializable subclass.
+     * <p/>
+     * Subclasses may override if they have a specific field that must be present
+     * on read before this implementation will work. Generally, the read determines
+     * what must be serialized here, if anything.
+     *
+     * @param out the output stream
+     */
+    protected void doWriteObject(ObjectOutputStream out) throws IOException {
+        out.writeInt(keyType);
+        out.writeInt(valueType);
+        out.writeBoolean(purgeValues);
+        out.writeFloat(loadFactor);
+        out.writeInt(data.length);
+        for (MapIterator it = mapIterator(); it.hasNext(); ) {
+            out.writeObject(it.next());
+            out.writeObject(it.getValue());
+        }
+        out.writeObject(null);  // null terminate map
+        // do not call super.doWriteObject() as code there doesn't work for reference map
+    }
+
+    //-----------------------------------------------------------------------
+
+    /**
+     * Replaces the superclassm method to read the state of this class.
+     * <p/>
+     * Serialization is not one of the JDK's nicest topics. Normal serialization will
+     * initialise the superclass before the subclass. Sometimes however, this isn't
+     * what you want, as in this case the <code>put()</code> method on read can be
+     * affected by subclass state.
+     * <p/>
+     * The solution adopted here is to deserialize the state data of this class in
+     * this protected method. This method must be called by the
+     * <code>readObject()</code> of the first serializable subclass.
+     * <p/>
+     * Subclasses may override if the subclass has a specific field that must be present
+     * before <code>put()</code> or <code>calculateThreshold()</code> will work correctly.
+     *
+     * @param in the input stream
+     */
+    protected void doReadObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        this.keyType = in.readInt();
+        this.valueType = in.readInt();
+        this.purgeValues = in.readBoolean();
+        this.loadFactor = in.readFloat();
+        int capacity = in.readInt();
+        init();
+        data = new HashEntry[capacity];
+        while (true) {
+            K key = (K) in.readObject();
+            if (key == null) {
+                break;
+            }
+            V value = (V) in.readObject();
+            put(key, value);
+        }
+        threshold = calculateThreshold(data.length, loadFactor);
+        // do not call super.doReadObject() as code there doesn't work for reference map
+    }
+
+    //-----------------------------------------------------------------------
+
     /**
      * EntrySet implementation.
      */
-    static class ReferenceEntrySet <K,V> extends EntrySet<K, V> {
+    static class ReferenceEntrySet<K, V> extends EntrySet<K, V> {
 
         protected ReferenceEntrySet(AbstractHashedMap<K, V> parent) {
             super(parent);
@@ -505,10 +593,11 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * KeySet implementation.
      */
-    static class ReferenceKeySet <K,V> extends KeySet<K, V> {
+    static class ReferenceKeySet<K, V> extends KeySet<K, V> {
 
         protected ReferenceKeySet(AbstractHashedMap<K, V> parent) {
             super(parent);
@@ -521,7 +610,7 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
         public <T> T[] toArray(T[] arr) {
             // special implementation to handle disappearing keys
             List<K> list = new ArrayList<K>(parent.size());
-            for (Iterator<K> it = iterator(); it.hasNext();) {
+            for (Iterator<K> it = iterator(); it.hasNext(); ) {
                 list.add(it.next());
             }
             return list.toArray(arr);
@@ -529,10 +618,11 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Values implementation.
      */
-    static class ReferenceValues <K,V> extends Values<K, V> {
+    static class ReferenceValues<K, V> extends Values<K, V> {
 
         protected ReferenceValues(AbstractHashedMap<K, V> parent) {
             super(parent);
@@ -545,14 +635,13 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
         public <T> T[] toArray(T[] arr) {
             // special implementation to handle disappearing values
             List<V> list = new ArrayList<V>(parent.size());
-            for (Iterator<V> it = iterator(); it.hasNext();) {
+            for (Iterator<V> it = iterator(); it.hasNext(); ) {
                 list.add(it.next());
             }
             return list.toArray(arr);
         }
     }
 
-    //-----------------------------------------------------------------------
     /**
      * A MapEntry implementation for the map.
      * <p/>
@@ -561,7 +650,7 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
      *
      * @since Commons Collections 3.1
      */
-    protected static class ReferenceEntry <K,V> extends HashEntry<K, V> {
+    protected static class ReferenceEntry<K, V> extends HashEntry<K, V> {
         /**
          * The parent map
          */
@@ -723,11 +812,10 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
         }
     }
 
-    //-----------------------------------------------------------------------
     /**
      * The EntrySet iterator.
      */
-    static class ReferenceIteratorBase <K,V> {
+    static class ReferenceIteratorBase<K, V> {
         /**
          * The parent map
          */
@@ -831,7 +919,7 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     /**
      * The EntrySet iterator.
      */
-    static class ReferenceEntrySetIterator <K,V> extends ReferenceIteratorBase<K, V> implements Iterator<Entry<K, V>> {
+    static class ReferenceEntrySetIterator<K, V> extends ReferenceIteratorBase<K, V> implements Iterator<Entry<K, V>> {
 
         public ReferenceEntrySetIterator(AbstractReferenceMap<K, V> abstractReferenceMap) {
             super(abstractReferenceMap);
@@ -846,7 +934,7 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     /**
      * The keySet iterator.
      */
-    static class ReferenceKeySetIterator <K,V> extends ReferenceIteratorBase<K, V> implements Iterator<K> {
+    static class ReferenceKeySetIterator<K, V> extends ReferenceIteratorBase<K, V> implements Iterator<K> {
 
         ReferenceKeySetIterator(AbstractReferenceMap<K, V> parent) {
             super(parent);
@@ -857,10 +945,15 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
         }
     }
 
+    //-----------------------------------------------------------------------
+    // These two classes store the hashCode of the key of
+    // of the mapping, so that after they're dequeued a quick
+    // lookup of the bucket in the table can occur.
+
     /**
      * The values iterator.
      */
-    static class ReferenceValuesIterator <K,V> extends ReferenceIteratorBase<K, V> implements Iterator<V> {
+    static class ReferenceValuesIterator<K, V> extends ReferenceIteratorBase<K, V> implements Iterator<V> {
 
         ReferenceValuesIterator(AbstractReferenceMap<K, V> parent) {
             super(parent);
@@ -874,7 +967,7 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     /**
      * The MapIterator implementation.
      */
-    static class ReferenceMapIterator <K,V> extends ReferenceIteratorBase<K, V> implements MapIterator<K, V> {
+    static class ReferenceMapIterator<K, V> extends ReferenceIteratorBase<K, V> implements MapIterator<K, V> {
 
         protected ReferenceMapIterator(AbstractReferenceMap<K, V> parent) {
             super(parent);
@@ -910,14 +1003,11 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     }
 
     //-----------------------------------------------------------------------
-    // These two classes store the hashCode of the key of
-    // of the mapping, so that after they're dequeued a quick
-    // lookup of the bucket in the table can occur.
 
     /**
      * A soft reference holder.
      */
-    static class SoftRef <T> extends SoftReference<T> {
+    static class SoftRef<T> extends SoftReference<T> {
         /**
          * the hashCode of the key (even if the reference points to a value)
          */
@@ -936,7 +1026,7 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
     /**
      * A weak reference holder.
      */
-    static class WeakRef <T> extends WeakReference<T> {
+    static class WeakRef<T> extends WeakReference<T> {
         /**
          * the hashCode of the key (even if the reference points to a value)
          */
@@ -950,76 +1040,6 @@ public abstract class AbstractReferenceMap <K,V> extends AbstractHashedMap<K, V>
         public int hashCode() {
             return hash;
         }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Replaces the superclass method to store the state of this class.
-     * <p/>
-     * Serialization is not one of the JDK's nicest topics. Normal serialization will
-     * initialise the superclass before the subclass. Sometimes however, this isn't
-     * what you want, as in this case the <code>put()</code> method on read can be
-     * affected by subclass state.
-     * <p/>
-     * The solution adopted here is to serialize the state data of this class in
-     * this protected method. This method must be called by the
-     * <code>writeObject()</code> of the first serializable subclass.
-     * <p/>
-     * Subclasses may override if they have a specific field that must be present
-     * on read before this implementation will work. Generally, the read determines
-     * what must be serialized here, if anything.
-     *
-     * @param out the output stream
-     */
-    protected void doWriteObject(ObjectOutputStream out) throws IOException {
-        out.writeInt(keyType);
-        out.writeInt(valueType);
-        out.writeBoolean(purgeValues);
-        out.writeFloat(loadFactor);
-        out.writeInt(data.length);
-        for (MapIterator it = mapIterator(); it.hasNext();) {
-            out.writeObject(it.next());
-            out.writeObject(it.getValue());
-        }
-        out.writeObject(null);  // null terminate map
-        // do not call super.doWriteObject() as code there doesn't work for reference map
-    }
-
-    /**
-     * Replaces the superclassm method to read the state of this class.
-     * <p/>
-     * Serialization is not one of the JDK's nicest topics. Normal serialization will
-     * initialise the superclass before the subclass. Sometimes however, this isn't
-     * what you want, as in this case the <code>put()</code> method on read can be
-     * affected by subclass state.
-     * <p/>
-     * The solution adopted here is to deserialize the state data of this class in
-     * this protected method. This method must be called by the
-     * <code>readObject()</code> of the first serializable subclass.
-     * <p/>
-     * Subclasses may override if the subclass has a specific field that must be present
-     * before <code>put()</code> or <code>calculateThreshold()</code> will work correctly.
-     *
-     * @param in the input stream
-     */
-    protected void doReadObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        this.keyType = in.readInt();
-        this.valueType = in.readInt();
-        this.purgeValues = in.readBoolean();
-        this.loadFactor = in.readFloat();
-        int capacity = in.readInt();
-        init();
-        data = new HashEntry[capacity];
-        while (true) {
-            K key = (K) in.readObject();
-            if (key == null) {
-                break;
-            }
-            V value = (V) in.readObject();
-            put(key, value);
-        }
-        threshold = calculateThreshold(data.length, loadFactor);
-        // do not call super.doReadObject() as code there doesn't work for reference map
     }
 
 }

@@ -66,6 +66,7 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
     ExpandableListView mListView;
 
     private ContactsAdapter mFriendsAdapter;
+    private ISAlertDialog mNewFriendAlertDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -144,7 +145,6 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         setState(STATE_LOADING);
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -169,8 +169,6 @@ public class ContactsFragment extends Fragment implements OnGroupClickListener,
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
-
-    private ISAlertDialog mNewFriendAlertDialog;
 
     /**
      * 收到申请添加自己为好友的消息

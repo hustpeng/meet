@@ -1,11 +1,11 @@
 package com.agmbat.android.prefs;
 
+import com.agmbat.utils.ReflectionUtils;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.agmbat.utils.ReflectionUtils;
 
 /**
  * 反射调用隐藏方法
@@ -23,8 +23,8 @@ public class XmlUtils {
     public static final HashMap readMapXml(InputStream in) {
         String className = "com.android.internal.util.XmlUtils";
         String methodName = "readMapXml";
-        Class[] type = new Class[] {InputStream.class};
-        Object[] parameters = new Object[] {in};
+        Class[] type = new Class[]{InputStream.class};
+        Object[] parameters = new Object[]{in};
         return (HashMap) ReflectionUtils.invokeStaticMethod(className, methodName, type, parameters);
     }
 
@@ -38,8 +38,8 @@ public class XmlUtils {
     public static final void writeMapXml(Map val, OutputStream out) {
         String className = "com.android.internal.util.XmlUtils";
         String methodName = "writeMapXml";
-        Class[] type = new Class[] {Map.class, OutputStream.class};
-        Object[] parameters = new Object[] {val, out};
+        Class[] type = new Class[]{Map.class, OutputStream.class};
+        Object[] parameters = new Object[]{val, out};
         ReflectionUtils.invokeStaticMethod(className, methodName, type, parameters);
     }
 

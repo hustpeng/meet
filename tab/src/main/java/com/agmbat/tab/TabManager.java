@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2015 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * Tab Manager
  *
  * @author mayimchen
@@ -8,12 +8,12 @@
  */
 package com.agmbat.tab;
 
-import java.util.ArrayList;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+
+import java.util.ArrayList;
 
 /**
  * This is a helper class that implements a generic mechanism for associating fragments with the tabs in a tab host.
@@ -72,14 +72,6 @@ public class TabManager implements TabWidget.OnTabSelectionChanged {
         mTabWidget.addView(indicator.createIndicatorView(mTabWidget.getContext()));
     }
 
-    public void setCurrentTab(int index) {
-        if (index < 0 || index >= mTabs.size()) {
-            return;
-        }
-        mTabWidget.setCurrentTab(index);
-        doTabChanged(mTabs.get(index));
-    }
-
     /**
      * Change the tab
      *
@@ -131,6 +123,14 @@ public class TabManager implements TabWidget.OnTabSelectionChanged {
 
     public int getCurrentTab() {
         return mTabWidget.getCurrentTab();
+    }
+
+    public void setCurrentTab(int index) {
+        if (index < 0 || index >= mTabs.size()) {
+            return;
+        }
+        mTabWidget.setCurrentTab(index);
+        doTabChanged(mTabs.get(index));
     }
 
     public String getCurrentTabTag() {

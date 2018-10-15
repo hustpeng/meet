@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.favorites;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -12,13 +11,11 @@ public class FavoritesProvider implements IQProvider {
     public FavoritesProvider() {
     }
 
-    public static String elementName()
-    {
+    public static String elementName() {
         return "query";
     }
 
-    public static String namespace()
-    {
+    public static String namespace() {
         return "jabber:iq:fans";
     }
 
@@ -33,8 +30,7 @@ public class FavoritesProvider implements IQProvider {
                 if ("item".equals(parser.getName())) {
                     favoritesItem.add(parseItem(parser));
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.END_TAG) {
                 if ("query".equals(parser.getName())) {
                     done = true;
                 }

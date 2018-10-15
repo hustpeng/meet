@@ -10,14 +10,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TableEntityCache {
 
+    public static final ConcurrentHashMap<TableEntity<?>, String> INSERT_SQL_CACHE =
+            new ConcurrentHashMap<TableEntity<?>, String>();
     /**
      * 数据库缓存
      */
     private static final HashMap<String, TableEntity<?>> TABLE_MAP = new HashMap<String, TableEntity<?>>();
-
-    public static final ConcurrentHashMap<TableEntity<?>, String> INSERT_SQL_CACHE =
-            new ConcurrentHashMap<TableEntity<?>, String>();
-
 
     @SuppressWarnings("unchecked")
     public static synchronized <T> TableEntity<T> get(DbManager db, Class<T> entityType) throws DbException {

@@ -1,14 +1,11 @@
 package com.agmbat.pulltorefresh;
 
-import com.agmbat.android.AppResources;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.Adapter;
@@ -17,35 +14,21 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 
+import com.agmbat.android.AppResources;
+
 /**
  * 支持AdapterView的下拉和上拉的基类
  */
 public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extends PullToRefreshBase<T> implements
         OnScrollListener {
 
-    private static FrameLayout.LayoutParams convertEmptyViewLayoutParams(ViewGroup.LayoutParams lp) {
-        FrameLayout.LayoutParams newLp = null;
-        if (null != lp) {
-            newLp = new FrameLayout.LayoutParams(lp);
-            if (lp instanceof LayoutParams) {
-                newLp.gravity = ((LayoutParams) lp).gravity;
-            } else {
-                newLp.gravity = Gravity.CENTER;
-            }
-        }
-        return newLp;
-    }
-
     private boolean mLastItemVisible;
     private OnScrollListener mOnScrollListener;
     private OnLastItemVisibleListener mOnLastItemVisibleListener;
-
     private IndicatorLayout mIndicatorIvTop;
     private IndicatorLayout mIndicatorIvBottom;
-
     private boolean mShowIndicator;
     private boolean mScrollEmptyView = true;
-
     public PullToRefreshAdapterViewBase(Context context) {
         super(context);
         mRefreshableView.setOnScrollListener(this);
@@ -66,6 +49,19 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
         mRefreshableView.setOnScrollListener(this);
     }
 
+    private static FrameLayout.LayoutParams convertEmptyViewLayoutParams(ViewGroup.LayoutParams lp) {
+        FrameLayout.LayoutParams newLp = null;
+        if (null != lp) {
+            newLp = new FrameLayout.LayoutParams(lp);
+            if (lp instanceof LayoutParams) {
+                newLp.gravity = ((LayoutParams) lp).gravity;
+            } else {
+                newLp.gravity = Gravity.CENTER;
+            }
+        }
+        return newLp;
+    }
+
     /**
      * Gets whether an indicator graphic should be displayed when the View is in
      * a state where a Pull-to-Refresh can happen. An example of this state is
@@ -78,6 +74,25 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
      */
     public boolean getShowIndicator() {
         return mShowIndicator;
+    }
+
+    /**
+     * Sets whether an indicator graphic should be displayed when the View is in
+     * a state where a Pull-to-Refresh can happen. An example of this state is
+     * when the Adapter View is scrolled to the top and the mode is set to
+     * {@link Mode#PULL_FROM_START}
+     *
+     * @param showIndicator - true if the indicators should be shown.
+     */
+    public void setShowIndicator(boolean showIndicator) {
+        mShowIndicator = showIndicator;
+        if (getShowIndicatorInternal()) {
+            // If we're set to Show Indicator, add/update them
+            addIndicatorViews();
+        } else {
+            // If not, then remove then
+            removeIndicatorViews();
+        }
     }
 
     @Override
@@ -155,25 +170,6 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 
     public final void setScrollEmptyView(boolean doScroll) {
         mScrollEmptyView = doScroll;
-    }
-
-    /**
-     * Sets whether an indicator graphic should be displayed when the View is in
-     * a state where a Pull-to-Refresh can happen. An example of this state is
-     * when the Adapter View is scrolled to the top and the mode is set to
-     * {@link Mode#PULL_FROM_START}
-     *
-     * @param showIndicator - true if the indicators should be shown.
-     */
-    public void setShowIndicator(boolean showIndicator) {
-        mShowIndicator = showIndicator;
-        if (getShowIndicatorInternal()) {
-            // If we're set to Show Indicator, add/update them
-            addIndicatorViews();
-        } else {
-            // If not, then remove then
-            removeIndicatorViews();
-        }
     }
 
     @Override

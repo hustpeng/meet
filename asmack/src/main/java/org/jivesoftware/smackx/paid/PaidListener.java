@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.paid;
 
 public interface PaidListener {

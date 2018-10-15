@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -58,10 +58,11 @@ public class RSACrypt {
      * RSA最大解密密文大小
      */
     private static final int MAX_DECRYPT_BLOCK = 128;
+    private static boolean IS_ANDROID_PLATFORM = Platform.isAndroid();
 
     /**
      * 生成密钥对(公钥和私钥)
-     * 
+     *
      * @return
      * @throws NoSuchAlgorithmException
      * @throws Exception
@@ -75,7 +76,7 @@ public class RSACrypt {
 
     /**
      * 生成公钥
-     * 
+     *
      * @param key
      * @return
      * @throws NoSuchAlgorithmException
@@ -91,7 +92,7 @@ public class RSACrypt {
 
     /**
      * 生成公钥
-     * 
+     *
      * @param key
      * @return
      * @throws Exception
@@ -105,8 +106,8 @@ public class RSACrypt {
 
     /**
      * 用私钥对信息生成数字签名
-     * 
-     * @param data 已加密数据
+     *
+     * @param data       已加密数据
      * @param privateKey 私钥(BASE64编码)
      * @return
      * @throws Exception
@@ -122,12 +123,11 @@ public class RSACrypt {
 
     /**
      * 校验数字签名
-     * 
-     * @param data 已加密数据
-     * @param publicKeyStr 公钥(BASE64编码)
-     * @param sign 数字签名
-     * @return
      *
+     * @param data         已加密数据
+     * @param publicKeyStr 公钥(BASE64编码)
+     * @param sign         数字签名
+     * @return
      * @throws Exception
      */
     public static boolean verify(byte[] data, String publicKeyStr, String sign) throws Exception {
@@ -142,8 +142,8 @@ public class RSACrypt {
 
     /**
      * 私钥解密
-     * 
-     * @param data 已加密数据
+     *
+     * @param data       已加密数据
      * @param privateKey 私钥(BASE64编码)
      * @return
      * @throws Exception
@@ -157,11 +157,10 @@ public class RSACrypt {
 
     /**
      * 公钥解密
-     * 
-     * @param data 已加密数据
+     *
+     * @param data      已加密数据
      * @param publicKey 公钥(BASE64编码)
      * @return
-     *
      * @throws Exception
      */
     public static byte[] decryptByPublicKey(byte[] data, String publicKeyStr) throws Exception {
@@ -175,7 +174,7 @@ public class RSACrypt {
     /**
      * 公钥加密
      *
-     * @param data 源数据
+     * @param data      源数据
      * @param publicKey 公钥(BASE64编码)
      * @return
      * @throws Exception
@@ -190,11 +189,10 @@ public class RSACrypt {
 
     /**
      * 私钥加密
-     * 
-     * @param data 源数据
+     *
+     * @param data       源数据
      * @param privateKey 私钥(BASE64编码)
      * @return
-     *
      * @throws Exception
      */
     public static byte[] encryptByPrivateKey(byte[] data, String privateKeyStr) throws Exception {
@@ -206,7 +204,7 @@ public class RSACrypt {
 
     /**
      * 解密或加密码数据
-     * 
+     *
      * @param cipher
      * @param data
      * @param mode
@@ -222,7 +220,7 @@ public class RSACrypt {
 
     /**
      * 对数据分段加密或解密
-     * 
+     *
      * @param cipher
      * @param data
      * @param maxBlock
@@ -253,8 +251,6 @@ public class RSACrypt {
         out.close();
         return result;
     }
-
-    private static boolean IS_ANDROID_PLATFORM = Platform.isAndroid();
 
     private static Cipher getCipher() throws NoSuchAlgorithmException, NoSuchPaddingException {
         String cipherName = "RSA";

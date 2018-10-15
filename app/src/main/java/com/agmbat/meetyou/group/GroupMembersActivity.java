@@ -45,56 +45,14 @@ public class GroupMembersActivity extends Activity {
 
     private static final String EXTRA_GROUP_JID = "group_jid";
     private static final String EXTRA_OWNER_JID = "owner_jid";
-
+    private static final int SPAN_COUNT = 5;
     @BindView(R.id.member_list)
     RecyclerView mMemberListView;
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
-
     private GroupMembersAdapter mGroupMemberAdapter;
     private String mGroupJid;
-    private static final int SPAN_COUNT = 5;
     private String mOwnerJid;
-
-    public static void launch(Context context, String jid, String ownerJid) {
-        Intent intent = new Intent(context, GroupMembersActivity.class);
-        intent.putExtra(EXTRA_GROUP_JID, jid);
-        intent.putExtra(EXTRA_OWNER_JID, ownerJid);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
-        mGroupJid = getIntent().getStringExtra(EXTRA_GROUP_JID);
-        mOwnerJid = getIntent().getStringExtra(EXTRA_OWNER_JID);
-        setContentView(R.layout.activity_group_members);
-        ButterKnife.bind(this);
-        EventBus.getDefault().register(this);
-        XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupMembersListener, new PacketTypeFilter(QueryGroupMembersReply.class));
-        XMPPManager.getInstance().getXmppConnection().addPacketListener(mKickMembersListener, new PacketTypeFilter(KickMemberReply.class));
-        XMPPManager.getInstance().getXmppConnection().addPacketListener(mTransOwnerListener, new PacketTypeFilter(TransOwnerReply.class));
-        initContentView();
-        loadMembers();
-    }
-
-
-    private void initContentView() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getBaseContext(), SPAN_COUNT);
-        mMemberListView.setLayoutManager(gridLayoutManager);
-        mGroupMemberAdapter = new GroupMembersAdapter(getBaseContext());
-
-        final String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
-        if (loginUser.equals(mOwnerJid)) { //是群主允许执行操作
-            mGroupMemberAdapter.setOnItemClickListener(mOnGroupMemberListener);
-        }
-        mMemberListView.setAdapter(mGroupMemberAdapter);
-        mMemberListView.addItemDecoration(new MembersDivider());
-    }
-
-
     private OnRecyclerViewItemClickListener mOnGroupMemberListener = new OnRecyclerViewItemClickListener<GroupMembersAdapter.GroupMemberHolder>() {
 
         @Override
@@ -134,24 +92,6 @@ public class GroupMembersActivity extends Activity {
             builder.create().show();
         }
     };
-
-    private class MembersDivider extends RecyclerView.ItemDecoration {
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view);
-            outRect.top = (int) SysResources.dipToPixel(15);
-        }
-    }
-
-    private void loadMembers() {
-        XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
-        if (xmppConnection.isConnected()) {
-            xmppConnection.sendPacket(new QueryGroupMembersIQ(mGroupJid));
-            mProgressBar.setVisibility(View.VISIBLE);
-        }
-    }
-
     private PacketListener mGroupMembersListener = new PacketListener() {
         @Override
         public void processPacket(Packet packet) {
@@ -161,9 +101,6 @@ public class GroupMembersActivity extends Activity {
             }
         }
     };
-
-
-
     private PacketListener mKickMembersListener = new PacketListener() {
         @Override
         public void processPacket(Packet packet) {
@@ -174,7 +111,6 @@ public class GroupMembersActivity extends Activity {
             }
         }
     };
-
     private PacketListener mTransOwnerListener = new PacketListener() {
         @Override
         public void processPacket(Packet packet) {
@@ -185,6 +121,50 @@ public class GroupMembersActivity extends Activity {
         }
     };
 
+    public static void launch(Context context, String jid, String ownerJid) {
+        Intent intent = new Intent(context, GroupMembersActivity.class);
+        intent.putExtra(EXTRA_GROUP_JID, jid);
+        intent.putExtra(EXTRA_OWNER_JID, ownerJid);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
+        mGroupJid = getIntent().getStringExtra(EXTRA_GROUP_JID);
+        mOwnerJid = getIntent().getStringExtra(EXTRA_OWNER_JID);
+        setContentView(R.layout.activity_group_members);
+        ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mGroupMembersListener, new PacketTypeFilter(QueryGroupMembersReply.class));
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mKickMembersListener, new PacketTypeFilter(KickMemberReply.class));
+        XMPPManager.getInstance().getXmppConnection().addPacketListener(mTransOwnerListener, new PacketTypeFilter(TransOwnerReply.class));
+        initContentView();
+        loadMembers();
+    }
+
+    private void initContentView() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getBaseContext(), SPAN_COUNT);
+        mMemberListView.setLayoutManager(gridLayoutManager);
+        mGroupMemberAdapter = new GroupMembersAdapter(getBaseContext());
+
+        final String loginUser = XMPPManager.getInstance().getXmppConnection().getBareJid();
+        if (loginUser.equals(mOwnerJid)) { //是群主允许执行操作
+            mGroupMemberAdapter.setOnItemClickListener(mOnGroupMemberListener);
+        }
+        mMemberListView.setAdapter(mGroupMemberAdapter);
+        mMemberListView.addItemDecoration(new MembersDivider());
+    }
+
+    private void loadMembers() {
+        XMPPConnection xmppConnection = XMPPManager.getInstance().getXmppConnection();
+        if (xmppConnection.isConnected()) {
+            xmppConnection.sendPacket(new QueryGroupMembersIQ(mGroupJid));
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(QueryGroupMembersReply groupMembersReply) {
@@ -205,5 +185,14 @@ public class GroupMembersActivity extends Activity {
         XMPPManager.getInstance().getXmppConnection().removePacketListener(mKickMembersListener);
         XMPPManager.getInstance().getXmppConnection().removePacketListener(mTransOwnerListener);
         XMPPManager.getInstance().getXmppConnection().removePacketListener(mGroupMembersListener);
+    }
+
+    private class MembersDivider extends RecyclerView.ItemDecoration {
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            int position = parent.getChildAdapterPosition(view);
+            outRect.top = (int) SysResources.dipToPixel(15);
+        }
     }
 }

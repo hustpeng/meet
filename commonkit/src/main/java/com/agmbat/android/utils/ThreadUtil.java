@@ -15,10 +15,10 @@
  */
 package com.agmbat.android.utils;
 
-import java.util.List;
-
 import android.app.ActivityManager;
 import android.content.Context;
+
+import java.util.List;
 
 public class ThreadUtil {
 

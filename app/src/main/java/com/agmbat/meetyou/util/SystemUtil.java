@@ -41,24 +41,6 @@ public class SystemUtil {
 
 
     /**
-     * App是否已经安装
-     *
-     * @param context
-     * @param packageName
-     * @return
-     */
-    public boolean isAppInstalled(Context context, String packageName) {
-        if (packageName == null || "".equals(packageName))
-            return false;
-        try {
-            PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
-            return info != null;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
-    }
-
-    /**
      * 获取当前进程名
      *
      * @param context
@@ -109,7 +91,6 @@ public class SystemUtil {
         return version;
     }
 
-
     /**
      * 获取软件版本号
      *
@@ -128,7 +109,6 @@ public class SystemUtil {
         }
         return versionCode;
     }
-
 
     /**
      * 获取自己应用程序的名称
@@ -383,6 +363,24 @@ public class SystemUtil {
             e1.printStackTrace();
         }
         return statusBarHeight;
+    }
+
+    /**
+     * App是否已经安装
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public boolean isAppInstalled(Context context, String packageName) {
+        if (packageName == null || "".equals(packageName))
+            return false;
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
+            return info != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
 }

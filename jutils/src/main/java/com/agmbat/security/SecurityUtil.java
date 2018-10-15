@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -8,10 +8,10 @@
  */
 package com.agmbat.security;
 
+import com.agmbat.io.IoUtils;
 import com.agmbat.text.IntegralToString;
 import com.agmbat.text.StringUtils;
 import com.agmbat.utils.Base64;
-import com.agmbat.io.IoUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -184,7 +184,7 @@ public class SecurityUtil {
 
     /**
      * base64编码key
-     * 
+     *
      * @param key
      * @return
      */
@@ -196,7 +196,7 @@ public class SecurityUtil {
 
     /**
      * base64解码key
-     * 
+     *
      * @param keyString
      * @return
      */

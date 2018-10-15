@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.token;
 
 public interface TokenListener {

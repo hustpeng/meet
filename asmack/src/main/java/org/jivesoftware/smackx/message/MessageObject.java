@@ -37,48 +37,56 @@ import java.util.regex.Pattern;
  */
 public class MessageObject implements Serializable {
 
+    private static final Pattern IMAGE_THUMB_PATTERN = Pattern.compile("thumb=\"(.*?)\"");
+    private static final Pattern IMAGE_SRC_PATTERN = Pattern.compile("src=\"(.*?)\"");
     private Message.Type chatType; //群聊、单聊等聊天类型
-
     /**
      * 发送者jid
      */
     private String senderJid;
-
     /**
      * 发送者昵称
      */
     private String senderNickName;
-
     /**
      * 发送者头像
      */
     private String senderAvatar;
-
     /**
      * 消息来源
      */
     private String fromJid; // 如果是群聊：则是一个群组JID；如果是单聊：则是一个人的JID
-
     /**
      * 消息目的地
      */
     private String toJid; // 如果是群聊：则是一个群组JID；如果是单聊：则是一个人的JID
-
     /**
      * 消息内容
      */
     private String body;
-
     private boolean outgoing;
     private String msgId;
     private MessageSubType msgType;
     private MessageObjectStatus msgStatus;
     private long date;
     private String html;
-
     private String imageThumbUrl;
     private String imageSrcUrl;
     private String account;
+
+    public static void sortByDate(List<MessageObject> messageObjects, final boolean isAsc) {
+        Collections.sort(messageObjects, new Comparator<MessageObject>() {
+            @Override
+            public int compare(MessageObject messageObject, MessageObject t1) {
+                if (messageObject.getDate() > t1.getDate()) {
+                    return isAsc ? 1 : -1;
+                } else if (messageObject.getDate() < t1.getDate()) {
+                    return isAsc ? -1 : 1;
+                }
+                return 0;
+            }
+        });
+    }
 
     public String getSenderJid() {
         return senderJid;
@@ -140,8 +148,16 @@ public class MessageObject implements Serializable {
         return outgoing;
     }
 
+    public void setOutgoing(boolean outgoing) {
+        this.outgoing = outgoing;
+    }
+
     public String getSenderAvatar() {
         return senderAvatar;
+    }
+
+    public void setSenderAvatar(String senderAvatar) {
+        this.senderAvatar = senderAvatar;
     }
 
     public String getFromJid() {
@@ -150,14 +166,6 @@ public class MessageObject implements Serializable {
 
     public void setFromJid(String fromJid) {
         this.fromJid = fromJid;
-    }
-
-    public void setSenderAvatar(String senderAvatar) {
-        this.senderAvatar = senderAvatar;
-    }
-
-    public void setOutgoing(boolean outgoing) {
-        this.outgoing = outgoing;
     }
 
     public String getSenderNickName() {
@@ -192,8 +200,6 @@ public class MessageObject implements Serializable {
         this.account = account;
     }
 
-    private static final Pattern IMAGE_THUMB_PATTERN = Pattern.compile("thumb=\"(.*?)\"");
-
     public String getImageThumbUrl() {
         if (imageThumbUrl != null) {
             return imageThumbUrl;
@@ -207,8 +213,6 @@ public class MessageObject implements Serializable {
         }
         return null;
     }
-
-    private static final Pattern IMAGE_SRC_PATTERN = Pattern.compile("src=\"(.*?)\"");
 
     public String getImageSrcUrl() {
         if (imageSrcUrl != null) {
@@ -224,7 +228,6 @@ public class MessageObject implements Serializable {
         return null;
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (null != obj && obj instanceof MessageObject) {
@@ -235,20 +238,6 @@ public class MessageObject implements Serializable {
             return input.getMsgId().equals(this.getMsgId());
         }
         return false;
-    }
-
-    public static void sortByDate(List<MessageObject> messageObjects, final boolean isAsc) {
-        Collections.sort(messageObjects, new Comparator<MessageObject>() {
-            @Override
-            public int compare(MessageObject messageObject, MessageObject t1) {
-                if (messageObject.getDate() > t1.getDate()) {
-                    return isAsc ? 1 : -1;
-                } else if (messageObject.getDate() < t1.getDate()) {
-                    return isAsc ? -1 : 1;
-                }
-                return 0;
-            }
-        });
     }
 
     @Override

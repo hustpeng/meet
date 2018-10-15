@@ -54,12 +54,13 @@ import java.util.List;
 
 public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdapter.SysMsgViewHolder> {
 
+    private static final int BASE_WIDTH = (int) SysResources.dipToPixel(80);
+    private static final int AUDIO_MAX_WIDTH = (int) SysResources.dipToPixel(200);
     private Context mContext;
 
-    public SysMsgAdapter(Context context){
+    public SysMsgAdapter(Context context) {
         mContext = context;
     }
-
 
     @Override
     public SysMsgViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -73,11 +74,7 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
         holder.bindData(getItem(position));
     }
 
-
-    private static final int BASE_WIDTH = (int) SysResources.dipToPixel(80);
-    private static final int AUDIO_MAX_WIDTH = (int) SysResources.dipToPixel(200);
-
-    public class SysMsgViewHolder extends RecyclerView.ViewHolder{
+    public class SysMsgViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView mContentImage;
         private TextView mContentTv;
@@ -90,17 +87,17 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
             mTimeTv = (TextView) itemView.findViewById(R.id.time);
         }
 
-        public void bindData(MessageObject messageObject){
+        public void bindData(MessageObject messageObject) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             mTimeTv.setText(dateFormat.format(messageObject.getDate()));
             final Body body = BodyParser.parse(messageObject.getBody());
-            if(body instanceof TextBody){
+            if (body instanceof TextBody) {
                 TextBody textBody = (TextBody) body;
                 setTextBody(textBody);
-            }else if(body instanceof ImageBody){
+            } else if (body instanceof ImageBody) {
                 final ImageBody imageBody = (ImageBody) body;
                 setImageBody(imageBody);
-            }else if (body instanceof UrlBody) {
+            } else if (body instanceof UrlBody) {
                 final UrlBody urlBody = (UrlBody) body;
                 setUrlBody(urlBody);
             } else if (body instanceof AudioBody) {
@@ -118,17 +115,17 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
             } else if (body instanceof FileBody) {
                 FileBody fileBody = (FileBody) body;
                 setFileBody(fileBody);
-            } else if(body instanceof EventsBody){
+            } else if (body instanceof EventsBody) {
                 final EventsBody eventsBody = (EventsBody) body;
                 setEventsBody(eventsBody);
-            }else{
+            } else {
                 mContentTv.setVisibility(View.VISIBLE);
                 mContentImage.setVisibility(View.GONE);
                 mContentTv.setText(messageObject.getBody());
             }
         }
 
-        private void setTextBody(TextBody textBody){
+        private void setTextBody(TextBody textBody) {
             mContentTv.setVisibility(View.VISIBLE);
             mContentImage.setVisibility(View.GONE);
             mContentTv.setText(textBody.getContent());
@@ -145,7 +142,7 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
             });
         }
 
-        private void setUrlBody(final UrlBody urlBody){
+        private void setUrlBody(final UrlBody urlBody) {
             mContentTv.setVisibility(View.VISIBLE);
             mContentImage.setVisibility(View.GONE);
             mContentTv.setText(urlBody.getContent());
@@ -158,7 +155,7 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
             mContentTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
 
-        private void setAudioBody(AudioBody audioBody){
+        private void setAudioBody(AudioBody audioBody) {
             mContentTv.setVisibility(View.VISIBLE);
             mContentImage.setVisibility(View.GONE);
             mContentTv.setText(DurationFormat.formatDurationShort(audioBody.getDuration()));
@@ -339,18 +336,18 @@ public class SysMsgAdapter extends BaseRecyclerAdapter<MessageObject, SysMsgAdap
 
         }
 
-        private void setEventsBody(final EventsBody eventsBody){
+        private void setEventsBody(final EventsBody eventsBody) {
             mContentTv.setVisibility(View.VISIBLE);
             mContentImage.setVisibility(View.GONE);
             mContentTv.setText("新活动通知，点击查看详情");
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(TextUtils.isEmpty(eventsBody.getContent())){
+                    if (TextUtils.isEmpty(eventsBody.getContent())) {
                         ToastUtil.showToast("链接为空，无法继续查看详情");
                         return;
                     }
-                    if(!eventsBody.getContent().startsWith("http://") && !eventsBody.getContent().startsWith("https://")){
+                    if (!eventsBody.getContent().startsWith("http://") && !eventsBody.getContent().startsWith("https://")) {
                         ToastUtil.showToast("非法的链接地址，无法继续查看详情");
                         return;
                     }

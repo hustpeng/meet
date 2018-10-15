@@ -25,9 +25,6 @@ import java.util.HashSet;
 
 public final class ColumnUtils {
 
-    private ColumnUtils() {
-    }
-
     private static final HashSet<Class<?>> BOOLEAN_TYPES = new HashSet<Class<?>>(2);
     private static final HashSet<Class<?>> INTEGER_TYPES = new HashSet<Class<?>>(2);
     private static final HashSet<Class<?>> AUTO_INCREMENT_TYPES = new HashSet<Class<?>>(4);
@@ -44,9 +41,12 @@ public final class ColumnUtils {
         AUTO_INCREMENT_TYPES.add(Long.class);
     }
 
+    private ColumnUtils() {
+    }
+
     /**
      * 判断数据类型是否为自动增加型
-     * 
+     *
      * @param fieldType
      * @return
      */

@@ -9,7 +9,6 @@ import com.agmbat.imsdk.asmack.XMPPManager;
 import com.agmbat.imsdk.util.AppConfigUtils;
 
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.util.XmppStringUtils;
 
 /**
  * 内部处理login逻辑

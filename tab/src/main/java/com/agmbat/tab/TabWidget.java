@@ -1,15 +1,12 @@
 /**
  * Copyright (C) 2015 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * Tab Manager
  *
  * @author mayimchen
  * @since 2016-05-28
  */
 package com.agmbat.tab;
-
-import com.agmbat.android.AppResources;
-import com.agmbat.android.SysResources;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -20,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.agmbat.android.SysResources;
 
 /**
  * Displays a list of tab labels representing each page in the parent's tab collection.
@@ -234,6 +233,10 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
         invalidate();
     }
 
+    public Drawable getStripDrawable() {
+        return mStripDrawable;
+    }
+
     /**
      * 设置底部光标
      *
@@ -244,10 +247,6 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
         configureStripBounds();
         requestLayout();
         invalidate();
-    }
-
-    public Drawable getStripDrawable() {
-        return mStripDrawable;
     }
 
     /**
@@ -295,6 +294,10 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
         setStripOffset(index, 0);
     }
 
+    public int getCurrentTab() {
+        return mSelectedTab;
+    }
+
     /**
      * Sets the current tab. This method is used to bring a tab to the front of the Widget, and is used to post to the
      * rest of the UI that a different tab has been brought to the foreground. Note, this is separate from the
@@ -316,10 +319,6 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
         getChildTabViewAt(mSelectedTab).setSelected(false);
         mSelectedTab = index;
         getChildTabViewAt(mSelectedTab).setSelected(true);
-    }
-
-    public int getCurrentTab() {
-        return mSelectedTab;
     }
 
     /**
@@ -413,21 +412,6 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
         }
     }
 
-    // registered with each tab indicator so we can notify tab host
-    private class TabClickListener implements OnClickListener {
-
-        private final int mTabIndex;
-
-        private TabClickListener(int tabIndex) {
-            mTabIndex = tabIndex;
-        }
-
-        @Override
-        public void onClick(View v) {
-            clickTab(mTabIndex);
-        }
-    }
-
     /**
      * The user clicked on a tab indicator.
      */
@@ -441,6 +425,21 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
          *                 navigation. Pass true if it was due to a press/click and false otherwise.
          */
         void onTabSelectionChanged(int tabIndex, boolean clicked);
+    }
+
+    // registered with each tab indicator so we can notify tab host
+    private class TabClickListener implements OnClickListener {
+
+        private final int mTabIndex;
+
+        private TabClickListener(int tabIndex) {
+            mTabIndex = tabIndex;
+        }
+
+        @Override
+        public void onClick(View v) {
+            clickTab(mTabIndex);
+        }
     }
 
 }

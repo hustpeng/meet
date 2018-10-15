@@ -41,8 +41,8 @@ public class AvatarHelper {
         return sGroupOptions;
     }
 
-    public static DisplayImageOptions getRectangleUserOptions(){
-        if(sRectAngleOptions == null){
+    public static DisplayImageOptions getRectangleUserOptions() {
+        if (sRectAngleOptions == null) {
             sRectAngleOptions = buildRectAngleOptions(R.drawable.ic_default_avatar);
         }
         return sRectAngleOptions;
@@ -69,10 +69,11 @@ public class AvatarHelper {
 
     /**
      * 获取方形头像参数
+     *
      * @param defaultDrawable
      * @return
      */
-    public static DisplayImageOptions buildRectAngleOptions(int defaultDrawable){
+    public static DisplayImageOptions buildRectAngleOptions(int defaultDrawable) {
         DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
         builder.showImageForEmptyUri(defaultDrawable);
         builder.showImageOnFail(defaultDrawable);

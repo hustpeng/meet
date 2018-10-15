@@ -17,19 +17,17 @@ import java.lang.reflect.Type;
 public class SplashApi {
 
     /**
+     * 是否使用模拟api返回的结果
+     */
+    private static final boolean ENABLE_MOCK = false;
+    /**
      * 应用程序包名
      */
     private static String sPackageName = null;
-
     /**
      * app版本号
      */
     private static int sAppVer = 0;
-
-    /**
-     * 是否使用模拟api返回的结果
-     */
-    private static final boolean ENABLE_MOCK = false;
 
     public static ApiResult<SplashResp> getSplash(String uid, int ver) {
         if (StringUtils.isEmpty(sPackageName)) {

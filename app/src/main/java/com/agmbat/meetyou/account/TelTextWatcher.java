@@ -10,17 +10,6 @@ import com.agmbat.meetyou.util.StringUtil;
  */
 public class TelTextWatcher implements TextWatcher {
 
-    public interface OnInputTelephoneListener {
-
-        /**
-         * 检测输出电话号码
-         *
-         * @param complete    是否输入了11位电话
-         * @param isTelephone 是否为电话号码
-         */
-        public void onInputTelephone(boolean complete, boolean isTelephone);
-    }
-
     private OnInputTelephoneListener mListener;
 
     public TelTextWatcher(OnInputTelephoneListener l) {
@@ -53,5 +42,16 @@ public class TelTextWatcher implements TextWatcher {
                 mListener.onInputTelephone(false, false);
             }
         }
+    }
+
+    public interface OnInputTelephoneListener {
+
+        /**
+         * 检测输出电话号码
+         *
+         * @param complete    是否输入了11位电话
+         * @param isTelephone 是否为电话号码
+         */
+        public void onInputTelephone(boolean complete, boolean isTelephone);
     }
 }

@@ -104,10 +104,10 @@ public class QueryGroupIQProvider implements IQProvider {
                 } else if (parser.getName().equals("description")) {
                     String description = geTagText(parser, "description");
                     queryGroupInfoResultIQ.setDescription(description);
-                } else if(parser.getName().equals("is_member")){
+                } else if (parser.getName().equals("is_member")) {
                     String isMemberText = parser.nextText();
                     queryGroupInfoResultIQ.setGroupMember(StringUtils.parseBoolean(isMemberText));
-                }else if(parser.getName().equals("custom_nickame")){
+                } else if (parser.getName().equals("custom_nickame")) {
                     String groupNickname = parser.nextText();
                     queryGroupInfoResultIQ.setGroupNickName(groupNickname);
                 }

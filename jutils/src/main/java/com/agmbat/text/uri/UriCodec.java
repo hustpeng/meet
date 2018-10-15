@@ -32,39 +32,20 @@ import java.nio.charset.StandardCharsets;
 public abstract class UriCodec {
 
     /**
-     * Returns true if {@code c} does not need to be escaped.
+     * The digits for every supported radix.
      */
-    protected abstract boolean isRetained(char c);
-
-    /**
-     * Throws if {@code s} is invalid according to this encoder.
-     */
-    public final String validate(String uri, int start, int end, String name)
-            throws URISyntaxException {
-        for (int i = start; i < end; ) {
-            char ch = uri.charAt(i);
-            if ((ch >= 'a' && ch <= 'z')
-                    || (ch >= 'A' && ch <= 'Z')
-                    || (ch >= '0' && ch <= '9')
-                    || isRetained(ch)) {
-                i++;
-            } else if (ch == '%') {
-                if (i + 2 >= end) {
-                    throw new URISyntaxException(uri, "Incomplete % sequence in " + name, i);
-                }
-                int d1 = hexToInt(uri.charAt(i + 1));
-                int d2 = hexToInt(uri.charAt(i + 2));
-                if (d1 == -1 || d2 == -1) {
-                    throw new URISyntaxException(uri, "Invalid % sequence: "
-                            + uri.substring(i, i + 3) + " in " + name, i);
-                }
-                i += 3;
-            } else {
-                throw new URISyntaxException(uri, "Illegal character in " + name, i);
-            }
-        }
-        return uri.substring(start, end);
-    }
+    private static final char[] DIGITS = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+            'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+            'u', 'v', 'w', 'x', 'y', 'z'
+    };
+    private static final char[] UPPER_CASE_DIGITS = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+            'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+            'U', 'V', 'W', 'X', 'Y', 'Z'
+    };
 
     /**
      * Throws if {@code s} contains characters that are not letters, digits or
@@ -84,79 +65,20 @@ public abstract class UriCodec {
     }
 
     /**
-     * Encodes {@code s} and appends the result to {@code builder}.
-     *
-     * @param isPartiallyEncoded true to fix input that has already been
-     *     partially or fully encoded. For example, input of "hello%20world" is
-     *     unchanged with isPartiallyEncoded=true but would be double-escaped to
-     *     "hello%2520world" otherwise.
-     */
-    private void appendEncoded(StringBuilder builder, String s, Charset charset,
-            boolean isPartiallyEncoded) {
-        if (s == null) {
-            throw new NullPointerException("s == null");
-        }
-
-        int escapeStart = -1;
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if ((c >= 'a' && c <= 'z')
-                    || (c >= 'A' && c <= 'Z')
-                    || (c >= '0' && c <= '9')
-                    || isRetained(c)
-                    || (c == '%' && isPartiallyEncoded)) {
-                if (escapeStart != -1) {
-                    appendHex(builder, s.substring(escapeStart, i), charset);
-                    escapeStart = -1;
-                }
-                if (c == '%' && isPartiallyEncoded) {
-                    // this is an encoded 3-character sequence like "%20"
-                    builder.append(s, i, Math.min(i + 3, s.length()));
-                    i += 2;
-                } else if (c == ' ') {
-                    builder.append('+');
-                } else {
-                    builder.append(c);
-                }
-            } else if (escapeStart == -1) {
-                escapeStart = i;
-            }
-        }
-        if (escapeStart != -1) {
-            appendHex(builder, s.substring(escapeStart, s.length()), charset);
-        }
-    }
-
-    public final String encode(String s, Charset charset) {
-        // Guess a bit larger for encoded form
-        StringBuilder builder = new StringBuilder(s.length() + 16);
-        appendEncoded(builder, s, charset, false);
-        return builder.toString();
-    }
-
-    public final void appendEncoded(StringBuilder builder, String s) {
-        appendEncoded(builder, s, StandardCharsets.UTF_8, false);
-    }
-
-    public final void appendPartiallyEncoded(StringBuilder builder, String s) {
-        appendEncoded(builder, s, StandardCharsets.UTF_8, true);
-    }
-
-    /**
-     * @param convertPlus true to convert '+' to ' '.
+     * @param convertPlus    true to convert '+' to ' '.
      * @param throwOnFailure true to throw an IllegalArgumentException on
-     *     invalid escape sequences; false to replace them with the replacement
-     *     character (U+fffd).
+     *                       invalid escape sequences; false to replace them with the replacement
+     *                       character (U+fffd).
      */
     public static String decode(String s, boolean convertPlus, Charset charset,
-            boolean throwOnFailure) {
+                                boolean throwOnFailure) {
         if (s.indexOf('%') == -1 && (!convertPlus || s.indexOf('+') == -1)) {
             return s;
         }
 
         StringBuilder result = new StringBuilder(s.length());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        for (int i = 0; i < s.length();) {
+        for (int i = 0; i < s.length(); ) {
             char c = s.charAt(i);
             if (c == '%') {
                 do {
@@ -216,15 +138,16 @@ public abstract class UriCodec {
         sb.append('%');
         sb.append(toHexString(b, true));
     }
-    
+
     /**
      * Returns a two-digit hex string. That is, -1 becomes "ff" or "FF" and 2 becomes "02".
+     *
      * @hide internal use only
      */
     public static String toHexString(byte b, boolean upperCase) {
         return byteToHexString(b, upperCase);
     }
-    
+
     public static String byteToHexString(byte b, boolean upperCase) {
         char[] digits = upperCase ? UPPER_CASE_DIGITS : DIGITS;
         char[] buf = new char[2]; // We always want two digits.
@@ -233,21 +156,98 @@ public abstract class UriCodec {
 //        return new String(0, 2, buf);
         return new String(buf);
     }
-    
-    /**
-     * The digits for every supported radix.
-     */
-    private static final char[] DIGITS = {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-        'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-        'u', 'v', 'w', 'x', 'y', 'z'
-    };
 
-    private static final char[] UPPER_CASE_DIGITS = {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-        'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-        'U', 'V', 'W', 'X', 'Y', 'Z'
-    };
+    /**
+     * Returns true if {@code c} does not need to be escaped.
+     */
+    protected abstract boolean isRetained(char c);
+
+    /**
+     * Throws if {@code s} is invalid according to this encoder.
+     */
+    public final String validate(String uri, int start, int end, String name)
+            throws URISyntaxException {
+        for (int i = start; i < end; ) {
+            char ch = uri.charAt(i);
+            if ((ch >= 'a' && ch <= 'z')
+                    || (ch >= 'A' && ch <= 'Z')
+                    || (ch >= '0' && ch <= '9')
+                    || isRetained(ch)) {
+                i++;
+            } else if (ch == '%') {
+                if (i + 2 >= end) {
+                    throw new URISyntaxException(uri, "Incomplete % sequence in " + name, i);
+                }
+                int d1 = hexToInt(uri.charAt(i + 1));
+                int d2 = hexToInt(uri.charAt(i + 2));
+                if (d1 == -1 || d2 == -1) {
+                    throw new URISyntaxException(uri, "Invalid % sequence: "
+                            + uri.substring(i, i + 3) + " in " + name, i);
+                }
+                i += 3;
+            } else {
+                throw new URISyntaxException(uri, "Illegal character in " + name, i);
+            }
+        }
+        return uri.substring(start, end);
+    }
+
+    /**
+     * Encodes {@code s} and appends the result to {@code builder}.
+     *
+     * @param isPartiallyEncoded true to fix input that has already been
+     *                           partially or fully encoded. For example, input of "hello%20world" is
+     *                           unchanged with isPartiallyEncoded=true but would be double-escaped to
+     *                           "hello%2520world" otherwise.
+     */
+    private void appendEncoded(StringBuilder builder, String s, Charset charset,
+                               boolean isPartiallyEncoded) {
+        if (s == null) {
+            throw new NullPointerException("s == null");
+        }
+
+        int escapeStart = -1;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if ((c >= 'a' && c <= 'z')
+                    || (c >= 'A' && c <= 'Z')
+                    || (c >= '0' && c <= '9')
+                    || isRetained(c)
+                    || (c == '%' && isPartiallyEncoded)) {
+                if (escapeStart != -1) {
+                    appendHex(builder, s.substring(escapeStart, i), charset);
+                    escapeStart = -1;
+                }
+                if (c == '%' && isPartiallyEncoded) {
+                    // this is an encoded 3-character sequence like "%20"
+                    builder.append(s, i, Math.min(i + 3, s.length()));
+                    i += 2;
+                } else if (c == ' ') {
+                    builder.append('+');
+                } else {
+                    builder.append(c);
+                }
+            } else if (escapeStart == -1) {
+                escapeStart = i;
+            }
+        }
+        if (escapeStart != -1) {
+            appendHex(builder, s.substring(escapeStart, s.length()), charset);
+        }
+    }
+
+    public final String encode(String s, Charset charset) {
+        // Guess a bit larger for encoded form
+        StringBuilder builder = new StringBuilder(s.length() + 16);
+        appendEncoded(builder, s, charset, false);
+        return builder.toString();
+    }
+
+    public final void appendEncoded(StringBuilder builder, String s) {
+        appendEncoded(builder, s, StandardCharsets.UTF_8, false);
+    }
+
+    public final void appendPartiallyEncoded(StringBuilder builder, String s) {
+        appendEncoded(builder, s, StandardCharsets.UTF_8, true);
+    }
 }

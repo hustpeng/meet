@@ -35,6 +35,20 @@ public class FileActivity extends ListActivity {
 
     private File mCurrentFile;
 
+    private static List<File> readChildrenFile(String path) {
+        List<File> fileArrayList = new ArrayList<File>();
+        File parentFile = new File(path);
+        File[] files = parentFile.listFiles();
+        if (null != files) {
+            for (File file : files) {
+                if (file != null) {
+                    fileArrayList.add(file);
+                }
+            }
+        }
+        return fileArrayList;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,19 +121,5 @@ public class FileActivity extends ListActivity {
                 }
             }
         });
-    }
-
-    private static List<File> readChildrenFile(String path) {
-        List<File> fileArrayList = new ArrayList<File>();
-        File parentFile = new File(path);
-        File[] files = parentFile.listFiles();
-        if (null != files) {
-            for (File file : files) {
-                if (file != null) {
-                    fileArrayList.add(file);
-                }
-            }
-        }
-        return fileArrayList;
     }
 }

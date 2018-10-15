@@ -88,6 +88,34 @@ public class VCardObject implements ICacheStoreObject {
     private String status;
     private Date update_date;
 
+    /**
+     * 将VCardObject转为xml字符串
+     *
+     * @param object
+     * @return
+     */
+    public static String getXmlNode(VCardObject object) {
+        if (object == null) {
+            return null;
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append("<");
+        buf.append(VCardProvider.elementName());
+        buf.append(" xmlns=\"");
+        buf.append(VCardProvider.namespace());
+        buf.append("\">");
+
+        XmppStringUtils.appendXml(buf, KEY_NICKNAME, object.getNickname());
+        XmppStringUtils.appendXml(buf, KEY_GENDER, String.valueOf(object.getGender()));
+        XmppStringUtils.appendXml(buf, KEY_BIRTH, String.valueOf(object.getBirthYear()));
+        XmppStringUtils.appendXml(buf, KEY_AVATAR, object.getAvatar());
+
+        buf.append("</");
+        buf.append(VCardProvider.elementName());
+        buf.append(">");
+        return buf.toString();
+    }
+
     public String getNickname() {
         if (TextUtils.isEmpty(nickname)) {
             return "";
@@ -99,28 +127,28 @@ public class VCardObject implements ICacheStoreObject {
         this.nickname = nickname;
     }
 
-    public void setGender(int gender) {
-        this.gender = gender;
-    }
-
     public int getGender() {
         return gender;
     }
 
-    public void setBirthYear(int birthYear) {
-        this.birthYear = birthYear;
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 
     public int getBirthYear() {
         return birthYear;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setBirthYear(int birthYear) {
+        this.birthYear = birthYear;
     }
 
     public String getAvatar() {
         return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     @Override
@@ -136,6 +164,10 @@ public class VCardObject implements ICacheStoreObject {
             return "";
         }
         return jid;
+    }
+
+    public void setJid(String jid) {
+        this.jid = jid;
     }
 
     public int getImUid() {
@@ -171,10 +203,6 @@ public class VCardObject implements ICacheStoreObject {
         return XmppStringUtils.parseName(jid);
     }
 
-    public void setJid(String jid) {
-        this.jid = jid;
-    }
-
     public Date getUpdate_date() {
         return update_date;
     }
@@ -194,40 +222,9 @@ public class VCardObject implements ICacheStoreObject {
         this.status = status;
     }
 
-
-
-
     @Override
     public String toString() {
         return getXmlNode(this);
-    }
-
-    /**
-     * 将VCardObject转为xml字符串
-     *
-     * @param object
-     * @return
-     */
-    public static String getXmlNode(VCardObject object) {
-        if (object == null) {
-            return null;
-        }
-        StringBuilder buf = new StringBuilder();
-        buf.append("<");
-        buf.append(VCardProvider.elementName());
-        buf.append(" xmlns=\"");
-        buf.append(VCardProvider.namespace());
-        buf.append("\">");
-
-        XmppStringUtils.appendXml(buf, KEY_NICKNAME, object.getNickname());
-        XmppStringUtils.appendXml(buf, KEY_GENDER, String.valueOf(object.getGender()));
-        XmppStringUtils.appendXml(buf, KEY_BIRTH, String.valueOf(object.getBirthYear()));
-        XmppStringUtils.appendXml(buf, KEY_AVATAR, object.getAvatar());
-
-        buf.append("</");
-        buf.append(VCardProvider.elementName());
-        buf.append(">");
-        return buf.toString();
     }
 
 }

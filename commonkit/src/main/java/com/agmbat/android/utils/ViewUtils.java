@@ -15,30 +15,23 @@
  */
 package com.agmbat.android.utils;
 
-import com.agmbat.log.Log;
-
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.HeaderViewListAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.lang.reflect.Field;
+import com.agmbat.log.Log;
 
 /**
  * 控件操作工具类

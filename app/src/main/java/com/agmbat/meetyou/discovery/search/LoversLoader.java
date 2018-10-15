@@ -14,22 +14,6 @@ import com.agmbat.meetyou.helper.GenderHelper;
  */
 public class LoversLoader implements DiscoveryLoader {
 
-    @Override
-    public String getName() {
-        return AppResources.getString(R.string.discovery_lover);
-    }
-
-    @Override
-    public DiscoveryApiResult load(int page) {
-        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
-        return requestLover(user, page);
-    }
-
-    @Override
-    public void setupViews(View view) {
-
-    }
-
     /**
      * 找恋人
      *
@@ -59,5 +43,21 @@ public class LoversLoader implements DiscoveryLoader {
         }
         String center = "30.5,111.2";
         return DiscoveryApi.getLover(phone, token, center, searchGender, searchAge, pageIndex);
+    }
+
+    @Override
+    public String getName() {
+        return AppResources.getString(R.string.discovery_lover);
+    }
+
+    @Override
+    public DiscoveryApiResult load(int page) {
+        LoginUser user = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        return requestLover(user, page);
+    }
+
+    @Override
+    public void setupViews(View view) {
+
     }
 }

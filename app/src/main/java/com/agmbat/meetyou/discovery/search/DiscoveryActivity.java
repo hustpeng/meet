@@ -110,13 +110,13 @@ public class DiscoveryActivity extends Activity {
      */
     @OnClick(R.id.btn_filter)
     void onClickFilter() {
-        if(mLoader instanceof FilterLoader) {
+        if (mLoader instanceof FilterLoader) {
             if (mFilterView.getVisibility() == View.VISIBLE) {
                 mFilterView.setVisibility(View.INVISIBLE);
             } else {
                 mFilterView.setVisibility(View.VISIBLE);
             }
-        }else if(mLoader instanceof NearbyUsersLoader){
+        } else if (mLoader instanceof NearbyUsersLoader) {
             final NearbyUsersLoader nearbyUsersLoader = (NearbyUsersLoader) mLoader;
             PopupMenu popupMenu = new PopupMenu(this);
 

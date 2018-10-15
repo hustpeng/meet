@@ -1,6 +1,5 @@
 package com.agmbat.picker.carnumber;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.agmbat.picker.linkage.LinkagePicker;

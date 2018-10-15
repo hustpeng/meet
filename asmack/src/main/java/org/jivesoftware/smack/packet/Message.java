@@ -176,16 +176,16 @@ public class Message extends Packet {
         return senderAvatar;
     }
 
+    public void setSenderAvatar(String senderAvatar) {
+        this.senderAvatar = senderAvatar;
+    }
+
     public String getSenderJid() {
         return senderJid;
     }
 
     public void setSenderJid(String senderJid) {
         this.senderJid = senderJid;
-    }
-
-    public void setSenderAvatar(String senderAvatar) {
-        this.senderAvatar = senderAvatar;
     }
 
     /**

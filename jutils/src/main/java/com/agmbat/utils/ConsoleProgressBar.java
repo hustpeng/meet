@@ -81,6 +81,28 @@ public class ConsoleProgressBar {
     }
 
     /**
+     * 构造字符
+     *
+     * @param ch
+     * @param count
+     */
+    private static String buildChar(char ch, int count) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            builder.append(ch);
+        }
+        return builder.toString();
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        ConsoleProgressBar cpb = new ConsoleProgressBar();
+        for (int i = 1; i <= 100; i++) {
+            cpb.show(i);
+            Thread.sleep(100);
+        }
+    }
+
+    /**
      * 显示进度条。
      *
      * @param value 当前进度。进度必须大于或等于起始点且小于等于结束点（start <= current <= end）。
@@ -100,28 +122,6 @@ public class ConsoleProgressBar {
 
         if (value == maximum) {
             System.out.print('\n');
-        }
-    }
-
-    /**
-     * 构造字符
-     *
-     * @param ch
-     * @param count
-     */
-    private static String buildChar(char ch, int count) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < count; i++) {
-            builder.append(ch);
-        }
-        return builder.toString();
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        ConsoleProgressBar cpb = new ConsoleProgressBar();
-        for (int i = 1; i <= 100; i++) {
-            cpb.show(i);
-            Thread.sleep(100);
         }
     }
 

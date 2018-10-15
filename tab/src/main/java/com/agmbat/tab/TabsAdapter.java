@@ -29,34 +29,6 @@ public class TabsAdapter extends FragmentPagerAdapter implements TabHost.OnTabCh
     private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
     private final ArrayList<Fragment> mFragments = new ArrayList<Fragment>();
 
-    private static final class TabInfo {
-        private final String tag;
-        private final Class<?> clss;
-        private final Bundle args;
-
-        TabInfo(String _tag, Class<?> _class, Bundle _args) {
-            tag = _tag;
-            clss = _class;
-            args = _args;
-        }
-    }
-
-    private static class DummyTabFactory implements TabHost.TabContentFactory {
-        private final Context mContext;
-
-        public DummyTabFactory(Context context) {
-            mContext = context;
-        }
-
-        @Override
-        public View createTabContent(String tag) {
-            View v = new View(mContext);
-            v.setMinimumWidth(0);
-            v.setMinimumHeight(0);
-            return v;
-        }
-    }
-
     public TabsAdapter(FragmentActivity activity, TabHost tabHost, ViewPager pager) {
         super(activity.getSupportFragmentManager());
         mContext = activity;
@@ -115,5 +87,33 @@ public class TabsAdapter extends FragmentPagerAdapter implements TabHost.OnTabCh
 
     @Override
     public void onPageScrollStateChanged(int state) {
+    }
+
+    private static final class TabInfo {
+        private final String tag;
+        private final Class<?> clss;
+        private final Bundle args;
+
+        TabInfo(String _tag, Class<?> _class, Bundle _args) {
+            tag = _tag;
+            clss = _class;
+            args = _args;
+        }
+    }
+
+    private static class DummyTabFactory implements TabHost.TabContentFactory {
+        private final Context mContext;
+
+        public DummyTabFactory(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        public View createTabContent(String tag) {
+            View v = new View(mContext);
+            v.setMinimumWidth(0);
+            v.setMinimumHeight(0);
+            return v;
+        }
     }
 }

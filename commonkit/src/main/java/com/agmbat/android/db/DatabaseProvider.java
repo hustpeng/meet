@@ -22,8 +22,8 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ProviderInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
@@ -38,36 +38,44 @@ import java.util.Map;
  */
 public abstract class DatabaseProvider extends ContentProvider {
 
-    public interface ProviderFactory {
-        public Provider createProvider();
-
-        public Provider createUriHelper(long id);
-    }
-
     protected static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
-
     private String mAuthorities;
     private DataHelper mDataHelper;
-
     private int mMatchId = 1;
-
     private Map<String, ProviderFactory> mProviderFactoryMap;
     private Map<String, ProviderFactory> mProviderIdFactoryMap;
 
-    private final class DataHelper extends SQLiteOpenHelper {
-
-        public DataHelper(Context context, String name, CursorFactory factory, int version) {
-            super(context, name, factory, version);
+    private static String getAuthority(Context context,
+                                       Class<? extends ContentProvider> providerClass) {
+        String authority = null;
+        try {
+            PackageManager pm = context.getPackageManager();
+            String packageName = context.getPackageName();
+            String className = providerClass.getName();
+            PackageInfo packageInfo = pm.getPackageInfo(packageName, PackageManager.GET_PROVIDERS);
+            ProviderInfo[] provides = packageInfo.providers;
+            ProviderInfo providerInfo = null;
+            for (ProviderInfo provider : provides) {
+                String name = provider.name;
+                if (className.equals(name) || className.equals(combine(packageName, name))) {
+                    providerInfo = provider;
+                    break;
+                }
+            }
+            if (providerInfo != null) {
+                authority = providerInfo.authority;
+            }
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
         }
+        return authority;
+    }
 
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            onCreateDatabase(db);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            onUpgradeDatabase(db, oldVersion, newVersion);
+    private static String combine(String packageName, String name) {
+        if (name.startsWith(".")) {
+            return packageName + name;
+        } else {
+            return packageName + "." + name;
         }
     }
 
@@ -199,37 +207,26 @@ public abstract class DatabaseProvider extends ContentProvider {
         return mMatchId++;
     }
 
-    private static String getAuthority(Context context,
-                                       Class<? extends ContentProvider> providerClass) {
-        String authority = null;
-        try {
-            PackageManager pm = context.getPackageManager();
-            String packageName = context.getPackageName();
-            String className = providerClass.getName();
-            PackageInfo packageInfo = pm.getPackageInfo(packageName, PackageManager.GET_PROVIDERS);
-            ProviderInfo[] provides = packageInfo.providers;
-            ProviderInfo providerInfo = null;
-            for (ProviderInfo provider : provides) {
-                String name = provider.name;
-                if (className.equals(name) || className.equals(combine(packageName, name))) {
-                    providerInfo = provider;
-                    break;
-                }
-            }
-            if (providerInfo != null) {
-                authority = providerInfo.authority;
-            }
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return authority;
+    public interface ProviderFactory {
+        public Provider createProvider();
+
+        public Provider createUriHelper(long id);
     }
 
-    private static String combine(String packageName, String name) {
-        if (name.startsWith(".")) {
-            return packageName + name;
-        } else {
-            return packageName + "." + name;
+    private final class DataHelper extends SQLiteOpenHelper {
+
+        public DataHelper(Context context, String name, CursorFactory factory, int version) {
+            super(context, name, factory, version);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            onCreateDatabase(db);
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            onUpgradeDatabase(db, oldVersion, newVersion);
         }
     }
 }

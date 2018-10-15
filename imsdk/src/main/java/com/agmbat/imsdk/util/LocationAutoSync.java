@@ -13,39 +13,9 @@ import java.util.TimerTask;
 
 public class LocationAutoSync {
     private final String TAG = LocationAutoSync.class.getSimpleName();
-
-    private Timer syncTimer = null;
-
     private final long START_INTERVAL = 1000L;
     private final long SYNC_INTERVAL = 600000L;
-
-    public LocationAutoSync() {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-
-            @Override
-            public void connectionCreated(Connection connection) {
-                connection.addConnectionListener(myConnectionListener);
-            }
-        });
-    }
-
-    private ConnectionListener myConnectionListener = new ConnectionListener() {
-        @Override
-        public void loginSuccessful() {
-            start();
-        }
-
-        @Override
-        public void connectionClosedOnError(Exception e) {
-            stop();
-        }
-
-        @Override
-        public void connectionClosed() {
-            stop();
-        }
-    };
-
+    private Timer syncTimer = null;
     private LocationHelper.LocationEventListener listener = new LocationHelper.LocationEventListener() {
 
         @Override
@@ -77,6 +47,32 @@ public class LocationAutoSync {
             }
         }
     };
+    private ConnectionListener myConnectionListener = new ConnectionListener() {
+        @Override
+        public void loginSuccessful() {
+            start();
+        }
+
+        @Override
+        public void connectionClosedOnError(Exception e) {
+            stop();
+        }
+
+        @Override
+        public void connectionClosed() {
+            stop();
+        }
+    };
+
+    public LocationAutoSync() {
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(myConnectionListener);
+            }
+        });
+    }
 
     public void start() {
         synchronized (TAG) {

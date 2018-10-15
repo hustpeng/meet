@@ -28,16 +28,6 @@ public class Address {
     @SerializedName("county")
     private String county;
 
-
-    /**
-     * 转成json
-     *
-     * @return
-     */
-    public String toJson() {
-        return GsonHelper.toJson(this);
-    }
-
     /**
      * 将json串转为地址对象
      *
@@ -66,6 +56,15 @@ public class Address {
         address.province = array[0];
         address.city = array[1];
         return address;
+    }
+
+    /**
+     * 转成json
+     *
+     * @return
+     */
+    public String toJson() {
+        return GsonHelper.toJson(this);
     }
 
     /**

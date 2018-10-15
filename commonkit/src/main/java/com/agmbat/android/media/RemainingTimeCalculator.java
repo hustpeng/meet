@@ -47,8 +47,8 @@ public class RemainingTimeCalculator {
      * If called, the calculator will return the minimum of two estimates: how
      * long until we run out of disk space and how long until the file reaches
      * the specified size.
-     * 
-     * @param file the file to watch
+     *
+     * @param file     the file to watch
      * @param maxBytes the limit
      */
 
@@ -139,7 +139,7 @@ public class RemainingTimeCalculator {
 
     /**
      * Sets the bit rate used in the interpolation.
-     * 
+     *
      * @param bitRate the bit rate to set in bits/sec.
      */
     public void setBitRate(int bitRate) {

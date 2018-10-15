@@ -25,8 +25,8 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.google.zxing.client.android.PreferencesActivity;
 import com.agmbat.zxing.ScannerConfig;
+import com.google.zxing.client.android.PreferencesActivity;
 
 /**
  * A class which deals with reading, parsing, and setting the camera parameters which are used to

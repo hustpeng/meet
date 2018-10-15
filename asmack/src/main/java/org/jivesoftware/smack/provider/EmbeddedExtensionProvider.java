@@ -2,9 +2,9 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -76,23 +76,19 @@ import java.util.Map;
  *
  * @author Robin Collier
  */
-abstract public class EmbeddedExtensionProvider implements PacketExtensionProvider
-{
+abstract public class EmbeddedExtensionProvider implements PacketExtensionProvider {
 
-    final public PacketExtension parseExtension(XmlPullParser parser) throws Exception
-    {
+    final public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
         String namespace = parser.getNamespace();
         String name = parser.getName();
         Map<String, String> attMap = new HashMap<String, String>();
 
-        for(int i=0; i<parser.getAttributeCount(); i++)
-        {
+        for (int i = 0; i < parser.getAttributeCount(); i++) {
             attMap.put(parser.getAttributeName(i), parser.getAttributeValue(i));
         }
         List<PacketExtension> extensions = new ArrayList<PacketExtension>();
 
-        do
-        {
+        do {
             int tag = parser.next();
 
             if (tag == XmlPullParser.START_TAG)

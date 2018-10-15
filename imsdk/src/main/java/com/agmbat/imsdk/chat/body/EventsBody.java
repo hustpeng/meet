@@ -4,11 +4,11 @@ public class EventsBody extends Body {
 
     private String mContent = "";
 
-    public EventsBody(String content){
+    public EventsBody(String content) {
         mContent = content;
     }
 
-    public String getContent(){
+    public String getContent() {
         return mContent;
     }
 

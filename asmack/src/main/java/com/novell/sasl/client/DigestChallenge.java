@@ -14,9 +14,10 @@
  ******************************************************************************/
 package com.novell.sasl.client;
 
-import java.util.*;
+import org.apache.harmony.javax.security.sasl.SaslException;
 
-import org.apache.harmony.javax.security.sasl.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Implements the DigestChallenge class which will be used by the
@@ -101,7 +102,7 @@ class DigestChallenge extends Object {
                 handleStale(directive);
         }
 
-    /* post semantic check */
+        /* post semantic check */
         if (-1 == m_maxBuf)
             m_maxBuf = 65536;
 

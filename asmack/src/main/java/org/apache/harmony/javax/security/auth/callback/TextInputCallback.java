@@ -20,7 +20,6 @@ package org.apache.harmony.javax.security.auth.callback;
 import java.io.Serializable;
 
 
-
 public class TextInputCallback implements Callback, Serializable {
 
     private static final long serialVersionUID = -8064222478852811804L;
@@ -30,20 +29,6 @@ public class TextInputCallback implements Callback, Serializable {
     private String prompt;
 
     private String inputText;
-
-    private void setPrompt(String prompt) {
-        if (prompt == null || prompt.length() == 0) {
-            throw new IllegalArgumentException("auth.14"); //$NON-NLS-1$
-        }
-        this.prompt = prompt;
-    }
-
-    private void setDefaultText(String defaultText) {
-        if (defaultText == null || defaultText.length() == 0) {
-            throw new IllegalArgumentException("auth.15"); //$NON-NLS-1$
-        }
-        this.defaultText = defaultText;
-    }
 
     public TextInputCallback(String prompt) {
         super();
@@ -60,8 +45,22 @@ public class TextInputCallback implements Callback, Serializable {
         return defaultText;
     }
 
+    private void setDefaultText(String defaultText) {
+        if (defaultText == null || defaultText.length() == 0) {
+            throw new IllegalArgumentException("auth.15"); //$NON-NLS-1$
+        }
+        this.defaultText = defaultText;
+    }
+
     public String getPrompt() {
         return prompt;
+    }
+
+    private void setPrompt(String prompt) {
+        if (prompt == null || prompt.length() == 0) {
+            throw new IllegalArgumentException("auth.14"); //$NON-NLS-1$
+        }
+        this.prompt = prompt;
     }
 
     public String getText() {

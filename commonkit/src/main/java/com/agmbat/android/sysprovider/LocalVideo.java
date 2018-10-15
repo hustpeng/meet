@@ -9,8 +9,22 @@ import android.util.Log;
 // LocalVideo represents a video in the local storage.
 public class LocalVideo extends LocalMediaItem {
 
+    static final String[] PROJECTION = new String[]{
+            VideoColumns._ID,
+            VideoColumns.TITLE,
+            VideoColumns.MIME_TYPE,
+            VideoColumns.LATITUDE,
+            VideoColumns.LONGITUDE,
+            VideoColumns.DATE_TAKEN,
+            VideoColumns.DATE_ADDED,
+            VideoColumns.DATE_MODIFIED,
+            VideoColumns.DATA,
+            VideoColumns.DURATION,
+            VideoColumns.BUCKET_ID,
+            VideoColumns.SIZE,
+            VideoColumns.RESOLUTION,
+    };
     private static final String TAG = "LocalVideo";
-
     // Must preserve order between these indices and the order of the terms in
     // the following PROJECTION array.
     private static final int INDEX_ID = 0;
@@ -26,23 +40,6 @@ public class LocalVideo extends LocalMediaItem {
     private static final int INDEX_BUCKET_ID = 10;
     private static final int INDEX_SIZE = 11;
     private static final int INDEX_RESOLUTION = 12;
-
-    static final String[] PROJECTION = new String[] {
-            VideoColumns._ID,
-            VideoColumns.TITLE,
-            VideoColumns.MIME_TYPE,
-            VideoColumns.LATITUDE,
-            VideoColumns.LONGITUDE,
-            VideoColumns.DATE_TAKEN,
-            VideoColumns.DATE_ADDED,
-            VideoColumns.DATE_MODIFIED,
-            VideoColumns.DATA,
-            VideoColumns.DURATION,
-            VideoColumns.BUCKET_ID,
-            VideoColumns.SIZE,
-            VideoColumns.RESOLUTION,
-    };
-
     public int durationInSec;
 
     public LocalVideo(Cursor cursor) {

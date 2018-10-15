@@ -39,30 +39,6 @@ public class Maps {
         ActionHelper.request(context, new LocationAction(callback));
     }
 
-    private static class LocationAction implements PendingAction {
-
-        private final LocationCallback mLocationCallback;
-
-        public LocationAction(LocationCallback callback) {
-            mLocationCallback = callback;
-        }
-
-        @Override
-        public void onActivityResult(int resultCode, Intent data) {
-            if (resultCode == Activity.RESULT_OK) {
-                LocationObject object = LocationObject.fromIntent(data);
-                if (mLocationCallback != null) {
-                    mLocationCallback.callback(object);
-                }
-            }
-        }
-
-        @Override
-        public Intent getActionIntent(Context context) {
-            return new Intent(context, LocationActivity.class);
-        }
-    }
-
     /**
      * 查看地图
      *
@@ -98,5 +74,29 @@ public class Maps {
     public static MapConfig getAndRemoveMapConfig(Intent intent) {
         String key = intent.getStringExtra(KEY_CONFIG_ID);
         return CONFIG_CACHE.remove(key);
+    }
+
+    private static class LocationAction implements PendingAction {
+
+        private final LocationCallback mLocationCallback;
+
+        public LocationAction(LocationCallback callback) {
+            mLocationCallback = callback;
+        }
+
+        @Override
+        public void onActivityResult(int resultCode, Intent data) {
+            if (resultCode == Activity.RESULT_OK) {
+                LocationObject object = LocationObject.fromIntent(data);
+                if (mLocationCallback != null) {
+                    mLocationCallback.callback(object);
+                }
+            }
+        }
+
+        @Override
+        public Intent getActionIntent(Context context) {
+            return new Intent(context, LocationActivity.class);
+        }
     }
 }

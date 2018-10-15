@@ -28,7 +28,7 @@ import com.google.zxing.client.result.ParsedResult;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class GeoResultHandler extends ResultHandler {
-    
+
     private static final int[] buttons = {
             R.string.button_show_map,
             R.string.button_get_directions

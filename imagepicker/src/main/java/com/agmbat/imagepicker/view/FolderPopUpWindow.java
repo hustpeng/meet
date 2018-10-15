@@ -21,10 +21,10 @@ import com.agmbat.imagepicker.R;
  */
 public class FolderPopUpWindow extends PopupWindow implements View.OnClickListener {
 
-    private ListView listView;
-    private OnItemClickListener onItemClickListener;
     private final View masker;
     private final View marginView;
+    private ListView listView;
+    private OnItemClickListener onItemClickListener;
     private int marginPx;
 
     public FolderPopUpWindow(Context context, BaseAdapter adapter) {

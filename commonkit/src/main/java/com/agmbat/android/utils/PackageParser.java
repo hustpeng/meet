@@ -1,11 +1,5 @@
 package com.agmbat.android.utils;
 
-import java.io.File;
-
-import com.agmbat.android.AppResources;
-import com.agmbat.android.SystemManager;
-import com.agmbat.utils.ReflectionUtils;
-
 import android.content.pm.ApplicationInfo;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -13,9 +7,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 
+import com.agmbat.android.AppResources;
+import com.agmbat.android.SystemManager;
+import com.agmbat.utils.ReflectionUtils;
+
+import java.io.File;
+
 /**
  * Package archive parsing {@hide}
- *
+ * <p>
  * 使用反射获取包信息
  * android.content.pm.PackageParser
  */
@@ -99,9 +99,9 @@ public class PackageParser {
             SystemManager.getWindowManager().getDefaultDisplay().getMetrics(metrics);
             Object packageParser =
                     ReflectionUtils.newInstance("com.agmbat.android.utils.PackageParser", sourceFile.toString());
-            Class<?>[] parameterTypes = new Class<?>[] {File.class, String.class, DisplayMetrics.class, int.class};
+            Class<?>[] parameterTypes = new Class<?>[]{File.class, String.class, DisplayMetrics.class, int.class};
             Object packageInfo =
-                    ReflectionUtils.invokeMethod(packageParser, "parsePackage", parameterTypes, new Object[] {
+                    ReflectionUtils.invokeMethod(packageParser, "parsePackage", parameterTypes, new Object[]{
                             sourceFile, sourceFile.toString(), metrics, 0});
             return packageInfo;
         } catch (Exception e) {
@@ -113,8 +113,8 @@ public class PackageParser {
     private static Resources getApkResources(String apkPath) {
         try {
             AssetManager assetManager = (AssetManager) ReflectionUtils.newInstance("android.content.res.AssetManager");
-            ReflectionUtils.invokeMethod(assetManager, "addAssetPath", new Class<?>[] {String.class},
-                    new Object[] {apkPath});
+            ReflectionUtils.invokeMethod(assetManager, "addAssetPath", new Class<?>[]{String.class},
+                    new Object[]{apkPath});
             Resources contextRes = AppResources.getResources();
             Resources res = new Resources(assetManager, contextRes.getDisplayMetrics(), contextRes.getConfiguration());
             return res;

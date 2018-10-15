@@ -8,11 +8,11 @@
  */
 package com.agmbat.utils;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.agmbat.file.FileUtils;
 import com.agmbat.text.StringUtils;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Utility class to get CPU information. All information are get from /proc/cpuinfo of linux OS.
@@ -55,18 +55,6 @@ public final class CpuInfo {
 
     private String[] mCpuInfoText;
 
-    /**
-     * 获取Cpu信息
-     *
-     * @return
-     */
-    public static CpuInfo get() {
-        if (sCpuInfo == null) {
-            sCpuInfo = new CpuInfo();
-        }
-        return sCpuInfo;
-    }
-
     private CpuInfo() {
         String cpuInfoString = FileUtils.readFileText("/proc/cpuinfo");
         if (StringUtils.isEmpty(cpuInfoString)) {
@@ -88,6 +76,30 @@ public final class CpuInfo {
         }
 
         extractFeatures();
+    }
+
+    /**
+     * 获取Cpu信息
+     *
+     * @return
+     */
+    public static CpuInfo get() {
+        if (sCpuInfo == null) {
+            sCpuInfo = new CpuInfo();
+        }
+        return sCpuInfo;
+    }
+
+    private static String getCpuArch(String cpuName) {
+        String cpuArchitect = CPU_ARMEABI;
+        if (cpuName.toLowerCase().contains("arm")) {
+            cpuArchitect = CPU_ARMEABI;
+        } else if (cpuName.toLowerCase().contains("x86")) {
+            cpuArchitect = CPU_X86;
+        } else if (cpuName.toLowerCase().contains("mips")) {
+            cpuArchitect = CPU_MIPS;
+        }
+        return cpuArchitect;
     }
 
     /**
@@ -215,18 +227,6 @@ public final class CpuInfo {
             }
         }
         return count;
-    }
-
-    private static String getCpuArch(String cpuName) {
-        String cpuArchitect = CPU_ARMEABI;
-        if (cpuName.toLowerCase().contains("arm")) {
-            cpuArchitect = CPU_ARMEABI;
-        } else if (cpuName.toLowerCase().contains("x86")) {
-            cpuArchitect = CPU_X86;
-        } else if (cpuName.toLowerCase().contains("mips")) {
-            cpuArchitect = CPU_MIPS;
-        }
-        return cpuArchitect;
     }
 
 }

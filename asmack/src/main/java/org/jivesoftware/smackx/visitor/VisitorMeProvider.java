@@ -1,12 +1,11 @@
-
 package org.jivesoftware.smackx.visitor;
+
+import android.net.ParseException;
+import android.text.TextUtils;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
-
-import android.net.ParseException;
-import android.text.TextUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,13 +16,11 @@ public class VisitorMeProvider implements IQProvider {
     public VisitorMeProvider() {
     }
 
-    public static String elementName()
-    {
+    public static String elementName() {
         return "query";
     }
 
-    public static String namespace()
-    {
+    public static String namespace() {
         return "jabber:iq:visitor";
     }
 
@@ -38,8 +35,7 @@ public class VisitorMeProvider implements IQProvider {
                 if ("item".equals(parser.getName())) {
                     visitorMeItem.add(parseItem(parser));
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.END_TAG) {
                 if ("query".equals(parser.getName())) {
                     done = true;
                 }
@@ -61,14 +57,13 @@ public class VisitorMeProvider implements IQProvider {
         String isOnline = parser.getAttributeValue("", "online");
         if ("true".equals(isOnline)) {
             item.setOnline(true);
-        }
-        else {
+        } else {
             item.setOnline(false);
         }
 
         String creationtime = parser.getAttributeValue("", "accesstime");
         if (!TextUtils.isEmpty(creationtime)) {
-            SimpleDateFormat  format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             try {
                 Date date = format.parse(creationtime);
                 item.setVisitorTime(date.getTime());

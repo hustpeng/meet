@@ -3,7 +3,6 @@ package com.agmbat.isdialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.widget.TextView;
 
 /**
  * iOS Style loading

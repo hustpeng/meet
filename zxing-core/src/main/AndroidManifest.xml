@@ -1,4 +1,3 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.disbts.zxing.core">
+<manifest package="com.disbts.zxing.core">
 
 </manifest>

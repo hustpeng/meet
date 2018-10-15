@@ -35,6 +35,7 @@ public class DefEmoticons implements EmojiResProvider, EmojiDisplayProcessor {
      * 使用linkedHashMap,保证顺序
      */
     static final HashMap<String, String> sEmoticonHashMap = new LinkedHashMap<>();
+    private static final Pattern EMOJI_RANGE = Pattern.compile("[\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee]");
 
     static {
         sEmoticonHashMap.put(fromCodePoint(0x1f604), "emoji/defemoji/emoji_0x1f604.png");
@@ -118,8 +119,6 @@ public class DefEmoticons implements EmojiResProvider, EmojiDisplayProcessor {
         sEmoticonHashMap.put(fromCodePoint(0x1f559), "emoji/defemoji/emoji_0x1f559.png");
     }
 
-    private static final Pattern EMOJI_RANGE = Pattern.compile("[\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee]");
-
     private static Matcher getMatcher(CharSequence matchStr) {
         return EMOJI_RANGE.matcher(matchStr);
     }
@@ -157,6 +156,12 @@ public class DefEmoticons implements EmojiResProvider, EmojiDisplayProcessor {
         return emojis;
     }
 
+    private static Drawable getDrawable(String key) {
+        String icon = sEmoticonHashMap.get(key);
+        Drawable drawable = AppResources.getAssetDrawable(icon);
+        return drawable;
+    }
+
     @Override
     public EmoticonPageSetEntity getEmoticonPageSetEntity() {
         EmoticonPageSetEntity emojiPageSetEntity = new EmoticonPageSetEntity();
@@ -174,7 +179,6 @@ public class DefEmoticons implements EmojiResProvider, EmojiDisplayProcessor {
         emojiPageSetEntity.preparePageEntity();
         return emojiPageSetEntity;
     }
-
 
     @Override
     public EmoticonFilter getEmoticonFilter(EditText editText) {
@@ -216,12 +220,6 @@ public class DefEmoticons implements EmojiResProvider, EmojiDisplayProcessor {
             }
         }
 
-    }
-
-    private static Drawable getDrawable(String key) {
-        String icon = sEmoticonHashMap.get(key);
-        Drawable drawable = AppResources.getAssetDrawable(icon);
-        return drawable;
     }
 
 

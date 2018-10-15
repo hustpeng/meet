@@ -65,18 +65,19 @@ import javax.net.ssl.SSLSocket;
  */
 public class XMPPConnection extends Connection {
 
+    String connectionID = null;
+    PacketWriter packetWriter;
+    PacketReader packetReader;
+    Roster roster = null;
     /**
      * The socket which is used for this connection.
      */
     private Socket socket;
-
-    String connectionID = null;
     private String user = null;
     private boolean connected = false;
     // socketClosed is used concurrent
     // by XMPPConnection, PacketReader, PacketWriter
     private volatile boolean socketClosed = false;
-
     /**
      * Flag that indicates if the user is currently authenticated with the server.
      */
@@ -88,12 +89,6 @@ public class XMPPConnection extends Connection {
     private boolean wasAuthenticated = false;
     private boolean anonymous = false;
     private boolean usingTLS = false;
-
-    PacketWriter packetWriter;
-    PacketReader packetReader;
-
-    Roster roster = null;
-
     /**
      * Collection of available stream compression methods offered by the server.
      */

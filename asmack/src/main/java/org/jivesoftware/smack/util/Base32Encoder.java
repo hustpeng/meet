@@ -23,13 +23,13 @@ import java.io.IOException;
  * Base32 representation takes roughly 20% more space then Base64.
  *
  * @author Florian Schmaus
- *         Based on code by Brian Wellington (bwelling@xbill.org)
+ * Based on code by Brian Wellington (bwelling@xbill.org)
  * @see <a href="http://en.wikipedia.org/wiki/Base32">Base32 Wikipedia entry<a>
  */
 public class Base32Encoder implements StringEncoder {
 
-    private static Base32Encoder instance;
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ2345678";
+    private static Base32Encoder instance;
 
     private Base32Encoder() {
         // Use getInstance()
@@ -40,6 +40,40 @@ public class Base32Encoder implements StringEncoder {
             instance = new Base32Encoder();
         }
         return instance;
+    }
+
+    private static int lenToPadding(int blocklen) {
+        switch (blocklen) {
+            case 1:
+                return 6;
+            case 2:
+                return 4;
+            case 3:
+                return 3;
+            case 4:
+                return 1;
+            case 5:
+                return 0;
+            default:
+                return -1;
+        }
+    }
+
+    private static int paddingToLen(int padlen) {
+        switch (padlen) {
+            case 6:
+                return 1;
+            case 4:
+                return 2;
+            case 3:
+                return 3;
+            case 1:
+                return 4;
+            case 0:
+                return 5;
+            default:
+                return -1;
+        }
     }
 
     @Override
@@ -147,40 +181,6 @@ public class Base32Encoder implements StringEncoder {
             }
         }
         return new String(os.toByteArray());
-    }
-
-    private static int lenToPadding(int blocklen) {
-        switch (blocklen) {
-            case 1:
-                return 6;
-            case 2:
-                return 4;
-            case 3:
-                return 3;
-            case 4:
-                return 1;
-            case 5:
-                return 0;
-            default:
-                return -1;
-        }
-    }
-
-    private static int paddingToLen(int padlen) {
-        switch (padlen) {
-            case 6:
-                return 1;
-            case 4:
-                return 2;
-            case 3:
-                return 3;
-            case 1:
-                return 4;
-            case 0:
-                return 5;
-            default:
-                return -1;
-        }
     }
 
 }

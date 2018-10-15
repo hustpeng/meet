@@ -28,39 +28,52 @@ public class VisitorManager extends Xepmodule {
 
     private static final int fetchVisitorMe = 0;
     private static final int sendVisitorRecord = 1;
-    private Timer sendVisitorRecordTimer = null;
-
+    private static final int VISITOR_ME_PAGE_SIZE = 20;
     // private final long SEND_VISITOR_RECORD_INTERVAL = 180000L;
     private final long SEND_VISITOR_RECORD_INTERVAL = 30000L;
-
+    private final List<VisitorMeListener> listeners;
+    private Timer sendVisitorRecordTimer = null;
     private CacheStoreBase<VisitorMeObject> cacheStorage;
     private VisitorMeReadFlagStorage readFlagStorage;
     private VisitorRecordStorage visitorRecordStorage;
-
-    private final List<VisitorMeListener> listeners;
-
     private int currentFetchPage = 0;
+    private PacketFilter visitorMeMsgPacketFilter = new PacketFilter() {
 
-    private static final int VISITOR_ME_PAGE_SIZE = 20;
-
-    public VisitorManager(final Connection connection) {
-        this.xmppConnection = connection;
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-
-            @Override
-            public void connectionCreated(Connection connection) {
-                connection.addConnectionListener(myConnectionListener);
-                connection.addPacketListener(visitorMeMsgPacketListener, visitorMeMsgPacketFilter);
+        @Override
+        public boolean accept(Packet packet) {
+            if (!(packet instanceof Message)) {
+                return false;
             }
-        });
+            Message.Type messageType = ((Message) packet).getType();
+            return messageType == Message.Type.normal;
+        }
 
-        listeners = new CopyOnWriteArrayList<VisitorMeListener>();
+    };
+    private PacketListener visitorMeMsgPacketListener = new PacketListener() {
 
-        cacheStorage = new CacheStoreBase<VisitorMeObject>();
-        readFlagStorage = new VisitorMeReadFlagStorage();
-        visitorRecordStorage = new VisitorRecordStorage();
-    }
+        @Override
+        public void processPacket(Packet packet) {
 
+            Message message = (Message) packet;
+            if (("http://jabber.org/protocol/muc#verify".equals(message.getXmlns()))
+                    || ("http://jabber.org/protocol/muc#admin".equals(message.getXmlns()))
+                    || ("http://jabber.org/protocol/muc#hotcircle".equals(message.getXmlns()))
+                    || ("http://jabber.org/protocol/muc#owner".equals(message.getXmlns()))) {
+                return;
+            }
+            MessageRelationExtension extension = (MessageRelationExtension) message.getExtension(
+                    MessageRelationProvider.elementName(), MessageRelationProvider.namespace());
+            if (!"visitor".equals(extension.getType())) {
+                return;
+            }
+            VisitorMeReadFlagObject newObject = new VisitorMeReadFlagObject();
+            newObject.setVisitorJid(message.getFrom());
+            newObject.setMyJid(message.getTo());
+            newObject.setEntrance(extension.getEntrance());
+            newObject.setCreate_date(System.currentTimeMillis());
+            addVisitorMeReadFlag(newObject);
+        }
+    };
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {
@@ -83,6 +96,24 @@ public class VisitorManager extends Xepmodule {
             xmppConnection.removePacketListener(visitorMeMsgPacketListener);
         }
     };
+
+    public VisitorManager(final Connection connection) {
+        this.xmppConnection = connection;
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(myConnectionListener);
+                connection.addPacketListener(visitorMeMsgPacketListener, visitorMeMsgPacketFilter);
+            }
+        });
+
+        listeners = new CopyOnWriteArrayList<VisitorMeListener>();
+
+        cacheStorage = new CacheStoreBase<VisitorMeObject>();
+        readFlagStorage = new VisitorMeReadFlagStorage();
+        visitorRecordStorage = new VisitorRecordStorage();
+    }
 
     private void startSendVisitorTask() {
         if (sendVisitorRecordTimer != null) {
@@ -249,32 +280,6 @@ public class VisitorManager extends Xepmodule {
         return cacheStorage.getAllEntires();
     }
 
-    public class fetchVisitorMePacket extends IQ {
-        private final int startIndex;
-        private final int pageSize;
-
-        public fetchVisitorMePacket(int aStartIndex, int aPageSize) {
-            // TODO Auto-generated constructor stub
-            startIndex = aStartIndex;
-            pageSize = aPageSize;
-        }
-
-        public String getChildElementXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<");
-            buf.append(VisitorMeProvider.elementName());
-            buf.append(" xmlns=\"");
-            buf.append(VisitorMeProvider.namespace());
-            buf.append("\"");
-            buf.append(" startindex=\"");
-            buf.append(startIndex);
-            buf.append("\" pagesize=\"");
-            buf.append(pageSize);
-            buf.append("\"/>");
-            return buf.toString();
-        }
-    }
-
     public void fetchNextVisitordMe(boolean fromStart) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             notifyFetchVisitorMeResult(false, null);
@@ -306,43 +311,53 @@ public class VisitorManager extends Xepmodule {
         xmppConnection.sendPacket(packet);
     }
 
-    private PacketFilter visitorMeMsgPacketFilter = new PacketFilter() {
-
-        @Override
-        public boolean accept(Packet packet) {
-            if (!(packet instanceof Message)) {
-                return false;
-            }
-            Message.Type messageType = ((Message) packet).getType();
-            return messageType == Message.Type.normal;
+    private void sendVisitorRecord(ArrayList<VisitorRecordObject> array) {
+        if (array.size() <= 0) {
+            return;
         }
 
-    };
-    private PacketListener visitorMeMsgPacketListener = new PacketListener() {
-
-        @Override
-        public void processPacket(Packet packet) {
-
-            Message message = (Message) packet;
-            if (("http://jabber.org/protocol/muc#verify".equals(message.getXmlns()))
-                    || ("http://jabber.org/protocol/muc#admin".equals(message.getXmlns()))
-                    || ("http://jabber.org/protocol/muc#hotcircle".equals(message.getXmlns()))
-                    || ("http://jabber.org/protocol/muc#owner".equals(message.getXmlns()))) {
-                return;
-            }
-            MessageRelationExtension extension = (MessageRelationExtension) message.getExtension(
-                    MessageRelationProvider.elementName(), MessageRelationProvider.namespace());
-            if (!"visitor".equals(extension.getType())) {
-                return;
-            }
-            VisitorMeReadFlagObject newObject = new VisitorMeReadFlagObject();
-            newObject.setVisitorJid(message.getFrom());
-            newObject.setMyJid(message.getTo());
-            newObject.setEntrance(extension.getEntrance());
-            newObject.setCreate_date(System.currentTimeMillis());
-            addVisitorMeReadFlag(newObject);
+        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
+            return;
         }
-    };
+
+        if (isQueryExist(sendVisitorRecord, null, null)) {
+            return;
+        }
+
+        sendVisitorRecordPacket packet = new sendVisitorRecordPacket(array);
+        String packetId = packet.getPacketID();
+
+        XepQueryInfo queryInfo = new XepQueryInfo(fetchVisitorMe);
+        addQueryInfo(queryInfo, packetId, null);
+
+        xmppConnection.sendPacket(packet);
+    }
+
+    public class fetchVisitorMePacket extends IQ {
+        private final int startIndex;
+        private final int pageSize;
+
+        public fetchVisitorMePacket(int aStartIndex, int aPageSize) {
+            // TODO Auto-generated constructor stub
+            startIndex = aStartIndex;
+            pageSize = aPageSize;
+        }
+
+        public String getChildElementXML() {
+            StringBuilder buf = new StringBuilder();
+            buf.append("<");
+            buf.append(VisitorMeProvider.elementName());
+            buf.append(" xmlns=\"");
+            buf.append(VisitorMeProvider.namespace());
+            buf.append("\"");
+            buf.append(" startindex=\"");
+            buf.append(startIndex);
+            buf.append("\" pagesize=\"");
+            buf.append(pageSize);
+            buf.append("\"/>");
+            return buf.toString();
+        }
+    }
 
     public class sendVisitorRecordPacket extends IQ {
         private final ArrayList<VisitorRecordObject> sendArray;
@@ -368,28 +383,6 @@ public class VisitorManager extends Xepmodule {
 
             return buf.toString();
         }
-    }
-
-    private void sendVisitorRecord(ArrayList<VisitorRecordObject> array) {
-        if (array.size() <= 0) {
-            return;
-        }
-
-        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
-            return;
-        }
-
-        if (isQueryExist(sendVisitorRecord, null, null)) {
-            return;
-        }
-
-        sendVisitorRecordPacket packet = new sendVisitorRecordPacket(array);
-        String packetId = packet.getPacketID();
-
-        XepQueryInfo queryInfo = new XepQueryInfo(fetchVisitorMe);
-        addQueryInfo(queryInfo, packetId, null);
-
-        xmppConnection.sendPacket(packet);
     }
 
     private class VisitorMeResultListener implements PacketListener {

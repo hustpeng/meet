@@ -27,8 +27,8 @@ public final class CursorUtils {
 
     /**
      * 将cursor中的内容转成Entity实例
-     * 
-     * @param table 描述Entity
+     *
+     * @param table  描述Entity
      * @param cursor 需要转化的cursor
      * @return
      * @throws Throwable

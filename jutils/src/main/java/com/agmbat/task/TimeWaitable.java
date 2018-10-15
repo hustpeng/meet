@@ -17,16 +17,14 @@ public class TimeWaitable implements Waitable {
      * 等待总时间
      */
     private final long mTime;
-
-    /**
-     * 已经走过的时间
-     */
-    private long mPassTime = 0;
-
     /**
      * 间隔时间
      */
     private final long mInterval = 100;
+    /**
+     * 已经走过的时间
+     */
+    private long mPassTime = 0;
 
     public TimeWaitable(long time) {
         mTime = time;

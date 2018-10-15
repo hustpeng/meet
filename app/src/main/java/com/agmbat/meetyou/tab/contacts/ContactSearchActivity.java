@@ -43,6 +43,8 @@ public class ContactSearchActivity extends Activity {
 
     private ContactsAdapter mContactAdapter;
     private String mKeyword;
+    private ISLoadingDialog mLoadingDialog;
+    private SearchTask mSearchTask;
 
     public static void launch(Context context, String keyword) {
         Intent intent = new Intent(context, ContactSearchActivity.class);
@@ -60,7 +62,6 @@ public class ContactSearchActivity extends Activity {
         initContentView();
         searchContacts(mKeyword);
     }
-
 
     private void initContentView() {
         mResultListView.setLayoutManager(new GridLayoutManager(getBaseContext(), 4));
@@ -88,9 +89,6 @@ public class ContactSearchActivity extends Activity {
         });
     }
 
-    private ISLoadingDialog mLoadingDialog;
-    private SearchTask mSearchTask;
-
     private void searchContacts(String keyword) {
         if (null == mSearchTask) {
             mSearchTask = new SearchTask(keyword);
@@ -112,6 +110,10 @@ public class ContactSearchActivity extends Activity {
         }
     }
 
+    @OnClick(R.id.title_btn_back)
+    public void onClickBack() {
+        finish();
+    }
 
     private class SearchTask extends AsyncTask<Void, Void, List<ContactInfo>> {
 
@@ -148,7 +150,6 @@ public class ContactSearchActivity extends Activity {
         }
     }
 
-
     private class ContactsAdapter extends BaseRecyclerAdapter<ContactInfo, ContactsAdapter.ContactViewHolder> {
 
 
@@ -180,12 +181,6 @@ public class ContactSearchActivity extends Activity {
                 mNameView.setText(contactInfo.getNickName());
             }
         }
-    }
-
-
-    @OnClick(R.id.title_btn_back)
-    public void onClickBack() {
-        finish();
     }
 
 

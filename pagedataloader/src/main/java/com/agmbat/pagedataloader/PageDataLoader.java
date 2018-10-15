@@ -15,16 +15,6 @@
  */
 package com.agmbat.pagedataloader;
 
-import java.util.List;
-
-import com.agmbat.android.task.AsyncTask;
-import com.agmbat.android.task.AsyncTaskUtils;
-import com.agmbat.android.utils.NetworkUtil;
-import com.agmbat.android.utils.ToastUtil;
-import com.agmbat.android.utils.UiUtils;
-import com.agmbat.android.utils.ViewUtils;
-import com.agmbat.time.TimeUtils;
-
 import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,8 +23,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.agmbat.android.task.AsyncTask;
+import com.agmbat.android.task.AsyncTaskUtils;
+import com.agmbat.android.utils.NetworkUtil;
+import com.agmbat.android.utils.ToastUtil;
+import com.agmbat.android.utils.UiUtils;
+import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.pulltorefresh.PullToRefreshBase;
 import com.agmbat.pulltorefresh.view.PullToRefreshListView;
+import com.agmbat.time.TimeUtils;
+
+import java.util.List;
 
 /**
  * Page data 加载类
@@ -80,6 +79,20 @@ public abstract class PageDataLoader<T> implements OnItemClickListener, PullToRe
 
     public PageDataLoader(Context context) {
         mContext = context;
+    }
+
+    /**
+     * 判断是否还有下一页数据
+     *
+     * @param sum      总共数据条数
+     * @param pageSize 第页数据条数
+     * @param pageNum  当前页数
+     * @return true 存在下一页
+     */
+    public static boolean hasNextPage(int sum, int pageSize, int pageNum) {
+        // 还有一种计算方法较为高效  (sum + (pageSize -1 )) / pageNum
+        int pageCount = sum / pageSize + (sum % pageSize == 0 ? 0 : 1);
+        return (pageNum + 1 < pageCount);
     }
 
     /**
@@ -417,19 +430,5 @@ public abstract class PageDataLoader<T> implements OnItemClickListener, PullToRe
             mPtrListView.onRefreshComplete();
             onPullEndFinish(data);
         }
-    }
-
-    /**
-     * 判断是否还有下一页数据
-     *
-     * @param sum      总共数据条数
-     * @param pageSize 第页数据条数
-     * @param pageNum  当前页数
-     * @return true 存在下一页
-     */
-    public static boolean hasNextPage(int sum, int pageSize, int pageNum) {
-        // 还有一种计算方法较为高效  (sum + (pageSize -1 )) / pageNum
-        int pageCount = sum / pageSize + (sum % pageSize == 0 ? 0 : 1);
-        return (pageNum + 1 < pageCount);
     }
 }

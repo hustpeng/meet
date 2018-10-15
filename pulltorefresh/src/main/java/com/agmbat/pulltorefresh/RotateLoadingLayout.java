@@ -16,11 +16,9 @@ public class RotateLoadingLayout extends LoadingLayout {
 
     private final Animation mRotateAnimation;
     private final Matrix mHeaderImageMatrix;
-
+    private final boolean mRotateDrawableWhilePulling;
     private float mRotationPivotX;
     private float mRotationPivotY;
-
-    private final boolean mRotateDrawableWhilePulling;
 
     public RotateLoadingLayout(Context context, PullToRefreshBase.Mode mode, PullToRefreshBase.Orientation scrollDirection) {
         super(context, mode, scrollDirection);

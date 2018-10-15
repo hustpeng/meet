@@ -22,10 +22,9 @@ import com.agmbat.pulltorefresh.PullToRefreshAdapterViewBase;
  */
 public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView> {
 
+    protected FrameLayout mLvFooterLoadingFrame;
     private LoadingLayout mHeaderLoadingView;
     private LoadingLayout mFooterLoadingView;
-
-    protected FrameLayout mLvFooterLoadingFrame;
 
     public PullToRefreshListView(Context context) {
         super(context);

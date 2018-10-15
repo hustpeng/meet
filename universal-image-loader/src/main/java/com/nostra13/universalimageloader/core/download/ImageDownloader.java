@@ -19,7 +19,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Locale;
 
 /**
  * Provides retrieving of {@link InputStream} of image by URI.<br />

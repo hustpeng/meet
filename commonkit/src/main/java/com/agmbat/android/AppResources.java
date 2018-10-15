@@ -1,13 +1,5 @@
 package com.agmbat.android;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Locale;
-
-import com.agmbat.file.ZipUtils;
-import com.agmbat.io.IoUtils;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -16,23 +8,22 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.TextView;
+
+import com.agmbat.file.ZipUtils;
+import com.agmbat.io.IoUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
 
 /**
  * 提供当前app的资源
@@ -209,17 +200,6 @@ public class AppResources {
         return sRes.getText(resId);
     }
 
-    /**
-     * retrieve the string value for the given string name
-     *
-     * @param name
-     * @return
-     */
-    public CharSequence getText(final String name) {
-        final int stringId = getStringId(name);
-        return getText(stringId);
-    }
-
     public static String getString(int id) {
         return sRes.getString(id);
     }
@@ -336,7 +316,6 @@ public class AppResources {
         }
         return -1;
     }
-
 
     /**
      * 从 asset中获取drawable
@@ -501,6 +480,17 @@ public class AppResources {
     public static void disableContentForeground(Activity activity) {
         FrameLayout content = (FrameLayout) activity.findViewById(android.R.id.content);
         content.setForeground(null);
+    }
+
+    /**
+     * retrieve the string value for the given string name
+     *
+     * @param name
+     * @return
+     */
+    public CharSequence getText(final String name) {
+        final int stringId = getStringId(name);
+        return getText(stringId);
     }
 
 

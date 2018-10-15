@@ -1,5 +1,7 @@
 package de.measite.smack;
 
+import android.util.Log;
+
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
@@ -8,10 +10,8 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
-import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smack.util.WriterListener;
-
-import android.util.Log;
+import org.jivesoftware.smack.util.XmppStringUtils;
 
 import java.io.Reader;
 import java.io.Writer;
@@ -60,8 +60,8 @@ public class AndroidDebugger implements SmackDebugger {
             public void read(String str) {
                 Log.d("SMACK",
                         /*dateFormatter.format(new Date()) + */" RCV  (" + connection.hashCode() +
-                        "): " +
-                        str);
+                                "): " +
+                                str);
             }
         };
         debugReader.addReaderListener(readerListener);
@@ -72,8 +72,8 @@ public class AndroidDebugger implements SmackDebugger {
             public void write(String str) {
                 Log.d("SMACK",
                         /*dateFormatter.format(new Date()) + */" SENT (" + connection.hashCode() +
-                        "): " +
-                        str);
+                                "): " +
+                                str);
             }
         };
         debugWriter.addWriterListener(writerListener);
@@ -91,9 +91,9 @@ public class AndroidDebugger implements SmackDebugger {
                 if (printInterpreted) {
                     Log.d("SMACK",
                             /*dateFormatter.format(new Date()) + */" RCV PKT (" +
-                            connection.hashCode() +
-                            "): " +
-                            packet.toXML());
+                                    connection.hashCode() +
+                                    "): " +
+                                    packet.toXML());
                 }
             }
         };
@@ -102,51 +102,54 @@ public class AndroidDebugger implements SmackDebugger {
             public void connectionClosed() {
                 Log.d("SMACK",
                         /*dateFormatter.format(new Date()) + */" Connection closed (" +
-                        connection.hashCode() +
-                        ")");
+                                connection.hashCode() +
+                                ")");
             }
 
             public void connectionClosedOnError(Exception e) {
                 Log.d("SMACK",
                         /*dateFormatter.format(new Date()) +*/
                         " Connection closed due to an exception (" +
-                        connection.hashCode() +
-                        ")");
+                                connection.hashCode() +
+                                ")");
                 e.printStackTrace();
             }
+
             public void reconnectionFailed(Exception e) {
                 Log.d("SMACK",
                         /*dateFormatter.format(new Date()) +*/
                         " Reconnection failed due to an exception (" +
-                        connection.hashCode() +
-                        ")");
+                                connection.hashCode() +
+                                ")");
                 e.printStackTrace();
             }
+
             public void reconnectionSuccessful() {
                 Log.d("SMACK",
                         /*dateFormatter.format(new Date()) + */" Connection reconnected (" +
-                        connection.hashCode() +
-                        ")");
+                                connection.hashCode() +
+                                ")");
             }
+
             public void reconnectingIn(int seconds) {
                 Log.d("SMACK",
                         /*dateFormatter.format(new Date()) + */" Connection (" +
-                        connection.hashCode() +
-                        ") will reconnect in " + seconds);
+                                connection.hashCode() +
+                                ") will reconnect in " + seconds);
             }
 
             @Override
             public void loginSuccessful() {
                 Log.d("SMACK",
                         /*dateFormatter.format(new Date()) + */" Connection (" +
-                        connection.hashCode() +
-                        ") loginSuccessful ");
+                                connection.hashCode() +
+                                ") loginSuccessful ");
             }
         };
     }
 
     public Reader newConnectionReader(Reader newReader) {
-        ((ObservableReader)reader).removeReaderListener(readerListener);
+        ((ObservableReader) reader).removeReaderListener(readerListener);
         ObservableReader debugReader = new ObservableReader(newReader);
         debugReader.addReaderListener(readerListener);
         reader = debugReader;
@@ -154,7 +157,7 @@ public class AndroidDebugger implements SmackDebugger {
     }
 
     public Writer newConnectionWriter(Writer newWriter) {
-        ((ObservableWriter)writer).removeWriterListener(writerListener);
+        ((ObservableWriter) writer).removeWriterListener(writerListener);
         ObservableWriter debugWriter = new ObservableWriter(newWriter);
         debugWriter.addWriterListener(writerListener);
         writer = debugWriter;
@@ -165,11 +168,11 @@ public class AndroidDebugger implements SmackDebugger {
         boolean isAnonymous = "".equals(XmppStringUtils.parseName(user));
         String title =
                 "User logged (" + connection.hashCode() + "): "
-                + (isAnonymous ? "" : XmppStringUtils.parseBareAddress(user))
-                + "@"
-                + connection.getServiceName()
-                + ":"
-                + connection.getPort();
+                        + (isAnonymous ? "" : XmppStringUtils.parseBareAddress(user))
+                        + "@"
+                        + connection.getServiceName()
+                        + ":"
+                        + connection.getPort();
         title += "/" + XmppStringUtils.parseResource(user);
         Log.d("SMACK", title);
         // Add the connection listener to the connection so that the debugger can be notified

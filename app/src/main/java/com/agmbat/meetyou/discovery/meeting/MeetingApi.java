@@ -14,12 +14,11 @@ import java.lang.reflect.Type;
  */
 public class MeetingApi {
 
-    private static final boolean ENABLE_MOCK = false;
-
     /**
      * 每页数据20
      */
     public static final int PAGE_SIZE = 20;
+    private static final boolean ENABLE_MOCK = false;
 
     /**
      * 获取聚会活动列表

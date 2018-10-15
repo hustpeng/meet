@@ -175,7 +175,7 @@ public class InputView extends LinearLayout {
         }
     }
 
-    public int getSelectionStart(){
+    public int getSelectionStart() {
         return mEditText.getSelectionStart();
     }
 

@@ -68,14 +68,10 @@ public final class ScannerActivity extends Activity implements SurfaceHolder.Cal
     public static final String QR_CONTENT = "captureactivity.qrcontent";
     public static final int QR_SUCCESS = 100;
     public static final int QR_CANCLED = 200;
-
+    public static final int HISTORY_REQUEST_CODE = 0x0000bacc;
     private static final String TAG = CaptureActivity.class.getSimpleName();
-
     private static final long DEFAULT_INTENT_RESULT_DURATION_MS = 1500L;
     private static final long BULK_MODE_SCAN_DELAY_MS = 1000L;
-
-    public static final int HISTORY_REQUEST_CODE = 0x0000bacc;
-
     private static final Collection<ResultMetadataType> DISPLAYABLE_METADATA_TYPES = EnumSet.of(
             ResultMetadataType.ISSUE_NUMBER, ResultMetadataType.SUGGESTED_PRICE,
             ResultMetadataType.ERROR_CORRECTION_LEVEL, ResultMetadataType.POSSIBLE_COUNTRY);
@@ -96,6 +92,12 @@ public final class ScannerActivity extends Activity implements SurfaceHolder.Cal
 
     private Intent mIntent;
 
+    private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b, float scaleFactor) {
+        if (a != null && b != null) {
+            canvas.drawLine(scaleFactor * a.getX(), scaleFactor * a.getY(), scaleFactor * b.getX(),
+                    scaleFactor * b.getY(), paint);
+        }
+    }
 
     @Override
     public ViewfinderView getViewfinderView() {
@@ -333,13 +335,6 @@ public final class ScannerActivity extends Activity implements SurfaceHolder.Cal
                     }
                 }
             }
-        }
-    }
-
-    private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b, float scaleFactor) {
-        if (a != null && b != null) {
-            canvas.drawLine(scaleFactor * a.getX(), scaleFactor * a.getY(), scaleFactor * b.getX(),
-                    scaleFactor * b.getY(), paint);
         }
     }
 

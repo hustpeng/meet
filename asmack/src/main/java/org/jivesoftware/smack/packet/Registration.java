@@ -102,12 +102,12 @@ public class Registration extends IQ {
         attributes.put(key, value);
     }
 
-    public void setRegistered(boolean registered) {
-        this.registered = registered;
-    }
-
     public boolean isRegistered() {
         return this.registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
     }
 
     public String getField(String key) {

@@ -1,6 +1,5 @@
 package com.agmbat.imagepicker.loader;
 
-import android.app.Activity;
 import android.content.Context;
 import android.widget.ImageView;
 

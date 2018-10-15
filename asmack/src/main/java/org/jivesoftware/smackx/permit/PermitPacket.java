@@ -1,8 +1,8 @@
 package org.jivesoftware.smackx.permit;
 
-import java.util.ArrayList;
-
 import org.jivesoftware.smack.packet.IQ;
+
+import java.util.ArrayList;
 
 public class PermitPacket extends IQ {
     private final ArrayList<PermitObject> permitItems = new ArrayList<PermitObject>();

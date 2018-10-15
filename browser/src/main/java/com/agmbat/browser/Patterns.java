@@ -143,6 +143,12 @@ public class Patterns {
                     + "([0-9][0-9\\- \\.][0-9\\- \\.]+[0-9])"); // <digit><digit|sdd>+<digit>
 
     /**
+     * Do not create this static utility class.
+     */
+    private Patterns() {
+    }
+
+    /**
      * Convenience method to take all of the non-null matching groups in a regex Matcher and return them as a
      * concatenated string.
      *
@@ -184,11 +190,5 @@ public class Patterns {
             }
         }
         return buffer.toString();
-    }
-
-    /**
-     * Do not create this static utility class.
-     */
-    private Patterns() {
     }
 }

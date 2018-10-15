@@ -3,7 +3,6 @@ package com.agmbat.baidumap;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.location.Location;
 import android.text.TextUtils;
 
@@ -15,13 +14,21 @@ import com.baidu.mapapi.utils.OpenClientUtil;
 import com.baidu.mapapi.utils.route.BaiduMapRoutePlan;
 import com.baidu.mapapi.utils.route.RouteParaOption;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 地图辅助类
  */
 public class MapHelper {
+
+    /**
+     * 本应是5-30,但由于采用int型无法标识出小数点，所以乘以10
+     */
+    public static final int MIN_PROGRESS = 50;
+    public static final int MAX_PROGRESS = 300;
+    /**
+     * 对应5-30倍时level
+     */
+    public static final float MAX_LEVEL = 13.842299f;
+    public static final float MIN_LEVEL = 11.2561f;
 
     /**
      * 转化成Location
@@ -82,18 +89,6 @@ public class MapHelper {
         });
         builder.create().show();
     }
-
-    /**
-     * 本应是5-30,但由于采用int型无法标识出小数点，所以乘以10
-     */
-    public static final int MIN_PROGRESS = 50;
-    public static final int MAX_PROGRESS = 300;
-
-    /**
-     * 对应5-30倍时level
-     */
-    public static final float MAX_LEVEL = 13.842299f;
-    public static final float MIN_LEVEL = 11.2561f;
 
     /**
      * 获取地图level

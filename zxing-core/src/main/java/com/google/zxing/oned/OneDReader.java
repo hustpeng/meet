@@ -41,6 +41,111 @@ import java.util.Map;
  */
 public abstract class OneDReader implements Reader {
 
+    /**
+     * Records the size of successive runs of white and black pixels in a row, starting at a given point.
+     * The values are recorded in the given array, and the number of runs recorded is equal to the size
+     * of the array. If the row starts on a white pixel at the given start point, then the first count
+     * recorded is the run of white pixels starting from that point; likewise it is the count of a run
+     * of black pixels if the row begin on a black pixels at that point.
+     *
+     * @param row      row to count from
+     * @param start    offset into row to start at
+     * @param counters array into which to record counts
+     * @throws NotFoundException if counters cannot be filled entirely from row before running out
+     *                           of pixels
+     */
+    protected static void recordPattern(BitArray row,
+                                        int start,
+                                        int[] counters) throws NotFoundException {
+        int numCounters = counters.length;
+        Arrays.fill(counters, 0, numCounters, 0);
+        int end = row.getSize();
+        if (start >= end) {
+            throw NotFoundException.getNotFoundInstance();
+        }
+        boolean isWhite = !row.get(start);
+        int counterPosition = 0;
+        int i = start;
+        while (i < end) {
+            if (row.get(i) ^ isWhite) { // that is, exactly one is true
+                counters[counterPosition]++;
+            } else {
+                counterPosition++;
+                if (counterPosition == numCounters) {
+                    break;
+                } else {
+                    counters[counterPosition] = 1;
+                    isWhite = !isWhite;
+                }
+            }
+            i++;
+        }
+        // If we read fully the last section of pixels and filled up our counters -- or filled
+        // the last counter but ran off the side of the image, OK. Otherwise, a problem.
+        if (!(counterPosition == numCounters || (counterPosition == numCounters - 1 && i == end))) {
+            throw NotFoundException.getNotFoundInstance();
+        }
+    }
+
+    protected static void recordPatternInReverse(BitArray row, int start, int[] counters)
+            throws NotFoundException {
+        // This could be more efficient I guess
+        int numTransitionsLeft = counters.length;
+        boolean last = row.get(start);
+        while (start > 0 && numTransitionsLeft >= 0) {
+            if (row.get(--start) != last) {
+                numTransitionsLeft--;
+                last = !last;
+            }
+        }
+        if (numTransitionsLeft >= 0) {
+            throw NotFoundException.getNotFoundInstance();
+        }
+        recordPattern(row, start + 1, counters);
+    }
+
+    /**
+     * Determines how closely a set of observed counts of runs of black/white values matches a given
+     * target pattern. This is reported as the ratio of the total variance from the expected pattern
+     * proportions across all pattern elements, to the length of the pattern.
+     *
+     * @param counters              observed counters
+     * @param pattern               expected pattern
+     * @param maxIndividualVariance The most any counter can differ before we give up
+     * @return ratio of total variance between counters and pattern compared to total pattern size
+     */
+    protected static float patternMatchVariance(int[] counters,
+                                                int[] pattern,
+                                                float maxIndividualVariance) {
+        int numCounters = counters.length;
+        int total = 0;
+        int patternLength = 0;
+        for (int i = 0; i < numCounters; i++) {
+            total += counters[i];
+            patternLength += pattern[i];
+        }
+        if (total < patternLength) {
+            // If we don't even have one pixel per unit of bar width, assume this is too small
+            // to reliably match, so fail:
+            return Float.POSITIVE_INFINITY;
+        }
+
+        float unitBarWidth = (float) total / patternLength;
+        maxIndividualVariance *= unitBarWidth;
+
+        float totalVariance = 0.0f;
+        for (int x = 0; x < numCounters; x++) {
+            int counter = counters[x];
+            float scaledPattern = pattern[x] * unitBarWidth;
+            float variance = counter > scaledPattern ? counter - scaledPattern : scaledPattern - counter;
+            if (variance > maxIndividualVariance) {
+                return Float.POSITIVE_INFINITY;
+            }
+            totalVariance += variance;
+        }
+        return totalVariance / total;
+    }
+
     @Override
     public Result decode(BinaryBitmap image) throws NotFoundException, FormatException {
         return decode(image, null);
@@ -172,111 +277,6 @@ public abstract class OneDReader implements Reader {
         }
 
         throw NotFoundException.getNotFoundInstance();
-    }
-
-    /**
-     * Records the size of successive runs of white and black pixels in a row, starting at a given point.
-     * The values are recorded in the given array, and the number of runs recorded is equal to the size
-     * of the array. If the row starts on a white pixel at the given start point, then the first count
-     * recorded is the run of white pixels starting from that point; likewise it is the count of a run
-     * of black pixels if the row begin on a black pixels at that point.
-     *
-     * @param row      row to count from
-     * @param start    offset into row to start at
-     * @param counters array into which to record counts
-     * @throws NotFoundException if counters cannot be filled entirely from row before running out
-     *                           of pixels
-     */
-    protected static void recordPattern(BitArray row,
-                                        int start,
-                                        int[] counters) throws NotFoundException {
-        int numCounters = counters.length;
-        Arrays.fill(counters, 0, numCounters, 0);
-        int end = row.getSize();
-        if (start >= end) {
-            throw NotFoundException.getNotFoundInstance();
-        }
-        boolean isWhite = !row.get(start);
-        int counterPosition = 0;
-        int i = start;
-        while (i < end) {
-            if (row.get(i) ^ isWhite) { // that is, exactly one is true
-                counters[counterPosition]++;
-            } else {
-                counterPosition++;
-                if (counterPosition == numCounters) {
-                    break;
-                } else {
-                    counters[counterPosition] = 1;
-                    isWhite = !isWhite;
-                }
-            }
-            i++;
-        }
-        // If we read fully the last section of pixels and filled up our counters -- or filled
-        // the last counter but ran off the side of the image, OK. Otherwise, a problem.
-        if (!(counterPosition == numCounters || (counterPosition == numCounters - 1 && i == end))) {
-            throw NotFoundException.getNotFoundInstance();
-        }
-    }
-
-    protected static void recordPatternInReverse(BitArray row, int start, int[] counters)
-            throws NotFoundException {
-        // This could be more efficient I guess
-        int numTransitionsLeft = counters.length;
-        boolean last = row.get(start);
-        while (start > 0 && numTransitionsLeft >= 0) {
-            if (row.get(--start) != last) {
-                numTransitionsLeft--;
-                last = !last;
-            }
-        }
-        if (numTransitionsLeft >= 0) {
-            throw NotFoundException.getNotFoundInstance();
-        }
-        recordPattern(row, start + 1, counters);
-    }
-
-    /**
-     * Determines how closely a set of observed counts of runs of black/white values matches a given
-     * target pattern. This is reported as the ratio of the total variance from the expected pattern
-     * proportions across all pattern elements, to the length of the pattern.
-     *
-     * @param counters              observed counters
-     * @param pattern               expected pattern
-     * @param maxIndividualVariance The most any counter can differ before we give up
-     * @return ratio of total variance between counters and pattern compared to total pattern size
-     */
-    protected static float patternMatchVariance(int[] counters,
-                                                int[] pattern,
-                                                float maxIndividualVariance) {
-        int numCounters = counters.length;
-        int total = 0;
-        int patternLength = 0;
-        for (int i = 0; i < numCounters; i++) {
-            total += counters[i];
-            patternLength += pattern[i];
-        }
-        if (total < patternLength) {
-            // If we don't even have one pixel per unit of bar width, assume this is too small
-            // to reliably match, so fail:
-            return Float.POSITIVE_INFINITY;
-        }
-
-        float unitBarWidth = (float) total / patternLength;
-        maxIndividualVariance *= unitBarWidth;
-
-        float totalVariance = 0.0f;
-        for (int x = 0; x < numCounters; x++) {
-            int counter = counters[x];
-            float scaledPattern = pattern[x] * unitBarWidth;
-            float variance = counter > scaledPattern ? counter - scaledPattern : scaledPattern - counter;
-            if (variance > maxIndividualVariance) {
-                return Float.POSITIVE_INFINITY;
-            }
-            totalVariance += variance;
-        }
-        return totalVariance / total;
     }
 
     /**

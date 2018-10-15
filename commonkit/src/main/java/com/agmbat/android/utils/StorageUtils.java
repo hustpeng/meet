@@ -1,5 +1,14 @@
 package com.agmbat.android.utils;
 
+import android.content.Context;
+import android.os.Build;
+import android.os.Environment;
+import android.os.StatFs;
+import android.text.TextUtils;
+
+import com.agmbat.io.IoUtils;
+import com.agmbat.log.Log;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,15 +20,6 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
-
-import com.agmbat.io.IoUtils;
-import com.agmbat.log.Log;
-
-import android.content.Context;
-import android.os.Build;
-import android.os.Environment;
-import android.os.StatFs;
-import android.text.TextUtils;
 
 /**
  * 存储设备工具类
@@ -323,19 +323,6 @@ public class StorageUtils {
         return dirs;
     }
 
-    public enum MountPointCheckLevel {
-        /***
-         * find out all mount points which can be read & write,
-         * used by dolphin int.
-         */
-        Low,
-        /***
-         * find out all mount points which is vfat format or default sdcard,
-         * used by dolphin cn.
-         */
-        Normal,
-    }
-
     private static String getValidMountPoint(String mountLine, MountPointCheckLevel checkLevel) {
 
         String defaultSdcard = Environment.getExternalStorageDirectory().getPath();
@@ -376,7 +363,6 @@ public class StorageUtils {
         }
         return result;
     }
-
 
     /**
      * 判断外置存储是否可用
@@ -517,6 +503,19 @@ public class StorageUtils {
         } catch (IOException e) {
             return getTempDirPath(context) + "temp_.tmp";
         }
+    }
+
+    public enum MountPointCheckLevel {
+        /***
+         * find out all mount points which can be read & write,
+         * used by dolphin int.
+         */
+        Low,
+        /***
+         * find out all mount points which is vfat format or default sdcard,
+         * used by dolphin cn.
+         */
+        Normal,
     }
 
 }

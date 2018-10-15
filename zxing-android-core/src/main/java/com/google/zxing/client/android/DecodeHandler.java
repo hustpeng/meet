@@ -45,29 +45,21 @@ public final class DecodeHandler extends Handler {
     private final MultiFormatReader multiFormatReader;
     private boolean running = true;
 
-    public interface IActivity {
-
-        CameraManager getCameraManager();
-
-        Handler getHandler();
-
-        ViewfinderView getViewfinderView();
-
-        void handleDecode(Result obj, Bitmap barcode, float scaleFactor);
-
-        void setResult(int resultOk, Intent obj);
-
-        void finish();
-
-        void startActivity(Intent intent);
-
-        void drawViewfinder();
-    }
-
     DecodeHandler(IActivity activity, Map<DecodeHintType, Object> hints) {
         multiFormatReader = new MultiFormatReader();
         multiFormatReader.setHints(hints);
         this.activity = activity;
+    }
+
+    private static void bundleThumbnail(PlanarYUVLuminanceSource source, Bundle bundle) {
+        int[] pixels = source.renderThumbnail();
+        int width = source.getThumbnailWidth();
+        int height = source.getThumbnailHeight();
+        Bitmap bitmap = Bitmap.createBitmap(pixels, 0, width, width, height, Bitmap.Config.ARGB_8888);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
+        bundle.putByteArray(DecodeThread.BARCODE_BITMAP, out.toByteArray());
+        bundle.putFloat(DecodeThread.BARCODE_SCALED_FACTOR, (float) width / source.getWidth());
     }
 
     @Override
@@ -140,15 +132,23 @@ public final class DecodeHandler extends Handler {
         }
     }
 
-    private static void bundleThumbnail(PlanarYUVLuminanceSource source, Bundle bundle) {
-        int[] pixels = source.renderThumbnail();
-        int width = source.getThumbnailWidth();
-        int height = source.getThumbnailHeight();
-        Bitmap bitmap = Bitmap.createBitmap(pixels, 0, width, width, height, Bitmap.Config.ARGB_8888);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
-        bundle.putByteArray(DecodeThread.BARCODE_BITMAP, out.toByteArray());
-        bundle.putFloat(DecodeThread.BARCODE_SCALED_FACTOR, (float) width / source.getWidth());
+    public interface IActivity {
+
+        CameraManager getCameraManager();
+
+        Handler getHandler();
+
+        ViewfinderView getViewfinderView();
+
+        void handleDecode(Result obj, Bitmap barcode, float scaleFactor);
+
+        void setResult(int resultOk, Intent obj);
+
+        void finish();
+
+        void startActivity(Intent intent);
+
+        void drawViewfinder();
     }
 
 }

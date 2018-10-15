@@ -25,7 +25,7 @@ public class NotificationSettingActivity extends Activity {
     @BindView(R.id.sound_switch)
     CheckBox mSoundCheckBox;
 
-    public static void launch(Context context){
+    public static void launch(Context context) {
         Intent intent = new Intent(context, NotificationSettingActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -39,13 +39,13 @@ public class NotificationSettingActivity extends Activity {
         initContentView();
     }
 
-    private void initContentView(){
+    private void initContentView() {
         mNotificationCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     mSoundSwitchItem.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     mSoundSwitchItem.setVisibility(View.GONE);
                 }
                 AppConfigUtils.setNotificationEnable(getBaseContext(), isChecked);
@@ -58,16 +58,16 @@ public class NotificationSettingActivity extends Activity {
             }
         });
         mNotificationCheckBox.setChecked(AppConfigUtils.isNotificationEnable(this));
-        if(mNotificationCheckBox.isChecked()){
+        if (mNotificationCheckBox.isChecked()) {
             mSoundSwitchItem.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mSoundSwitchItem.setVisibility(View.GONE);
         }
         mSoundCheckBox.setChecked(AppConfigUtils.isNotificationSoundEnable(this));
     }
 
     @OnClick(R.id.title_btn_back)
-    void onClickBackBtn(){
+    void onClickBackBtn() {
         finish();
     }
 

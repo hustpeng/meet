@@ -4,7 +4,7 @@ import org.jivesoftware.smack.packet.IQ;
 
 public class UpdateGroupReply extends IQ {
 
-    private boolean success ;
+    private boolean success;
 
     public boolean isSuccess() {
         return success;

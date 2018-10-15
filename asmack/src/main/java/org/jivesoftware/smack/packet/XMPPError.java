@@ -30,7 +30,7 @@ import java.util.Map;
  * Represents a XMPP error sub-packet. Typically, a server responds to a request that has
  * problems by sending the packet back and including an error packet. Each error has a code, type,
  * error condition as well as as an optional text explanation. Typical errors are:<p>
- * <p>
+ *
  * <table border=1>
  * <hr><td><b>Code</b></td><td><b>XMPP Error</b></td><td><b>Type</b></td></hr>
  * <tr><td>500</td><td>interna-server-error</td><td>WAIT</td></tr>
@@ -296,7 +296,7 @@ public class XMPPError {
 
     /**
      * A class to represent the type of the Error. The types are:
-     * <p>
+     *
      * <ul>
      * <li>XMPPError.Type.WAIT - retry after waiting (the error is temporary)
      * <li>XMPPError.Type.CANCEL - do not retry (the error is unrecoverable)
@@ -359,10 +359,10 @@ public class XMPPError {
      * A class to represent the error specification used to infer common usage.
      */
     private static class ErrorSpecification {
+        private static Map<Condition, ErrorSpecification> instances = errorSpecifications();
         private int code;
         private Type type;
         private Condition condition;
-        private static Map<Condition, ErrorSpecification> instances = errorSpecifications();
 
         private ErrorSpecification(Condition condition, Type type, int code) {
             this.code = code;

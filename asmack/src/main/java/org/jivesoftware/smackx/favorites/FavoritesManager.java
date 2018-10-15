@@ -24,14 +24,29 @@ public class FavoritesManager extends Xepmodule {
     private static final int fetchFavorites = 0;
     private static final int addFavorite = 1;
     private static final int removeFavorite = 2;
-
+    private final List<FavoritesListener> listeners;
+    boolean hasFavorite = false;
     private CacheStoreBase<FavoritesObject> cacheStorage;
-
     private ArrayList<Presence> earlyPresenceList;
     private PresencePacketListener presencePacketListener;
-    boolean hasFavorite = false;
+    private ConnectionListener myConnectionListener = new ConnectionListener() {
+        @Override
+        public void loginSuccessful() {
+            earlyPresenceList.clear();
+            cacheStorage.cleanAllEntryForOwner();
+            fetchFavorite();
+        }
 
-    private final List<FavoritesListener> listeners;
+        @Override
+        public void connectionClosedOnError(Exception e) {
+            abortAllQuery();
+        }
+
+        @Override
+        public void connectionClosed() {
+            abortAllQuery();
+        }
+    };
 
     public FavoritesManager(final Connection connection) {
         this.xmppConnection = connection;
@@ -55,25 +70,6 @@ public class FavoritesManager extends Xepmodule {
         PacketFilter favoritesFilter = new PacketTypeFilter(FavoritesPacket.class);
         xmppConnection.addPacketListener(new FavoritesPacketListener(), favoritesFilter);
     }
-
-    private ConnectionListener myConnectionListener = new ConnectionListener() {
-        @Override
-        public void loginSuccessful() {
-            earlyPresenceList.clear();
-            cacheStorage.cleanAllEntryForOwner();
-            fetchFavorite();
-        }
-
-        @Override
-        public void connectionClosedOnError(Exception e) {
-            abortAllQuery();
-        }
-
-        @Override
-        public void connectionClosed() {
-            abortAllQuery();
-        }
-    };
 
     @Override
     public void clearResource() {
@@ -199,34 +195,6 @@ public class FavoritesManager extends Xepmodule {
         return cacheStorage.getAllEntires();
     }
 
-    public class AddFavoritesPacket extends IQ {
-
-        private final String jid;
-
-        public AddFavoritesPacket(String aJid) {
-            // TODO Auto-generated constructor stub
-            jid = aJid;
-            setType(Type.SET);
-        }
-
-        public String getChildElementXML() {
-            StringBuilder buf = new StringBuilder();
-
-            buf.append("<");
-            buf.append(FavoritesProvider.elementName());
-            buf.append(" xmlns=\"");
-            buf.append(FavoritesProvider.namespace());
-            buf.append("\">");
-            buf.append("<item jid=\"");
-            buf.append(XmppStringUtils.escapeForXML(jid));
-            buf.append("\" subscription=\"to\"/></");
-            buf.append(FavoritesProvider.elementName());
-            buf.append(">");
-
-            return buf.toString();
-        }
-    }
-
     public void addFavorite(String jid) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             notifyAddFavoritesResult(jid, false);
@@ -247,33 +215,6 @@ public class FavoritesManager extends Xepmodule {
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
-    }
-
-    public class RemoveFavoritesPacket extends IQ {
-
-        private final String jid;
-
-        public RemoveFavoritesPacket(String aJid) {
-            // TODO Auto-generated constructor stub
-            jid = aJid;
-            setType(Type.SET);
-        }
-
-        public String getChildElementXML() {
-            StringBuilder buf = new StringBuilder();
-
-            buf.append("<");
-            buf.append(FavoritesProvider.elementName());
-            buf.append(" xmlns=\"");
-            buf.append(FavoritesProvider.namespace());
-            buf.append("\">");
-            buf.append("<item jid=\"");
-            buf.append(XmppStringUtils.escapeForXML(jid));
-            buf.append("\" subscription=\"remove\"/></");
-            buf.append(FavoritesProvider.elementName());
-            buf.append(">");
-            return buf.toString();
-        }
     }
 
     public void removeFavorite(String jid) {
@@ -312,23 +253,6 @@ public class FavoritesManager extends Xepmodule {
         return result;
     }
 
-    /**
-     * Listens for all presence packets and processes them.
-     */
-    private class PresencePacketListener implements PacketListener {
-
-        public void processPacket(Packet packet) {
-            Presence presence = (Presence) packet;
-
-            if (!hasFavorite) {
-                earlyPresenceList.add(presence);
-                return;
-            }
-
-            handlePresence(presence);
-        }
-    }
-
     private void handlePresence(Presence aPresence) {
         if (aPresence.getType() == Presence.Type.available) {
             String fromString = aPresence.getFrom();
@@ -354,6 +278,78 @@ public class FavoritesManager extends Xepmodule {
             }
         }
         // 其它情况不处理
+    }
+
+    public class AddFavoritesPacket extends IQ {
+
+        private final String jid;
+
+        public AddFavoritesPacket(String aJid) {
+            // TODO Auto-generated constructor stub
+            jid = aJid;
+            setType(Type.SET);
+        }
+
+        public String getChildElementXML() {
+            StringBuilder buf = new StringBuilder();
+
+            buf.append("<");
+            buf.append(FavoritesProvider.elementName());
+            buf.append(" xmlns=\"");
+            buf.append(FavoritesProvider.namespace());
+            buf.append("\">");
+            buf.append("<item jid=\"");
+            buf.append(XmppStringUtils.escapeForXML(jid));
+            buf.append("\" subscription=\"to\"/></");
+            buf.append(FavoritesProvider.elementName());
+            buf.append(">");
+
+            return buf.toString();
+        }
+    }
+
+    public class RemoveFavoritesPacket extends IQ {
+
+        private final String jid;
+
+        public RemoveFavoritesPacket(String aJid) {
+            // TODO Auto-generated constructor stub
+            jid = aJid;
+            setType(Type.SET);
+        }
+
+        public String getChildElementXML() {
+            StringBuilder buf = new StringBuilder();
+
+            buf.append("<");
+            buf.append(FavoritesProvider.elementName());
+            buf.append(" xmlns=\"");
+            buf.append(FavoritesProvider.namespace());
+            buf.append("\">");
+            buf.append("<item jid=\"");
+            buf.append(XmppStringUtils.escapeForXML(jid));
+            buf.append("\" subscription=\"remove\"/></");
+            buf.append(FavoritesProvider.elementName());
+            buf.append(">");
+            return buf.toString();
+        }
+    }
+
+    /**
+     * Listens for all presence packets and processes them.
+     */
+    private class PresencePacketListener implements PacketListener {
+
+        public void processPacket(Packet packet) {
+            Presence presence = (Presence) packet;
+
+            if (!hasFavorite) {
+                earlyPresenceList.add(presence);
+                return;
+            }
+
+            handlePresence(presence);
+        }
     }
 
     private class FavoritesResultListener implements PacketListener {

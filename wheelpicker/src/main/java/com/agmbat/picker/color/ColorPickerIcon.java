@@ -5,14 +5,6 @@ package com.agmbat.picker.color;
  */
 public class ColorPickerIcon {
 
-    public static byte[] getCursorBottom() {
-        return CURSOR_BOTTOM;
-    }
-
-    public static byte[] getCursorTop() {
-        return CURSOR_TOP;
-    }
-
     // fixed: 17-1-7 "static final" arrays should be "private"
     private static final byte[] CURSOR_BOTTOM = {
             -119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 40,
@@ -117,5 +109,13 @@ public class ColorPickerIcon {
             9, -2, 109, -23, 119, 118, -26, -26, 44, -53, 50, 35, 65, 1, -128, -32, -35, -99, -99, 120,
             -5, -117, -49, 79, 13, -22, 63, 2, 110, -113, 23, 70, 97, 51, -7, 0, 0, 0, 0, 73,
             69, 78, 68, -82, 66, 96, -126};
+
+    public static byte[] getCursorBottom() {
+        return CURSOR_BOTTOM;
+    }
+
+    public static byte[] getCursorTop() {
+        return CURSOR_TOP;
+    }
 
 }

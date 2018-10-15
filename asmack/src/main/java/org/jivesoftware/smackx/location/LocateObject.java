@@ -1,20 +1,52 @@
-
 package org.jivesoftware.smackx.location;
+
+import android.text.TextUtils;
 
 import org.jivesoftware.smack.util.XmppStringUtils;
 import org.jivesoftware.smackx.db.ICacheStoreObject;
 
-import android.text.TextUtils;
-
 import java.util.Date;
 
-public class LocateObject implements ICacheStoreObject{
+public class LocateObject implements ICacheStoreObject {
 
     private String jid;
     private String locationStr;
     private double lat;
     private double lon;
     private Date update_date;
+
+    public static String getXmlNode(LocateObject object) {
+        if (object == null) {
+            return null;
+        }
+
+        StringBuilder buf = new StringBuilder();
+        buf.append("<");
+        buf.append(LocateProvider.elementName());
+        buf.append(" xmlns=\"");
+        buf.append(LocateProvider.namespace());
+        buf.append("\">");
+
+        buf.append("<lat>");
+        buf.append(String.valueOf(object.getLat()));
+        buf.append("</lat>");
+
+        buf.append("<lon>");
+        buf.append(String.valueOf(object.getLon()));
+        buf.append("</lon>");
+
+        buf.append("<str>");
+        if (!TextUtils.isEmpty(object.getLocationStr())) {
+            buf.append(XmppStringUtils.escapeForXML(object.getLocationStr()));
+        }
+        buf.append("</str>");
+
+        buf.append("</");
+        buf.append(LocateProvider.elementName());
+        buf.append(">");
+
+        return buf.toString();
+    }
 
     @Override
     public String getKey() {
@@ -63,41 +95,6 @@ public class LocateObject implements ICacheStoreObject{
 
     public void setUpdate_date(Date update_date) {
         this.update_date = update_date;
-    }
-
-
-    public static String getXmlNode(LocateObject object)
-    {
-        if (object == null) {
-            return null;
-        }
-
-        StringBuilder buf = new StringBuilder();
-        buf.append("<");
-        buf.append(LocateProvider.elementName());
-        buf.append(" xmlns=\"");
-        buf.append(LocateProvider.namespace());
-        buf.append("\">");
-
-        buf.append("<lat>");
-        buf.append(String.valueOf(object.getLat()));
-        buf.append("</lat>");
-
-        buf.append("<lon>");
-        buf.append(String.valueOf(object.getLon()));
-        buf.append("</lon>");
-
-        buf.append("<str>");
-        if (!TextUtils.isEmpty(object.getLocationStr())) {
-            buf.append(XmppStringUtils.escapeForXML(object.getLocationStr()));
-        }
-        buf.append("</str>");
-
-        buf.append("</");
-        buf.append(LocateProvider.elementName());
-        buf.append(">");
-
-        return buf.toString();
     }
 
     @Override

@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -189,8 +189,8 @@ public class FileSizeFormat {
             return 0;
         }
         String upper = textSize.toUpperCase();
-        String[] unit = new String[] { "PB", "TB", "GB", "MB", "KB", "B" };
-        String[] unit2 = new String[] { "P", "T", "G", "M", "K", "B" };
+        String[] unit = new String[]{"PB", "TB", "GB", "MB", "KB", "B"};
+        String[] unit2 = new String[]{"P", "T", "G", "M", "K", "B"};
         for (int i = 0; i < unit.length; i++) {
             if (upper.endsWith(unit[i])) {
                 String numberText = textSize.substring(0, textSize.length() - unit[i].length());
@@ -221,8 +221,8 @@ public class FileSizeFormat {
         String unit = getUnits(str);
         String num = getNums(str);
         double realNum = 0;
-        double[] nums = { getNum(0), getNum(1), getNum(1), getNum(2), getNum(2), getNum(3), getNum(3), getNum(4) };
-        String[] units = { "B", "KB", "K", "MB", "M", "GB", "G", "TB" };
+        double[] nums = {getNum(0), getNum(1), getNum(1), getNum(2), getNum(2), getNum(3), getNum(3), getNum(4)};
+        String[] units = {"B", "KB", "K", "MB", "M", "GB", "G", "TB"};
         for (int k = 0; k < units.length; k++) {
             if (unit.toUpperCase().equals(units[k])) {
                 double n = Double.parseDouble(num);

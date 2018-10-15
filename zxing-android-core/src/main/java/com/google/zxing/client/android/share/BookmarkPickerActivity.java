@@ -19,7 +19,6 @@ package com.google.zxing.client.android.share;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.provider.Browser;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -32,16 +31,14 @@ import android.widget.ListView;
  */
 public final class BookmarkPickerActivity extends ListActivity {
 
-    private static final String TAG = BookmarkPickerActivity.class.getSimpleName();
+    static final int TITLE_COLUMN = 0;
 
 //    private static final String[] BOOKMARK_PROJECTION = { Browser.BookmarkColumns.TITLE, Browser.BookmarkColumns.URL };
-
-    static final int TITLE_COLUMN = 0;
     static final int URL_COLUMN = 1;
+    private static final String TAG = BookmarkPickerActivity.class.getSimpleName();
 
 //    private static final String BOOKMARK_SELECTION = Browser.BookmarkColumns.BOOKMARK + " = 1 AND "
 //            + Browser.BookmarkColumns.URL + " IS NOT NULL";
-
     private Cursor cursor;
 
     @Override

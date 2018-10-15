@@ -14,20 +14,6 @@ public class LocalImage extends LocalMediaItem {
     // Must preserve order between these indices and the order of the terms in
     // the following PROJECTION array.
     public static final int INDEX_ID = 0;
-    private static final int INDEX_CAPTION = 1;
-    private static final int INDEX_MIME_TYPE = 2;
-    private static final int INDEX_LATITUDE = 3;
-    private static final int INDEX_LONGITUDE = 4;
-    private static final int INDEX_DATE_TAKEN = 5;
-    private static final int INDEX_DATE_ADDED = 6;
-    private static final int INDEX_DATE_MODIFIED = 7;
-    private static final int INDEX_DATA = 8;
-    private static final int INDEX_ORIENTATION = 9;
-    private static final int INDEX_BUCKET_ID = 10;
-    private static final int INDEX_SIZE = 11;
-    private static final int INDEX_WIDTH = 12;
-    private static final int INDEX_HEIGHT = 13;
-
     public static final String[] PROJECTION = {
             ImageColumns._ID, // 0
             ImageColumns.TITLE, // 1
@@ -44,6 +30,19 @@ public class LocalImage extends LocalMediaItem {
             "0", // 12
             "0" // 13
     };
+    private static final int INDEX_CAPTION = 1;
+    private static final int INDEX_MIME_TYPE = 2;
+    private static final int INDEX_LATITUDE = 3;
+    private static final int INDEX_LONGITUDE = 4;
+    private static final int INDEX_DATE_TAKEN = 5;
+    private static final int INDEX_DATE_ADDED = 6;
+    private static final int INDEX_DATE_MODIFIED = 7;
+    private static final int INDEX_DATA = 8;
+    private static final int INDEX_ORIENTATION = 9;
+    private static final int INDEX_BUCKET_ID = 10;
+    private static final int INDEX_SIZE = 11;
+    private static final int INDEX_WIDTH = 12;
+    private static final int INDEX_HEIGHT = 13;
 
     static {
         updateWidthAndHeightProjection();
@@ -51,16 +50,16 @@ public class LocalImage extends LocalMediaItem {
 
     public int rotation;
 
+    public LocalImage(Cursor cursor) {
+        loadFromCursor(cursor);
+    }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private static void updateWidthAndHeightProjection() {
         if (ApiHelper.HAS_MEDIA_COLUMNS_WIDTH_AND_HEIGHT) {
             PROJECTION[INDEX_WIDTH] = MediaColumns.WIDTH;
             PROJECTION[INDEX_HEIGHT] = MediaColumns.HEIGHT;
         }
-    }
-
-    public LocalImage(Cursor cursor) {
-        loadFromCursor(cursor);
     }
 
     private void loadFromCursor(Cursor cursor) {

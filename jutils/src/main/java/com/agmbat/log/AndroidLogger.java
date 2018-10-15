@@ -11,18 +11,6 @@ public class AndroidLogger implements ILogger {
 
     private static final Pattern NEW_LINE_PATTERN = Pattern.compile("\r|\r\n|\n");
 
-    @Override
-    public void println(int priority, String tag, String msg) {
-        if (priority == Log.DEBUG) {
-            msg = getDetails(msg);
-        }
-        final String[] messageLines = NEW_LINE_PATTERN.split(msg);
-        for (String message : messageLines) {
-            printAndroidLog(priority, tag, message);
-        }
-    }
-
-
     /**
      * Low-level logging call.
      *
@@ -59,6 +47,17 @@ public class AndroidLogger implements ILogger {
         String methodName = ele.getMethodName();
         int lineNumber = ele.getLineNumber();
         return String.format("(%s:%d)>%s:%s", fileName, lineNumber, methodName, msg);
+    }
+
+    @Override
+    public void println(int priority, String tag, String msg) {
+        if (priority == Log.DEBUG) {
+            msg = getDetails(msg);
+        }
+        final String[] messageLines = NEW_LINE_PATTERN.split(msg);
+        for (String message : messageLines) {
+            printAndroidLog(priority, tag, message);
+        }
     }
 
 }

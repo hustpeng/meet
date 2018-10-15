@@ -17,25 +17,22 @@
 
 package org.apache.harmony.javax.security.auth.login;
 
-import java.io.IOException;
-import java.security.AccessController;
-import java.security.AccessControlContext;
-import java.security.PrivilegedExceptionAction;
-import java.security.PrivilegedActionException;
+import org.apache.harmony.javax.security.auth.AuthPermission;
+import org.apache.harmony.javax.security.auth.Subject;
+import org.apache.harmony.javax.security.auth.callback.Callback;
+import org.apache.harmony.javax.security.auth.callback.CallbackHandler;
+import org.apache.harmony.javax.security.auth.callback.UnsupportedCallbackException;
+import org.apache.harmony.javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
+import org.apache.harmony.javax.security.auth.spi.LoginModule;
 
+import java.io.IOException;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.security.Security;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.harmony.javax.security.auth.Subject;
-import org.apache.harmony.javax.security.auth.callback.CallbackHandler;
-import org.apache.harmony.javax.security.auth.callback.Callback;
-import org.apache.harmony.javax.security.auth.callback.UnsupportedCallbackException;
-import org.apache.harmony.javax.security.auth.spi.LoginModule;
-import org.apache.harmony.javax.security.auth.AuthPermission;
-
-import org.apache.harmony.javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
-
 
 
 public class LoginContext {
@@ -125,14 +122,14 @@ public class LoginContext {
     }
 
     public LoginContext(String name, Subject subject, CallbackHandler cbHandler,
-            Configuration config) throws LoginException {
+                        Configuration config) throws LoginException {
         super();
         init(name, subject, cbHandler, config);
     }
 
     // Does all the machinery needed for the initialization.
     private void init(String name, Subject subject, final CallbackHandler cbHandler,
-            Configuration config) throws LoginException {
+                      Configuration config) throws LoginException {
         userProvidedSubject = (this.subject = subject) != null;
 
         //
@@ -305,7 +302,7 @@ public class LoginContext {
 
         /*
          * Note: 'failed[xxx]!=0' is not enough to check.
-         * 
+         *
          * Use 'logged[xx] != total[xx]' instead. This is because some modules
          * might not be counted as 'failed' if an exception occurred during
          * preload()/Class.forName()-ing. But, such modules still get counted in
@@ -448,7 +445,7 @@ public class LoginContext {
      * <p>A class that servers as a wrapper for the CallbackHandler when we use
      * installed Configuration, but not a passed one. See API docs on the
      * LoginContext.</p>
-     * 
+     *
      * <p>Simply invokes the given handler with the given AccessControlContext.</p>
      */
     private class ContextedCallbackHandler implements CallbackHandler {
@@ -477,7 +474,7 @@ public class LoginContext {
         }
     }
 
-    /** 
+    /**
      * A private class that stores an instantiated LoginModule.
      */
     private final class Module {

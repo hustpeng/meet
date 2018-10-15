@@ -46,8 +46,16 @@ public class EmoticonPageSetEntity extends PageSetEntity<EmoticonPageEntity> {
         return mLine;
     }
 
+    public void setLine(int line) {
+        mLine = line;
+    }
+
     public int getRow() {
         return mRow;
+    }
+
+    public void setRow(int row) {
+        mRow = row;
     }
 
     public DelBtnStatus getDelBtnStatus() {
@@ -58,20 +66,12 @@ public class EmoticonPageSetEntity extends PageSetEntity<EmoticonPageEntity> {
         return mEmoticonList;
     }
 
-    public void setLine(int line) {
-        mLine = line;
-    }
-
-    public void setRow(int row) {
-        mRow = row;
+    public void setEmoticonList(List<EmojiBean> emoticonList) {
+        mEmoticonList = emoticonList;
     }
 
     public void setShowDelBtn(DelBtnStatus showDelBtn) {
         mDelBtnStatus = showDelBtn;
-    }
-
-    public void setEmoticonList(List<EmojiBean> emoticonList) {
-        mEmoticonList = emoticonList;
     }
 
     /**

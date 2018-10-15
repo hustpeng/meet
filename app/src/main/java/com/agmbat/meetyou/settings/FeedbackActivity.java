@@ -1,7 +1,6 @@
 package com.agmbat.meetyou.settings;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.EditText;
@@ -10,21 +9,16 @@ import android.widget.ImageView;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imagepicker.ImagePicker;
 import com.agmbat.imagepicker.ImagePickerHelper;
 import com.agmbat.imagepicker.OnPickImageListener;
 import com.agmbat.imagepicker.PickerOption;
 import com.agmbat.imagepicker.bean.ImageItem;
-import com.agmbat.imagepicker.loader.UILImageLoader;
-import com.agmbat.imagepicker.ui.ImageGridActivity;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.feedback.FeedbackManager;
 import com.agmbat.imsdk.feedback.OnFeedbackListener;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
 import com.nostra13.universalimageloader.core.download.Scheme;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

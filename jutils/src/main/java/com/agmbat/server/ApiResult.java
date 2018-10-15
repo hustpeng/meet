@@ -40,6 +40,19 @@ public class ApiResult<T> {
     @SerializedName("statusInfo")
     private String mStatusInfo;
 
+    /**
+     * 将json序列化成对象
+     *
+     * @param json
+     * @param typeOfT
+     * @param <T>
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T fromJson(String json, Type typeOfT) {
+        return GsonHelper.fromJson(json, typeOfT);
+    }
+
     public T getData() {
         return mData;
     }
@@ -98,18 +111,5 @@ public class ApiResult<T> {
      */
     public boolean isValidateGestureFailed() {
         return mStatus == VALIDATE_GESTURE_FAILED;
-    }
-
-    /**
-     * 将json序列化成对象
-     *
-     * @param json
-     * @param typeOfT
-     * @param <T>
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T fromJson(String json, Type typeOfT) {
-        return GsonHelper.fromJson(json, typeOfT);
     }
 }

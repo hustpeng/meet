@@ -1,7 +1,5 @@
 package com.agmbat.pulltorefresh;
 
-import com.agmbat.android.AppResources;
-
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
@@ -16,16 +14,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
+import com.agmbat.android.AppResources;
+
 public class IndicatorLayout extends FrameLayout implements AnimationListener {
 
     static final int DEFAULT_ROTATION_ANIMATION_DURATION = 150;
-
+    private final Animation mRotateAnimation;
+    private final Animation mResetRotateAnimation;
     private Animation mInAnim;
     private Animation mOutAnim;
     private ImageView mArrowImageView;
-
-    private final Animation mRotateAnimation;
-    private final Animation mResetRotateAnimation;
 
     public IndicatorLayout(Context context, PullToRefreshBase.Mode mode) {
         super(context);

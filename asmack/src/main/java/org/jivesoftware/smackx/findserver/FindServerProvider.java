@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.findserver;
 
 import org.jivesoftware.smack.packet.IQ;

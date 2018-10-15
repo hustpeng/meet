@@ -19,23 +19,6 @@ import java.io.Serializable;
 public class ContactInfo implements Serializable, AuthStatus {
 
 
-    public static int CONTACT_LIMIT_UNAUTH = 20;
-    public static int CONTACT_LIMIT_AUTH = 100;
-    public static int CONTACT_LIMIT_AUTH_GRADE_1 = 500;
-    public static int CONTACT_LIMIT_AUTH_GRADE_2 = 1000;
-    public static int CONTACT_LIMIT_AUTH_GRADE_3 = 1500;
-    public static int CONTACT_LIMIT_AUTH_GRADE_4 = 2000;
-    public static int CONTACT_LIMIT_AUTH_GRADE_5 = 3000;
-
-    public static int GROUP_LIMIT_UNAUTH = 0;
-    public static int GROUP_LIMIT_AUTH = 1;
-    public static int GROUP_LIMIT_AUTH_GRADE_1 = 2;
-    public static int GROUP_LIMIT_AUTH_GRADE_2 = 4;
-    public static int GROUP_LIMIT_AUTH_GRADE_3 = 6;
-    public static int GROUP_LIMIT_AUTH_GRADE_4 = 8;
-    public static int GROUP_LIMIT_AUTH_GRADE_5 = 10;
-
-
     /**
      * 对应roster信息
      */
@@ -44,19 +27,28 @@ public class ContactInfo implements Serializable, AuthStatus {
     public static final int ROSTER_TYPE_FROM = 3;
     public static final int ROSTER_TYPE_BOTH = 4;
     public static final int ROSTER_TYPE_REMOVE = 5;
-
-
     /**
      * 别人申请加我为好友, 但未未处理
      */
     public static final int ROSTER_SUBSCRIBE_ME = 6;
-
     /**
      * 我申请别人加好友, 对方未处理
      */
     public static final int ROSTER_SUBSCRIBE_OTHER = 7;
-
-
+    public static int CONTACT_LIMIT_UNAUTH = 20;
+    public static int CONTACT_LIMIT_AUTH = 100;
+    public static int CONTACT_LIMIT_AUTH_GRADE_1 = 500;
+    public static int CONTACT_LIMIT_AUTH_GRADE_2 = 1000;
+    public static int CONTACT_LIMIT_AUTH_GRADE_3 = 1500;
+    public static int CONTACT_LIMIT_AUTH_GRADE_4 = 2000;
+    public static int CONTACT_LIMIT_AUTH_GRADE_5 = 3000;
+    public static int GROUP_LIMIT_UNAUTH = 0;
+    public static int GROUP_LIMIT_AUTH = 1;
+    public static int GROUP_LIMIT_AUTH_GRADE_1 = 2;
+    public static int GROUP_LIMIT_AUTH_GRADE_2 = 4;
+    public static int GROUP_LIMIT_AUTH_GRADE_3 = 6;
+    public static int GROUP_LIMIT_AUTH_GRADE_4 = 8;
+    public static int GROUP_LIMIT_AUTH_GRADE_5 = 10;
     /**
      * 此id为数据库存储id值
      */
@@ -234,12 +226,12 @@ public class ContactInfo implements Serializable, AuthStatus {
         return "getPersonalMsg";
     }
 
-    public void setBareJid(String jid) {
-        mBareJid = jid;
-    }
-
     public String getBareJid() {
         return mBareJid;
+    }
+
+    public void setBareJid(String jid) {
+        mBareJid = jid;
     }
 
     public String getRemark() {
@@ -259,12 +251,12 @@ public class ContactInfo implements Serializable, AuthStatus {
         mAvatar = avatar;
     }
 
-    public void setGender(int gender) {
-        mGender = gender;
-    }
-
     public int getGender() {
         return mGender;
+    }
+
+    public void setGender(int gender) {
+        mGender = gender;
     }
 
     public int getImUid() {
@@ -320,9 +312,10 @@ public class ContactInfo implements Serializable, AuthStatus {
 
     /**
      * 加载更多信息
+     *
      * @param user
      */
-    public void apply(LoginUser user){
+    public void apply(LoginUser user) {
         setAuthStatus(user.getAuth());
         setAvatar(user.getAvatar());
         setBareJid(user.getJid());
@@ -519,7 +512,7 @@ public class ContactInfo implements Serializable, AuthStatus {
         this.workarea = workarea;
     }
 
-    public long getLastLogin(){
+    public long getLastLogin() {
         return last_login;
     }
 }

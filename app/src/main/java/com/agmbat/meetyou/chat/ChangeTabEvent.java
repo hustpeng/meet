@@ -8,7 +8,7 @@ public class ChangeTabEvent {
         this.tabIndex = tabIndex;
     }
 
-    public int getTabIndex(){
+    public int getTabIndex() {
         return tabIndex;
     }
 }

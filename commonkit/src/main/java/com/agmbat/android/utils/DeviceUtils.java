@@ -8,21 +8,6 @@
  */
 package com.agmbat.android.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.agmbat.android.SystemManager;
-import com.agmbat.file.FileUtils;
-import com.agmbat.security.SecurityUtil;
-import com.agmbat.io.IoUtils;
-
 import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -41,12 +26,28 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.agmbat.android.SystemManager;
+import com.agmbat.file.FileUtils;
+import com.agmbat.io.IoUtils;
+import com.agmbat.security.SecurityUtil;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * 提供当前设备的信息
  */
 public class DeviceUtils {
 
     private static final String TAG = DeviceUtils.class.getSimpleName();
+    private static Camera sCamera;
 
     /**
      * 返回此设备的设备的软件版本。
@@ -364,8 +365,6 @@ public class DeviceUtils {
         }
         return SecurityUtil.md5Hash(did);
     }
-
-    private static Camera sCamera;
 
     public static void openFlashLight() {
         if (sCamera == null) {

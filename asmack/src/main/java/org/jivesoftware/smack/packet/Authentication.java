@@ -97,6 +97,21 @@ public class Authentication extends IQ {
     }
 
     /**
+     * Sets the digest value directly. Password digests offer a more secure
+     * alternative for authentication compared to plain text. The digest is
+     * the hex-encoded SHA-1 hash of the connection ID plus the user's password.
+     * If the digest and password are set, digest authentication will be used.
+     * If only one value is set, the respective authentication mode will be used.
+     *
+     * @param digest the digest, which is the SHA-1 hash of the connection ID
+     *               the user's password, encoded as hex.
+     * @see org.jivesoftware.smack.Connection#getConnectionID()
+     */
+    public void setDigest(String digest) {
+        this.digest = digest;
+    }
+
+    /**
      * Sets the digest value using a connection ID and password. Password
      * digests offer a more secure alternative for authentication compared to
      * plain text. The digest is the hex-encoded SHA-1 hash of the connection ID
@@ -110,21 +125,6 @@ public class Authentication extends IQ {
      */
     public void setDigest(String connectionID, String password) {
         this.digest = XmppStringUtils.hash(connectionID + password);
-    }
-
-    /**
-     * Sets the digest value directly. Password digests offer a more secure
-     * alternative for authentication compared to plain text. The digest is
-     * the hex-encoded SHA-1 hash of the connection ID plus the user's password.
-     * If the digest and password are set, digest authentication will be used.
-     * If only one value is set, the respective authentication mode will be used.
-     *
-     * @param digest the digest, which is the SHA-1 hash of the connection ID
-     *               the user's password, encoded as hex.
-     * @see org.jivesoftware.smack.Connection#getConnectionID()
-     */
-    public void setDigest(String digest) {
-        this.digest = digest;
     }
 
     /**

@@ -36,6 +36,7 @@ public class DefQqEmoticons implements EmojiResProvider, EmojiDisplayProcessor {
      * 使用linkedHashMap,保证顺序
      */
     public static final HashMap<String, String> sQqEmoticonHashMap = new LinkedHashMap<>();
+    private static final Pattern QQ_RANGE = Pattern.compile("\\[[a-zA-Z0-9\\u4e00-\\u9fa5]+\\]");
 
     static {
         sQqEmoticonHashMap.put("[ecf]", "ecf.png");
@@ -79,8 +80,6 @@ public class DefQqEmoticons implements EmojiResProvider, EmojiDisplayProcessor {
         sQqEmoticonHashMap.put("[ebp]", "ebp.png");
         sQqEmoticonHashMap.put("[ebo]", "ebo.png");
     }
-
-    private static final Pattern QQ_RANGE = Pattern.compile("\\[[a-zA-Z0-9\\u4e00-\\u9fa5]+\\]");
 
     private static Drawable getDrawable(String key) {
         String icon = DefQqEmoticons.sQqEmoticonHashMap.get(key);

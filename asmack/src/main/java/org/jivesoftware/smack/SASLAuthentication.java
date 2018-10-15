@@ -20,18 +20,27 @@
 
 package org.jivesoftware.smack;
 
+import org.apache.harmony.javax.security.auth.callback.CallbackHandler;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Session;
-import org.jivesoftware.smack.sasl.*;
-
-import org.apache.harmony.javax.security.auth.callback.CallbackHandler;
+import org.jivesoftware.smack.sasl.SASLAnonymous;
+import org.jivesoftware.smack.sasl.SASLCramMD5Mechanism;
+import org.jivesoftware.smack.sasl.SASLDigestMD5Mechanism;
+import org.jivesoftware.smack.sasl.SASLExternalMechanism;
+import org.jivesoftware.smack.sasl.SASLGSSAPIMechanism;
+import org.jivesoftware.smack.sasl.SASLMechanism;
+import org.jivesoftware.smack.sasl.SASLPlainMechanism;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>This class is responsible authenticating the user using SASL, binding the resource
@@ -66,6 +75,24 @@ public class SASLAuthentication implements UserAuthentication {
     private static Map<String, Class<? extends SASLMechanism>> implementedMechanisms = new HashMap<String, Class<? extends SASLMechanism>>();
     private static List<String> mechanismsPreferences = new ArrayList<String>();
 
+    static {
+
+        // Register SASL mechanisms supported by Smack
+        registerSASLMechanism("EXTERNAL", SASLExternalMechanism.class);
+        registerSASLMechanism("GSSAPI", SASLGSSAPIMechanism.class);
+        registerSASLMechanism("DIGEST-MD5", SASLDigestMD5Mechanism.class);
+        registerSASLMechanism("CRAM-MD5", SASLCramMD5Mechanism.class);
+        registerSASLMechanism("PLAIN", SASLPlainMechanism.class);
+        registerSASLMechanism("ANONYMOUS", SASLAnonymous.class);
+
+//        supportSASLMechanism("GSSAPI",0);
+        supportSASLMechanism("DIGEST-MD5", 0);
+//        supportSASLMechanism("CRAM-MD5",2);
+        supportSASLMechanism("PLAIN", 1);
+        supportSASLMechanism("ANONYMOUS", 2);
+
+    }
+
     private Connection connection;
     private Collection<String> serverMechanisms = new ArrayList<String>();
     private SASLMechanism currentMechanism = null;
@@ -85,22 +112,10 @@ public class SASLAuthentication implements UserAuthentication {
      */
     private String errorCondition;
 
-    static {
-
-        // Register SASL mechanisms supported by Smack
-        registerSASLMechanism("EXTERNAL", SASLExternalMechanism.class);
-        registerSASLMechanism("GSSAPI", SASLGSSAPIMechanism.class);
-        registerSASLMechanism("DIGEST-MD5", SASLDigestMD5Mechanism.class);
-        registerSASLMechanism("CRAM-MD5", SASLCramMD5Mechanism.class);
-        registerSASLMechanism("PLAIN", SASLPlainMechanism.class);
-        registerSASLMechanism("ANONYMOUS", SASLAnonymous.class);
-
-//        supportSASLMechanism("GSSAPI",0);
-        supportSASLMechanism("DIGEST-MD5", 0);
-//        supportSASLMechanism("CRAM-MD5",2);
-        supportSASLMechanism("PLAIN", 1);
-        supportSASLMechanism("ANONYMOUS", 2);
-
+    SASLAuthentication(Connection connection) {
+        super();
+        this.connection = connection;
+        this.init();
     }
 
     /**
@@ -124,7 +139,6 @@ public class SASLAuthentication implements UserAuthentication {
         implementedMechanisms.remove(name);
         mechanismsPreferences.remove(name);
     }
-
 
     /**
      * Registers a new SASL mechanism in the specified preference position. The client will try
@@ -173,12 +187,6 @@ public class SASLAuthentication implements UserAuthentication {
             answer.add(implementedMechanisms.get(mechanismsPreference));
         }
         return answer;
-    }
-
-    SASLAuthentication(Connection connection) {
-        super();
-        this.connection = connection;
-        this.init();
     }
 
     /**

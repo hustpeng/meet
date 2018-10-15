@@ -1,5 +1,12 @@
 package com.agmbat.android.utils;
 
+import android.net.Uri;
+import android.util.Log;
+import android.util.Patterns;
+import android.webkit.URLUtil;
+
+import com.agmbat.security.SecurityUtil;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -9,18 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.agmbat.security.SecurityUtil;
-
-import android.net.Uri;
-import android.util.Log;
-import android.util.Patterns;
-import android.webkit.URLUtil;
-
 public class UrlStringUtils {
-
-    private static final String TAG = "UrlStringUtils";
-
-    private static final String THUMB_URL_TAG = "_is_thumbnail=true";
 
     /**
      * Regular expression pattern to match RFC 1738 URLs List accurate as of 2007/06/15. List taken from:
@@ -50,16 +46,17 @@ public class UrlStringUtils {
                     + "(?:\\:\\d{1,5})?)" // plus option port number
                     + "(\\/(?:(?:[a-zA-Z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~" // plus option query params
                     + "\\-\\.\\+\\!\\*\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?" + "(?:\\b|$)"); // and finally, a
+    public static final Pattern IP_PATTERN = Pattern.compile("(?:(?:25[0-5]|2[0-4]"
+            + "[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]"
+            + "|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]"
+            + "[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}" + "|[1-9][0-9]|[0-9]))");
+    private static final String TAG = "UrlStringUtils";
     // word boundary or
     // end of
     // input. This is to
     // stop foo.sure from
     // matching as foo.su
-
-    public static final Pattern IP_PATTERN = Pattern.compile("(?:(?:25[0-5]|2[0-4]"
-            + "[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]"
-            + "|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]"
-            + "[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}" + "|[1-9][0-9]|[0-9]))");
+    private static final String THUMB_URL_TAG = "_is_thumbnail=true";
 
     public static boolean urlStartsWithIgnoreScheme(String url1, String url2) {
         URI uri1 = null;
@@ -190,6 +187,15 @@ public class UrlStringUtils {
     }
 
     /**
+     * 判断给定的字符患是不是url
+     *
+     * @param url
+     */
+    public static boolean isValidUrl(String url) {
+        return (Patterns.WEB_URL.matcher(url).matches() && URLUtil.isValidUrl(url));
+    }
+
+    /**
      * Searches the query string for parameter values with the given key.
      *
      * @param key which will be encoded
@@ -256,15 +262,6 @@ public class UrlStringUtils {
         }
 
         return Collections.unmodifiableList(values);
-    }
-
-    /**
-     * 判断给定的字符患是不是url
-     *
-     * @param url
-     */
-    public static boolean isValidUrl(String url) {
-        return (Patterns.WEB_URL.matcher(url).matches() && URLUtil.isValidUrl(url));
     }
 
 }

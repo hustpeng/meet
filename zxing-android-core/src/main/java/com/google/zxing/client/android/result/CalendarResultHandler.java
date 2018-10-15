@@ -46,6 +46,16 @@ public final class CalendarResultHandler extends ResultHandler {
         super(activity, result);
     }
 
+    private static String format(boolean allDay, Date date) {
+        if (date == null) {
+            return null;
+        }
+        DateFormat format = allDay
+                ? DateFormat.getDateInstance(DateFormat.MEDIUM)
+                : DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+        return format.format(date);
+    }
+
     @Override
     public int getButtonCount() {
         return buttons.length;
@@ -138,7 +148,6 @@ public final class CalendarResultHandler extends ResultHandler {
         }
     }
 
-
     @Override
     public CharSequence getDisplayContents() {
 
@@ -167,16 +176,6 @@ public final class CalendarResultHandler extends ResultHandler {
         ParsedResult.maybeAppend(calResult.getAttendees(), result);
         ParsedResult.maybeAppend(calResult.getDescription(), result);
         return result.toString();
-    }
-
-    private static String format(boolean allDay, Date date) {
-        if (date == null) {
-            return null;
-        }
-        DateFormat format = allDay
-                ? DateFormat.getDateInstance(DateFormat.MEDIUM)
-                : DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
-        return format.format(date);
     }
 
     @Override

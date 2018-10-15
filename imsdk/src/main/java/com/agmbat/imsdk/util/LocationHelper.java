@@ -29,54 +29,48 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LocationHelper {
 
-    private static final String TAG = LocationHelper.class.getSimpleName();
-
-    private final LocationManager mLocationManager;
-    private LocationObject lastLocation = null;
-    private boolean isLocationRequesting;
-
-    private final long UPDATE_INTERVAL = 1000L;
-    private final float UPDATE_DISTANCE = 100F;
-
-    private static final int MSG_START_LOCATION = 0;
-    private static final int MSG_GET_ADDRESS = 1;
-
     public static final int LOCATION_GET_SUCCED = 0;
     public static final int LOCATION_SERVICE_NOT_OPEN = 1;
     public static final int LOCATION_REQUEST_UNKNOWN_ERR = 2;
-
-    public class LocationObject {
-        public String locationStr;
-        public double lat;
-        public double lon;
-    }
-
+    private static final String TAG = LocationHelper.class.getSimpleName();
+    private static final int MSG_START_LOCATION = 0;
+    private static final int MSG_GET_ADDRESS = 1;
+    private static final int LOCATION_MAX_RESULT = 5;
+    private final LocationManager mLocationManager;
+    private final long UPDATE_INTERVAL = 1000L;
+    private final float UPDATE_DISTANCE = 100F;
     private final List<LocationEventListener> listeners;
+    private LocationObject lastLocation = null;
+    private boolean isLocationRequesting;
+    private Handler mHandler;
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+            Log.i(TAG, "onStatusChanged");
+        }
 
-    public interface LocationEventListener {
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.i(TAG, "onProviderEnabled");
+        }
 
-        /**
-         * 获取地理位置失败
-         *
-         * @param errCode LOCATION_SERVICE_NOT_OPEN LOCATION_REQUEST_UNKNOWN_ERR
-         */
-        public void notifyRequestLocationFailed(int errCode);
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.i(TAG, "onProviderDisabled");
+            stopUpdatingLocation();
 
-        /**
-         * 通知定位到的经纬度，地址信息会在notifyRequestLocationResultStr中通知
-         *
-         * @param lat
-         * @param lon
-         */
-        public void notifyRequestLocationResult(double lat, double lon);
+            notifyRequestLocationFailed(LOCATION_SERVICE_NOT_OPEN);
+        }
 
-        /**
-         * 通知定位到的经纬度以及解析到的地址信息
-         *
-         * @param location
-         */
-        public void notifyRequestLocationFullResult(LocationObject location);
-    }
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.i(TAG, "onLocationChanged = " + location);
+            stopUpdatingLocation();
+
+            Message msg = mHandler.obtainMessage(MSG_GET_ADDRESS, location);
+            mHandler.sendMessage(msg);
+        }
+    };
 
     public LocationHelper() {
         Context context = AppResources.getAppContext();
@@ -104,6 +98,19 @@ public class LocationHelper {
             }
         };
 
+    }
+
+    public static String getDistanceText(double lat1, double lon1, double lat2, double lon2) {
+        double distance = com.agmbat.android.utils.LocationHelper.getDistance(lat1, lon1, lat2, lon2);
+        String distanceText = "";
+        if (distance > 1609000) {
+            distanceText = ">1000mi";
+        } else if (distance > 304.8) {
+            distanceText = String.format("%.2fmi", distance / 1609.0);
+        } else {
+            distanceText = String.format("%.0fft", distance / 0.3048);
+        }
+        return distanceText;
     }
 
     @SuppressLint("MissingPermission")
@@ -250,8 +257,6 @@ public class LocationHelper {
         mHandler.sendMessage(msg);
     }
 
-    private Handler mHandler;
-
     /**
      * 定位超时，尝试使用last location
      */
@@ -270,35 +275,6 @@ public class LocationHelper {
             mHandler.sendMessage(msg);
         }
     }
-
-    private final LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-            Log.i(TAG, "onStatusChanged");
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-            Log.i(TAG, "onProviderEnabled");
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-            Log.i(TAG, "onProviderDisabled");
-            stopUpdatingLocation();
-
-            notifyRequestLocationFailed(LOCATION_SERVICE_NOT_OPEN);
-        }
-
-        @Override
-        public void onLocationChanged(Location location) {
-            Log.i(TAG, "onLocationChanged = " + location);
-            stopUpdatingLocation();
-
-            Message msg = mHandler.obtainMessage(MSG_GET_ADDRESS, location);
-            mHandler.sendMessage(msg);
-        }
-    };
 
     /**
      * 可能会比较耗时，不能在UI thread中调用
@@ -334,9 +310,6 @@ public class LocationHelper {
         stopUpdatingLocation();
         super.finalize();
     }
-
-
-    private static final int LOCATION_MAX_RESULT = 5;
 
     /**
      * @param lat
@@ -456,18 +429,35 @@ public class LocationHelper {
         return null;
     }
 
+    public interface LocationEventListener {
 
-    public static String getDistanceText(double lat1, double lon1, double lat2, double lon2) {
-        double distance = com.agmbat.android.utils.LocationHelper.getDistance(lat1, lon1, lat2, lon2);
-        String distanceText = "";
-        if (distance > 1609000) {
-            distanceText = ">1000mi";
-        } else if (distance > 304.8) {
-            distanceText = String.format("%.2fmi", distance / 1609.0);
-        } else {
-            distanceText = String.format("%.0fft", distance / 0.3048);
-        }
-        return distanceText;
+        /**
+         * 获取地理位置失败
+         *
+         * @param errCode LOCATION_SERVICE_NOT_OPEN LOCATION_REQUEST_UNKNOWN_ERR
+         */
+        public void notifyRequestLocationFailed(int errCode);
+
+        /**
+         * 通知定位到的经纬度，地址信息会在notifyRequestLocationResultStr中通知
+         *
+         * @param lat
+         * @param lon
+         */
+        public void notifyRequestLocationResult(double lat, double lon);
+
+        /**
+         * 通知定位到的经纬度以及解析到的地址信息
+         *
+         * @param location
+         */
+        public void notifyRequestLocationFullResult(LocationObject location);
+    }
+
+    public class LocationObject {
+        public String locationStr;
+        public double lat;
+        public double lon;
     }
 
 }

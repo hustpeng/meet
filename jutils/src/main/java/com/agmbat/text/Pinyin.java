@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -15,7 +15,7 @@ public class Pinyin {
 
     /**
      * 获取拼音字母
-     * 
+     *
      * @param ch 中文字符
      * @return
      */
@@ -55,7 +55,7 @@ public class Pinyin {
 
     /**
      * 获取给定字符串每个字拼音的大写字母
-     * 
+     *
      * @param str
      * @return
      */
@@ -79,7 +79,7 @@ public class Pinyin {
 
     /**
      * 获取字符串首字符的首字母
-     * 
+     *
      * @param data
      * @param str
      * @return
@@ -106,7 +106,7 @@ public class Pinyin {
 
     /**
      * 获取字符的拼音,兼容英文字母
-     * 
+     *
      * @param data
      * @param ch
      * @return
@@ -126,7 +126,7 @@ public class Pinyin {
 
     /**
      * 查表获取字符的拼音
-     * 
+     *
      * @param data
      * @param ch
      * @return

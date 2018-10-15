@@ -6,11 +6,11 @@ public class CircleGroupEvent {
 
     public List<CircleGroup> mCircleGroups;
 
-    public CircleGroupEvent(List<CircleGroup> circleGroups){
+    public CircleGroupEvent(List<CircleGroup> circleGroups) {
         mCircleGroups = circleGroups;
     }
 
-    public List<CircleGroup> getCircleGroups(){
+    public List<CircleGroup> getCircleGroups() {
         return mCircleGroups;
     }
 }

@@ -1,7 +1,5 @@
 package com.agmbat.meetyou.group;
 
-import com.agmbat.imsdk.search.group.GroupInfo;
-
 /**
  * EventBus事件：更改群资料
  */
@@ -21,11 +19,11 @@ public class EditGroupEvent {
 
     private boolean needVerify;
 
-    public EditGroupEvent(String groupJid){
+    public EditGroupEvent(String groupJid) {
         this.groupJid = groupJid;
     }
 
-    public String getGroupJid(){
+    public String getGroupJid() {
         return groupJid;
     }
 

@@ -16,20 +16,6 @@
 
 package com.agmbat.zxing;
 
-import java.util.Collection;
-import java.util.Map;
-
-import com.agmbat.android.SystemManager;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.Result;
-import com.google.zxing.client.android.CaptureActivityHandler;
-import com.google.zxing.client.android.DecodeHandler;
-import com.google.zxing.client.android.DecodeThread;
-import com.google.zxing.client.android.MsgWhat;
-import com.google.zxing.client.android.ViewfinderResultPointCallback;
-import com.google.zxing.client.android.camera.CameraManager;
-
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -44,6 +30,20 @@ import android.os.Message;
 import android.provider.Browser;
 import android.util.Log;
 
+import com.agmbat.android.SystemManager;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.Result;
+import com.google.zxing.client.android.CaptureActivityHandler;
+import com.google.zxing.client.android.DecodeHandler;
+import com.google.zxing.client.android.DecodeThread;
+import com.google.zxing.client.android.MsgWhat;
+import com.google.zxing.client.android.ViewfinderResultPointCallback;
+import com.google.zxing.client.android.camera.CameraManager;
+
+import java.util.Collection;
+import java.util.Map;
+
 
 /**
  * This class handles all the messaging which comprises the state machine for capture.
@@ -56,12 +56,8 @@ public final class ScannerActivityHandler extends Handler {
 
     private final DecodeHandler.IActivity activity;
     private final DecodeThread decodeThread;
-    private State state;
     private final CameraManager cameraManager;
-
-    private enum State {
-        PREVIEW, SUCCESS, DONE
-    }
+    private State state;
 
     ScannerActivityHandler(DecodeHandler.IActivity activity, Collection<BarcodeFormat> decodeFormats,
                            Map<DecodeHintType, ?> baseHints, String characterSet, CameraManager cameraManager) {
@@ -165,6 +161,10 @@ public final class ScannerActivityHandler extends Handler {
             cameraManager.requestPreviewFrame(decodeThread.getHandler(), MsgWhat.DECODE);
             activity.drawViewfinder();
         }
+    }
+
+    private enum State {
+        PREVIEW, SUCCESS, DONE
     }
 
 }

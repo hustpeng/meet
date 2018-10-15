@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/chatting_foot_bar_group"
         style="@style/MMFooter"
         android:layout_height="wrap_content"
         android:background="@drawable/bottombar_bg"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/chatting_mode_switcher"
@@ -17,7 +17,7 @@
             android:layout_height="fill_parent"
             android:background="@drawable/bottombar_button_bg"
             android:orientation="horizontal"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="@dimen/ChattingFootSwitcherWidth"
@@ -34,7 +34,7 @@
             android:layout_marginLeft="@dimen/ChattingFootSendMargin"
             android:layout_marginRight="6.0dip"
             android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/chatting_mode_btn"
@@ -53,12 +53,12 @@
                 android:id="@+id/text_panel_ll"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5.5dip"
                 android:layout_marginTop="5.5dip"
+                android:layout_marginBottom="5.5dip"
                 android:layout_weight="1.0"
                 android:background="@drawable/edittext_group_bg_selector"
                 android:gravity="bottom"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <com.tencent.mm.ui.widget.MMEditText
                     android:id="@+id/chatting_content_et"
@@ -104,8 +104,8 @@
                 android:layout_gravity="bottom"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/ChattingFootPaddingBottom"
-                android:paddingLeft="6.0dip" >
+                android:paddingLeft="6.0dip"
+                android:paddingBottom="@dimen/ChattingFootPaddingBottom">
 
                 <TextView
                     android:id="@+id/chatting_wordcount_tv"
@@ -117,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:gravity="center" >
+                    android:gravity="center">
 
                     <ImageButton
                         android:id="@+id/chatting_attach_btn"
@@ -156,7 +156,7 @@
         android:layout_gravity="center"
         android:background="@drawable/bottombar_bg"
         android:orientation="horizontal"
-        android:visibility="gone" >
+        android:visibility="gone">
 
         <com.tencent.mm.pluginsdk.ui.chat.AppPanel
             android:id="@+id/chatting_app_panel"

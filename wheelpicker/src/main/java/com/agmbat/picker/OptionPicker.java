@@ -1,6 +1,5 @@
 package com.agmbat.picker;
 
-import android.app.Activity;
 import android.content.Context;
 
 import java.util.List;

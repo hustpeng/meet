@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.paid;
 
 import java.util.Date;
@@ -9,8 +8,7 @@ public class PaidAccountObject {
     private boolean isSubscriptionVaild;
     private Date subscriptionTime;
 
-    public static String getXmlNode(PaidAccountObject object)
-    {
+    public static String getXmlNode(PaidAccountObject object) {
         if (object == null) {
             return null;
         }

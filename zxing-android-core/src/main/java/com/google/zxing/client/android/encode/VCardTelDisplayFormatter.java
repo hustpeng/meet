@@ -38,15 +38,6 @@ final class VCardTelDisplayFormatter implements Formatter {
         this.metadataForIndex = metadataForIndex;
     }
 
-    @Override
-    public CharSequence format(CharSequence value, int index) {
-        value = PhoneNumberUtils.formatNumber(value.toString());
-        Map<String, Set<String>> metadata =
-                metadataForIndex == null || metadataForIndex.size() <= index ? null : metadataForIndex.get(index);
-        value = formatMetadata(value, metadata);
-        return value;
-    }
-
     private static CharSequence formatMetadata(CharSequence value, Map<String, Set<String>> metadata) {
         if (metadata == null || metadata.isEmpty()) {
             return value;
@@ -68,6 +59,15 @@ final class VCardTelDisplayFormatter implements Formatter {
         }
         withMetadata.append(value);
         return withMetadata;
+    }
+
+    @Override
+    public CharSequence format(CharSequence value, int index) {
+        value = PhoneNumberUtils.formatNumber(value.toString());
+        Map<String, Set<String>> metadata =
+                metadataForIndex == null || metadataForIndex.size() <= index ? null : metadataForIndex.get(index);
+        value = formatMetadata(value, metadata);
+        return value;
     }
 
 }

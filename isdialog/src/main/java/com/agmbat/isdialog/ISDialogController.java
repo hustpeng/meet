@@ -19,30 +19,25 @@ import java.util.List;
 public class ISDialogController {
 
     /**
+     * 对话框
+     */
+    private final Dialog mDialog;
+    /**
      * 标题栏
      */
     private TextView mTitleView;
-
     /**
      * 消息
      */
     private TextView mMessageView;
-
     /**
      * 确认 Button
      */
     private Button mPositiveButton;
-
     /**
      * 取消
      */
     private TextView mNegativeButton;
-
-    /**
-     * 对话框
-     */
-    private final Dialog mDialog;
-
     /**
      * 标题
      */

@@ -21,13 +21,13 @@ public final class Selector<T> {
     private int limit = 0;
     private int offset = 0;
 
+    private Selector(TableEntity<T> table) {
+        this.table = table;
+    }
+
     /* package */
     public static <T> Selector<T> from(TableEntity<T> table) {
         return new Selector<T>(table);
-    }
-
-    private Selector(TableEntity<T> table) {
-        this.table = table;
     }
 
     public Selector<T> where(WhereBuilder whereBuilder) {
@@ -72,7 +72,7 @@ public final class Selector<T> {
         return new DbModelSelector(this, columnName);
     }
 
-    public DbModelSelector select(String...columnExpressions) {
+    public DbModelSelector select(String... columnExpressions) {
         return new DbModelSelector(this, columnExpressions);
     }
 
@@ -178,7 +178,7 @@ public final class Selector<T> {
 
     /**
      * Mysql 中 sql语句表名不需要用引号
-     * 
+     *
      * @return
      */
     public String buildQuerySql() {
@@ -194,7 +194,7 @@ public final class Selector<T> {
 
     /**
      * 获取limit文本 LIMIT 0,10
-     * 
+     *
      * @return
      */
     private String getLimitText() {
@@ -218,7 +218,7 @@ public final class Selector<T> {
 
     /**
      * 获取orderBy字符串
-     * 
+     *
      * @return
      */
     private String getOrderBy() {

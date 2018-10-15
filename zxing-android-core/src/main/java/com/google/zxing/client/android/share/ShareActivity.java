@@ -16,12 +16,6 @@
 
 package com.google.zxing.client.android.share;
 
-import android.provider.ContactsContract;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.client.android.Contents;
-import com.google.zxing.client.android.Intents;
-import com.google.zxing.client.android.R;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -29,11 +23,16 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
-import android.provider.Browser;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.android.Contents;
+import com.google.zxing.client.android.Intents;
+import com.google.zxing.client.android.R;
 import com.google.zxing.client.android.clipboard.ClipboardInterface;
 
 /**
@@ -49,9 +48,6 @@ public final class ShareActivity extends Activity {
     private static final int PICK_BOOKMARK = 0;
     private static final int PICK_CONTACT = 1;
     private static final int PICK_APP = 2;
-
-    private View clipboardButton;
-
     private final View.OnClickListener contactListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -60,7 +56,6 @@ public final class ShareActivity extends Activity {
             startActivityForResult(intent, PICK_CONTACT);
         }
     };
-
     private final View.OnClickListener bookmarkListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -70,7 +65,6 @@ public final class ShareActivity extends Activity {
             startActivityForResult(intent, PICK_BOOKMARK);
         }
     };
-
     private final View.OnClickListener appListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -80,7 +74,6 @@ public final class ShareActivity extends Activity {
             startActivityForResult(intent, PICK_APP);
         }
     };
-
     private final View.OnClickListener clipboardListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -91,7 +84,6 @@ public final class ShareActivity extends Activity {
             }
         }
     };
-
     private final View.OnKeyListener textListener = new View.OnKeyListener() {
         @Override
         public boolean onKey(View view, int keyCode, KeyEvent event) {
@@ -105,6 +97,19 @@ public final class ShareActivity extends Activity {
             return false;
         }
     };
+    private View clipboardButton;
+
+    private static String massageContactData(String data) {
+        // For now -- make sure we don't put newlines in shared contact data. It messes up
+        // any known encoding of contact data. Replace with space.
+        if (data.indexOf('\n') >= 0) {
+            data = data.replace("\n", " ");
+        }
+        if (data.indexOf('\r') >= 0) {
+            data = data.replace("\r", " ");
+        }
+        return data;
+    }
 
     private void launchSearch(String text) {
         Intent intent = new Intent(Intents.Encode.ACTION);
@@ -279,17 +284,5 @@ public final class ShareActivity extends Activity {
 
         Log.i(TAG, "Sending bundle for encoding: " + bundle);
         startActivity(intent);
-    }
-
-    private static String massageContactData(String data) {
-        // For now -- make sure we don't put newlines in shared contact data. It messes up
-        // any known encoding of contact data. Replace with space.
-        if (data.indexOf('\n') >= 0) {
-            data = data.replace("\n", " ");
-        }
-        if (data.indexOf('\r') >= 0) {
-            data = data.replace("\r", " ");
-        }
-        return data;
     }
 }

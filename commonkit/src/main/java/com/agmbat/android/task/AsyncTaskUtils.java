@@ -8,6 +8,33 @@ import java.util.concurrent.RejectedExecutionException;
  */
 public class AsyncTaskUtils {
 
+    public static <Params, Progress, Result> AsyncTask<Params, Progress, Result> executeAsyncTask(
+            AsyncTask<Params, Progress, Result> asyncTask, Params... params) {
+        return executeAsyncTask(asyncTask, Priority.NORMAL, params);
+    }
+
+    public static <Params, Progress, Result> AsyncTask<Params, Progress, Result> executeAsyncTask(
+            AsyncTask<Params, Progress, Result> asyncTask, Priority priority, Params... params) {
+        try {
+            return asyncTask.executeOnExecutor(priority.mExecutor, params);
+        } catch (RejectedExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void executeRunnableAsync(final Runnable r, Priority priority) {
+        executeAsyncTask(new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                r.run();
+                return null;
+            }
+
+        }, priority);
+    }
+
     public static enum Priority {
         /**
          * Task will be executed on a low priority thread one by one.
@@ -27,33 +54,6 @@ public class AsyncTaskUtils {
         Priority(Executor executor) {
             mExecutor = executor;
         }
-    }
-
-    public static <Params, Progress, Result> AsyncTask<Params, Progress, Result> executeAsyncTask(
-            AsyncTask<Params, Progress, Result> asyncTask, Params...params) {
-        return executeAsyncTask(asyncTask, Priority.NORMAL, params);
-    }
-
-    public static <Params, Progress, Result> AsyncTask<Params, Progress, Result> executeAsyncTask(
-            AsyncTask<Params, Progress, Result> asyncTask, Priority priority, Params...params) {
-        try {
-            return asyncTask.executeOnExecutor(priority.mExecutor, params);
-        } catch (RejectedExecutionException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static void executeRunnableAsync(final Runnable r, Priority priority) {
-        executeAsyncTask(new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void...params) {
-                r.run();
-                return null;
-            }
-
-        }, priority);
     }
 
 }

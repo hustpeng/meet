@@ -105,9 +105,9 @@ public class PrivacyProvider implements IQProvider {
         String actionValue = parser.getAttributeValue("", "action");
         String orderValue = parser.getAttributeValue("", "order");
         String type = parser.getAttributeValue("", "type");
-        
-        /* 
-         * According the action value it sets the allow status. The fall-through action is assumed 
+
+        /*
+         * According the action value it sets the allow status. The fall-through action is assumed
          * to be "allow"
          */
         boolean allow = true;

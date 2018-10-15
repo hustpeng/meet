@@ -253,7 +253,7 @@ public class AppConfigUtils {
 
     public static boolean isGroupVibratorEnable(Context context, String myJid, String groupJid) {
         SharedPreferences preferences = getPreferences(context);
-        return preferences.getBoolean(KEY_GROUP_VIBRATOR_SWITCH + myJid + "_" + groupJid, true);
+        return preferences.getBoolean(KEY_GROUP_VIBRATOR_SWITCH + myJid + "_" + groupJid, false);
     }
 
     public static void setGroupVibratorEnable(Context context, String myJid, String groupJid, boolean enable) {

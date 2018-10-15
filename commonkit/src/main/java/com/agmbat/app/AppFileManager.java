@@ -1,6 +1,8 @@
 package com.agmbat.app;
 
-import java.io.File;
+import android.content.Context;
+import android.os.Environment;
+import android.text.TextUtils;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.android.utils.ApkUtils;
@@ -8,9 +10,7 @@ import com.agmbat.android.utils.StorageUtils;
 import com.agmbat.file.FileUtils;
 import com.agmbat.log.Log;
 
-import android.content.Context;
-import android.os.Environment;
-import android.text.TextUtils;
+import java.io.File;
 
 public class AppFileManager {
 
@@ -28,7 +28,7 @@ public class AppFileManager {
 
     /**
      * <pre class="prettyprint">
-     * <p>
+     *
      * public static File getDataCacheDir() {
      * return getExternalCacheDir("DataCache");
      * }
@@ -57,7 +57,7 @@ public class AppFileManager {
 
     /**
      * <pre class="prettyprint">
-     * <p>
+     *
      * public static File getTempDir() {
      * return getSdcardDir(DIR_TEMP);
      * }

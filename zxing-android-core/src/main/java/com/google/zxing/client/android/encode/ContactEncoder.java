@@ -29,19 +29,6 @@ import java.util.List;
 abstract class ContactEncoder {
 
     /**
-     * @return first, the best effort encoding of all data in the appropriate format; second, a
-     * display-appropriate version of the contact information
-     */
-    abstract String[] encode(List<String> names,
-                             String organization,
-                             List<String> addresses,
-                             List<String> phones,
-                             List<String> phoneTypes,
-                             List<String> emails,
-                             List<String> urls,
-                             String note);
-
-    /**
      * @return null if s is null or empty, or result of s.trim() otherwise
      */
     static String trim(String s) {
@@ -92,5 +79,18 @@ abstract class ContactEncoder {
             }
         }
     }
+
+    /**
+     * @return first, the best effort encoding of all data in the appropriate format; second, a
+     * display-appropriate version of the contact information
+     */
+    abstract String[] encode(List<String> names,
+                             String organization,
+                             List<String> addresses,
+                             List<String> phones,
+                             List<String> phoneTypes,
+                             List<String> emails,
+                             List<String> urls,
+                             String note);
 
 }

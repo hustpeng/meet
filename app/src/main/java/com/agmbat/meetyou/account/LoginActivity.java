@@ -46,7 +46,7 @@ public class LoginActivity extends FragmentActivity {
 
     private ISLoadingDialog mISLoadingDialog;
 
-    public static void launch(Context context){
+    public static void launch(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -143,26 +143,6 @@ public class LoginActivity extends FragmentActivity {
         });
     }
 
-
-    /**
-     * EditText监听器
-     */
-    private class TextChange implements TextWatcher {
-
-        @Override
-        public void afterTextChanged(Editable arg0) {
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence cs, int start, int before, int count) {
-            updateLoginButtonState();
-        }
-    }
-
     /**
      * 更新登陆Button状态
      */
@@ -191,6 +171,25 @@ public class LoginActivity extends FragmentActivity {
     private void hideLoadingDialog() {
         if (mISLoadingDialog != null) {
             mISLoadingDialog.dismiss();
+        }
+    }
+
+    /**
+     * EditText监听器
+     */
+    private class TextChange implements TextWatcher {
+
+        @Override
+        public void afterTextChanged(Editable arg0) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence cs, int start, int before, int count) {
+            updateLoginButtonState();
         }
     }
 }

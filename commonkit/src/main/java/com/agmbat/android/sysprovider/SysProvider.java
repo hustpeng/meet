@@ -15,15 +15,6 @@
  */
 package com.agmbat.android.sysprovider;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.agmbat.android.SystemManager;
-import com.agmbat.android.utils.AppUtils;
-
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -44,29 +35,23 @@ import android.provider.MediaStore.Video.VideoColumns;
 import android.util.Log;
 import android.view.View;
 
+import com.agmbat.android.SystemManager;
 import com.agmbat.android.image.BitmapUtils;
+import com.agmbat.android.utils.AppUtils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SysProvider {
 
-    private static final String TAG = SysProvider.class.getSimpleName();
-
-    private static final boolean LOAD_ALL_FOLDERS = true;
-
     public static final int CAMERA_BUCKET_ID = getBucketId(Environment.getExternalStorageDirectory().toString() + "/"
             + BucketNames.CAMERA);
-
+    private static final String TAG = SysProvider.class.getSimpleName();
+    private static final boolean LOAD_ALL_FOLDERS = true;
     private static final String CAMERA = "DCIM/Camera";
-
-    public interface OnLoadImageCallBack {
-        public void onLoad(LocalImage image);
-    }
-
-    public interface OnLoadVideoCallBack {
-        public void onLoad(LocalVideo video);
-    }
-
-    public interface OnLoadMediaItemCallBack extends OnLoadImageCallBack, OnLoadVideoCallBack {
-    }
 
     /**
      * And to convert the image URI to the direct file system path of the image file
@@ -497,6 +482,17 @@ public class SysProvider {
         Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         intent.setData(Uri.fromFile(file));
         context.sendBroadcast(intent);
+    }
+
+    public interface OnLoadImageCallBack {
+        public void onLoad(LocalImage image);
+    }
+
+    public interface OnLoadVideoCallBack {
+        public void onLoad(LocalVideo video);
+    }
+
+    public interface OnLoadMediaItemCallBack extends OnLoadImageCallBack, OnLoadVideoCallBack {
     }
 
 }

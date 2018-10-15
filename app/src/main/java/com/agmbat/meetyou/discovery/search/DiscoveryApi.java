@@ -14,12 +14,11 @@ import java.lang.reflect.Type;
  */
 public class DiscoveryApi {
 
-    private static final boolean ENABLE_MOCK = false;
-
     /**
      * 每页数据20
      */
     public static final int PAGE_SIZE = 20;
+    private static final boolean ENABLE_MOCK = false;
 
     /**
      * 附近的人(Nearby Users)

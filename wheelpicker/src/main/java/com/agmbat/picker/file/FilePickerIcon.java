@@ -5,26 +5,6 @@ package com.agmbat.picker.file;
  */
 public class FilePickerIcon {
 
-    public static byte[] getFILE() {
-        return FILE;
-    }
-
-    public static byte[] getFOLDER() {
-        return FOLDER;
-    }
-
-    public static byte[] getHOME() {
-        return HOME;
-    }
-
-    public static byte[] getUPDIR() {
-        return UPDIR;
-    }
-
-    public static byte[] getARROW() {
-        return ARROW;
-    }
-
     // fixed: 17-1-7 "static final" arrays should be "private"
     private static final byte[] FILE = {
             -119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 42,
@@ -276,5 +256,25 @@ public class FilePickerIcon {
             -43, 124, -113, 111, 22, -118, 50, -48, -1, 3, -4, -86, -109, -54, 10, 80, 17, -8, -1, 23,
             117, -112, 123, -53, 108, 41, 50, -44, -63, 109, -80, -19, 79, -78, 17, 39, 44, -102, 0, 0,
             0, 0, 73, 69, 78, 68, -82, 66, 96, -126};
+
+    public static byte[] getFILE() {
+        return FILE;
+    }
+
+    public static byte[] getFOLDER() {
+        return FOLDER;
+    }
+
+    public static byte[] getHOME() {
+        return HOME;
+    }
+
+    public static byte[] getUPDIR() {
+        return UPDIR;
+    }
+
+    public static byte[] getARROW() {
+        return ARROW;
+    }
 
 }

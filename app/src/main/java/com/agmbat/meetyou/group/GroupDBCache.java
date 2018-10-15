@@ -18,7 +18,7 @@ public class GroupDBCache {
      */
     public static void saveGroupCategories(List<GroupCategory> groupTags) {
         DbManager db = MeetDatabase.getInstance().getDatabase();
-        if(null == db){
+        if (null == db) {
             return;
         }
         try {

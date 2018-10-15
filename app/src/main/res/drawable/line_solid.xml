@@ -6,9 +6,9 @@
     <!--背景填充色-->
     <solid android:color="#ff959595" />
     <stroke
-         android:width="1px"
-         android:color="#000000"
-         android:dashWidth="5dp"
-         android:dashGap="0sp" />
+        android:width="1px"
+        android:color="#000000"
+        android:dashWidth="5dp"
+        android:dashGap="0sp" />
 
 </shape>

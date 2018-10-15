@@ -2,15 +2,15 @@
  * $RCSfile$
  * $Revision$
  * $Date$
- *
+ * <p>
  * Copyright 2003-2007 Jive Software.
- *
+ * <p>
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,14 +29,14 @@ import org.jivesoftware.smack.packet.Packet;
  * opposite approach to the functionality provided by a {@link PacketCollector}
  * which lets you block while waiting for results.
  *
- * @see Connection#addPacketListener(PacketListener, org.jivesoftware.smack.filter.PacketFilter)
  * @author Matt Tucker
+ * @see Connection#addPacketListener(PacketListener, org.jivesoftware.smack.filter.PacketFilter)
  */
 public interface PacketListener {
 
     /**
      * Process the next packet sent to this packet listener.<p>
-     *
+     * <p>
      * A single thread is responsible for invoking all listeners, so
      * it's very important that implementations of this method not block
      * for any extended period of time.

@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.favoritedme;
 
 import org.jivesoftware.smack.Connection;
@@ -23,36 +22,50 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class FavoritedMeManager extends Xepmodule {
 
+    public static final String FAVORITED_ME_NO_MORE = "no more";
     private static final int fetchFavoritedMe = 0;
-
+    private static final int FAVORITED_ME_PAGE_SIZE = 20;
+    private final List<FavoritedMeListener> listeners;
     private CacheStoreBase<FavoritedMeObject> cacheStorage;
     private FavoritedMeReadFlagStorage readFlagStorage;
-
-    private final List<FavoritedMeListener> listeners;
-
     private int currentFetchPage = 0;
+    private PacketFilter visitorMeMsgPacketFilter = new PacketFilter() {
 
-    private static final int FAVORITED_ME_PAGE_SIZE = 20;
-
-    public static final String FAVORITED_ME_NO_MORE = "no more";
-
-    public FavoritedMeManager(final Connection connection) {
-        this.xmppConnection = connection;
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-
-            @Override
-            public void connectionCreated(Connection connection) {
-                connection.addConnectionListener(myConnectionListener);
-                connection.addPacketListener(visitorMeMsgPacketListener, visitorMeMsgPacketFilter);
+        @Override
+        public boolean accept(Packet packet) {
+            if (!(packet instanceof Message)) {
+                return false;
             }
-        });
+            Message.Type messageType = ((Message) packet).getType();
+            return messageType == Message.Type.normal;
+        }
 
-        listeners = new CopyOnWriteArrayList<FavoritedMeListener>();
+    };
+    private PacketListener visitorMeMsgPacketListener = new PacketListener() {
 
-        cacheStorage = new CacheStoreBase<FavoritedMeObject>();
-        readFlagStorage = new FavoritedMeReadFlagStorage();
-    }
+        @Override
+        public void processPacket(Packet packet) {
 
+            Message message = (Message) packet;
+            if (("http://jabber.org/protocol/muc#verify".equals(message.getXmlns()))
+                    || ("http://jabber.org/protocol/muc#admin".equals(message.getXmlns()))
+                    || ("http://jabber.org/protocol/muc#hotcircle".equals(message.getXmlns()))
+                    || ("http://jabber.org/protocol/muc#owner".equals(message.getXmlns()))) {
+                return;
+            }
+            MessageRelationExtension extension = (MessageRelationExtension) message.getExtension(
+                    MessageRelationProvider.elementName(), MessageRelationProvider.namespace());
+            if (!"fanme".equals(extension.getType())) {
+                return;
+            }
+            if ("add".equals(extension.getAction())) {
+                addFavoritedMeReadFlag(message.getFrom());
+            } else if ("remove".equals(extension.getAction())) {
+                removeFavoritedMeReadFlag(message.getFrom());
+            }
+
+        }
+    };
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {
@@ -71,6 +84,23 @@ public class FavoritedMeManager extends Xepmodule {
             xmppConnection.removePacketListener(visitorMeMsgPacketListener);
         }
     };
+
+    public FavoritedMeManager(final Connection connection) {
+        this.xmppConnection = connection;
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(myConnectionListener);
+                connection.addPacketListener(visitorMeMsgPacketListener, visitorMeMsgPacketFilter);
+            }
+        });
+
+        listeners = new CopyOnWriteArrayList<FavoritedMeListener>();
+
+        cacheStorage = new CacheStoreBase<FavoritedMeObject>();
+        readFlagStorage = new FavoritedMeReadFlagStorage();
+    }
 
     @Override
     protected void finalize() throws Throwable {
@@ -178,71 +208,6 @@ public class FavoritedMeManager extends Xepmodule {
         notifyNewFavoritedMe();
     }
 
-    public class fetchFavoritedMePacket extends IQ {
-        private final int startIndex;
-        private final int pageSize;
-
-        public fetchFavoritedMePacket(int aStartIndex, int aPageSize) {
-            // TODO Auto-generated constructor stub
-            startIndex = aStartIndex;
-            pageSize = aPageSize;
-        }
-
-        public String getChildElementXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<");
-            buf.append(FavoritedMeProvider.elementName());
-            buf.append(" xmlns=\"");
-            buf.append(FavoritedMeProvider.namespace());
-            buf.append("\"");
-            buf.append(" startindex=\"");
-            buf.append(startIndex);
-            buf.append("\" pagesize=\"");
-            buf.append(pageSize);
-            buf.append("\"/>");
-            return buf.toString();
-        }
-    }
-
-    private PacketFilter visitorMeMsgPacketFilter = new PacketFilter() {
-
-        @Override
-        public boolean accept(Packet packet) {
-            if (!(packet instanceof Message)) {
-                return false;
-            }
-            Message.Type messageType = ((Message) packet).getType();
-            return messageType == Message.Type.normal;
-        }
-
-    };
-
-    private PacketListener visitorMeMsgPacketListener = new PacketListener() {
-
-        @Override
-        public void processPacket(Packet packet) {
-
-            Message message = (Message) packet;
-            if (("http://jabber.org/protocol/muc#verify".equals(message.getXmlns()))
-                    || ("http://jabber.org/protocol/muc#admin".equals(message.getXmlns()))
-                    || ("http://jabber.org/protocol/muc#hotcircle".equals(message.getXmlns()))
-                    || ("http://jabber.org/protocol/muc#owner".equals(message.getXmlns()))) {
-                return;
-            }
-            MessageRelationExtension extension = (MessageRelationExtension) message.getExtension(
-                    MessageRelationProvider.elementName(), MessageRelationProvider.namespace());
-            if (!"fanme".equals(extension.getType())) {
-                return;
-            }
-            if ("add".equals(extension.getAction())) {
-                addFavoritedMeReadFlag(message.getFrom());
-            } else if ("remove".equals(extension.getAction())) {
-                removeFavoritedMeReadFlag(message.getFrom());
-            }
-
-        }
-    };
-
     /**
      * arraylist中是FavoritedMeObject对象
      *
@@ -280,6 +245,32 @@ public class FavoritedMeManager extends Xepmodule {
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
+    }
+
+    public class fetchFavoritedMePacket extends IQ {
+        private final int startIndex;
+        private final int pageSize;
+
+        public fetchFavoritedMePacket(int aStartIndex, int aPageSize) {
+            // TODO Auto-generated constructor stub
+            startIndex = aStartIndex;
+            pageSize = aPageSize;
+        }
+
+        public String getChildElementXML() {
+            StringBuilder buf = new StringBuilder();
+            buf.append("<");
+            buf.append(FavoritedMeProvider.elementName());
+            buf.append(" xmlns=\"");
+            buf.append(FavoritedMeProvider.namespace());
+            buf.append("\"");
+            buf.append(" startindex=\"");
+            buf.append(startIndex);
+            buf.append("\" pagesize=\"");
+            buf.append(pageSize);
+            buf.append("\"/>");
+            return buf.toString();
+        }
     }
 
     private class FavoritedMeResultListener implements PacketListener {

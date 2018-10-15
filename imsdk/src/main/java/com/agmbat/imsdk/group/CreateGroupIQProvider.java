@@ -35,9 +35,9 @@ public class CreateGroupIQProvider implements IQProvider {
                 }
             }
         }
-        if(hasCircle){
+        if (hasCircle) {
             return createGroupResultIQ;
-        }else{
+        } else {
             return updateGroupReply;
         }
 

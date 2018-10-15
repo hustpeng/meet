@@ -16,15 +16,13 @@
 
 package com.google.zxing.client.android.encode;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.telephony.PhoneNumberUtils;
+import android.util.Log;
 
 import com.agmbat.android.AppResources;
 import com.agmbat.android.SystemManager;
@@ -41,13 +39,15 @@ import com.google.zxing.client.result.ParsedResult;
 import com.google.zxing.client.result.ResultParser;
 import com.google.zxing.common.BitMatrix;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.telephony.PhoneNumberUtils;
-import android.util.Log;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -61,13 +61,12 @@ public final class QRCodeEncoder {
 
     private static final int WHITE = 0xFFFFFFFF;
     private static final int BLACK = 0xFF000000;
-
+    private final int dimension;
+    private final boolean useVCard;
     private String contents;
     private String displayContents;
     private String title;
     private BarcodeFormat format;
-    private final int dimension;
-    private final boolean useVCard;
 
     QRCodeEncoder(Intent intent, int dimension, boolean useVCard) throws WriterException {
         this.dimension = dimension;
@@ -78,6 +77,69 @@ public final class QRCodeEncoder {
         } else if (action.equals(Intent.ACTION_SEND)) {
             encodeContentsFromShareIntent(intent);
         }
+    }
+
+    private static List<String> getAllBundleValues(Bundle bundle, String[] keys) {
+        List<String> values = new ArrayList<>(keys.length);
+        for (String key : keys) {
+            Object value = bundle.get(key);
+            values.add(value == null ? null : value.toString());
+        }
+        return values;
+    }
+
+    private static List<String> toList(String[] values) {
+        return values == null ? null : Arrays.asList(values);
+    }
+
+    private static String guessAppropriateEncoding(CharSequence contents) {
+        // Very crude at the moment
+        for (int i = 0; i < contents.length(); i++) {
+            if (contents.charAt(i) > 0xFF) {
+                return "UTF-8";
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 将文本编码成二维码图片
+     *
+     * @param text
+     * @return
+     */
+    public static Bitmap encode(String text, int dimension) {
+        if (text == null) {
+            return null;
+        }
+        Map<EncodeHintType, Object> hints = null;
+        String encoding = guessAppropriateEncoding(text);
+        if (encoding != null) {
+            hints = new EnumMap<>(EncodeHintType.class);
+            hints.put(EncodeHintType.CHARACTER_SET, encoding);
+        }
+        try {
+            BarcodeFormat format = BarcodeFormat.QR_CODE;
+            BitMatrix result = new MultiFormatWriter().encode(text, format, dimension, dimension, hints);
+            int width = result.getWidth();
+            int height = result.getHeight();
+            int[] pixels = new int[width * height];
+            for (int y = 0; y < height; y++) {
+                int offset = y * width;
+                for (int x = 0; x < width; x++) {
+                    pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+                }
+            }
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+            return bitmap;
+        } catch (IllegalArgumentException iae) {
+            // Unsupported format
+        } catch (WriterException e) {
+            e.printStackTrace();
+
+        }
+        return null;
     }
 
     String getContents() {
@@ -309,15 +371,6 @@ public final class QRCodeEncoder {
         }
     }
 
-    private static List<String> getAllBundleValues(Bundle bundle, String[] keys) {
-        List<String> values = new ArrayList<>(keys.length);
-        for (String key : keys) {
-            Object value = bundle.get(key);
-            values.add(value == null ? null : value.toString());
-        }
-        return values;
-    }
-
     private void encodeQRCodeContents(AddressBookParsedResult contact) {
         ContactEncoder encoder = useVCard ? new VCardContactEncoder() : new MECARDContactEncoder();
         String[] encoded =
@@ -332,62 +385,8 @@ public final class QRCodeEncoder {
         }
     }
 
-    private static List<String> toList(String[] values) {
-        return values == null ? null : Arrays.asList(values);
-    }
-
     Bitmap encodeAsBitmap() {
         return encode(contents, dimension);
-    }
-
-    private static String guessAppropriateEncoding(CharSequence contents) {
-        // Very crude at the moment
-        for (int i = 0; i < contents.length(); i++) {
-            if (contents.charAt(i) > 0xFF) {
-                return "UTF-8";
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 将文本编码成二维码图片
-     *
-     * @param text
-     * @return
-     */
-    public static Bitmap encode(String text, int dimension) {
-        if (text == null) {
-            return null;
-        }
-        Map<EncodeHintType, Object> hints = null;
-        String encoding = guessAppropriateEncoding(text);
-        if (encoding != null) {
-            hints = new EnumMap<>(EncodeHintType.class);
-            hints.put(EncodeHintType.CHARACTER_SET, encoding);
-        }
-        try {
-            BarcodeFormat format = BarcodeFormat.QR_CODE;
-            BitMatrix result = new MultiFormatWriter().encode(text, format, dimension, dimension, hints);
-            int width = result.getWidth();
-            int height = result.getHeight();
-            int[] pixels = new int[width * height];
-            for (int y = 0; y < height; y++) {
-                int offset = y * width;
-                for (int x = 0; x < width; x++) {
-                    pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
-                }
-            }
-            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-            return bitmap;
-        } catch (IllegalArgumentException iae) {
-            // Unsupported format
-        } catch (WriterException e) {
-            e.printStackTrace();
-
-        }
-        return null;
     }
 
 }

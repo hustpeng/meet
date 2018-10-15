@@ -4,17 +4,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.agmbat.android.utils.KeyboardUtils;
 import com.agmbat.android.utils.ToastUtil;
-import com.agmbat.android.utils.ViewUtils;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.account.ImAccountManager;
+import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.meetyou.R;
 
 import butterknife.BindView;

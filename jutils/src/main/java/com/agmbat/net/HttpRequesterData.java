@@ -92,38 +92,6 @@ public class HttpRequesterData {
     }
 
     /**
-     * 获取Url
-     *
-     * @return
-     */
-    public String getUrl() {
-        if (StringUtils.isEmpty(mBaseUrl)) {
-            return mUrl;
-        }
-        String query = encodeParams(mUrlParams, mUrlEncoding);
-        if (StringUtils.isEmpty(query)) {
-            return mBaseUrl;
-        }
-        return mBaseUrl + "?" + query;
-    }
-
-    /**
-     * 获取post entity
-     *
-     * @return
-     */
-    public byte[] getEntity() {
-        if (mEntity != null) {
-            return mEntity;
-        }
-        if (mPostParams.size() > 0) {
-            String params = encodeParams(mPostParams, DEFAULT_CHARSET);
-            return StringUtils.getUtf8Bytes(params);
-        }
-        return null;
-    }
-
-    /**
      * Url编码参数
      *
      * @param params 参数建议使用LinkedHashMap, 保证拼接的顺序
@@ -154,5 +122,37 @@ public class HttpRequesterData {
             e.printStackTrace();
         }
         return "";
+    }
+
+    /**
+     * 获取Url
+     *
+     * @return
+     */
+    public String getUrl() {
+        if (StringUtils.isEmpty(mBaseUrl)) {
+            return mUrl;
+        }
+        String query = encodeParams(mUrlParams, mUrlEncoding);
+        if (StringUtils.isEmpty(query)) {
+            return mBaseUrl;
+        }
+        return mBaseUrl + "?" + query;
+    }
+
+    /**
+     * 获取post entity
+     *
+     * @return
+     */
+    public byte[] getEntity() {
+        if (mEntity != null) {
+            return mEntity;
+        }
+        if (mPostParams.size() > 0) {
+            String params = encodeParams(mPostParams, DEFAULT_CHARSET);
+            return StringUtils.getUtf8Bytes(params);
+        }
+        return null;
     }
 }

@@ -16,14 +16,14 @@
  */
 package de.measite.smack;
 
-import java.util.Map;
-
 import com.novell.sasl.client.DigestMD5SaslClient;
 
 import org.apache.harmony.javax.security.auth.callback.CallbackHandler;
 import org.apache.harmony.javax.security.sasl.SaslClient;
 import org.apache.harmony.javax.security.sasl.SaslException;
 import org.apache.qpid.management.common.sasl.PlainSaslClient;
+
+import java.util.Map;
 
 public class SaslClientFactory implements
         org.apache.harmony.javax.security.sasl.SaslClientFactory {

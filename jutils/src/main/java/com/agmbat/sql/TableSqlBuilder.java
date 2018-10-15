@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * sql
  *
  * @author mayimchen
@@ -28,7 +28,7 @@ public class TableSqlBuilder {
         mBuilder = new StringBuilder();
     }
 
-    public TableSqlBuilder addColumn(String columnName, String dataType, String...params) {
+    public TableSqlBuilder addColumn(String columnName, String dataType, String... params) {
         if (mBuilder.length() > 0) {
             mBuilder.append(',');
         }
@@ -45,7 +45,7 @@ public class TableSqlBuilder {
         return this;
     }
 
-    public TableSqlBuilder primaryKey(String...columns) {
+    public TableSqlBuilder primaryKey(String... columns) {
         StringBuilder builder = new StringBuilder();
         for (String column : columns) {
             if (builder.length() > 0) {

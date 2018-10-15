@@ -44,21 +44,10 @@ public final class HttpHelper {
     private HttpHelper() {
     }
 
-    public enum ContentType {
-        /** HTML-like content type, including HTML, XHTML, etc. */
-        HTML,
-        /** JSON content */
-        JSON,
-        /** XML */
-        XML,
-        /** Plain text content */
-        TEXT,
-    }
-
     /**
      * Downloads the entire resource instead of part.
      *
-     * @param uri URI to retrieve
+     * @param uri  URI to retrieve
      * @param type expected text-like MIME type of that content
      * @return content as a {@code String}
      * @throws IOException if the content can't be retrieved because of a bad URI, network problem, etc.
@@ -69,8 +58,8 @@ public final class HttpHelper {
     }
 
     /**
-     * @param uri URI to retrieve
-     * @param type expected text-like MIME type of that content
+     * @param uri      URI to retrieve
+     * @param type     expected text-like MIME type of that content
      * @param maxChars approximate maximum characters to read from the source
      * @return content as a {@code String}
      * @throws IOException if the content can't be retrieved because of a bad URI, network problem, etc.
@@ -221,6 +210,25 @@ public final class HttpHelper {
             // this is maybe this Android bug: http://code.google.com/p/android/issues/detail?id=15554
             throw new IOException(e);
         }
+    }
+
+    public enum ContentType {
+        /**
+         * HTML-like content type, including HTML, XHTML, etc.
+         */
+        HTML,
+        /**
+         * JSON content
+         */
+        JSON,
+        /**
+         * XML
+         */
+        XML,
+        /**
+         * Plain text content
+         */
+        TEXT,
     }
 
 }

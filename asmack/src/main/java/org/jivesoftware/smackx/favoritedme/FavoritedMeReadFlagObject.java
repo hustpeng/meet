@@ -2,15 +2,15 @@
  * $RCSfile$
  * $Revision$
  * $Date$
- *
+ * <p>
  * Copyright 2003-2007 Jive Software.
- *
+ * <p>
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@
 package org.jivesoftware.smackx.favoritedme;
 
 
-public class FavoritedMeReadFlagObject{
+public class FavoritedMeReadFlagObject {
 
     private String jid;
     private long create_date;
@@ -29,6 +29,7 @@ public class FavoritedMeReadFlagObject{
     public String getJid() {
         return jid;
     }
+
     public void setJid(String jid) {
         this.jid = jid;
     }
@@ -36,6 +37,7 @@ public class FavoritedMeReadFlagObject{
     public long getCreate_date() {
         return create_date;
     }
+
     public void setCreate_date(long create_date) {
         this.create_date = create_date;
     }

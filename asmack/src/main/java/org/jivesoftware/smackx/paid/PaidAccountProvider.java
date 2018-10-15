@@ -1,12 +1,11 @@
-
 package org.jivesoftware.smackx.paid;
+
+import android.net.ParseException;
+import android.text.TextUtils;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
-
-import android.net.ParseException;
-import android.text.TextUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,13 +15,11 @@ public class PaidAccountProvider implements IQProvider {
     public PaidAccountProvider() {
     }
 
-    public static String elementName()
-    {
+    public static String elementName() {
         return "query";
     }
 
-    public static String namespace()
-    {
+    public static String namespace() {
         return "http://jabber.org/protocol/vip#profile";
     }
 
@@ -38,13 +35,12 @@ public class PaidAccountProvider implements IQProvider {
 
                 if ("coins".equals(parserName)) {
                     item.setCoins(Integer.valueOf(parser.getAttributeValue("", "balance")));
-                }
-                else if ("subcription".equals(parserName)) {
+                } else if ("subcription".equals(parserName)) {
                     item.setSubscriptionVaild(!"true".equals(parser.getAttributeValue("", "expired")));
 
                     String subscriptiontime = parser.getAttributeValue("", "expireddate");
                     if (!TextUtils.isEmpty(subscriptiontime)) {
-                        SimpleDateFormat  format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
                         try {
                             Date date = format.parse(subscriptiontime);
                             item.setSubscriptionTime(date);
@@ -53,8 +49,7 @@ public class PaidAccountProvider implements IQProvider {
                         }
                     }
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.END_TAG) {
                 if (elementName().equals(parser.getName())) {
                     done = true;
                 }

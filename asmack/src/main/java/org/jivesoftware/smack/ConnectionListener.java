@@ -24,10 +24,9 @@ package org.jivesoftware.smack;
  * Interface that allows for implementing classes to listen for connection closing
  * and reconnection events. Listeners are registered with Connection objects.
  *
+ * @author Matt Tucker
  * @see Connection#addConnectionListener
  * @see Connection#removeConnectionListener
- *
- * @author Matt Tucker
  */
 public interface ConnectionListener {
     public void loginSuccessful();

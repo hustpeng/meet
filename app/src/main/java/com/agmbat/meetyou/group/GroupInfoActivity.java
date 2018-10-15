@@ -97,6 +97,76 @@ public class GroupInfoActivity extends Activity {
 
     private String mGroupJid;
     private GroupInfo mGroupInfo;
+    private PacketListener mJoinGroupListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof JoinGroupReply) {
+                JoinGroupReply joinGroupReply = (JoinGroupReply) packet;
+                EventBus.getDefault().post(joinGroupReply);
+            }
+        }
+    };
+    private PacketListener mQuitGroupListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof QuitGroupReplay) {
+                QuitGroupReplay quitGroupReplay = (QuitGroupReplay) packet;
+                if (quitGroupReplay.isSuccess()) {
+                    ToastUtil.showToast("退群成功");
+                    EventBus.getDefault().post(new RemoveGroupEvent(mGroupJid));
+                } else {
+                    ToastUtil.showToast("退群失败，请重试");
+                }
+            }
+        }
+    };
+    private PacketListener mDismissGroupListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof DismissGroupReply) {
+                DismissGroupReply dismissGroupReply = (DismissGroupReply) packet;
+                if (dismissGroupReply.isSuccess()) {
+                    ToastUtil.showToast("解散群成功");
+                    EventBus.getDefault().post(new RemoveGroupEvent(mGroupJid));
+                } else {
+                    ToastUtil.showToast("解散群失败，请重试");
+                }
+            }
+        }
+    };
+    private PacketListener mQueryGroupInfoListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof QueryGroupInfoResultIQ) {
+                QueryGroupInfoResultIQ result = (QueryGroupInfoResultIQ) packet;
+                GroupInfo groupInfo = new GroupInfo();
+                groupInfo.categoryName = result.getCategory();
+                groupInfo.cover = result.getAvatar();
+                groupInfo.description = result.getDescription();
+                groupInfo.jid = result.getGroupJid();
+                groupInfo.ownerJid = result.getOwner();
+                groupInfo.ownerName = result.getOwnerNickName();
+                groupInfo.name = result.getName();
+                groupInfo.memberNum = result.getMembers();
+                groupInfo.isGroupMember = result.isGroupMember();
+                groupInfo.groupNickname = result.getGroupNickName();
+                EventBus.getDefault().post(groupInfo);
+            }
+        }
+    };
+    private PacketListener mChangeGroupNicknameListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof ChangeGroupNicknameReply) {
+                ChangeGroupNicknameReply reply = (ChangeGroupNicknameReply) packet;
+                if (reply.isSuccess()) {
+                    ToastUtil.showToast("群昵称修改成功");
+                } else {
+                    ToastUtil.showToast("群昵称修改失败");
+                }
+            }
+        }
+    };
 
     public static void launch(Context context, GroupInfo groupInfo) {
         Intent intent = new Intent(context, GroupInfoActivity.class);
@@ -135,7 +205,7 @@ public class GroupInfoActivity extends Activity {
         }
 
         final String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
-        mVibratorSwitch.setChecked(AppConfigUtils.isGroupVibratorEnable(getBaseContext(), myJid , mGroupJid));
+        mVibratorSwitch.setChecked(AppConfigUtils.isGroupVibratorEnable(getBaseContext(), myJid, mGroupJid));
         mVibratorSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -153,75 +223,12 @@ public class GroupInfoActivity extends Activity {
         XMPPManager.getInstance().getXmppConnection().sendPacket(queryGroupInfoIQ);
     }
 
-    private PacketListener mJoinGroupListener = new PacketListener() {
-        @Override
-        public void processPacket(Packet packet) {
-            if (packet instanceof JoinGroupReply) {
-                JoinGroupReply joinGroupReply = (JoinGroupReply) packet;
-                EventBus.getDefault().post(joinGroupReply);
-            }
-        }
-    };
-
-    private PacketListener mQuitGroupListener = new PacketListener() {
-        @Override
-        public void processPacket(Packet packet) {
-            if (packet instanceof QuitGroupReplay) {
-                QuitGroupReplay quitGroupReplay = (QuitGroupReplay) packet;
-                if (quitGroupReplay.isSuccess()) {
-                    ToastUtil.showToast("退群成功");
-                    EventBus.getDefault().post(new RemoveGroupEvent(mGroupJid));
-                } else {
-                    ToastUtil.showToast("退群失败，请重试");
-                }
-            }
-        }
-    };
-
-    private PacketListener mDismissGroupListener = new PacketListener() {
-        @Override
-        public void processPacket(Packet packet) {
-            if (packet instanceof DismissGroupReply) {
-                DismissGroupReply dismissGroupReply = (DismissGroupReply) packet;
-                if (dismissGroupReply.isSuccess()) {
-                    ToastUtil.showToast("解散群成功");
-                    EventBus.getDefault().post(new RemoveGroupEvent(mGroupJid));
-                } else {
-                    ToastUtil.showToast("解散群失败，请重试");
-                }
-            }
-        }
-    };
-
-
-    private PacketListener mQueryGroupInfoListener = new PacketListener() {
-        @Override
-        public void processPacket(Packet packet) {
-            if (packet instanceof QueryGroupInfoResultIQ) {
-                QueryGroupInfoResultIQ result = (QueryGroupInfoResultIQ) packet;
-                GroupInfo groupInfo = new GroupInfo();
-                groupInfo.categoryName = result.getCategory();
-                groupInfo.cover = result.getAvatar();
-                groupInfo.description = result.getDescription();
-                groupInfo.jid = result.getGroupJid();
-                groupInfo.ownerJid = result.getOwner();
-                groupInfo.ownerName = result.getOwnerNickName();
-                groupInfo.name = result.getName();
-                groupInfo.memberNum = result.getMembers();
-                groupInfo.isGroupMember = result.isGroupMember();
-                groupInfo.groupNickname = result.getGroupNickName();
-                EventBus.getDefault().post(groupInfo);
-            }
-        }
-    };
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(GroupInfo result) {
         Log.d("Rcv group info: " + result.toString());
         mGroupInfo = result;
         setupViews(mGroupInfo);
     }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(JoinGroupReply joinGroupReply) {
@@ -293,12 +300,12 @@ public class GroupInfoActivity extends Activity {
     }
 
     @OnClick(R.id.item_vibrator_switch)
-    void onClickVibratorSwitch(){
+    void onClickVibratorSwitch() {
         mVibratorSwitch.setChecked(!mVibratorSwitch.isChecked());
     }
 
     @OnClick(R.id.item_group_nickname)
-    void onClickGroupNickname(){
+    void onClickGroupNickname() {
         final String originRemark = mGroupNickNameTv.getText().toString();
         final EditText aliasInput = new EditText(this);
         aliasInput.setText(originRemark);
@@ -323,22 +330,6 @@ public class GroupInfoActivity extends Activity {
         });
         builder.show();
     }
-
-
-
-    private PacketListener mChangeGroupNicknameListener = new PacketListener() {
-        @Override
-        public void processPacket(Packet packet) {
-            if (packet instanceof ChangeGroupNicknameReply) {
-                ChangeGroupNicknameReply reply = (ChangeGroupNicknameReply) packet;
-                if(reply.isSuccess()){
-                    ToastUtil.showToast("群昵称修改成功");
-                }else{
-                    ToastUtil.showToast("群昵称修改失败");
-                }
-            }
-        }
-    };
 
     private void setupViews(GroupInfo groupInfo) {
         ImageManager.displayImage(groupInfo.cover, mAvatarView, AvatarHelper.getGroupOptions());

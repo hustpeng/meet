@@ -36,6 +36,7 @@ public class DefXhsEmoticons implements EmojiResProvider, EmojiDisplayProcessor 
      * 使用linkedHashMap,保证顺序
      */
     static final HashMap<String, String> sXhsEmoticonHashMap = new LinkedHashMap<>();
+    private static final Pattern XHS_RANGE = Pattern.compile("\\[[a-zA-Z0-9\\u4e00-\\u9fa5]+\\]");
 
     static {
         sXhsEmoticonHashMap.put("[无语]", "emoji/xhsemoji/xhsemoji_1.png");
@@ -61,12 +62,26 @@ public class DefXhsEmoticons implements EmojiResProvider, EmojiDisplayProcessor 
         sXhsEmoticonHashMap.put("[嘻嘻]", "emoji/xhsemoji/xhsemoji_21.png");
     }
 
-    private static final Pattern XHS_RANGE = Pattern.compile("\\[[a-zA-Z0-9\\u4e00-\\u9fa5]+\\]");
-
     private static Matcher getMatcher(CharSequence matchStr) {
         return XHS_RANGE.matcher(matchStr);
     }
 
+    /**
+     * 获取emoji list
+     *
+     * @return
+     */
+    public static List<EmojiBean> getEmojiList() {
+        List<EmojiBean> emojis = new ArrayList<>();
+        Set<Map.Entry<String, String>> entries = sXhsEmoticonHashMap.entrySet();
+        for (Map.Entry<String, String> key : entries) {
+            String path = key.getValue();
+            EmojiBean bean = new EmojiBean(path, key.getKey());
+            bean.setIconUri(Scheme.wrapUri("assets", path));
+            emojis.add(bean);
+        }
+        return emojis;
+    }
 
     /**
      * 获取表情
@@ -92,7 +107,6 @@ public class DefXhsEmoticons implements EmojiResProvider, EmojiDisplayProcessor 
         return xhsPageSetEntity;
     }
 
-
     @Override
     public EmoticonFilter getEmoticonFilter(EditText editText) {
         return new XhsFilter(editText);
@@ -102,24 +116,6 @@ public class DefXhsEmoticons implements EmojiResProvider, EmojiDisplayProcessor 
     public EmojiDisplayProcessor getEmojiDisplayProcessor() {
         return this;
     }
-
-    /**
-     * 获取emoji list
-     *
-     * @return
-     */
-    public static List<EmojiBean> getEmojiList() {
-        List<EmojiBean> emojis = new ArrayList<>();
-        Set<Map.Entry<String, String>> entries = sXhsEmoticonHashMap.entrySet();
-        for (Map.Entry<String, String> key : entries) {
-            String path = key.getValue();
-            EmojiBean bean = new EmojiBean(path, key.getKey());
-            bean.setIconUri(Scheme.wrapUri("assets", path));
-            emojis.add(bean);
-        }
-        return emojis;
-    }
-
 
     @Override
     public void spannableFilter(Spannable spannable, CharSequence text, int fontSize) {

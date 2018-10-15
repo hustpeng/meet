@@ -22,26 +22,6 @@ public class VCardProvider implements IQProvider {
         return "vcard-temp";
     }
 
-    @Override
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
-        VCardPacket packet = new VCardPacket();
-        VCardObject item = new VCardObject();
-        boolean done = false;
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                String parserName = parser.getName();
-                parseField(item, parserName, parser);
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if ("vCard".equals(parser.getName())) {
-                    done = true;
-                }
-            }
-        }
-        packet.setObject(item);
-        return packet;
-    }
-
     /**
      * 解析字段
      *
@@ -70,5 +50,25 @@ public class VCardProvider implements IQProvider {
         } else if ("STATUS".equals(parserName)) {
             item.setStatus(parser.nextText());
         }
+    }
+
+    @Override
+    public IQ parseIQ(XmlPullParser parser) throws Exception {
+        VCardPacket packet = new VCardPacket();
+        VCardObject item = new VCardObject();
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == XmlPullParser.START_TAG) {
+                String parserName = parser.getName();
+                parseField(item, parserName, parser);
+            } else if (eventType == XmlPullParser.END_TAG) {
+                if ("vCard".equals(parser.getName())) {
+                    done = true;
+                }
+            }
+        }
+        packet.setObject(item);
+        return packet;
     }
 }

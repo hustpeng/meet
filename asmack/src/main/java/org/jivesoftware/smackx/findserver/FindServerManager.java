@@ -20,19 +20,6 @@ public class FindServerManager extends Xepmodule {
     //private final static int setMyVCardExtend = 1;
 
     private final List<FindServerListener> findServerListeners;
-
-    public FindServerManager(final Connection connection) {
-        this.xmppConnection = connection;
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-
-            @Override
-            public void connectionCreated(Connection connection) {
-                connection.addConnectionListener(myConnectionListener);
-            }
-        });
-        findServerListeners = new CopyOnWriteArrayList<FindServerListener>();
-    }
-
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {
@@ -49,6 +36,18 @@ public class FindServerManager extends Xepmodule {
             abortAllQuery();
         }
     };
+
+    public FindServerManager(final Connection connection) {
+        this.xmppConnection = connection;
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(myConnectionListener);
+            }
+        });
+        findServerListeners = new CopyOnWriteArrayList<FindServerListener>();
+    }
 
     public void addListener(FindServerListener findServerListener) {
         if (!findServerListeners.contains(findServerListener)) {
@@ -127,17 +126,6 @@ public class FindServerManager extends Xepmodule {
         xmppConnection.sendPacket(packet);
     }
 
-    private class FindServerResultListener implements PacketListener {
-        public void processPacket(Packet packet) {
-            String packetIdString = packet.getPacketID();
-            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
-            if (queryInfo != null) {
-                removeQueryInfo(queryInfo, packetIdString);
-                processQueryResponse(packet, queryInfo);
-            }
-        }
-    }
-
     public void sendReport(String jid, String reportCategory, String reportContent) {
         if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
             return;
@@ -156,6 +144,17 @@ public class FindServerManager extends Xepmodule {
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
+    }
+
+    private class FindServerResultListener implements PacketListener {
+        public void processPacket(Packet packet) {
+            String packetIdString = packet.getPacketID();
+            XepQueryInfo queryInfo = getQueryInfo(packetIdString);
+            if (queryInfo != null) {
+                removeQueryInfo(queryInfo, packetIdString);
+                processQueryResponse(packet, queryInfo);
+            }
+        }
     }
 
     private class sendReportResultListener implements PacketListener {

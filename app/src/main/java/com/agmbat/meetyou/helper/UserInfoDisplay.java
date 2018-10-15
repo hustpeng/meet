@@ -31,6 +31,7 @@ public class UserInfoDisplay {
 
     /**
      * 获取用户认证状态图标
+     *
      * @param authStatus
      * @return
      */

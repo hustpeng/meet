@@ -67,16 +67,6 @@ public abstract class ResultParser {
     private static final Pattern EQUALS = Pattern.compile("=");
     private static final String BYTE_ORDER_MARK = "\ufeff";
 
-    /**
-     * Attempts to parse the raw {@link Result}'s contents as a particular type
-     * of information (email, URL, etc.) and return a {@link ParsedResult} encapsulating
-     * the result of parsing.
-     *
-     * @param theResult the raw {@link Result} to parse
-     * @return {@link ParsedResult} encapsulating the parsing result
-     */
-    public abstract ParsedResult parse(Result theResult);
-
     protected static String getMassagedText(Result result) {
         String text = result.getText();
         if (text.startsWith(BYTE_ORDER_MARK)) {
@@ -255,5 +245,15 @@ public abstract class ResultParser {
         String[] matches = matchPrefixedField(prefix, rawText, endChar, trim);
         return matches == null ? null : matches[0];
     }
+
+    /**
+     * Attempts to parse the raw {@link Result}'s contents as a particular type
+     * of information (email, URL, etc.) and return a {@link ParsedResult} encapsulating
+     * the result of parsing.
+     *
+     * @param theResult the raw {@link Result} to parse
+     * @return {@link ParsedResult} encapsulating the parsing result
+     */
+    public abstract ParsedResult parse(Result theResult);
 
 }

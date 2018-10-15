@@ -25,11 +25,8 @@ public class VCardManager extends Xepmodule {
 
     private final static int fetchVCard = 0;
     private final static int setMyVCard = 1;
-
-    private CacheStoreBase<VCardObject> cacheStorage;
-
     private final List<VCardListener> listeners;
-
+    private CacheStoreBase<VCardObject> cacheStorage;
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {

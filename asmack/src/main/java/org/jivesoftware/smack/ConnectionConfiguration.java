@@ -39,16 +39,16 @@ import javax.net.ssl.SSLContext;
  */
 public class ConnectionConfiguration implements Cloneable {
 
+    // Holds the proxy information (such as proxyhost, proxyport, username, password etc)
+    protected ProxyInfo proxy;
     /**
      * Hostname of the XMPP server. Usually servers use the same service name as the name
      * of the server. However, there are some servers like google where host would be
      * talk.google.com and the serviceName would be gmail.com.
      */
     private String serviceName;
-
     private String host;
     private int port;
-
     private String truststorePath;
     private String truststoreType;
     private String truststorePassword;
@@ -64,23 +64,17 @@ public class ConnectionConfiguration implements Cloneable {
     private boolean enableEntityCaps = true;
     private String capsNode = null;
     private SSLContext customSSLContext;
-
     private boolean compressionEnabled = false;
-
     private boolean saslAuthenticationEnabled = true;
     /**
      * Used to get information from the user
      */
     private CallbackHandler callbackHandler;
-
     private boolean debuggerEnabled = Connection.DEBUG_ENABLED;
-
     // Flag that indicates if a reconnection should be attempted when abruptly disconnected
     private boolean reconnectionAllowed = true;
-
     // Holds the socket factory that is used to generate the socket in the connection
     private SocketFactory socketFactory;
-
     // Holds the authentication information for future reconnections
     private String username;
     private String password;
@@ -89,14 +83,11 @@ public class ConnectionConfiguration implements Cloneable {
     private boolean rosterLoadedAtLogin = true;
     private SecurityMode securityMode = SecurityMode.enabled;
 
-    // Holds the proxy information (such as proxyhost, proxyport, username, password etc)
-    protected ProxyInfo proxy;
-
     /**
      *
      */
     protected ConnectionConfiguration() {
-      /* Does nothing */
+        /* Does nothing */
     }
 
     /**
@@ -214,21 +205,21 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Sets the server name, also known as XMPP domain of the target server.
-     *
-     * @param serviceName the XMPP domain of the target server.
-     */
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    /**
      * Returns the server name of the target server.
      *
      * @return the server name of the target server.
      */
     public String getServiceName() {
         return serviceName;
+    }
+
+    /**
+     * Sets the server name, also known as XMPP domain of the target server.
+     *
+     * @param serviceName the XMPP domain of the target server.
+     */
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     /**
@@ -585,16 +576,6 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Sets if the reconnection mechanism is allowed to be used. By default
-     * reconnection is allowed.
-     *
-     * @param isAllowed if the reconnection mechanism is allowed to use.
-     */
-    public void setReconnectionAllowed(boolean isAllowed) {
-        this.reconnectionAllowed = isAllowed;
-    }
-
-    /**
      * Returns if the reconnection mechanism is allowed to be used. By default
      * reconnection is allowed.
      *
@@ -605,25 +586,13 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Sets the socket factory used to create new xmppConnection sockets.
-     * This is useful when connecting through SOCKS5 proxies.
+     * Sets if the reconnection mechanism is allowed to be used. By default
+     * reconnection is allowed.
      *
-     * @param socketFactory used to create new sockets.
+     * @param isAllowed if the reconnection mechanism is allowed to use.
      */
-    public void setSocketFactory(SocketFactory socketFactory) {
-        this.socketFactory = socketFactory;
-    }
-
-    /**
-     * Sets if an initial available presence will be sent to the server. By default
-     * an available presence will be sent to the server indicating that this presence
-     * is not online and available to receive messages. If you want to log in without
-     * being 'noticed' then pass a <tt>false</tt> value.
-     *
-     * @param sendPresence true if an initial available presence will be sent while logging in.
-     */
-    public void setSendPresence(boolean sendPresence) {
-        this.sendPresence = sendPresence;
+    public void setReconnectionAllowed(boolean isAllowed) {
+        this.reconnectionAllowed = isAllowed;
     }
 
     /**
@@ -685,30 +654,13 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * An enumeration for TLS security modes that are available when making a connection
-     * to the XMPP server.
+     * Sets the socket factory used to create new xmppConnection sockets.
+     * This is useful when connecting through SOCKS5 proxies.
+     *
+     * @param socketFactory used to create new sockets.
      */
-    public static enum SecurityMode {
-
-        /**
-         * Securirty via TLS encryption is required in order to connect. If the server
-         * does not offer TLS or if the TLS negotiaton fails, the connection to the server
-         * will fail.
-         */
-        required,
-
-        /**
-         * Security via TLS encryption is used whenever it's available. This is the
-         * default setting.
-         */
-        enabled,
-
-        /**
-         * Security via TLS encryption is disabled and only un-encrypted connections will
-         * be used. If only TLS encryption is available from the server, the connection
-         * will fail.
-         */
-        disabled
+    public void setSocketFactory(SocketFactory socketFactory) {
+        this.socketFactory = socketFactory;
     }
 
     /**
@@ -755,9 +707,48 @@ public class ConnectionConfiguration implements Cloneable {
         return sendPresence;
     }
 
+    /**
+     * Sets if an initial available presence will be sent to the server. By default
+     * an available presence will be sent to the server indicating that this presence
+     * is not online and available to receive messages. If you want to log in without
+     * being 'noticed' then pass a <tt>false</tt> value.
+     *
+     * @param sendPresence true if an initial available presence will be sent while logging in.
+     */
+    public void setSendPresence(boolean sendPresence) {
+        this.sendPresence = sendPresence;
+    }
+
     void setLoginInfo(String username, String password, String resource) {
         this.username = username;
         this.password = password;
         this.resource = resource;
+    }
+
+    /**
+     * An enumeration for TLS security modes that are available when making a connection
+     * to the XMPP server.
+     */
+    public static enum SecurityMode {
+
+        /**
+         * Securirty via TLS encryption is required in order to connect. If the server
+         * does not offer TLS or if the TLS negotiaton fails, the connection to the server
+         * will fail.
+         */
+        required,
+
+        /**
+         * Security via TLS encryption is used whenever it's available. This is the
+         * default setting.
+         */
+        enabled,
+
+        /**
+         * Security via TLS encryption is disabled and only un-encrypted connections will
+         * be used. If only TLS encryption is available from the server, the connection
+         * will fail.
+         */
+        disabled
     }
 }

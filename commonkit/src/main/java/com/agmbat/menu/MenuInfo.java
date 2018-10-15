@@ -77,73 +77,72 @@ public class MenuInfo {
         mListener = l;
     }
 
-    public void setBackgroundDrawable(Drawable drawable) {
-        mBackgroundDrawable = drawable;
-    }
-
     public Drawable getBackgroundDrawable() {
         return mBackgroundDrawable;
     }
 
-
-    public void setItemId(int itemId) {
-        mItemId = itemId;
+    public void setBackgroundDrawable(Drawable drawable) {
+        mBackgroundDrawable = drawable;
     }
 
     public int getItemId() {
         return mItemId;
     }
 
-    public void setTitle(CharSequence title) {
-        mTitle = title;
+    public void setItemId(int itemId) {
+        mItemId = itemId;
     }
 
     public CharSequence getTitle() {
         return mTitle;
     }
 
-    public void setTitleColor(int color) {
-        mTitleColor = color;
+    public void setTitle(CharSequence title) {
+        mTitle = title;
     }
 
     public int getTitleColor() {
         return mTitleColor;
     }
 
-    public void setIcon(Drawable icon) {
-        mDrawable = icon;
+    public void setTitleColor(int color) {
+        mTitleColor = color;
     }
 
-    public void setIcon(int resId) {
-        setIcon(AppResources.getResources().getDrawable(resId));
+    public void setIcon(Drawable icon) {
+        mDrawable = icon;
     }
 
     public Drawable getIcon() {
         return mDrawable;
     }
 
-    public void setVisible(boolean visible) {
-        mVisible = visible;
+    public void setIcon(int resId) {
+        setIcon(AppResources.getResources().getDrawable(resId));
     }
 
     public boolean isVisible() {
         return mVisible;
     }
 
-    public void setEnabled(boolean enabled) {
-        mEnabled = enabled;
+    public void setVisible(boolean visible) {
+        mVisible = visible;
     }
 
     public boolean isEnabled() {
         return mEnabled;
     }
 
-    public void setOnClickMenuListener(OnClickMenuListener l) {
-        mListener = l;
+    public void setEnabled(boolean enabled) {
+        mEnabled = enabled;
     }
 
     public OnClickMenuListener getOnClickMenuListener() {
         return mListener;
+    }
+
+    public void setOnClickMenuListener(OnClickMenuListener l) {
+        mListener = l;
     }
 
     /**

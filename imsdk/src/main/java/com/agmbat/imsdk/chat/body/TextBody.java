@@ -16,7 +16,7 @@ public class TextBody extends Body {
         mAtUsers = atUsers;
     }
 
-    public List<AtUser> getAtUsers(){
+    public List<AtUser> getAtUsers() {
         return mAtUsers;
     }
 

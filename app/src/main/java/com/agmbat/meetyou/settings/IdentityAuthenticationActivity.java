@@ -1,8 +1,6 @@
 package com.agmbat.meetyou.settings;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -14,30 +12,20 @@ import android.widget.TextView;
 import com.agmbat.android.image.ImageManager;
 import com.agmbat.android.utils.ToastUtil;
 import com.agmbat.android.utils.WindowUtils;
-import com.agmbat.file.FileUtils;
-import com.agmbat.imagepicker.ImagePicker;
 import com.agmbat.imagepicker.ImagePickerHelper;
 import com.agmbat.imagepicker.OnPickImageListener;
 import com.agmbat.imagepicker.bean.ImageItem;
-import com.agmbat.imagepicker.loader.UILImageLoader;
-import com.agmbat.imagepicker.ui.ImageGridActivity;
 import com.agmbat.imsdk.Identity.Auth;
 import com.agmbat.imsdk.Identity.AuthStatusResult;
-import com.agmbat.imsdk.Identity.IdentityApi;
 import com.agmbat.imsdk.Identity.IdentityManager;
 import com.agmbat.imsdk.Identity.OnIdentityListener;
 import com.agmbat.imsdk.Identity.OnLoadAuthStatusListener;
 import com.agmbat.imsdk.api.ApiResult;
 import com.agmbat.imsdk.asmack.XMPPManager;
-import com.agmbat.imsdk.remotefile.FileApi;
-import com.agmbat.imsdk.remotefile.FileApiResult;
 import com.agmbat.imsdk.user.LoginUser;
 import com.agmbat.isdialog.ISLoadingDialog;
 import com.agmbat.meetyou.R;
 import com.nostra13.universalimageloader.core.download.Scheme;
-
-import java.io.File;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,11 +42,17 @@ public class IdentityAuthenticationActivity extends Activity {
     @BindView(R.id.identity_image_front)
     ImageView mFontImageView;
 
+    @BindView(R.id.btn_identity_front)
+    View mFontImageBtn;
+
     /**
      * 身份证背面照片
      */
     @BindView(R.id.identity_image_back)
     ImageView mBackImageView;
+
+    @BindView(R.id.btn_identity_back)
+    View mBackImageBtn;
 
     /**
      * 姓名编辑框
@@ -107,21 +101,24 @@ public class IdentityAuthenticationActivity extends Activity {
         WindowUtils.setStatusBarColor(this, getResources().getColor(R.color.bg_status_bar));
         setContentView(R.layout.activity_identity_autentication);
         ButterKnife.bind(this);
-        mIdentityAuthenticationLayout.setVisibility(View.GONE);
-
+        initContentView();
         showLoadingDialog("正在获取身份验证状态...");
         IdentityManager.authStatus(new OnLoadAuthStatusListener() {
             @Override
             public void onLoadAuthStatus(AuthStatusResult result) {
-                ToastUtil.showToast(result.mErrorMsg);
                 hideLoadingDialog();
                 if (!result.mResult) {
                     ToastUtil.showToast("获取身份状态失败");
                     finish();
                     return;
                 }
-
-                mStatusView.setText("当前身份认证状态:" + result.mErrorMsg);
+                LoginUser loginUser = XMPPManager.getInstance().getRosterManager().getLoginUser();
+                if (loginUser.getVCardExtendObject() != null) {
+                    ToastUtil.showToast(result.mErrorMsg);
+                    mStatusView.setText("当前身份认证状态:" + result.mErrorMsg);
+                } else {
+                    mStatusView.setText("请先完善个人信息，再进行身份验证");
+                }
                 if (result.mAuth.hasNeedAuth()) {
                     mIdentityAuthenticationLayout.setVisibility(View.VISIBLE);
                 }
@@ -137,6 +134,20 @@ public class IdentityAuthenticationActivity extends Activity {
                 }
             }
         });
+    }
+
+
+    private void initContentView() {
+        mIdentityAuthenticationLayout.setVisibility(View.GONE);
+        LoginUser loginUser = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        boolean isEnable = loginUser.getVCardExtendObject() != null;
+        mInputNameView.setEnabled(isEnable);
+        mInputIdentityView.setEnabled(isEnable);
+        mFontImageBtn.setEnabled(isEnable);
+        mBackImageBtn.setEnabled(isEnable);
+        if (!isEnable) {
+            ToastUtil.showToast("请先完善个人信息，再进行身份验证");
+        }
     }
 
     @Override
@@ -158,6 +169,11 @@ public class IdentityAuthenticationActivity extends Activity {
      */
     @OnClick(R.id.btn_save)
     void onClickSave() {
+        LoginUser loginUser = XMPPManager.getInstance().getRosterManager().getLoginUser();
+        if (loginUser.getVCardExtendObject() == null) {
+            ToastUtil.showToast("请先完善个人信息，再进行身份验证");
+            return;
+        }
         final String name = mInputNameView.getText().toString().trim();
         if (TextUtils.isEmpty(name)) {
             ToastUtil.showToast("请输入姓名!");
@@ -178,6 +194,43 @@ public class IdentityAuthenticationActivity extends Activity {
             ToastUtil.showToast("请拍摄两张身份认证照片");
             return;
         }
+
+//        if(loginUser.getHeight() == 0){
+//            ToastUtil.showToast("您还未填写身高，请先完善个人信息");
+//            return;
+//        }
+//        if(TextUtils.isEmpty(loginUser.getWorkarea())){
+//            ToastUtil.showToast("您还未填写工作地区，请先完善个人信息");
+//            return;
+//        }
+//        if(loginUser.getWeight() == 0){
+//            ToastUtil.showToast("您还未填写体重，请先完善个人信息");
+//            return;
+//        }
+//        if(TextUtils.isEmpty(loginUser.getBirthplace())){
+//            ToastUtil.showToast("您还未填写籍贯，请先完善个人信息");
+//            return;
+//        }
+//        if(TextUtils.isEmpty(loginUser.getResidence())){
+//            ToastUtil.showToast("您还未填写户口所在地，请先完善个人信息");
+//            return;
+//        }
+//        if(TextUtils.isEmpty(loginUser.getIndustry())){
+//            ToastUtil.showToast("您还未填写行业，请先完善个人信息");
+//            return;
+//        }
+//        if(TextUtils.isEmpty(loginUser.getCareer())){
+//            ToastUtil.showToast("您还未填写职业，请先完善个人信息");
+//            return;
+//        }
+//        if(TextUtils.isEmpty(loginUser.getHobby())){
+//            ToastUtil.showToast("您还未填写兴趣爱好，请先完善个人信息");
+//            return;
+//        }
+//        if(TextUtils.isEmpty(loginUser.getIntroduce())){
+//            ToastUtil.showToast("您还未填写个人简介，请先完善个人信息");
+//            return;
+//        }
 
         // 上传照片
         showLoadingDialog("正在上传认证资料...");

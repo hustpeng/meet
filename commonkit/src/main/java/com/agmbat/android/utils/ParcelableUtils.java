@@ -1,14 +1,14 @@
 package com.agmbat.android.utils;
 
+import android.os.Bundle;
+import android.os.Parcel;
+
+import com.agmbat.io.IoUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import com.agmbat.io.IoUtils;
-
-import android.os.Bundle;
-import android.os.Parcel;
 
 /**
  * Created by chenming03 on 16/10/7.

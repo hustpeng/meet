@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.location;
 
 import android.text.TextUtils;
@@ -27,24 +26,8 @@ public class LocateManager extends Xepmodule {
 
     private final static int getLocation = 0;
     private final static int setLocation = 1;
-
-    private CacheStoreBase<LocateObject> cacheStorage;
-
     private final List<LocateListener> listeners;
-
-    public LocateManager(final Connection connection) {
-        this.xmppConnection = connection;
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-
-            @Override
-            public void connectionCreated(Connection connection) {
-                connection.addConnectionListener(myConnectionListener);
-            }
-        });
-        listeners = new CopyOnWriteArrayList<LocateListener>();
-        cacheStorage = new CacheStoreBase<LocateObject>();
-    }
-
+    private CacheStoreBase<LocateObject> cacheStorage;
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {
@@ -60,6 +43,19 @@ public class LocateManager extends Xepmodule {
             abortAllQuery();
         }
     };
+
+    public LocateManager(final Connection connection) {
+        this.xmppConnection = connection;
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(myConnectionListener);
+            }
+        });
+        listeners = new CopyOnWriteArrayList<LocateListener>();
+        cacheStorage = new CacheStoreBase<LocateObject>();
+    }
 
     @Override
     protected void finalize() throws Throwable {
@@ -136,19 +132,6 @@ public class LocateManager extends Xepmodule {
         }
     }
 
-    private class setLocationPacket extends IQ {
-        private final LocateObject location;
-
-        public setLocationPacket(LocateObject aLocation) {
-            location = aLocation;
-            setType(Type.SET);
-        }
-
-        public String getChildElementXML() {
-            return LocateObject.getXmlNode(location);
-        }
-    }
-
     public void setLocation(LocateObject location) {
         if (location == null) {
             notifySetLocationResult(false);
@@ -171,23 +154,6 @@ public class LocateManager extends Xepmodule {
         addQueryInfo(queryInfo, packetId, packetListener);
 
         xmppConnection.sendPacket(packet);
-    }
-
-    private class getLocationPacket extends IQ {
-
-        public getLocationPacket(String jid) {
-            setTo(jid);
-        }
-
-        public String getChildElementXML() {
-            return new StringBuffer()
-                    .append("<")
-                    .append(LocateProvider.elementName())
-                    .append(" xmlns=\"")
-                    .append(LocateProvider.namespace())
-                    .append("\"/>")
-                    .toString();
-        }
     }
 
     /**
@@ -232,6 +198,36 @@ public class LocateManager extends Xepmodule {
 
         xmppConnection.sendPacket(packet);
         return null;
+    }
+
+    private class setLocationPacket extends IQ {
+        private final LocateObject location;
+
+        public setLocationPacket(LocateObject aLocation) {
+            location = aLocation;
+            setType(Type.SET);
+        }
+
+        public String getChildElementXML() {
+            return LocateObject.getXmlNode(location);
+        }
+    }
+
+    private class getLocationPacket extends IQ {
+
+        public getLocationPacket(String jid) {
+            setTo(jid);
+        }
+
+        public String getChildElementXML() {
+            return new StringBuffer()
+                    .append("<")
+                    .append(LocateProvider.elementName())
+                    .append(" xmlns=\"")
+                    .append(LocateProvider.namespace())
+                    .append("\"/>")
+                    .toString();
+        }
     }
 
     private class LocationResultListener implements PacketListener {

@@ -15,16 +15,68 @@
  */
 package com.agmbat.app;
 
+import android.os.AsyncTask;
+
 import java.util.List;
 import java.util.Vector;
 
-import android.os.AsyncTask;
-
 public abstract class DataLoader<T> {
+
+    private List<T> mData = null;
+    private Vector<OnLoadDataListener<T>> mOnLoadDataListeners;
+    private Object mSyncObject = new Object();
+    private LoadStatus mLoadStatus = LoadStatus.NOT_START;
+
+    protected DataLoader() {
+        mOnLoadDataListeners = new Vector<OnLoadDataListener<T>>();
+    }
+
+    public List<T> getData() {
+        return mData;
+    }
+
+    public abstract List<T> loadDataSync();
+
+    public void loadData() {
+        loadData(null);
+    }
+
+    public void loadData(OnLoadDataListener<T> l) {
+        synchronized (mSyncObject) {
+            if (mLoadStatus == LoadStatus.NOT_START) {
+                mLoadStatus = LoadStatus.LOADING;
+                if (l != null) {
+                    mOnLoadDataListeners.add(l);
+                }
+                new LoadDataTask().execute();
+            } else if (mLoadStatus == LoadStatus.LOADING) {
+                if (l != null) {
+                    l.onLoadBegin();
+                    mOnLoadDataListeners.add(l);
+                }
+            } else {
+                if (l != null) {
+                    l.onLoadCompleted(mData);
+                }
+            }
+        }
+    }
+
+    public void unregisterLoadListener(OnLoadDataListener<T> l) {
+        synchronized (mSyncObject) {
+            if (mOnLoadDataListeners.contains(l)) {
+                mOnLoadDataListeners.remove(l);
+            }
+        }
+    }
+
+    private static enum LoadStatus {
+        NOT_START, LOADING, FINISH,
+    }
 
     /**
      * load data
-     * 
+     *
      * @param <T>
      */
     public interface OnLoadDataListener<T> {
@@ -35,24 +87,6 @@ public abstract class DataLoader<T> {
 
         public void onLoadCancelled();
 
-    }
-
-    private static enum LoadStatus {
-        NOT_START, LOADING, FINISH,
-    }
-
-    private List<T> mData = null;
-    private Vector<OnLoadDataListener<T>> mOnLoadDataListeners;
-
-    private Object mSyncObject = new Object();
-    private LoadStatus mLoadStatus = LoadStatus.NOT_START;
-
-    protected DataLoader() {
-        mOnLoadDataListeners = new Vector<OnLoadDataListener<T>>();
-    }
-
-    public List<T> getData() {
-        return mData;
     }
 
     private class LoadDataTask extends AsyncTask<Void, Void, List<T>> {
@@ -90,41 +124,6 @@ public abstract class DataLoader<T> {
 
         @Override
         protected void onCancelled() {
-        }
-    }
-
-    public abstract List<T> loadDataSync();
-
-    public void loadData() {
-        loadData(null);
-    }
-
-    public void loadData(OnLoadDataListener<T> l) {
-        synchronized (mSyncObject) {
-            if (mLoadStatus == LoadStatus.NOT_START) {
-                mLoadStatus = LoadStatus.LOADING;
-                if (l != null) {
-                    mOnLoadDataListeners.add(l);
-                }
-                new LoadDataTask().execute();
-            } else if (mLoadStatus == LoadStatus.LOADING) {
-                if (l != null) {
-                    l.onLoadBegin();
-                    mOnLoadDataListeners.add(l);
-                }
-            } else {
-                if (l != null) {
-                    l.onLoadCompleted(mData);
-                }
-            }
-        }
-    }
-
-    public void unregisterLoadListener(OnLoadDataListener<T> l) {
-        synchronized (mSyncObject) {
-            if (mOnLoadDataListeners.contains(l)) {
-                mOnLoadDataListeners.remove(l);
-            }
         }
     }
 }

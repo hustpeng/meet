@@ -15,14 +15,14 @@
  */
 package com.agmbat.android.prefs;
 
+import android.content.SharedPreferences;
+import android.os.Environment;
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import android.content.SharedPreferences;
-import android.os.Environment;
-import android.util.Log;
 
 /**
  * 支持将prefs文件保存到外部存储器中
@@ -30,16 +30,9 @@ import android.util.Log;
 public class APrefsManager {
 
     private final static String TAG = APrefsManager.class.getSimpleName();
-
-    private final Object mSync = new Object();
-
     private static final HashMap<File, SharedPreferencesImpl> sSharedPrefs = new HashMap<File, SharedPreferencesImpl>();
-
+    private final Object mSync = new Object();
     private File mPreferencesDir;
-
-    public void setPreferencesDir(File dir) {
-        mPreferencesDir = dir;
-    }
 
     public File getSharedPrefsFile(String name) {
         return makeFilename(getPreferencesDir(), name + ".xml");
@@ -102,6 +95,10 @@ public class APrefsManager {
             }
             return mPreferencesDir;
         }
+    }
+
+    public void setPreferencesDir(File dir) {
+        mPreferencesDir = dir;
     }
 
     private File makeFilename(File base, String name) {

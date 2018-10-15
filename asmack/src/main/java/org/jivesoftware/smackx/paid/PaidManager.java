@@ -1,5 +1,6 @@
-
 package org.jivesoftware.smackx.paid;
+
+import android.text.TextUtils;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -12,38 +13,18 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
 import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
-import android.text.TextUtils;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PaidManager extends Xepmodule {
-    private String paidServer = null;
-
-    private boolean requestAccountAfterSetServer = false;
-
-    private PaidAccountObject myAccountInfo;
-
-    private PaidPageInfoObject myPaidPageInfo;
-
     private final static int fetchAccountInfo = 0;
     private final static int fetchPaidPageInfo = 1;
     private final static int sendPaymentVerify = 2;
-
     private final List<PaidListener> listeners;
-
-    public PaidManager(final Connection connection) {
-        this.xmppConnection = connection;
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-
-            @Override
-            public void connectionCreated(Connection connection) {
-                connection.addConnectionListener(myConnectionListener);
-            }
-        });
-        listeners = new CopyOnWriteArrayList<PaidListener>();
-    }
-
+    private String paidServer = null;
+    private boolean requestAccountAfterSetServer = false;
+    private PaidAccountObject myAccountInfo;
+    private PaidPageInfoObject myPaidPageInfo;
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {
@@ -60,6 +41,18 @@ public class PaidManager extends Xepmodule {
             abortAllQuery();
         }
     };
+
+    public PaidManager(final Connection connection) {
+        this.xmppConnection = connection;
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(myConnectionListener);
+            }
+        });
+        listeners = new CopyOnWriteArrayList<PaidListener>();
+    }
 
     @Override
     protected void finalize() throws Throwable {
@@ -143,23 +136,6 @@ public class PaidManager extends Xepmodule {
         }
     }
 
-    public class FetchAccountPacket extends IQ {
-
-        public FetchAccountPacket() {
-            setTo(paidServer);
-        }
-
-        public String getChildElementXML() {
-            return new StringBuffer()
-                    .append("<")
-                    .append(PaidAccountProvider.elementName())
-                    .append(" xmlns=\"")
-                    .append(PaidAccountProvider.namespace())
-                    .append("\"/>")
-                    .toString();
-        }
-    }
-
     public void fetchAccountInfo() {
         if (TextUtils.isEmpty(paidServer)) {
             requestAccountAfterSetServer = true;
@@ -182,23 +158,6 @@ public class PaidManager extends Xepmodule {
 
         xmppConnection.sendPacket(packet);
         return;
-    }
-
-    public class FetchPageInfoPacket extends IQ {
-
-        public FetchPageInfoPacket() {
-            setTo(paidServer);
-        }
-
-        public String getChildElementXML() {
-            return new StringBuffer()
-                    .append("<")
-                    .append(PaidPageInfoProvider.elementName())
-                    .append(" xmlns=\"")
-                    .append(PaidPageInfoProvider.namespace())
-                    .append("\"/>")
-                    .toString();
-        }
     }
 
     public void fetchPageInfo() {
@@ -235,6 +194,40 @@ public class PaidManager extends Xepmodule {
                 requestAccountAfterSetServer = false;
                 fetchAccountInfo();
             }
+        }
+    }
+
+    public class FetchAccountPacket extends IQ {
+
+        public FetchAccountPacket() {
+            setTo(paidServer);
+        }
+
+        public String getChildElementXML() {
+            return new StringBuffer()
+                    .append("<")
+                    .append(PaidAccountProvider.elementName())
+                    .append(" xmlns=\"")
+                    .append(PaidAccountProvider.namespace())
+                    .append("\"/>")
+                    .toString();
+        }
+    }
+
+    public class FetchPageInfoPacket extends IQ {
+
+        public FetchPageInfoPacket() {
+            setTo(paidServer);
+        }
+
+        public String getChildElementXML() {
+            return new StringBuffer()
+                    .append("<")
+                    .append(PaidPageInfoProvider.elementName())
+                    .append(" xmlns=\"")
+                    .append(PaidPageInfoProvider.namespace())
+                    .append("\"/>")
+                    .toString();
         }
     }
 

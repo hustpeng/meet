@@ -15,12 +15,11 @@ import android.widget.ListView;
  */
 public class SwipeMenuListView extends ListView {
 
+    public static final int DIRECTION_LEFT = 1;
+    public static final int DIRECTION_RIGHT = -1;
     private static final int TOUCH_STATE_NONE = 0;
     private static final int TOUCH_STATE_X = 1;
     private static final int TOUCH_STATE_Y = 2;
-
-    public static final int DIRECTION_LEFT = 1;
-    public static final int DIRECTION_RIGHT = -1;
     private int mDirection = 1;//swipe from right to left by default
 
     private int MAX_Y = 5;
@@ -51,6 +50,24 @@ public class SwipeMenuListView extends ListView {
     public SwipeMenuListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
+    }
+
+    /**
+     * 判断点击事件是否在某个view内
+     *
+     * @param view
+     * @param ev
+     * @return
+     */
+    public static boolean inRangeOfView(View view, MotionEvent ev) {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        int x = location[0];
+        int y = location[1];
+        if (ev.getRawX() < x || ev.getRawX() > (x + view.getWidth()) || ev.getRawY() < y || ev.getRawY() > (y + view.getHeight())) {
+            return false;
+        }
+        return true;
     }
 
     private void init() {
@@ -84,20 +101,20 @@ public class SwipeMenuListView extends ListView {
         });
     }
 
-    public void setCloseInterpolator(Interpolator interpolator) {
-        mCloseInterpolator = interpolator;
+    public Interpolator getOpenInterpolator() {
+        return mOpenInterpolator;
     }
 
     public void setOpenInterpolator(Interpolator interpolator) {
         mOpenInterpolator = interpolator;
     }
 
-    public Interpolator getOpenInterpolator() {
-        return mOpenInterpolator;
-    }
-
     public Interpolator getCloseInterpolator() {
         return mCloseInterpolator;
+    }
+
+    public void setCloseInterpolator(Interpolator interpolator) {
+        mCloseInterpolator = interpolator;
     }
 
     @Override
@@ -271,7 +288,7 @@ public class SwipeMenuListView extends ListView {
         }
     }
 
-    public void smoothCloseMenu(){
+    public void smoothCloseMenu() {
         if (mTouchView != null && mTouchView.isOpen()) {
             mTouchView.smoothCloseMenu();
         }
@@ -299,6 +316,10 @@ public class SwipeMenuListView extends ListView {
         mOnMenuStateChangeListener = onMenuStateChangeListener;
     }
 
+    public void setSwipeDirection(int direction) {
+        mDirection = direction;
+    }
+
     public static interface OnMenuItemClickListener {
         boolean onMenuItemClick(int position, SwipeMenu menu, int index);
     }
@@ -313,27 +334,5 @@ public class SwipeMenuListView extends ListView {
         void onMenuOpen(int position);
 
         void onMenuClose(int position);
-    }
-
-    public void setSwipeDirection(int direction) {
-        mDirection = direction;
-    }
-
-    /**
-     * 判断点击事件是否在某个view内
-     *
-     * @param view
-     * @param ev
-     * @return
-     */
-    public static boolean inRangeOfView(View view, MotionEvent ev) {
-        int[] location = new int[2];
-        view.getLocationOnScreen(location);
-        int x = location[0];
-        int y = location[1];
-        if (ev.getRawX() < x || ev.getRawX() > (x + view.getWidth()) || ev.getRawY() < y || ev.getRawY() > (y + view.getHeight())) {
-            return false;
-        }
-        return true;
     }
 }

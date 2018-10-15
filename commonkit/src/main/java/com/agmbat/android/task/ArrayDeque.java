@@ -28,35 +28,43 @@ import java.util.Stack;
  * as necessary to support usage. They are not thread-safe; in the absence of external synchronization, they do not
  * support concurrent access by multiple threads. Null elements are prohibited. This class is likely to be faster than
  * {@link Stack} when used as a stack, and faster than {@link LinkedList} when used as a queue.
- *
+ * <p>
  * <p>
  * Most <tt>ArrayDeque</tt> operations run in amortized constant time. Exceptions include {@link #remove(Object) remove}, {@link #removeFirstOccurrence removeFirstOccurrence}, {@link #removeLastOccurrence removeLastOccurrence},
  * {@link #contains contains}, {@link #iterator iterator.remove()}, and the bulk operations, all of which run in linear
  * time.
- *
+ * <p>
  * <p>
  * The iterators returned by this class's <tt>iterator</tt> method are <i>fail-fast</i>: If the deque is modified at any
  * time after the iterator is created, in any way except through the iterator's own <tt>remove</tt> method, the iterator
  * will generally throw a {@link ConcurrentModificationException}. Thus, in the face of concurrent modification, the
  * iterator fails quickly and cleanly, rather than risking arbitrary, non-deterministic behavior at an undetermined time
  * in the future.
- *
+ * <p>
  * <p>
  * Note that the fail-fast behavior of an iterator cannot be guaranteed as it is, generally speaking, impossible to make
  * any hard guarantees in the presence of unsynchronized concurrent modification. Fail-fast iterators throw
  * <tt>ConcurrentModificationException</tt> on a best-effort basis. Therefore, it would be wrong to write a program that
  * depended on this exception for its correctness: <i>the fail-fast behavior of iterators should be used only to detect
  * bugs.</i>
- *
+ * <p>
  * <p>
  * This class and its iterator implement all of the <em>optional</em> methods of the {@link Collection} and
  * {@link Iterator} interfaces.
  *
+ * @param <E> the type of elements held in this collection
  * @author Josh Bloch and Doug Lea
  * @since 1.6
- * @param <E> the type of elements held in this collection
  */
 public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cloneable, Serializable {
+    /**
+     * The minimum capacity that we'll use for a newly created deque. Must be a power of 2.
+     */
+    private static final int MIN_INITIAL_CAPACITY = 8;
+    /**
+     * Appease the serialization gods.
+     */
+    private static final long serialVersionUID = 2340985798034038923L;
     /**
      * The array in which the elements of the deque are stored. The capacity of the deque is the length of this array,
      * which is always a power of two. The array is never allowed to become full, except transiently within an addX
@@ -65,24 +73,101 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
      * null.
      */
     private transient E[] elements;
-
     /**
      * The index of the element at the head of the deque (which is the element that would be removed by remove() or
      * pop()); or an arbitrary number equal to tail if the deque is empty.
      */
     private transient int head;
 
+    // ****** Array allocation and resizing utilities ******
     /**
      * The index at which the next element would be added to the tail of the deque (via addLast(E), add(E), or push(E)).
      */
     private transient int tail;
 
     /**
-     * The minimum capacity that we'll use for a newly created deque. Must be a power of 2.
+     * Constructs an empty array deque with an initial capacity sufficient to hold 16 elements.
      */
-    private static final int MIN_INITIAL_CAPACITY = 8;
+    public ArrayDeque() {
+        elements = (E[]) new Object[16];
+    }
 
-    // ****** Array allocation and resizing utilities ******
+    /**
+     * Constructs an empty array deque with an initial capacity sufficient to hold the specified number of elements.
+     *
+     * @param numElements lower bound on initial capacity of the deque
+     */
+    public ArrayDeque(int numElements) {
+        allocateElements(numElements);
+    }
+
+    /**
+     * Constructs a deque containing the elements of the specified collection, in the order they are returned by the
+     * collection's iterator. (The first element returned by the collection's iterator becomes the first element, or
+     * <i>front</i> of the deque.)
+     *
+     * @param c the collection whose elements are to be placed into the deque
+     * @throws NullPointerException if the specified collection is null
+     */
+    public ArrayDeque(Collection<? extends E> c) {
+        allocateElements(c.size());
+        addAll(c);
+    }
+
+    /**
+     * Copies {@code newLength} elements from {@code original} into a new array. If {@code newLength} is greater than
+     * {@code original.length}, the result is padded with the value {@code null}.
+     *
+     * @param original  the original array
+     * @param newLength the length of the new array
+     * @return the new array
+     * @throws NegativeArraySizeException if {@code newLength < 0}
+     * @throws NullPointerException       if {@code original == null}
+     * @since 1.6
+     */
+    public static <T> T[] copyOf(T[] original, int newLength) {
+        if (original == null) {
+            throw new NullPointerException();
+        }
+        if (newLength < 0) {
+            throw new NegativeArraySizeException();
+        }
+        return copyOfRange(original, 0, newLength);
+    }
+
+    /**
+     * Copies elements from {@code original} into a new array, from indexes start (inclusive) to end (exclusive). The
+     * original order of elements is preserved. If {@code end} is greater than {@code original.length}, the result is
+     * padded with the value {@code null}.
+     *
+     * @param original the original array
+     * @param start    the start index, inclusive
+     * @param end      the end index, exclusive
+     * @return the new array
+     * @throws ArrayIndexOutOfBoundsException if {@code start < 0 || start > original.length}
+     * @throws IllegalArgumentException       if {@code start > end}
+     * @throws NullPointerException           if {@code original == null}
+     * @since 1.6
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] copyOfRange(T[] original, int start, int end) {
+        int originalLength = original.length; // For exception priority compatibility.
+        if (start > end) {
+            throw new IllegalArgumentException();
+        }
+        if (start < 0 || start > originalLength) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        int resultLength = end - start;
+        int copyLength = Math.min(resultLength, originalLength - start);
+        T[] result = (T[]) Array.newInstance(original.getClass().getComponentType(), resultLength);
+        System.arraycopy(original, start, result, 0, copyLength);
+        return result;
+    }
+
+    // The main insertion and extraction methods are addFirst,
+    // addLast, pollFirst, pollLast. The other methods are defined in
+    // terms of these.
 
     /**
      * Allocate empty array to hold the given number of elements.
@@ -150,39 +235,6 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
     }
 
     /**
-     * Constructs an empty array deque with an initial capacity sufficient to hold 16 elements.
-     */
-    public ArrayDeque() {
-        elements = (E[]) new Object[16];
-    }
-
-    /**
-     * Constructs an empty array deque with an initial capacity sufficient to hold the specified number of elements.
-     *
-     * @param numElements lower bound on initial capacity of the deque
-     */
-    public ArrayDeque(int numElements) {
-        allocateElements(numElements);
-    }
-
-    /**
-     * Constructs a deque containing the elements of the specified collection, in the order they are returned by the
-     * collection's iterator. (The first element returned by the collection's iterator becomes the first element, or
-     * <i>front</i> of the deque.)
-     *
-     * @param c the collection whose elements are to be placed into the deque
-     * @throws NullPointerException if the specified collection is null
-     */
-    public ArrayDeque(Collection<? extends E> c) {
-        allocateElements(c.size());
-        addAll(c);
-    }
-
-    // The main insertion and extraction methods are addFirst,
-    // addLast, pollFirst, pollLast. The other methods are defined in
-    // terms of these.
-
-    /**
      * Inserts the specified element at the front of this deque.
      *
      * @param e the element to add
@@ -200,7 +252,7 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
 
     /**
      * Inserts the specified element at the end of this deque.
-     *
+     * <p>
      * <p>
      * This method is equivalent to {@link #add}.
      *
@@ -311,6 +363,8 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
         return elements[head]; // elements[head] is null if deque empty
     }
 
+    // *** Queue methods ***
+
     public E peekLast() {
         return elements[(tail - 1) & (elements.length - 1)];
     }
@@ -367,11 +421,9 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
         return false;
     }
 
-    // *** Queue methods ***
-
     /**
      * Inserts the specified element at the end of this deque.
-     *
+     * <p>
      * <p>
      * This method is equivalent to {@link #addLast}.
      *
@@ -386,7 +438,7 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
 
     /**
      * Inserts the specified element at the end of this deque.
-     *
+     * <p>
      * <p>
      * This method is equivalent to {@link #offerLast}.
      *
@@ -400,9 +452,9 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
 
     /**
      * Retrieves and removes the head of the queue represented by this deque.
-     *
+     * <p>
      * This method differs from {@link #poll poll} only in that it throws an exception if this deque is empty.
-     *
+     * <p>
      * <p>
      * This method is equivalent to {@link #removeFirst}.
      *
@@ -418,7 +470,7 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
      * is unchanged. More formally, removes the first element <tt>e</tt> such that <tt>o.equals(e)</tt> (if such an
      * element exists). Returns <tt>true</tt> if this deque contained the specified element (or equivalently, if this
      * deque changed as a result of the call).
-     *
+     * <p>
      * <p>
      * This method is equivalent to {@link #removeFirstOccurrence}.
      *
@@ -429,10 +481,12 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
         return removeFirstOccurrence(o);
     }
 
+    // *** Stack methods ***
+
     /**
      * Retrieves and removes the head of the queue represented by this deque (in other words, the first element of this
      * deque), or returns <tt>null</tt> if this deque is empty.
-     *
+     * <p>
      * <p>
      * This method is equivalent to {@link #pollFirst}.
      *
@@ -445,7 +499,7 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
     /**
      * Retrieves, but does not remove, the head of the queue represented by this deque. This method differs from
      * {@link #peek peek} only in that it throws an exception if this deque is empty.
-     *
+     * <p>
      * <p>
      * This method is equivalent to {@link #getFirst}.
      *
@@ -459,7 +513,7 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
     /**
      * Retrieves, but does not remove, the head of the queue represented by this deque, or returns <tt>null</tt> if this
      * deque is empty.
-     *
+     * <p>
      * <p>
      * This method is equivalent to {@link #peekFirst}.
      *
@@ -469,12 +523,10 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
         return peekFirst();
     }
 
-    // *** Stack methods ***
-
     /**
      * Pushes an element onto the stack represented by this deque. In other words, inserts the element at the front of
      * this deque.
-     *
+     * <p>
      * <p>
      * This method is equivalent to {@link #addFirst}.
      *
@@ -485,10 +537,12 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
         addFirst(e);
     }
 
+    // *** Collection Methods ***
+
     /**
      * Pops an element from the stack represented by this deque. In other words, removes and returns the first element
      * of this deque.
-     *
+     * <p>
      * <p>
      * This method is equivalent to {@link #removeFirst()}.
      *
@@ -509,7 +563,7 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
     /**
      * Removes the element at the specified position in the elements array, adjusting head and tail as necessary. This
      * can result in motion of elements backwards or forwards in the array.
-     *
+     * <p>
      * <p>
      * This method is called delete rather than remove to emphasize that its semantics differ from those of
      * {@link List#remove(int)}.
@@ -556,8 +610,6 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
         }
     }
 
-    // *** Collection Methods ***
-
     /**
      * Returns the number of elements in this deque.
      *
@@ -589,6 +641,156 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
 
     public Iterator<E> descendingIterator() {
         return new DescendingIterator();
+    }
+
+    /**
+     * Returns <tt>true</tt> if this deque contains the specified element. More formally, returns <tt>true</tt> if and
+     * only if this deque contains at least one element <tt>e</tt> such that <tt>o.equals(e)</tt>.
+     *
+     * @param o object to be checked for containment in this deque
+     * @return <tt>true</tt> if this deque contains the specified element
+     */
+    public boolean contains(Object o) {
+        if (o == null) {
+            return false;
+        }
+        int mask = elements.length - 1;
+        int i = head;
+        E x;
+        while ((x = elements[i]) != null) {
+            if (o.equals(x)) {
+                return true;
+            }
+            i = (i + 1) & mask;
+        }
+        return false;
+    }
+
+    /**
+     * Removes all of the elements from this deque. The deque will be empty after this call returns.
+     */
+    public void clear() {
+        int h = head;
+        int t = tail;
+        if (h != t) { // clear all cells
+            head = tail = 0;
+            int i = h;
+            int mask = elements.length - 1;
+            do {
+                elements[i] = null;
+                i = (i + 1) & mask;
+            } while (i != t);
+        }
+    }
+
+    /**
+     * Returns an array containing all of the elements in this deque in proper sequence (from first to last element).
+     * <p>
+     * <p>
+     * The returned array will be "safe" in that no references to it are maintained by this deque. (In other words, this
+     * method must allocate a new array). The caller is thus free to modify the returned array.
+     * <p>
+     * <p>
+     * This method acts as bridge between array-based and collection-based APIs.
+     *
+     * @return an array containing all of the elements in this deque
+     */
+    public Object[] toArray() {
+        return copyElements(new Object[size()]);
+    }
+
+    // *** Object methods ***
+
+    /**
+     * Returns an array containing all of the elements in this deque in proper sequence (from first to last element);
+     * the runtime type of the returned array is that of the specified array. If the deque fits in the specified array,
+     * it is returned therein. Otherwise, a new array is allocated with the runtime type of the specified array and the
+     * size of this deque.
+     * <p>
+     * <p>
+     * If this deque fits in the specified array with room to spare (i.e., the array has more elements than this deque),
+     * the element in the array immediately following the end of the deque is set to <tt>null</tt>.
+     * <p>
+     * <p>
+     * Like the {@link #toArray()} method, this method acts as bridge between array-based and collection-based APIs.
+     * Further, this method allows precise control over the runtime type of the output array, and may, under certain
+     * circumstances, be used to save allocation costs.
+     * <p>
+     * <p>
+     * Suppose <tt>x</tt> is a deque known to contain only strings. The following code can be used to dump the deque
+     * into a newly allocated array of <tt>String</tt>:
+     *
+     * <pre>
+     * String[] y = x.toArray(new String[0]);
+     * </pre>
+     * <p>
+     * Note that <tt>toArray(new Object[0])</tt> is identical in function to <tt>toArray()</tt>.
+     *
+     * @param a the array into which the elements of the deque are to be stored, if it is big enough; otherwise, a new
+     *          array of the same runtime type is allocated for this purpose
+     * @return an array containing all of the elements in this deque
+     * @throws ArrayStoreException  if the runtime type of the specified array is not a supertype of the runtime type of
+     *                              every element in this deque
+     * @throws NullPointerException if the specified array is null
+     */
+    public <T> T[] toArray(T[] a) {
+        int size = size();
+        if (a.length < size) {
+            a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
+        }
+        copyElements(a);
+        if (a.length > size) {
+            a[size] = null;
+        }
+        return a;
+    }
+
+    /**
+     * Returns a copy of this deque.
+     *
+     * @return a copy of this deque
+     */
+    public ArrayDeque<E> clone() {
+        try {
+            ArrayDeque<E> result = (ArrayDeque<E>) super.clone();
+            result.elements = copyOf(elements, elements.length);
+            return result;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
+    /**
+     * Serialize this deque.
+     *
+     * @serialData The current size (<tt>int</tt>) of the deque, followed by all of its elements (each an object
+     * reference) in first-to-last order.
+     */
+    private void writeObject(ObjectOutputStream s) throws IOException {
+        s.defaultWriteObject();
+        // Write out size
+        s.writeInt(size());
+        // Write out elements in order.
+        int mask = elements.length - 1;
+        for (int i = head; i != tail; i = (i + 1) & mask) {
+            s.writeObject(elements[i]);
+        }
+    }
+
+    /**
+     * Deserialize this deque.
+     */
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        // Read in size and allocate array
+        int size = s.readInt();
+        allocateElements(size);
+        head = 0;
+        tail = size;
+        // Read in all elements in the proper order.
+        for (int i = 0; i < size; i++) {
+            elements[i] = (E) s.readObject();
+        }
     }
 
     private class DeqIterator implements Iterator<E> {
@@ -673,212 +875,6 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Deque<E>, Cl
                 fence = head;
             }
             lastRet = -1;
-        }
-    }
-
-    /**
-     * Returns <tt>true</tt> if this deque contains the specified element. More formally, returns <tt>true</tt> if and
-     * only if this deque contains at least one element <tt>e</tt> such that <tt>o.equals(e)</tt>.
-     *
-     * @param o object to be checked for containment in this deque
-     * @return <tt>true</tt> if this deque contains the specified element
-     */
-    public boolean contains(Object o) {
-        if (o == null) {
-            return false;
-        }
-        int mask = elements.length - 1;
-        int i = head;
-        E x;
-        while ((x = elements[i]) != null) {
-            if (o.equals(x)) {
-                return true;
-            }
-            i = (i + 1) & mask;
-        }
-        return false;
-    }
-
-    /**
-     * Removes all of the elements from this deque. The deque will be empty after this call returns.
-     */
-    public void clear() {
-        int h = head;
-        int t = tail;
-        if (h != t) { // clear all cells
-            head = tail = 0;
-            int i = h;
-            int mask = elements.length - 1;
-            do {
-                elements[i] = null;
-                i = (i + 1) & mask;
-            } while (i != t);
-        }
-    }
-
-    /**
-     * Returns an array containing all of the elements in this deque in proper sequence (from first to last element).
-     *
-     * <p>
-     * The returned array will be "safe" in that no references to it are maintained by this deque. (In other words, this
-     * method must allocate a new array). The caller is thus free to modify the returned array.
-     *
-     * <p>
-     * This method acts as bridge between array-based and collection-based APIs.
-     *
-     * @return an array containing all of the elements in this deque
-     */
-    public Object[] toArray() {
-        return copyElements(new Object[size()]);
-    }
-
-    /**
-     * Returns an array containing all of the elements in this deque in proper sequence (from first to last element);
-     * the runtime type of the returned array is that of the specified array. If the deque fits in the specified array,
-     * it is returned therein. Otherwise, a new array is allocated with the runtime type of the specified array and the
-     * size of this deque.
-     *
-     * <p>
-     * If this deque fits in the specified array with room to spare (i.e., the array has more elements than this deque),
-     * the element in the array immediately following the end of the deque is set to <tt>null</tt>.
-     *
-     * <p>
-     * Like the {@link #toArray()} method, this method acts as bridge between array-based and collection-based APIs.
-     * Further, this method allows precise control over the runtime type of the output array, and may, under certain
-     * circumstances, be used to save allocation costs.
-     *
-     * <p>
-     * Suppose <tt>x</tt> is a deque known to contain only strings. The following code can be used to dump the deque
-     * into a newly allocated array of <tt>String</tt>:
-     *
-     * <pre>
-     * String[] y = x.toArray(new String[0]);
-     * </pre>
-     *
-     * Note that <tt>toArray(new Object[0])</tt> is identical in function to <tt>toArray()</tt>.
-     *
-     * @param a the array into which the elements of the deque are to be stored, if it is big enough; otherwise, a new
-     *            array of the same runtime type is allocated for this purpose
-     * @return an array containing all of the elements in this deque
-     * @throws ArrayStoreException if the runtime type of the specified array is not a supertype of the runtime type of
-     *             every element in this deque
-     * @throws NullPointerException if the specified array is null
-     */
-    public <T> T[] toArray(T[] a) {
-        int size = size();
-        if (a.length < size) {
-            a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
-        }
-        copyElements(a);
-        if (a.length > size) {
-            a[size] = null;
-        }
-        return a;
-    }
-
-    // *** Object methods ***
-
-    /**
-     * Returns a copy of this deque.
-     *
-     * @return a copy of this deque
-     */
-    public ArrayDeque<E> clone() {
-        try {
-            ArrayDeque<E> result = (ArrayDeque<E>) super.clone();
-            result.elements = copyOf(elements, elements.length);
-            return result;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
-    }
-
-    /**
-     * Copies {@code newLength} elements from {@code original} into a new array. If {@code newLength} is greater than
-     * {@code original.length}, the result is padded with the value {@code null}.
-     *
-     * @param original the original array
-     * @param newLength the length of the new array
-     * @return the new array
-     * @throws NegativeArraySizeException if {@code newLength < 0}
-     * @throws NullPointerException if {@code original == null}
-     * @since 1.6
-     */
-    public static <T> T[] copyOf(T[] original, int newLength) {
-        if (original == null) {
-            throw new NullPointerException();
-        }
-        if (newLength < 0) {
-            throw new NegativeArraySizeException();
-        }
-        return copyOfRange(original, 0, newLength);
-    }
-
-    /**
-     * Copies elements from {@code original} into a new array, from indexes start (inclusive) to end (exclusive). The
-     * original order of elements is preserved. If {@code end} is greater than {@code original.length}, the result is
-     * padded with the value {@code null}.
-     *
-     * @param original the original array
-     * @param start the start index, inclusive
-     * @param end the end index, exclusive
-     * @return the new array
-     * @throws ArrayIndexOutOfBoundsException if {@code start < 0 || start > original.length}
-     * @throws IllegalArgumentException if {@code start > end}
-     * @throws NullPointerException if {@code original == null}
-     * @since 1.6
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T[] copyOfRange(T[] original, int start, int end) {
-        int originalLength = original.length; // For exception priority compatibility.
-        if (start > end) {
-            throw new IllegalArgumentException();
-        }
-        if (start < 0 || start > originalLength) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        int resultLength = end - start;
-        int copyLength = Math.min(resultLength, originalLength - start);
-        T[] result = (T[]) Array.newInstance(original.getClass().getComponentType(), resultLength);
-        System.arraycopy(original, start, result, 0, copyLength);
-        return result;
-    }
-
-    /**
-     * Appease the serialization gods.
-     */
-    private static final long serialVersionUID = 2340985798034038923L;
-
-    /**
-     * Serialize this deque.
-     *
-     * @serialData The current size (<tt>int</tt>) of the deque, followed by all of its elements (each an object
-     *             reference) in first-to-last order.
-     */
-    private void writeObject(ObjectOutputStream s) throws IOException {
-        s.defaultWriteObject();
-        // Write out size
-        s.writeInt(size());
-        // Write out elements in order.
-        int mask = elements.length - 1;
-        for (int i = head; i != tail; i = (i + 1) & mask) {
-            s.writeObject(elements[i]);
-        }
-    }
-
-    /**
-     * Deserialize this deque.
-     */
-    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
-        s.defaultReadObject();
-        // Read in size and allocate array
-        int size = s.readInt();
-        allocateElements(size);
-        head = 0;
-        tail = size;
-        // Read in all elements in the proper order.
-        for (int i = 0; i < size; i++) {
-            elements[i] = (E) s.readObject();
         }
     }
 }

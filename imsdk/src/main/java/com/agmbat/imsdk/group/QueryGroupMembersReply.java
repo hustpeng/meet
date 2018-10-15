@@ -8,12 +8,12 @@ public class QueryGroupMembersReply extends IQ {
 
     private List<GroupMember> mGroupMembers;
 
-    public void setGroupMembers(List<GroupMember> groupMembers){
-        mGroupMembers = groupMembers;
+    public List<GroupMember> getGroupMembers() {
+        return mGroupMembers;
     }
 
-    public List<GroupMember> getGroupMembers(){
-        return mGroupMembers;
+    public void setGroupMembers(List<GroupMember> groupMembers) {
+        mGroupMembers = groupMembers;
     }
 
     @Override

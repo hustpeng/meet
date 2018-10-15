@@ -40,19 +40,18 @@ public class AppVersionHelper {
      * 当前加载的App版本信息
      */
     private static AppVersionInfo sAppVersionInfo;
-
-    public static void setAppVersionInfo(AppVersionInfo info) {
-        sAppVersionInfo = info;
-    }
+    /**
+     * 当前版本检测请求
+     */
+    private static AppVersionInfoRequester sAppVersionInfoRequester;
 
     public static AppVersionInfo getAppVersionInfo() {
         return sAppVersionInfo;
     }
 
-    /**
-     * 当前版本检测请求
-     */
-    private static AppVersionInfoRequester sAppVersionInfoRequester;
+    public static void setAppVersionInfo(AppVersionInfo info) {
+        sAppVersionInfo = info;
+    }
 
     public static void setAppVersionInfoRequester(AppVersionInfoRequester requester) {
         sAppVersionInfoRequester = requester;

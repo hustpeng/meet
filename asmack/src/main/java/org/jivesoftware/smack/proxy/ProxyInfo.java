@@ -30,19 +30,11 @@ import javax.net.SocketFactory;
 
 public class ProxyInfo {
 
-    public static enum ProxyType {
-        NONE,
-        HTTP,
-        SOCKS4,
-        SOCKS5
-    }
-
     private String proxyAddress;
     private int proxyPort;
     private String proxyUsername;
     private String proxyPassword;
     private ProxyType proxyType;
-
     public ProxyInfo(ProxyType pType, String pHost, int pPort, String pUser, String pPass) {
         this.proxyType = pType;
         this.proxyAddress = pHost;
@@ -103,5 +95,12 @@ public class ProxyInfo {
         } else {
             return null;
         }
+    }
+
+    public static enum ProxyType {
+        NONE,
+        HTTP,
+        SOCKS4,
+        SOCKS5
     }
 }

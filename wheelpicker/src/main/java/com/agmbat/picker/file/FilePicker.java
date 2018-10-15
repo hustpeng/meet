@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.agmbat.android.SysResources;
 import com.agmbat.android.utils.StorageUtils;
 import com.agmbat.picker.popup.ConfirmPopup;
-import com.agmbat.picker.util.ConvertUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -36,11 +35,6 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
     private OnFilePickListener onFilePickListener;
     private int mode;
     private CharSequence emptyHint = java.util.Locale.getDefault().getDisplayLanguage().contains("中文") ? "<空>" : "<Empty>";
-
-    @IntDef(value = {DIRECTORY, FILE})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface Mode {
-    }
 
     /**
      * @see #FILE
@@ -258,6 +252,11 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
 
     public void setOnFilePickListener(OnFilePickListener listener) {
         this.onFilePickListener = listener;
+    }
+
+    @IntDef(value = {DIRECTORY, FILE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Mode {
     }
 
     public interface OnFilePickListener {

@@ -136,6 +136,10 @@ public class RegisterActivity extends Activity {
             }
         }
     };
+    /**
+     * 缓存已请求的code
+     */
+    private Map<String, String> mCacheCode = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -172,12 +176,6 @@ public class RegisterActivity extends Activity {
         }
         finish();
     }
-
-
-    /**
-     * 缓存已请求的code
-     */
-    private Map<String, String> mCacheCode = new HashMap<>();
 
     @OnClick(R.id.btn_next)
     void onClickNext() {
@@ -345,9 +343,9 @@ public class RegisterActivity extends Activity {
                 dismissDialog();
                 if (result.mResult) {
                     ISAlertDialog dialog = new ISAlertDialog(RegisterActivity.this);
-                    if(TextUtils.isEmpty(inviteCode)){
+                    if (TextUtils.isEmpty(inviteCode)) {
                         dialog.setMessage("欢迎您注册成为真约会员，你目前是未认证会员，如想提升信用度和使用更强大功能，请免费升级成为认证会员。");
-                    }else{
+                    } else {
                         dialog.setMessage(String.format("因%s邀请你注册会员，你和他/她同时增加100缘币，马上加%s为好友吧！", inviteCode, inviteCode));
                     }
                     dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -382,6 +380,29 @@ public class RegisterActivity extends Activity {
             mRegisterButton.setEnabled(false);
             mNextButton.setEnabled(false);
         }
+    }
+
+    private void showDialog() {
+        if (mLoadingDialog == null) {
+            mLoadingDialog = new ISLoadingDialog(this);
+            mLoadingDialog.setCancelable(false);
+            mLoadingDialog.setMessage("正在处理, 请稍候...");
+        }
+        mLoadingDialog.show();
+    }
+
+    private void dismissDialog() {
+        UiUtils.dismissDialog(mLoadingDialog);
+    }
+
+    private void showPage1() {
+        mPage1View.setVisibility(View.VISIBLE);
+        mPage2View.setVisibility(View.INVISIBLE);
+    }
+
+    private void showPage2() {
+        mPage1View.setVisibility(View.INVISIBLE);
+        mPage2View.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -434,28 +455,5 @@ public class RegisterActivity extends Activity {
             String text = "(" + millisUntilFinished / 1000 + ")秒";
             mGetVerificationCodeButton.setText(text);
         }
-    }
-
-    private void showDialog() {
-        if (mLoadingDialog == null) {
-            mLoadingDialog = new ISLoadingDialog(this);
-            mLoadingDialog.setCancelable(false);
-            mLoadingDialog.setMessage("正在处理, 请稍候...");
-        }
-        mLoadingDialog.show();
-    }
-
-    private void dismissDialog() {
-        UiUtils.dismissDialog(mLoadingDialog);
-    }
-
-    private void showPage1() {
-        mPage1View.setVisibility(View.VISIBLE);
-        mPage2View.setVisibility(View.INVISIBLE);
-    }
-
-    private void showPage2() {
-        mPage1View.setVisibility(View.INVISIBLE);
-        mPage2View.setVisibility(View.VISIBLE);
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item type="id" name="id_autolayout" />
-    <item type="id" name="id_tag_pageset" />
-    <item type="id" name="id_toolbar_left" />
-    <item type="id" name="id_toolbar_right" />
+    <item name="id_autolayout" type="id" />
+    <item name="id_tag_pageset" type="id" />
+    <item name="id_toolbar_left" type="id" />
+    <item name="id_toolbar_right" type="id" />
 </resources>

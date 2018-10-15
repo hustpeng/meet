@@ -43,6 +43,31 @@ public class EditHobbyActivity extends Activity {
     @BindView(R.id.btn_save)
     Button mSaveButton;
 
+    /**
+     * 将选中的tag中不在tag面板了tag移除
+     *
+     * @param list
+     * @param checkedList
+     */
+    private static void cleanCheckedList(List<CategoryTag> list, List<String> checkedList) {
+        List<String> removeList = new ArrayList<>();
+        for (String tag : checkedList) {
+            if (!checkTag(list, tag)) {
+                removeList.add(tag);
+            }
+        }
+        checkedList.removeAll(removeList);
+    }
+
+    private static boolean checkTag(List<CategoryTag> list, String tag) {
+        for (CategoryTag categoryTag : list) {
+            if (categoryTag.contains(tag)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,31 +144,6 @@ public class EditHobbyActivity extends Activity {
         mPickerView.setMaxSelectCount(5);
         mPickerView.setCheckedList(checkedList);
         mPickerView.update();
-    }
-
-    /**
-     * 将选中的tag中不在tag面板了tag移除
-     *
-     * @param list
-     * @param checkedList
-     */
-    private static void cleanCheckedList(List<CategoryTag> list, List<String> checkedList) {
-        List<String> removeList = new ArrayList<>();
-        for (String tag : checkedList) {
-            if (!checkTag(list, tag)) {
-                removeList.add(tag);
-            }
-        }
-        checkedList.removeAll(removeList);
-    }
-
-    private static boolean checkTag(List<CategoryTag> list, String tag) {
-        for (CategoryTag categoryTag : list) {
-            if (categoryTag.contains(tag)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

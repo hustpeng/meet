@@ -28,19 +28,9 @@ import java.util.Arrays;
 public class PasswordCallback implements Callback, Serializable {
 
     private static final long serialVersionUID = 2267422647454909926L;
-
-    private String prompt;
-
     boolean echoOn;
-
+    private String prompt;
     private char[] inputPassword;
-
-    private void setPrompt(String prompt) throws IllegalArgumentException {
-        if (prompt == null || prompt.length() == 0) {
-            throw new IllegalArgumentException("auth.14"); //$NON-NLS-1$
-        }
-        this.prompt = prompt;
-    }
 
     /**
      * Creates a new {@code PasswordCallback} instance.
@@ -64,6 +54,13 @@ public class PasswordCallback implements Callback, Serializable {
         return prompt;
     }
 
+    private void setPrompt(String prompt) throws IllegalArgumentException {
+        if (prompt == null || prompt.length() == 0) {
+            throw new IllegalArgumentException("auth.14"); //$NON-NLS-1$
+        }
+        this.prompt = prompt;
+    }
+
     /**
      * Queries whether this {@code PasswordCallback} expects user input to be
      * echoed, which is specified during the creation of the object.
@@ -72,23 +69,6 @@ public class PasswordCallback implements Callback, Serializable {
      */
     public boolean isEchoOn() {
         return echoOn;
-    }
-
-    /**
-     * Sets the password. The {@link CallbackHandler} that performs the actual
-     * provisioning or input of the password needs to call this method to hand
-     * back the password to the security service that requested it.
-     *
-     * @param password the password. A copy of this is stored, so subsequent changes
-     *                 to the input array do not affect the {@code PasswordCallback}.
-     */
-    public void setPassword(char[] password) {
-        if (password == null) {
-            this.inputPassword = password;
-        } else {
-            inputPassword = new char[password.length];
-            System.arraycopy(password, 0, inputPassword, 0, inputPassword.length);
-        }
     }
 
     /**
@@ -107,6 +87,23 @@ public class PasswordCallback implements Callback, Serializable {
             return tmp;
         }
         return null;
+    }
+
+    /**
+     * Sets the password. The {@link CallbackHandler} that performs the actual
+     * provisioning or input of the password needs to call this method to hand
+     * back the password to the security service that requested it.
+     *
+     * @param password the password. A copy of this is stored, so subsequent changes
+     *                 to the input array do not affect the {@code PasswordCallback}.
+     */
+    public void setPassword(char[] password) {
+        if (password == null) {
+            this.inputPassword = password;
+        } else {
+            inputPassword = new char[password.length];
+            System.arraycopy(password, 0, inputPassword, 0, inputPassword.length);
+        }
     }
 
     /**

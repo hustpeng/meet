@@ -1,6 +1,5 @@
 package com.agmbat.picker;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
@@ -10,6 +9,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.agmbat.picker.util.DateUtils;
+import com.agmbat.picker.wheelview.WheelView;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -17,9 +19,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
-
-import com.agmbat.picker.util.DateUtils;
-import com.agmbat.picker.wheelview.WheelView;
 
 /**
  * 日期时间选择器，可同时选中日期及时间，另见{@link DatePicker}和{@link TimePicker}
@@ -80,16 +79,6 @@ public class DateTimePicker extends WheelPicker {
     private int endHour, endMinute = 59;
     private int textSize = WheelView.TEXT_SIZE;
     private boolean resetWhileWheel = true;
-
-    @IntDef(value = {NONE, YEAR_MONTH_DAY, YEAR_MONTH, MONTH_DAY})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface DateMode {
-    }
-
-    @IntDef(value = {NONE, HOUR_24, HOUR_12})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface TimeMode {
-    }
 
     /**
      * @see #HOUR_24
@@ -770,6 +759,16 @@ public class DateTimePicker extends WheelPicker {
             //当前设置的分钟不在指定范围，则默认选中范围开始的分钟
             selectedMinute = minutes.get(0);
         }
+    }
+
+    @IntDef(value = {NONE, YEAR_MONTH_DAY, YEAR_MONTH, MONTH_DAY})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface DateMode {
+    }
+
+    @IntDef(value = {NONE, HOUR_24, HOUR_12})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface TimeMode {
     }
 
     public interface OnWheelListener {

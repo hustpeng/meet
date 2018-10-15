@@ -84,6 +84,29 @@ public class XmppStringUtils {
     private static final Pattern xep0091Pattern = Pattern.compile("^\\d+T\\d+:\\d+:\\d+$");
 
     private static final List<PatternCouplings> couplings = new ArrayList<PatternCouplings>();
+    private static final char[] QUOTE_ENCODE = "&quot;".toCharArray();
+    private static final char[] APOS_ENCODE = "&apos;".toCharArray();
+    private static final char[] AMP_ENCODE = "&amp;".toCharArray();
+    private static final char[] LT_ENCODE = "&lt;".toCharArray();
+    private static final char[] GT_ENCODE = "&gt;".toCharArray();
+    /**
+     * Used by the hash method.
+     */
+    private static MessageDigest digest = null;
+    /**
+     * Pseudo-random number generator object for use with randomString().
+     * The Random class is not considered to be cryptographically secure, so
+     * only use these random Strings for low to medium security applications.
+     */
+    private static Random randGen = new Random();
+    /**
+     * Array of numbers and letters of mixed case. Numbers appear in the list
+     * twice so that there is a more equal chance that a number will be picked.
+     * We can use the array to get a random number or letter by picking a random
+     * array index.
+     */
+    private static char[] numbersAndLetters = ("0123456789abcdefghijklmnopqrstuvwxyz" +
+            "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
 
     static {
         TimeZone utc = TimeZone.getTimeZone("UTC");
@@ -112,11 +135,9 @@ public class XmppStringUtils {
         couplings.add(new PatternCouplings(timeNoMillisNoZonePattern, timeNoMillisNoZoneFormatter));
     }
 
-    private static final char[] QUOTE_ENCODE = "&quot;".toCharArray();
-    private static final char[] APOS_ENCODE = "&apos;".toCharArray();
-    private static final char[] AMP_ENCODE = "&amp;".toCharArray();
-    private static final char[] LT_ENCODE = "&lt;".toCharArray();
-    private static final char[] GT_ENCODE = "&gt;".toCharArray();
+    private XmppStringUtils() {
+        // Not instantiable.
+    }
 
     /**
      * Parses the given date string in the <a href="http://xmpp.org/extensions/xep-0082.html">XEP-0082 - XMPP Date and Time Profiles</a>.
@@ -359,7 +380,7 @@ public class XmppStringUtils {
      * Escapes the node portion of a JID according to "JID Escaping" (JEP-0106).
      * Escaping replaces characters prohibited by node-prep with escape sequences,
      * as follows:<p>
-     * <p>
+     *
      * <table border="1">
      * <tr><td><b>Unescaped Character</b></td><td><b>Encoded Sequence</b></td></tr>
      * <tr><td>&lt;space&gt;</td><td>\20</td></tr>
@@ -437,7 +458,7 @@ public class XmppStringUtils {
      * Un-escapes the node portion of a JID according to "JID Escaping" (JEP-0106).<p>
      * Escaping replaces characters prohibited by node-prep with escape sequences,
      * as follows:<p>
-     * <p>
+     *
      * <table border="1">
      * <tr><td><b>Unescaped Character</b></td><td><b>Encoded Sequence</b></td></tr>
      * <tr><td>&lt;space&gt;</td><td>\20</td></tr>
@@ -605,11 +626,6 @@ public class XmppStringUtils {
     }
 
     /**
-     * Used by the hash method.
-     */
-    private static MessageDigest digest = null;
-
-    /**
      * Hashes a String using the SHA-1 algorithm and returns the result as a
      * String of hexadecimal numbers. This method is synchronized to avoid
      * excessive MessageDigest object creation. If calling this method becomes
@@ -732,22 +748,6 @@ public class XmppStringUtils {
     }
 
     /**
-     * Pseudo-random number generator object for use with randomString().
-     * The Random class is not considered to be cryptographically secure, so
-     * only use these random Strings for low to medium security applications.
-     */
-    private static Random randGen = new Random();
-
-    /**
-     * Array of numbers and letters of mixed case. Numbers appear in the list
-     * twice so that there is a more equal chance that a number will be picked.
-     * We can use the array to get a random number or letter by picking a random
-     * array index.
-     */
-    private static char[] numbersAndLetters = ("0123456789abcdefghijklmnopqrstuvwxyz" +
-            "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
-
-    /**
      * Returns a random String of numbers and letters (lower and upper case)
      * of the specified length. The method uses the Random class that is
      * built-in to Java which is suitable for low to medium grade security uses.
@@ -770,39 +770,6 @@ public class XmppStringUtils {
             randBuffer[i] = numbersAndLetters[randGen.nextInt(71)];
         }
         return new String(randBuffer);
-    }
-
-    private XmppStringUtils() {
-        // Not instantiable.
-    }
-
-    private static class PatternCouplings {
-        Pattern pattern;
-        DateFormat formatter;
-        boolean needToConvertTimeZone = false;
-
-        public PatternCouplings(Pattern datePattern, DateFormat dateFormat) {
-            pattern = datePattern;
-            formatter = dateFormat;
-        }
-
-        public PatternCouplings(Pattern datePattern, DateFormat dateFormat, boolean shouldConvertToRFC822) {
-            pattern = datePattern;
-            formatter = dateFormat;
-            needToConvertTimeZone = shouldConvertToRFC822;
-        }
-
-        public String convertTime(String dateString) {
-            if (dateString.charAt(dateString.length() - 1) == 'Z') {
-                return dateString.replace("Z", "+0000");
-            } else {
-                // If the time zone wasn't specified with 'Z', then it's in
-                // ISO8601 format (i.e. '(+|-)HH:mm')
-                // RFC822 needs a similar format just without the colon (i.e.
-                // '(+|-)HHmm)'), so remove it
-                return dateString.replaceAll("([\\+\\-]\\d\\d):(\\d\\d)", "$1$2");
-            }
-        }
     }
 
     /**
@@ -838,5 +805,34 @@ public class XmppStringUtils {
             builder.append(escapeForXML(value));
         }
         builder.append(xmlTagEnd(key));
+    }
+
+    private static class PatternCouplings {
+        Pattern pattern;
+        DateFormat formatter;
+        boolean needToConvertTimeZone = false;
+
+        public PatternCouplings(Pattern datePattern, DateFormat dateFormat) {
+            pattern = datePattern;
+            formatter = dateFormat;
+        }
+
+        public PatternCouplings(Pattern datePattern, DateFormat dateFormat, boolean shouldConvertToRFC822) {
+            pattern = datePattern;
+            formatter = dateFormat;
+            needToConvertTimeZone = shouldConvertToRFC822;
+        }
+
+        public String convertTime(String dateString) {
+            if (dateString.charAt(dateString.length() - 1) == 'Z') {
+                return dateString.replace("Z", "+0000");
+            } else {
+                // If the time zone wasn't specified with 'Z', then it's in
+                // ISO8601 format (i.e. '(+|-)HH:mm')
+                // RFC822 needs a similar format just without the colon (i.e.
+                // '(+|-)HHmm)'), so remove it
+                return dateString.replaceAll("([\\+\\-]\\d\\d):(\\d\\d)", "$1$2");
+            }
+        }
     }
 }

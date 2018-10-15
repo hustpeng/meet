@@ -41,12 +41,12 @@ public class RegisterInfo {
      */
     private String mInviteCode;
 
-    public void setUserName(String userName) {
-        mUserName = userName;
-    }
-
     public String getUserName() {
         return mUserName;
+    }
+
+    public void setUserName(String userName) {
+        mUserName = userName;
     }
 
     public String getPassword() {
@@ -65,28 +65,28 @@ public class RegisterInfo {
         mVerificationCode = verificationCode;
     }
 
-    public void setGender(int gender) {
-        mGender = gender;
-    }
-
     public int getGender() {
         return mGender;
     }
 
-    public void setNickName(String nickName) {
-        mNickName = nickName;
+    public void setGender(int gender) {
+        mGender = gender;
     }
 
     public String getNickName() {
         return mNickName;
     }
 
-    public void setBirthYear(int year) {
-        mBirthYear = year;
+    public void setNickName(String nickName) {
+        mNickName = nickName;
     }
 
     public int getBirthYear() {
         return mBirthYear;
+    }
+
+    public void setBirthYear(int year) {
+        mBirthYear = year;
     }
 
     public String getInviteCode() {

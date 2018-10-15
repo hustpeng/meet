@@ -7,7 +7,7 @@ public class ColorUtils {
 
     /**
      * 灰度值计算
-     * 
+     *
      * @param pixels 像素
      * @return int 灰度值
      */
@@ -25,7 +25,7 @@ public class ColorUtils {
 
     /**
      * 是否为不透明
-     * 
+     *
      * @param color
      * @return
      */

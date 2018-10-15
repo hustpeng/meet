@@ -40,11 +40,11 @@ import java.util.concurrent.BlockingQueue;
  */
 public class PacketWriter {
 
+    private final BlockingQueue<Packet> queue;
     private Thread writerThread;
     private Thread keepAliveThread;
     private Writer writer;
     private XMPPConnection connection;
-    private final BlockingQueue<Packet> queue;
     private boolean done;
 
     /**

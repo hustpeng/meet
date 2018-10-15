@@ -45,20 +45,6 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
     private LayoutInflater mInflater;
     private OnImageItemClickListener listener;   //图片被点击的监听
 
-    public void setOnImageItemClickListener(OnImageItemClickListener listener) {
-        this.listener = listener;
-    }
-
-    public interface OnImageItemClickListener {
-        void onImageItemClick(View view, ImageItem imageItem, int position);
-    }
-
-    public void refreshData(ArrayList<ImageItem> images) {
-        if (images == null || images.size() == 0) this.images = new ArrayList<>();
-        else this.images = images;
-        notifyDataSetChanged();
-    }
-
     /**
      * 构造方法
      */
@@ -72,6 +58,16 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
         isShowCamera = imagePicker.getPickerOption().isShowCamera();
         mSelectedImages = imagePicker.getSelectedImages();
         mInflater = LayoutInflater.from(activity);
+    }
+
+    public void setOnImageItemClickListener(OnImageItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public void refreshData(ArrayList<ImageItem> images) {
+        if (images == null || images.size() == 0) this.images = new ArrayList<>();
+        else this.images = images;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -114,6 +110,10 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
         } else {
             return images.get(position);
         }
+    }
+
+    public interface OnImageItemClickListener {
+        void onImageItemClick(View view, ImageItem imageItem, int position);
     }
 
     private class ImageViewHolder extends ViewHolder {

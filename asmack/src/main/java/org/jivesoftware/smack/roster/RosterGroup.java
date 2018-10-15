@@ -41,9 +41,9 @@ import java.util.List;
  */
 public class RosterGroup {
 
+    private final List<RosterEntry> entries;
     private String name;
     private Connection connection;
-    private final List<RosterEntry> entries;
 
     /**
      * Creates a new roster group instance.

@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * Android Common Kit
  *
  * @author mayimchen
@@ -8,34 +8,26 @@
  */
 package com.agmbat.app;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import com.agmbat.android.SystemManager;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.agmbat.android.SystemManager;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 public class CommandDispatcher {
 
-    public interface Command {
+    private static CommandDispatcher sInstance;
+    private final Context mContext;
+    private final Map<String, Command> mMap;
 
-        public String getCommand();
-
-        public void handleCommand();
-
-    }
-
-    public static class CommandReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            CommandDispatcher.dispatch(action);
-        }
+    private CommandDispatcher() {
+        mContext = SystemManager.getContext();
+        mMap = new HashMap<String, Command>();
     }
 
     public static CommandDispatcher getInstance() {
@@ -50,16 +42,6 @@ public class CommandDispatcher {
         if (command != null) {
             command.handleCommand();
         }
-    }
-
-    private static CommandDispatcher sInstance;
-
-    private final Context mContext;
-    private final Map<String, Command> mMap;
-
-    private CommandDispatcher() {
-        mContext = SystemManager.getContext();
-        mMap = new HashMap<String, Command>();
     }
 
     public void addCommand(Command command) {
@@ -81,6 +63,23 @@ public class CommandDispatcher {
             filter.addAction(it.next());
         }
         return filter;
+    }
+
+    public interface Command {
+
+        public String getCommand();
+
+        public void handleCommand();
+
+    }
+
+    public static class CommandReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            CommandDispatcher.dispatch(action);
+        }
     }
 
 }

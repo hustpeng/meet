@@ -1,4 +1,3 @@
-
 package org.jivesoftware.smackx.location;
 
 import org.jivesoftware.smack.packet.IQ;

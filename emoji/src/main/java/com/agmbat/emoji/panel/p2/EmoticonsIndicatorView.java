@@ -7,8 +7,6 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-
-import com.agmbat.android.AppResources;
 import com.agmbat.android.SysResources;
 import com.agmbat.emoji.R;
 import com.agmbat.emoji.pageset.PageSetEntity;

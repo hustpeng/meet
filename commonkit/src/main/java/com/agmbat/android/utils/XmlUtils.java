@@ -1,16 +1,12 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
  * @since 2016-10-07
  */
 package com.agmbat.android.utils;
-
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -19,6 +15,9 @@ import org.dom4j.Element;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
+import java.util.Iterator;
+
 public final class XmlUtils {
 
     public static String getNodeValue(String xmlString, String nodeName) {
@@ -26,7 +25,7 @@ public final class XmlUtils {
         try {
             Document document = DocumentHelper.parseText(xmlString);
             Element ele = document.getRootElement();
-            for (Iterator<?> i = ele.elementIterator(); i.hasNext();) {
+            for (Iterator<?> i = ele.elementIterator(); i.hasNext(); ) {
                 Element node = (Element) i.next();
                 if (nodeName.equals(node.getName())) {
                     result = node.getText();

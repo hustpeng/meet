@@ -15,15 +15,15 @@
  */
 package com.agmbat.app;
 
-import java.io.File;
-import java.util.Vector;
-
-import com.agmbat.android.AppResources;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+
+import com.agmbat.android.AppResources;
+
+import java.io.File;
+import java.util.Vector;
 
 /**
  * 管理app配置文件

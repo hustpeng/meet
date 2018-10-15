@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
+
 import com.google.zxing.client.android.R;
 
 import java.util.ArrayList;
@@ -40,33 +41,14 @@ import java.util.List;
  */
 final class LoadPackagesAsyncTask extends AsyncTask<Object, Object, List<AppInfo>> {
 
-    private static final String[] PKG_PREFIX_WHITELIST = { "com.google.android.apps.", };
+    private static final String[] PKG_PREFIX_WHITELIST = {"com.google.android.apps.",};
     private static final String[] PKG_PREFIX_BLACKLIST =
-            { "com.android.", "android", "com.google.android.", "com.htc", };
+            {"com.android.", "android", "com.google.android.", "com.htc",};
 
     private final ListActivity activity;
 
     LoadPackagesAsyncTask(ListActivity activity) {
         this.activity = activity;
-    }
-
-    @Override
-    protected List<AppInfo> doInBackground(Object...objects) {
-        List<AppInfo> labelsPackages = new ArrayList<>();
-        PackageManager packageManager = activity.getPackageManager();
-        Iterable<ApplicationInfo> appInfos = packageManager.getInstalledApplications(0);
-        for (PackageItemInfo appInfo : appInfos) {
-            String packageName = appInfo.packageName;
-            if (!isHidden(packageName)) {
-                CharSequence label = appInfo.loadLabel(packageManager);
-                Drawable icon = appInfo.loadIcon(packageManager);
-                if (label != null) {
-                    labelsPackages.add(new AppInfo(packageName, label.toString(), icon));
-                }
-            }
-        }
-        Collections.sort(labelsPackages);
-        return labelsPackages;
     }
 
     private static boolean isHidden(String packageName) {
@@ -84,6 +66,25 @@ final class LoadPackagesAsyncTask extends AsyncTask<Object, Object, List<AppInfo
             }
         }
         return false;
+    }
+
+    @Override
+    protected List<AppInfo> doInBackground(Object... objects) {
+        List<AppInfo> labelsPackages = new ArrayList<>();
+        PackageManager packageManager = activity.getPackageManager();
+        Iterable<ApplicationInfo> appInfos = packageManager.getInstalledApplications(0);
+        for (PackageItemInfo appInfo : appInfos) {
+            String packageName = appInfo.packageName;
+            if (!isHidden(packageName)) {
+                CharSequence label = appInfo.loadLabel(packageManager);
+                Drawable icon = appInfo.loadIcon(packageManager);
+                if (label != null) {
+                    labelsPackages.add(new AppInfo(packageName, label.toString(), icon));
+                }
+            }
+        }
+        Collections.sort(labelsPackages);
+        return labelsPackages;
     }
 
     @Override

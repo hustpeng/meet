@@ -25,24 +25,8 @@ public class VCardExtendManager extends Xepmodule {
 
     private final static int FETCH_VCARDEXTEND = 0;
     private final static int SET_MY_VCARDEXTEND = 1;
-
-    private CacheStoreBase<VCardExtendObject> cacheStorage;
-
     private final List<VCardExtendListener> listeners;
-
-    public VCardExtendManager(final Connection connection) {
-        this.xmppConnection = connection;
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-
-            @Override
-            public void connectionCreated(Connection connection) {
-                connection.addConnectionListener(myConnectionListener);
-            }
-        });
-        listeners = new CopyOnWriteArrayList<VCardExtendListener>();
-        cacheStorage = new CacheStoreBase<VCardExtendObject>();
-    }
-
+    private CacheStoreBase<VCardExtendObject> cacheStorage;
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {
@@ -60,6 +44,19 @@ public class VCardExtendManager extends Xepmodule {
             abortAllQuery();
         }
     };
+
+    public VCardExtendManager(final Connection connection) {
+        this.xmppConnection = connection;
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(myConnectionListener);
+            }
+        });
+        listeners = new CopyOnWriteArrayList<VCardExtendListener>();
+        cacheStorage = new CacheStoreBase<VCardExtendObject>();
+    }
 
     public void addListener(VCardExtendListener listener) {
         if (!listeners.contains(listener)) {

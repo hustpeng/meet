@@ -18,11 +18,11 @@ public class KickMemberPacket extends Packet {
         setTo(circleServer);
     }
 
-    public void setMember(String memberJid){
+    public void setMember(String memberJid) {
         this.member = memberJid;
     }
 
-    public void setReason(String reason){
+    public void setReason(String reason) {
         this.reason = reason;
     }
 

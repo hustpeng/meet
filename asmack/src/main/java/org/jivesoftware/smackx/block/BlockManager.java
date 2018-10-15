@@ -1,8 +1,6 @@
 package org.jivesoftware.smackx.block;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import android.text.TextUtils;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -17,7 +15,9 @@ import org.jivesoftware.smackx.db.CacheStoreBase;
 import org.jivesoftware.smackx.xepmodule.XepQueryInfo;
 import org.jivesoftware.smackx.xepmodule.Xepmodule;
 
-import android.text.TextUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BlockManager extends Xepmodule {
     private static final int fetchBlockListName = 111;
@@ -26,30 +26,12 @@ public class BlockManager extends Xepmodule {
     private static final int removeBlock = 444;
     private static final int setDefaultName = 555;
     private static final int setActiveName = 666;
-
+    private final List<BlockListener> listeners;
+    boolean hasBlock = false;
     private CacheStoreBase<BlockObject> cacheStorage;
     private String mListName = "block-message-list";
-
     private String mDefaultListName = "";
     private String mActiviteListName;
-    boolean hasBlock = false;
-    private final List<BlockListener> listeners;
-
-    public BlockManager(final Connection connection) {
-        this.xmppConnection = connection;
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-
-            @Override
-            public void connectionCreated(Connection connection) {
-                connection.addConnectionListener(myConnectionListener);
-            }
-        });
-
-        listeners = new CopyOnWriteArrayList<BlockListener>();
-
-        cacheStorage = new CacheStoreBase<BlockObject>();
-    }
-
     private ConnectionListener myConnectionListener = new ConnectionListener() {
         @Override
         public void loginSuccessful() {
@@ -67,6 +49,21 @@ public class BlockManager extends Xepmodule {
             abortAllQuery();
         }
     };
+
+    public BlockManager(final Connection connection) {
+        this.xmppConnection = connection;
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+
+            @Override
+            public void connectionCreated(Connection connection) {
+                connection.addConnectionListener(myConnectionListener);
+            }
+        });
+
+        listeners = new CopyOnWriteArrayList<BlockListener>();
+
+        cacheStorage = new CacheStoreBase<BlockObject>();
+    }
 
     @Override
     public void clearResource() {
@@ -223,6 +220,163 @@ public class BlockManager extends Xepmodule {
         xmppConnection.sendPacket(packet);
     }
 
+    public void addBlock(String jid) {
+
+        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
+            notifyAddBlockResult(jid, false);
+            return;
+        }
+
+        if (isQueryExist(addBlock, jid, null)) {
+            return;
+        }
+
+        AddBlockPacket packet = new AddBlockPacket(XmppStringUtils.parseBareAddress(jid));
+        String packetId = packet.getPacketID();
+        PacketFilter idFilter = new PacketIDFilter(packetId);
+        BlockResultListener packetListener = new BlockResultListener();
+        xmppConnection.addPacketListener(packetListener, idFilter);
+
+        XepQueryInfo queryInfo = new XepQueryInfo(addBlock, jid);
+        addQueryInfo(queryInfo, packetId, packetListener);
+
+        xmppConnection.sendPacket(packet);
+    }
+
+    public void removeBlock(String jid) {
+        if (cacheStorage.getAllEntires().size() == 1) {
+            BlockObject obj = new BlockObject();
+            obj.setJid(jid);
+            cacheStorage.delete(obj);
+            setActiveName("");
+            notifyRemoveBlockResult(jid, true);
+            return;
+        }
+        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
+            notifyRemoveBlockResult(jid, false);
+            return;
+        }
+
+        if (isQueryExist(removeBlock, jid, null)) {
+            return;
+        }
+
+        RemoveBlockPacket packet = new RemoveBlockPacket(XmppStringUtils.parseBareAddress(jid));
+        String packetId = packet.getPacketID();
+        PacketFilter idFilter = new PacketIDFilter(packetId);
+        BlockResultListener packetListener = new BlockResultListener();
+        xmppConnection.addPacketListener(packetListener, idFilter);
+
+        XepQueryInfo queryInfo = new XepQueryInfo(removeBlock, jid);
+        addQueryInfo(queryInfo, packetId, packetListener);
+
+        xmppConnection.sendPacket(packet);
+    }
+
+    public void setActiveName(String activeName) {
+        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
+            return;
+        }
+
+        if (isQueryExist(setActiveName, null, null)) {
+            return;
+        }
+
+        ActiveNamePacket packet = new ActiveNamePacket(activeName);
+        String packetId = packet.getPacketID();
+        PacketFilter idFilter = new PacketIDFilter(packetId);
+        BlockResultListener packetListener = new BlockResultListener();
+        xmppConnection.addPacketListener(packetListener, idFilter);
+
+        XepQueryInfo queryInfo = new XepQueryInfo(setActiveName, activeName);
+        addQueryInfo(queryInfo, packetId, packetListener);
+        xmppConnection.sendPacket(packet);
+    }
+
+    public void setDefaultName(String defaultName) {
+        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
+            return;
+        }
+
+        if (isQueryExist(setDefaultName, null, null)) {
+            return;
+        }
+
+        DefaultNamePacket packet = new DefaultNamePacket(defaultName);
+        String packetId = packet.getPacketID();
+        PacketFilter idFilter = new PacketIDFilter(packetId);
+        BlockResultListener packetListener = new BlockResultListener();
+        xmppConnection.addPacketListener(packetListener, idFilter);
+
+        XepQueryInfo queryInfo = new XepQueryInfo(setDefaultName, defaultName);
+        addQueryInfo(queryInfo, packetId, packetListener);
+        xmppConnection.sendPacket(packet);
+    }
+
+    public boolean isBlock(String jid) {
+        boolean result = false;
+        if (cacheStorage.getAllEntires().size() <= 0) {
+            return result;
+        }
+        for (BlockObject obj : cacheStorage.getAllEntires()) {
+            if (obj.getJid().equals(jid)) {
+                result = true;
+                return result;
+            }
+        }
+        return result;
+    }
+
+    private void notifyFetchBlockListNameResult(Boolean success) {
+        for (BlockListener listener : listeners) {
+            listener.notifyFetchBlockListNameResult(success);
+
+        }
+    }
+
+    private void notifyFetchBlockResult(Boolean success) {
+        for (BlockListener listener : listeners) {
+            listener.notifyFetchBlockResult(success);
+
+        }
+    }
+
+    private void notifyAddBlockResult(String jid, boolean success) {
+        for (BlockListener listener : listeners) {
+            listener.notifyAddBlockResult(jid, success);
+        }
+    }
+
+    private void notifyRemoveBlockResult(String jid, boolean success) {
+        for (BlockListener listener : listeners) {
+            listener.notifyRemoveBlockResult(jid, success);
+        }
+    }
+
+    public String getListName() {
+        return mListName;
+    }
+
+    public void setListName(String mListName) {
+        this.mListName = mListName;
+    }
+
+    public String getDefaultListName() {
+        return mDefaultListName;
+    }
+
+    public void setDefaultListName(String mDefaultListName) {
+        this.mDefaultListName = mDefaultListName;
+    }
+
+    public String getActiveListName() {
+        return mActiviteListName;
+    }
+
+    public void setActiveListName(String mActiviteListName) {
+        this.mActiviteListName = mActiviteListName;
+    }
+
     public class AddBlockPacket extends IQ {
         private String mJid;
 
@@ -288,29 +442,6 @@ public class BlockManager extends Xepmodule {
             }
             return buffer.toString();
         }
-    }
-
-    public void addBlock(String jid) {
-
-        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
-            notifyAddBlockResult(jid, false);
-            return;
-        }
-
-        if (isQueryExist(addBlock, jid, null)) {
-            return;
-        }
-
-        AddBlockPacket packet = new AddBlockPacket(XmppStringUtils.parseBareAddress(jid));
-        String packetId = packet.getPacketID();
-        PacketFilter idFilter = new PacketIDFilter(packetId);
-        BlockResultListener packetListener = new BlockResultListener();
-        xmppConnection.addPacketListener(packetListener, idFilter);
-
-        XepQueryInfo queryInfo = new XepQueryInfo(addBlock, jid);
-        addQueryInfo(queryInfo, packetId, packetListener);
-
-        xmppConnection.sendPacket(packet);
     }
 
     public class RemoveBlockPacket extends IQ {
@@ -380,36 +511,6 @@ public class BlockManager extends Xepmodule {
         }
     }
 
-    public void removeBlock(String jid) {
-        if (cacheStorage.getAllEntires().size() == 1) {
-            BlockObject obj = new BlockObject();
-            obj.setJid(jid);
-            cacheStorage.delete(obj);
-            setActiveName("");
-            notifyRemoveBlockResult(jid, true);
-            return;
-        }
-        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
-            notifyRemoveBlockResult(jid, false);
-            return;
-        }
-
-        if (isQueryExist(removeBlock, jid, null)) {
-            return;
-        }
-
-        RemoveBlockPacket packet = new RemoveBlockPacket(XmppStringUtils.parseBareAddress(jid));
-        String packetId = packet.getPacketID();
-        PacketFilter idFilter = new PacketIDFilter(packetId);
-        BlockResultListener packetListener = new BlockResultListener();
-        xmppConnection.addPacketListener(packetListener, idFilter);
-
-        XepQueryInfo queryInfo = new XepQueryInfo(removeBlock, jid);
-        addQueryInfo(queryInfo, packetId, packetListener);
-
-        xmppConnection.sendPacket(packet);
-    }
-
     public class ActiveNamePacket extends IQ {
 
         private String activeName;
@@ -449,26 +550,6 @@ public class BlockManager extends Xepmodule {
 
     }
 
-    public void setActiveName(String activeName) {
-        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
-            return;
-        }
-
-        if (isQueryExist(setActiveName, null, null)) {
-            return;
-        }
-
-        ActiveNamePacket packet = new ActiveNamePacket(activeName);
-        String packetId = packet.getPacketID();
-        PacketFilter idFilter = new PacketIDFilter(packetId);
-        BlockResultListener packetListener = new BlockResultListener();
-        xmppConnection.addPacketListener(packetListener, idFilter);
-
-        XepQueryInfo queryInfo = new XepQueryInfo(setActiveName, activeName);
-        addQueryInfo(queryInfo, packetId, packetListener);
-        xmppConnection.sendPacket(packet);
-    }
-
     public class DefaultNamePacket extends IQ {
         private String defaultName;
 
@@ -506,40 +587,6 @@ public class BlockManager extends Xepmodule {
         }
     }
 
-    public void setDefaultName(String defaultName) {
-        if (!xmppConnection.isAuthenticated() || xmppConnection.isAnonymous()) {
-            return;
-        }
-
-        if (isQueryExist(setDefaultName, null, null)) {
-            return;
-        }
-
-        DefaultNamePacket packet = new DefaultNamePacket(defaultName);
-        String packetId = packet.getPacketID();
-        PacketFilter idFilter = new PacketIDFilter(packetId);
-        BlockResultListener packetListener = new BlockResultListener();
-        xmppConnection.addPacketListener(packetListener, idFilter);
-
-        XepQueryInfo queryInfo = new XepQueryInfo(setDefaultName, defaultName);
-        addQueryInfo(queryInfo, packetId, packetListener);
-        xmppConnection.sendPacket(packet);
-    }
-
-    public boolean isBlock(String jid) {
-        boolean result = false;
-        if (cacheStorage.getAllEntires().size() <= 0) {
-            return result;
-        }
-        for (BlockObject obj : cacheStorage.getAllEntires()) {
-            if (obj.getJid().equals(jid)) {
-                result = true;
-                return result;
-            }
-        }
-        return result;
-    }
-
     private class BlockResultListener implements PacketListener {
         @Override
         public void processPacket(Packet packet) {
@@ -550,55 +597,5 @@ public class BlockManager extends Xepmodule {
                 processQueryResponse(packet, queryInfo);
             }
         }
-    }
-
-    private void notifyFetchBlockListNameResult(Boolean success) {
-        for (BlockListener listener : listeners) {
-            listener.notifyFetchBlockListNameResult(success);
-
-        }
-    }
-
-    private void notifyFetchBlockResult(Boolean success) {
-        for (BlockListener listener : listeners) {
-            listener.notifyFetchBlockResult(success);
-
-        }
-    }
-
-    private void notifyAddBlockResult(String jid, boolean success) {
-        for (BlockListener listener : listeners) {
-            listener.notifyAddBlockResult(jid, success);
-        }
-    }
-
-    private void notifyRemoveBlockResult(String jid, boolean success) {
-        for (BlockListener listener : listeners) {
-            listener.notifyRemoveBlockResult(jid, success);
-        }
-    }
-
-    public String getListName() {
-        return mListName;
-    }
-
-    public void setListName(String mListName) {
-        this.mListName = mListName;
-    }
-
-    public String getDefaultListName() {
-        return mDefaultListName;
-    }
-
-    public void setDefaultListName(String mDefaultListName) {
-        this.mDefaultListName = mDefaultListName;
-    }
-
-    public String getActiveListName() {
-        return mActiviteListName;
-    }
-
-    public void setActiveListName(String mActiviteListName) {
-        this.mActiviteListName = mActiviteListName;
     }
 }

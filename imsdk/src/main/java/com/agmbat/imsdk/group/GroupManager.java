@@ -6,12 +6,11 @@ import java.util.List;
 public class GroupManager {
 
     private static GroupManager sInstance = new GroupManager();
+    private List<CircleInfo> mGroupList = new ArrayList<>();
 
     public static GroupManager getInstance() {
         return sInstance;
     }
-
-    private List<CircleInfo> mGroupList = new ArrayList<>();
 
     public CircleInfo getMemCacheGroup(String jid) {
         for (int i = 0; i < mGroupList.size(); i++) {

@@ -16,28 +16,23 @@ import java.util.regex.Pattern;
  */
 public class StringChecker {
 
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$",
-            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-
-    private static final Pattern EMAIL_PATTERN2 = Pattern.compile("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
-
-    private static final Pattern NICK_NAME_PATTERN = Pattern.compile("^[_A-Za-z][_A-Za-z0-9]{2,14}$",
-            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-
-    private static final Pattern NICK_NAME_RESERVED_PATTERN = Pattern.compile(".*Admin.*|.*System.*",
-            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-
     public static final int MAX_COMMENT_LENGTH = 1000;
     public static final int MAX_PASSWORD_LENGTH = 100;
-
-    private static final Pattern IP_PATTERN = Pattern.compile("(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
-            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
-            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
-            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)");
     /**
      * 最小密码长度
      */
     public static final int MIN_PASSWORD_LENGTH = 6;
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$",
+            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    private static final Pattern EMAIL_PATTERN2 = Pattern.compile("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
+    private static final Pattern NICK_NAME_PATTERN = Pattern.compile("^[_A-Za-z][_A-Za-z0-9]{2,14}$",
+            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    private static final Pattern NICK_NAME_RESERVED_PATTERN = Pattern.compile(".*Admin.*|.*System.*",
+            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    private static final Pattern IP_PATTERN = Pattern.compile("(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
+            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)");
 
     /**
      * Check whether the email address is a valid email address.

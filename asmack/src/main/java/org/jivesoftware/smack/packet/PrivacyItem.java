@@ -208,23 +208,6 @@ public class PrivacyItem {
     }
 
     /**
-     * Sets the element identifier to apply the action.
-     * <p>
-     * If the type is "jid", then the 'value' attribute MUST contain a valid Jabber ID.
-     * If the type is "group", then the 'value' attribute SHOULD contain the name of a group
-     * in the user's roster.
-     * If the type is "subscription", then the 'value' attribute MUST be one of "both", "to",
-     * "from", or "none".
-     *
-     * @param value is the identifier to apply the action.
-     */
-    public void setValue(String value) {
-        if (!(this.getRule() == null && value == null)) {
-            this.getRule().setValue(value);
-        }
-    }
-
-    /**
      * Returns the type hold the kind of communication it will allow or block.
      * It MUST be filled with one of these values: jid, group or subscription.
      *
@@ -257,6 +240,22 @@ public class PrivacyItem {
         }
     }
 
+    /**
+     * Sets the element identifier to apply the action.
+     * <p>
+     * If the type is "jid", then the 'value' attribute MUST contain a valid Jabber ID.
+     * If the type is "group", then the 'value' attribute SHOULD contain the name of a group
+     * in the user's roster.
+     * If the type is "subscription", then the 'value' attribute MUST be one of "both", "to",
+     * "from", or "none".
+     *
+     * @param value is the identifier to apply the action.
+     */
+    public void setValue(String value) {
+        if (!(this.getRule() == null && value == null)) {
+            this.getRule().setValue(value);
+        }
+    }
 
     /**
      * Returns whether the receiver allows or denies every kind of communication.
@@ -323,12 +322,39 @@ public class PrivacyItem {
 
 
     /**
+     * Type defines if the rule is based on JIDs, roster groups or presence subscription types.
+     */
+    public static enum Type {
+        /**
+         * JID being analyzed should belong to a roster group of the list's owner.
+         */
+        group,
+        /**
+         * JID being analyzed should have a resource match, domain match or bare JID match.
+         */
+        jid,
+        /**
+         * JID being analyzed should belong to a contact present in the owner's roster with
+         * the specified subscription status.
+         */
+        subscription
+    }
+
+    /**
      * Privacy Rule represents the kind of action to apply.
      * It holds the kind of communication ([jid|group|subscription]) it will allow or block and
      * identifier to apply the action.
      */
 
     public static class PrivacyRule {
+        /**
+         * If the type is "subscription", then the 'value' attribute MUST be one of "both",
+         * "to", "from", or "none"
+         */
+        public static final String SUBSCRIPTION_BOTH = "both";
+        public static final String SUBSCRIPTION_TO = "to";
+        public static final String SUBSCRIPTION_FROM = "from";
+        public static final String SUBSCRIPTION_NONE = "none";
         /**
          * Type defines if the rule is based on JIDs, roster groups or presence subscription types.
          * Available values are: [jid|group|subscription]
@@ -343,15 +369,6 @@ public class PrivacyItem {
          * "from", or "none".
          */
         private String value;
-
-        /**
-         * If the type is "subscription", then the 'value' attribute MUST be one of "both",
-         * "to", "from", or "none"
-         */
-        public static final String SUBSCRIPTION_BOTH = "both";
-        public static final String SUBSCRIPTION_TO = "to";
-        public static final String SUBSCRIPTION_FROM = "from";
-        public static final String SUBSCRIPTION_NONE = "none";
 
         /**
          * Returns the type constant associated with the String value.
@@ -454,24 +471,5 @@ public class PrivacyItem {
         public boolean isSuscription() {
             return this.getType() == Type.subscription;
         }
-    }
-
-    /**
-     * Type defines if the rule is based on JIDs, roster groups or presence subscription types.
-     */
-    public static enum Type {
-        /**
-         * JID being analyzed should belong to a roster group of the list's owner.
-         */
-        group,
-        /**
-         * JID being analyzed should have a resource match, domain match or bare JID match.
-         */
-        jid,
-        /**
-         * JID being analyzed should belong to a contact present in the owner's roster with
-         * the specified subscription status.
-         */
-        subscription
     }
 }

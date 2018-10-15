@@ -1,5 +1,9 @@
 package com.agmbat.file;
 
+import com.agmbat.io.IoUtils;
+import com.agmbat.io.OnProgressListener;
+import com.agmbat.text.StringUtils;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -20,32 +24,10 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import com.agmbat.io.IoUtils;
-import com.agmbat.io.OnProgressListener;
-import com.agmbat.log.Log;
-import com.agmbat.text.StringUtils;
-
 /**
  * zip文件操作
  */
 public class ZipUtils {
-
-    /**
-     * zip或unzip文件进度监听器
-     */
-    public interface OnZipProgressListener {
-
-        /**
-         * 压缩或解压过程中回调进度
-         *
-         * @param total        解压zip文件后的总大小
-         * @param current      解压到当前的进度
-         * @param entryName    当前解压的名称
-         * @param entryTotal   当前解压的entry的大小
-         * @param entryCurrent 当前解压的entry的进度
-         */
-        public void onZipProgress(long total, long current, String entryName, long entryTotal, long entryCurrent);
-    }
 
     /**
      * 读取Zip文件中指定文件的内容
@@ -266,7 +248,6 @@ public class ZipUtils {
         }
     }
 
-
     /**
      * 文件解压缩
      *
@@ -297,7 +278,6 @@ public class ZipUtils {
         }
     }
 
-
     /**
      * 解压zip文件到同级目录
      *
@@ -307,7 +287,6 @@ public class ZipUtils {
         File parent = srcFile.getParentFile();
         return unzip(srcFile, parent);
     }
-
 
     /**
      * 解压文件到指定目录
@@ -319,7 +298,6 @@ public class ZipUtils {
     public static boolean unzip(File srcFile, File outDir) {
         return unzip(srcFile, outDir, (OnZipProgressListener) null);
     }
-
 
     /**
      * 解压文件到指定目录(使用ZipFile, 解压速度快)
@@ -506,7 +484,6 @@ public class ZipUtils {
         }
     }
 
-
     /**
      * 删除zip文件中指定路径文件
      *
@@ -672,6 +649,23 @@ public class ZipUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * zip或unzip文件进度监听器
+     */
+    public interface OnZipProgressListener {
+
+        /**
+         * 压缩或解压过程中回调进度
+         *
+         * @param total        解压zip文件后的总大小
+         * @param current      解压到当前的进度
+         * @param entryName    当前解压的名称
+         * @param entryTotal   当前解压的entry的大小
+         * @param entryCurrent 当前解压的entry的进度
+         */
+        public void onZipProgress(long total, long current, String entryName, long entryTotal, long entryCurrent);
     }
 
 }

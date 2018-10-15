@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * sql
  *
  * @author mayimchen
@@ -16,8 +16,8 @@ public class SqlUtils {
     /**
      * Add a column to a table using ALTER TABLE.
      *
-     * @param table name of the table
-     * @param columnName name of the column to add
+     * @param table            name of the table
+     * @param columnName       name of the column to add
      * @param columnDefinition SQL for the column definition
      */
     public static String addColumnSql(String table, String columnName, String columnDefinition) {

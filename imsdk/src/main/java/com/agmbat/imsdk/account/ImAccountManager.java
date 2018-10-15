@@ -16,39 +16,6 @@ public class ImAccountManager {
     public static final boolean DEBUG_CHECK_SMS = true;
 
     /**
-     * 登陆回调
-     */
-    public interface OnLoginListener {
-        public void onLogin(ApiResult result);
-    }
-
-    public interface OnGetVerificationCodeListener {
-        public void onGetVerificationCode(ApiResult result);
-    }
-
-    public interface OnRegisterListener {
-        public void onRegister(ApiResult result);
-    }
-
-    /**
-     * 验证验证码是否正解
-     */
-    public interface OnVerificationCodeListener {
-        public void onVerificationCode(ApiResult result);
-    }
-
-    /**
-     * 修改密码回调
-     */
-    public interface OnChangePasswordListener {
-        public void onChangePassword(ApiResult result);
-    }
-
-    public interface OnResetPasswordListener {
-        public void onResetPassword(ApiResult result);
-    }
-
-    /**
      * 登陆
      *
      * @param userName
@@ -71,7 +38,6 @@ public class ImAccountManager {
             }
         });
     }
-
 
     /**
      * 获取注册验证码
@@ -157,7 +123,6 @@ public class ImAccountManager {
         });
     }
 
-
     /**
      * 修改密码api
      *
@@ -208,5 +173,39 @@ public class ImAccountManager {
 
     public static String getConnectionUserName() {
         return XMPPManager.getInstance().getConnectionUserName();
+    }
+
+    /**
+     * 登陆回调
+     */
+    public interface OnLoginListener {
+        public void onLogin(ApiResult result);
+    }
+
+    public interface OnGetVerificationCodeListener {
+        public void onGetVerificationCode(ApiResult result);
+    }
+
+    public interface OnRegisterListener {
+        public void onRegister(ApiResult result);
+    }
+
+
+    /**
+     * 验证验证码是否正解
+     */
+    public interface OnVerificationCodeListener {
+        public void onVerificationCode(ApiResult result);
+    }
+
+    /**
+     * 修改密码回调
+     */
+    public interface OnChangePasswordListener {
+        public void onChangePassword(ApiResult result);
+    }
+
+    public interface OnResetPasswordListener {
+        public void onResetPassword(ApiResult result);
     }
 }

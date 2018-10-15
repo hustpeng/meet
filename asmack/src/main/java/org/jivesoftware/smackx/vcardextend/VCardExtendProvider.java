@@ -20,32 +20,6 @@ public class VCardExtendProvider implements IQProvider {
         return "vcard-extended";
     }
 
-    @Override
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
-        VCardExtendPacket packet = new VCardExtendPacket();
-        VCardExtendObject item = null;
-        boolean done = false;
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                String parserName = parser.getName();
-                if (!"vCard".equals(parserName) && null == item) {
-                    item = new VCardExtendObject();
-                }
-                if (null != item) {
-                    parseField(item, parserName, parser);
-                }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if ("vCard".equals(parser.getName())) {
-                    done = true;
-                }
-            }
-
-        }
-        packet.setObject(item);
-        return packet;
-    }
-
     /**
      * 解析字段
      *
@@ -117,5 +91,31 @@ public class VCardExtendProvider implements IQProvider {
             e.printStackTrace();
         }
         return list;
+    }
+
+    @Override
+    public IQ parseIQ(XmlPullParser parser) throws Exception {
+        VCardExtendPacket packet = new VCardExtendPacket();
+        VCardExtendObject item = null;
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == XmlPullParser.START_TAG) {
+                String parserName = parser.getName();
+                if (!"vCard".equals(parserName) && null == item) {
+                    item = new VCardExtendObject();
+                }
+                if (null != item) {
+                    parseField(item, parserName, parser);
+                }
+            } else if (eventType == XmlPullParser.END_TAG) {
+                if ("vCard".equals(parser.getName())) {
+                    done = true;
+                }
+            }
+
+        }
+        packet.setObject(item);
+        return packet;
     }
 }

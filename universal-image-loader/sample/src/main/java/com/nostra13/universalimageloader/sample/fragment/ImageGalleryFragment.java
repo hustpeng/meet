@@ -40,77 +40,77 @@ import com.nostra13.universalimageloader.sample.activity.SimpleImageActivity;
  */
 public class ImageGalleryFragment extends BaseFragment {
 
-	public static final int INDEX = 3;
+    public static final int INDEX = 3;
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fr_image_gallery, container, false);
-		Gallery gallery = (Gallery) rootView.findViewById(R.id.gallery);
-		gallery.setAdapter(new ImageAdapter(getActivity()));
-		gallery.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				startImagePagerActivity(position);
-			}
-		});
-		return rootView;
-	}
+    @SuppressWarnings("deprecation")
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fr_image_gallery, container, false);
+        Gallery gallery = (Gallery) rootView.findViewById(R.id.gallery);
+        gallery.setAdapter(new ImageAdapter(getActivity()));
+        gallery.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startImagePagerActivity(position);
+            }
+        });
+        return rootView;
+    }
 
 
-	private void startImagePagerActivity(int position) {
-		Intent intent = new Intent(getActivity(), SimpleImageActivity.class);
-		intent.putExtra(Constants.Extra.FRAGMENT_INDEX, ImagePagerFragment.INDEX);
-		intent.putExtra(Constants.Extra.IMAGE_POSITION, position);
-		startActivity(intent);
-	}
+    private void startImagePagerActivity(int position) {
+        Intent intent = new Intent(getActivity(), SimpleImageActivity.class);
+        intent.putExtra(Constants.Extra.FRAGMENT_INDEX, ImagePagerFragment.INDEX);
+        intent.putExtra(Constants.Extra.IMAGE_POSITION, position);
+        startActivity(intent);
+    }
 
-	private static class ImageAdapter extends BaseAdapter {
+    private static class ImageAdapter extends BaseAdapter {
 
-		private static final String[] IMAGE_URLS = Constants.IMAGES;
+        private static final String[] IMAGE_URLS = Constants.IMAGES;
 
-		private LayoutInflater inflater;
+        private LayoutInflater inflater;
 
-		private DisplayImageOptions options;
+        private DisplayImageOptions options;
 
-		ImageAdapter(Context context) {
-			inflater = LayoutInflater.from(context);
+        ImageAdapter(Context context) {
+            inflater = LayoutInflater.from(context);
 
-			options = new DisplayImageOptions.Builder()
-					.showImageOnLoading(R.drawable.ic_stub)
-					.showImageForEmptyUri(R.drawable.ic_empty)
-					.showImageOnFail(R.drawable.ic_error)
-					.cacheInMemory(true)
-					.cacheOnDisk(true)
-					.considerExifParams(true)
-					.bitmapConfig(Bitmap.Config.RGB_565)
-					.displayer(new RoundedBitmapDisplayer(20))
-					.build();
-		}
+            options = new DisplayImageOptions.Builder()
+                    .showImageOnLoading(R.drawable.ic_stub)
+                    .showImageForEmptyUri(R.drawable.ic_empty)
+                    .showImageOnFail(R.drawable.ic_error)
+                    .cacheInMemory(true)
+                    .cacheOnDisk(true)
+                    .considerExifParams(true)
+                    .bitmapConfig(Bitmap.Config.RGB_565)
+                    .displayer(new RoundedBitmapDisplayer(20))
+                    .build();
+        }
 
-		@Override
-		public int getCount() {
-			return IMAGE_URLS.length;
-		}
+        @Override
+        public int getCount() {
+            return IMAGE_URLS.length;
+        }
 
-		@Override
-		public Object getItem(int position) {
-			return position;
-		}
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
 
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
 
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			ImageView imageView = (ImageView) convertView;
-			if (imageView == null) {
-				imageView = (ImageView) inflater.inflate(R.layout.item_gallery_image, parent, false);
-			}
-			ImageLoader.getInstance().displayImage(IMAGE_URLS[position], imageView, options);
-			return imageView;
-		}
-	}
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ImageView imageView = (ImageView) convertView;
+            if (imageView == null) {
+                imageView = (ImageView) inflater.inflate(R.layout.item_gallery_image, parent, false);
+            }
+            ImageLoader.getInstance().displayImage(IMAGE_URLS[position], imageView, options);
+            return imageView;
+        }
+    }
 }

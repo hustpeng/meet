@@ -1,14 +1,14 @@
 package com.agmbat.android.media;
 
+import com.agmbat.file.FileUtils;
+import com.agmbat.io.IoUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-
-import com.agmbat.file.FileUtils;
-import com.agmbat.io.IoUtils;
 
 public class AmrHelper {
 
@@ -37,7 +37,7 @@ public class AmrHelper {
     // 得到amr的时长
     public static long getAmrDuration(File file) {
         long duration = -1;
-        int[] packedSize = { 12, 13, 15, 17, 19, 20, 26, 31, 5, 0, 0, 0, 0, 0, 0, 0 };
+        int[] packedSize = {12, 13, 15, 17, 19, 20, 26, 31, 5, 0, 0, 0, 0, 0, 0, 0};
         RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(file, "rw");

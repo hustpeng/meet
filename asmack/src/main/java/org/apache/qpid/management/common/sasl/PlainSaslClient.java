@@ -25,23 +25,22 @@ import org.apache.harmony.javax.security.auth.callback.CallbackHandler;
 import org.apache.harmony.javax.security.auth.callback.NameCallback;
 import org.apache.harmony.javax.security.auth.callback.PasswordCallback;
 import org.apache.harmony.javax.security.auth.callback.UnsupportedCallbackException;
-
-import de.measite.smack.Sasl;
-
 import org.apache.harmony.javax.security.sasl.SaslClient;
 import org.apache.harmony.javax.security.sasl.SaslException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import de.measite.smack.Sasl;
+
 public class PlainSaslClient implements SaslClient {
 
+    private static byte SEPARATOR = 0;
     private boolean completed;
     private CallbackHandler cbh;
     private String authorizationID;
     private String authenticationID;
     private byte password[];
-    private static byte SEPARATOR = 0;
 
     public PlainSaslClient(String authorizationID, CallbackHandler cbh) throws SaslException {
         completed = false;

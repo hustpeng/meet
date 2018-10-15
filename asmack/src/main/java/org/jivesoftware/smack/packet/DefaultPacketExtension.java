@@ -33,7 +33,7 @@ import java.util.Map;
  * This class provides a very simple representation of an XML sub-document. Each element
  * is a key in a Map with its CDATA being the value. For example, given the following
  * XML sub-document:
- * <p>
+ *
  * <pre>
  * &lt;foo xmlns="http://bar.com"&gt;
  *     &lt;color&gt;blue&lt;/color&gt;

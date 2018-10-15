@@ -1,5 +1,8 @@
 package com.agmbat.android.image;
 
+import android.content.Context;
+import android.widget.ImageView;
+
 import com.agmbat.android.AppResources;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -11,9 +14,6 @@ import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.core.download.Scheme;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
-import android.content.Context;
-import android.widget.ImageView;
 
 import java.io.File;
 

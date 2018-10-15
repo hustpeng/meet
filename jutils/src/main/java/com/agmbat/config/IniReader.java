@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 mayimchen <mayimchen@gmail.com> All Rights Reserved.
- *
+ * <p>
  * jutils
  *
  * @author mayimchen
@@ -9,8 +9,8 @@
 package com.agmbat.config;
 
 import com.agmbat.file.FileUtils;
-import com.agmbat.text.StringUtils;
 import com.agmbat.io.IoUtils;
+import com.agmbat.text.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;

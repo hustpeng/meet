@@ -24,6 +24,45 @@ import org.jivesoftware.smackx.block.BlockManager;
 public abstract class BusinessHandler {
 
     protected ContactInfo mContactInfo;
+    private BlockListener mBlockListener = new BlockListener() {
+        @Override
+        public void notifyFetchBlockListNameResult(boolean success) {
+
+        }
+
+        @Override
+        public void notifyFetchBlockResult(boolean success) {
+
+        }
+
+        @Override
+        public void notifyAddBlockResult(String jid, boolean success) {
+            BlockManager blockManager = XMPPManager.getInstance().getBlockManager();
+            if (success) {
+                ToastUtil.showToast("已加入黑名单");
+                blockManager.setActiveName(blockManager.getListName());
+            } else {
+                ToastUtil.showToast("加入黑名单失败");
+            }
+            blockManager.removeListener(this);
+        }
+
+        @Override
+        public void notifyRemoveBlockResult(String jid, boolean success) {
+            BlockManager blockManager = XMPPManager.getInstance().getBlockManager();
+            if (success) {
+                ToastUtil.showToast("已移出黑名单");
+            } else {
+                ToastUtil.showToast("移出黑名单失败");
+            }
+            blockManager.removeListener(this);
+        }
+
+        @Override
+        public void notifyBlockListChange(String jid, boolean isBlock) {
+
+        }
+    };
 
     public BusinessHandler(ContactInfo contactInfo) {
         mContactInfo = contactInfo;
@@ -38,13 +77,13 @@ public abstract class BusinessHandler {
      *
      * @param view
      */
-    public void setupViews(View view){
+    public void setupViews(View view) {
         boolean isFriend = XMPPManager.getInstance().getRosterManager().isFriend(mContactInfo.getBareJid());
-        if(isFriend){
+        if (isFriend) {
             view.findViewById(R.id.setup_alias).setVisibility(View.VISIBLE);
             view.findViewById(R.id.btn_add_to_contact).setVisibility(View.GONE);
             view.findViewById(R.id.btn_chat).setVisibility(View.VISIBLE);
-        }else{
+        } else {
             view.findViewById(R.id.setup_alias).setVisibility(View.GONE);
             view.findViewById(R.id.btn_add_to_contact).setVisibility(View.VISIBLE);
             view.findViewById(R.id.btn_chat).setVisibility(View.GONE);
@@ -88,46 +127,6 @@ public abstract class BusinessHandler {
         }
     }
 
-    private BlockListener mBlockListener = new BlockListener() {
-        @Override
-        public void notifyFetchBlockListNameResult(boolean success) {
-
-        }
-
-        @Override
-        public void notifyFetchBlockResult(boolean success) {
-
-        }
-
-        @Override
-        public void notifyAddBlockResult(String jid, boolean success) {
-            BlockManager blockManager = XMPPManager.getInstance().getBlockManager();
-            if (success) {
-                ToastUtil.showToast("已加入黑名单");
-                blockManager.setActiveName(blockManager.getListName());
-            } else {
-                ToastUtil.showToast("加入黑名单失败");
-            }
-            blockManager.removeListener(this);
-        }
-
-        @Override
-        public void notifyRemoveBlockResult(String jid, boolean success) {
-            BlockManager blockManager = XMPPManager.getInstance().getBlockManager();
-            if (success) {
-                ToastUtil.showToast("已移出黑名单");
-            } else {
-                ToastUtil.showToast("移出黑名单失败");
-            }
-            blockManager.removeListener(this);
-        }
-
-        @Override
-        public void notifyBlockListChange(String jid, boolean isBlock) {
-
-        }
-    };
-
     private void showRemoveUserDialog(final Context context, final ContactInfo contactInfo) {
         ISAlertDialog dialog = new ISAlertDialog(context);
         dialog.setTitle("删除好友");
@@ -155,7 +154,7 @@ public abstract class BusinessHandler {
         dialog.dismiss();
         if (success) {
             ToastUtil.showToast("删除好友成功");
-            if(context instanceof Activity){
+            if (context instanceof Activity) {
                 Activity activity = (Activity) context;
                 activity.finish();
             }

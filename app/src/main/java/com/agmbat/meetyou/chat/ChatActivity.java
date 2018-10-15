@@ -120,18 +120,14 @@ import butterknife.OnClick;
 public class ChatActivity extends Activity implements OnInputListener {
 
     public static final int PAGE_SIZE = 20;
-
+    public static final String KEY_CHAT_TYPE = "chat_type";
+    public static final int TYPE_GROUP_CHAT = 1;
+    public static final int TYPE_SINGLE_CHAT = 0;
     /**
      * key, 用于标识联系人
      */
     private static final String KEY_CONTACT = "contact";
     private static final String KEY_GROUP = "group";
-
-    public static final String KEY_CHAT_TYPE = "chat_type";
-
-    public static final int TYPE_GROUP_CHAT = 1;
-    public static final int TYPE_SINGLE_CHAT = 0;
-
     /**
      * 显示名称的控件
      */
@@ -217,7 +213,149 @@ public class ChatActivity extends Activity implements OnInputListener {
             }
         }
     };
+    /**
+     * 存储@的cid、name对
+     */
+    private Map<String, String> nickNameMap = new HashMap<String, String>();
+    /**
+     * 返回的所有的用户名,用于识别输入框中的所有要@的人
+     * 如果用户删除过，会出现不匹配的情况，需要在for循环中做处理
+     */
+    private List<String> atNames = new ArrayList<>();
+    private MessageListAdapter.OnChatLongClickListener mOnItemLongClickListener = new MessageListAdapter.OnChatLongClickListener() {
+        @Override
+        public void onAvatarLongClick(int position, MessageView messageView) {
+            //单聊不能@
+            if (mChatType == TYPE_SINGLE_CHAT) {
+                return;
+            }
+            MessageObject messageObject = mAdapter.getItem(position);
+            //不能@自己
+            if (messageObject.getSenderJid().equals(XMPPManager.getInstance().getXmppConnection().getBareJid())) {
+                return;
+            }
+            String senderJid = messageObject.getSenderJid();
+            String senderNickName = messageObject.getSenderNickName();
 
+            String atNickName = "@" + senderNickName + " ";
+            String existInput = mInputView.getText().toString().trim();
+            String[] inputParts = existInput.split(" ");
+            for (int i = 0; i < inputParts.length; i++) {
+                if (inputParts[i].equals(atNickName.trim())) {
+                    return;
+                }
+            }
+
+            nickNameMap.put(senderJid, senderNickName);
+            //返回的人名，自增加
+            atNames.add(atNickName);
+            // 获取光标当前位置
+            int curIndex = mInputView.getSelectionStart();
+            if (curIndex > 0) {
+                char curPreChar = mInputView.getText().toString().charAt(curIndex - 1);
+                if (curPreChar != ' ') {
+                    atNickName = " " + atNickName;
+                }
+            }
+            // 把要@的人插入光标所在位置
+            mInputView.getText().insert(curIndex, atNickName);
+            setAtImageSpan(atNames);
+        }
+
+        @Override
+        public void onContentLongClick(final int position, MessageView messageView) {
+            final MessageObject messageObject = mAdapter.getItem(position);
+            String bodyText = messageObject.getBody();
+            String[] operations = null;
+            final Body body = BodyParser.parse(bodyText);
+            if (body instanceof TextBody) {
+                operations = new String[]{"复制", "删除"};
+            } else {
+                operations = new String[]{"删除"};
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+            final String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+            builder.setItems(operations, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == 0) {
+                        if (body instanceof TextBody) {
+                            TextBody textBody = (TextBody) body;
+                            SystemUtil.copyToClipBoard(getBaseContext(), "chat", textBody.getContent());
+                            ToastUtil.showToast("已复制");
+                        } else {
+                            removeMessage(messageObject);
+                            messageStorage.deleteMsg(messageObject.getMsgId(), myJid);
+                        }
+                    } else if (which == 1) {
+                        removeMessage(messageObject);
+                        messageStorage.deleteMsg(messageObject.getMsgId(), myJid);
+                    }
+                }
+            });
+            builder.create().show();
+        }
+    };
+    private AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
+
+
+        @Override
+        public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+        }
+
+        @Override
+        public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//            int lastIndex = firstVisibleItem + visibleItemCount;
+//            for (int i = firstVisibleItem; i < lastIndex; i++) {
+//                if (i == 0 || i == lastIndex - 1) {
+//                    continue;
+//                }
+//                MessageObject messageObject = mAdapter.getItem(i - 1);
+//                MessageObjectStatus oldStatus = messageObject.getMsgStatus();
+//                if (oldStatus != MessageObjectStatus.READ) {
+//                    XMPPManager.getInstance().getMessageManager().updateMsgStatus(messageObject.getMsgId(), MessageObjectStatus.READ);
+//                }
+//            }
+        }
+    };
+    private ISLoadingDialog mUploadingDialog;
+    private PacketListener mGroupChatListener = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) {
+            if (packet instanceof GroupChatReply) {
+                AppConfigUtils.setGroupHistoryEverGet(getBaseContext(), mCircleInfo.getGroupJid(), true);
+
+                GroupChatReply groupChatReply = (GroupChatReply) packet;
+                final List<MessageObject> messageObjects = groupChatReply.getMessages();
+                VLog.d("Receive message size: " + messageObjects.size());
+                markMessagesAsRead(messageObjects);
+                String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
+                for (int i = 0; i < messageObjects.size(); i++) {
+                    MessageObject messageObject = messageObjects.get(i);
+                    messageObject.setAccount(myJid);
+                    MessageObject existMsg = messageStorage.getMsg(messageObject.getMsgId(), myJid);
+                    if (null == existMsg) {
+                        messageStorage.insertMsg(messageObject);
+                    } else {
+                        messageStorage.updateMsg(messageObject, myJid);
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        insertMessagesAtBeginning(messageObjects);
+                        mPtrView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mPtrView.getRefreshableView().setSelection(messageObjects.size());
+                            }
+                        });
+                    }
+                });
+
+            }
+        }
+    };
 
     public static void openChat(Context context, ContactInfo contactInfo) {
         Intent intent = new Intent(context, ChatActivity.class);
@@ -331,7 +469,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
     }
 
-
     @OnClick(R.id.at_tips)
     void onClickAtTips() {
         mAtTipsView.setVisibility(View.GONE);
@@ -417,98 +554,11 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
     }
 
-    private void markMessagesAsRead(MessageObject messageObject){
+    private void markMessagesAsRead(MessageObject messageObject) {
         if (messageObject.getMsgStatus() != MessageObjectStatus.READ) {
             XMPPManager.getInstance().getMessageManager().updateMsgStatus(messageObject.getMsgId(), MessageObjectStatus.READ);
         }
     }
-
-    /**
-     * 存储@的cid、name对
-     */
-    private Map<String, String> nickNameMap = new HashMap<String, String>();
-    /**
-     * 返回的所有的用户名,用于识别输入框中的所有要@的人
-     * 如果用户删除过，会出现不匹配的情况，需要在for循环中做处理
-     */
-    private List<String> atNames = new ArrayList<>();
-
-
-    private MessageListAdapter.OnChatLongClickListener mOnItemLongClickListener = new MessageListAdapter.OnChatLongClickListener() {
-        @Override
-        public void onAvatarLongClick(int position, MessageView messageView) {
-            //单聊不能@
-            if (mChatType == TYPE_SINGLE_CHAT) {
-                return;
-            }
-            MessageObject messageObject = mAdapter.getItem(position);
-            //不能@自己
-            if (messageObject.getSenderJid().equals(XMPPManager.getInstance().getXmppConnection().getBareJid())) {
-                return;
-            }
-            String senderJid = messageObject.getSenderJid();
-            String senderNickName = messageObject.getSenderNickName();
-
-            String atNickName = "@" + senderNickName + " ";
-            String existInput = mInputView.getText().toString().trim();
-            String[] inputParts = existInput.split(" ");
-            for (int i = 0; i < inputParts.length; i++) {
-                if (inputParts[i].equals(atNickName.trim())) {
-                    return;
-                }
-            }
-
-            nickNameMap.put(senderJid, senderNickName);
-            //返回的人名，自增加
-            atNames.add(atNickName);
-            // 获取光标当前位置
-            int curIndex = mInputView.getSelectionStart();
-            if (curIndex > 0) {
-                char curPreChar = mInputView.getText().toString().charAt(curIndex - 1);
-                if (curPreChar != ' ') {
-                    atNickName = " " + atNickName;
-                }
-            }
-            // 把要@的人插入光标所在位置
-            mInputView.getText().insert(curIndex, atNickName);
-            setAtImageSpan(atNames);
-        }
-
-        @Override
-        public void onContentLongClick(final int position, MessageView messageView) {
-            final MessageObject messageObject = mAdapter.getItem(position);
-            String bodyText = messageObject.getBody();
-            String[] operations = null;
-            final Body body = BodyParser.parse(bodyText);
-            if (body instanceof TextBody) {
-                operations = new String[]{"复制", "删除"};
-            } else {
-                operations = new String[]{"删除"};
-            }
-            AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
-            final String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
-            builder.setItems(operations, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == 0) {
-                        if (body instanceof TextBody) {
-                            TextBody textBody = (TextBody) body;
-                            SystemUtil.copyToClipBoard(getBaseContext(), "chat", textBody.getContent());
-                            ToastUtil.showToast("已复制");
-                        } else {
-                            removeMessage(messageObject);
-                            messageStorage.deleteMsg(messageObject.getMsgId(), myJid);
-                        }
-                    } else if (which == 1) {
-                        removeMessage(messageObject);
-                        messageStorage.deleteMsg(messageObject.getMsgId(), myJid);
-                    }
-                }
-            });
-            builder.create().show();
-        }
-    };
-
 
     //上传需要的id值
     public List<TextBody.AtUser> getAtUsers(String content) {
@@ -537,7 +587,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
         return atUsers;
     }
-
 
     private void setAtImageSpan(List<String> atNames) {
         String content = mInputView.getText().toString();
@@ -579,7 +628,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         mInputView.setTextKeepState(ss);
     }
 
-
     /**
      * 把返回的人名，转换成bitmap
      *
@@ -605,29 +653,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         canvas.drawText(name, rect.left, rect.height() - rect.bottom, paint);
         return bmp;
     }
-
-    private AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
-
-
-        @Override
-        public void onScrollStateChanged(AbsListView absListView, int scrollState) {
-        }
-
-        @Override
-        public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//            int lastIndex = firstVisibleItem + visibleItemCount;
-//            for (int i = firstVisibleItem; i < lastIndex; i++) {
-//                if (i == 0 || i == lastIndex - 1) {
-//                    continue;
-//                }
-//                MessageObject messageObject = mAdapter.getItem(i - 1);
-//                MessageObjectStatus oldStatus = messageObject.getMsgStatus();
-//                if (oldStatus != MessageObjectStatus.READ) {
-//                    XMPPManager.getInstance().getMessageManager().updateMsgStatus(messageObject.getMsgId(), MessageObjectStatus.READ);
-//                }
-//            }
-        }
-    };
 
     private void initOtherPanel() {
         List<MenuInfo> beans = new ArrayList<>();
@@ -713,7 +738,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         return false;
     }
 
-
     @Override
     public void onInput(int type, String content) {
         if (type == OnInputListener.TYPE_TEXT) {
@@ -761,8 +785,6 @@ public class ChatActivity extends Activity implements OnInputListener {
             });
         }
     }
-
-    private ISLoadingDialog mUploadingDialog;
 
     private void showUploadingDialog() {
         if (null == mUploadingDialog || !mUploadingDialog.isShowing()) {
@@ -831,7 +853,6 @@ public class ChatActivity extends Activity implements OnInputListener {
             }
         });
     }
-
 
     /**
      * 发送图片
@@ -939,6 +960,78 @@ public class ChatActivity extends Activity implements OnInputListener {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(FinishChatEvent finishChatEvent) {
+        finish();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(RemoveGroupEvent removeGroupEvent) {
+        finish();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(EditGroupEvent editGroupEvent) {
+        //收到群修改成功通知后，重新刷新列表
+        if (mChatType == TYPE_GROUP_CHAT) {
+            if (editGroupEvent.getGroupJid().equals(mCircleInfo.getGroupJid())) {
+                mNicknameView.setText(editGroupEvent.getGroupName());
+                mCircleInfo.setName(editGroupEvent.getGroupName());
+                mCircleInfo.setAvatar(editGroupEvent.getAvatar());
+            }
+        }
+    }
+
+    private void removeAllMessages() {
+        mMessages.clear();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void removeMessage(MessageObject messageObject) {
+        mMessages.remove(messageObject);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void insertMessagesAtBeginning(List<MessageObject> messageObjects) {
+        markMessagesAsRead(messageObjects);
+        MessageObject.sortByDate(messageObjects, false);
+        for (int i = 0; i < messageObjects.size(); i++) {
+            MessageObject current = messageObjects.get(i);
+            if (!mMessages.contains(current)) {
+                mMessages.add(0, current);
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void insertMessagesAtBeginning(MessageObject messageObject) {
+        markMessagesAsRead(messageObject);
+        if (!mMessages.contains(messageObject)) {
+            mMessages.add(0, messageObject);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void insertMessagesToTheEnd(List<MessageObject> messageObjects) {
+        markMessagesAsRead(messageObjects);
+        MessageObject.sortByDate(messageObjects, true);
+        for (int i = 0; i < messageObjects.size(); i++) {
+            MessageObject current = messageObjects.get(i);
+            if (!mMessages.contains(current)) {
+                mMessages.add(current);
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void insertMessagesToTheEnd(MessageObject messageObject) {
+        markMessagesAsRead(messageObject);
+        if (!mMessages.contains(messageObject)) {
+            mMessages.add(messageObject);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
     private class ClearChatTask extends AsyncTask<String, Void, Void> {
 
         private ISLoadingDialog mDeletingDialog;
@@ -962,116 +1055,6 @@ public class ChatActivity extends Activity implements OnInputListener {
         protected void onPostExecute(Void aVoid) {
             mDeletingDialog.dismiss();
             removeAllMessages();
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(FinishChatEvent finishChatEvent) {
-        finish();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(RemoveGroupEvent removeGroupEvent) {
-        finish();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(EditGroupEvent editGroupEvent) {
-        //收到群修改成功通知后，重新刷新列表
-        if (mChatType == TYPE_GROUP_CHAT) {
-            if (editGroupEvent.getGroupJid().equals(mCircleInfo.getGroupJid())) {
-                mNicknameView.setText(editGroupEvent.getGroupName());
-                mCircleInfo.setName(editGroupEvent.getGroupName());
-                mCircleInfo.setAvatar(editGroupEvent.getAvatar());
-            }
-        }
-    }
-
-    private PacketListener mGroupChatListener = new PacketListener() {
-        @Override
-        public void processPacket(Packet packet) {
-            if (packet instanceof GroupChatReply) {
-                AppConfigUtils.setGroupHistoryEverGet(getBaseContext(), mCircleInfo.getGroupJid(), true);
-
-                GroupChatReply groupChatReply = (GroupChatReply) packet;
-                final List<MessageObject> messageObjects = groupChatReply.getMessages();
-                VLog.d("Receive message size: " + messageObjects.size());
-                markMessagesAsRead(messageObjects);
-                String myJid = XMPPManager.getInstance().getXmppConnection().getBareJid();
-                for (int i = 0; i < messageObjects.size(); i++) {
-                    MessageObject messageObject = messageObjects.get(i);
-                    messageObject.setAccount(myJid);
-                    MessageObject existMsg = messageStorage.getMsg(messageObject.getMsgId(), myJid);
-                    if (null == existMsg) {
-                        messageStorage.insertMsg(messageObject);
-                    } else {
-                        messageStorage.updateMsg(messageObject, myJid);
-                    }
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        insertMessagesAtBeginning(messageObjects);
-                        mPtrView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                mPtrView.getRefreshableView().setSelection(messageObjects.size());
-                            }
-                        });
-                    }
-                });
-
-            }
-        }
-    };
-
-    private void removeAllMessages(){
-        mMessages.clear();
-        mAdapter.notifyDataSetChanged();
-    }
-
-    private void removeMessage(MessageObject messageObject){
-        mMessages.remove(messageObject);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    private void insertMessagesAtBeginning(List<MessageObject> messageObjects) {
-        markMessagesAsRead(messageObjects);
-        MessageObject.sortByDate(messageObjects, false);
-        for (int i = 0; i < messageObjects.size(); i++) {
-            MessageObject current = messageObjects.get(i);
-            if (!mMessages.contains(current)) {
-                mMessages.add(0, current);
-            }
-        }
-        mAdapter.notifyDataSetChanged();
-    }
-
-    private void insertMessagesAtBeginning(MessageObject messageObject){
-        markMessagesAsRead(messageObject);
-        if(!mMessages.contains(messageObject)){
-            mMessages.add(0,messageObject);
-            mAdapter.notifyDataSetChanged();
-        }
-    }
-
-    private void insertMessagesToTheEnd(List<MessageObject> messageObjects) {
-        markMessagesAsRead(messageObjects);
-        MessageObject.sortByDate(messageObjects, true);
-        for (int i = 0; i < messageObjects.size(); i++) {
-            MessageObject current = messageObjects.get(i);
-            if (!mMessages.contains(current)) {
-                mMessages.add(current);
-            }
-        }
-        mAdapter.notifyDataSetChanged();
-    }
-
-    private void insertMessagesToTheEnd(MessageObject messageObject){
-        markMessagesAsRead(messageObject);
-        if(!mMessages.contains(messageObject)){
-            mMessages.add(messageObject);
-            mAdapter.notifyDataSetChanged();
         }
     }
 

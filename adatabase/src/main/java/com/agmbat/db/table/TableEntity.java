@@ -30,23 +30,21 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class TableEntity<T> {
 
+    public static final ConcurrentHashMap<TableEntity<?>, String> REPLACE_SQL_CACHE =
+            new ConcurrentHashMap<TableEntity<?>, String>();
     private final DbManager db;
-
     /**
      * 表名
      */
     private final String tableName;
-
     /**
      * key: columnName
      */
     private final LinkedHashMap<String, ColumnEntity> columnMap;
-
     private final String onCreated;
     private ColumnEntity id;
     private Class<T> entityType;
     private Constructor<T> constructor;
-
     private boolean checkedDatabase;
 
     TableEntity(DbManager db, Class<T> entityType) throws Throwable {
@@ -63,6 +61,45 @@ public final class TableEntity<T> {
                 this.id = column;
                 break;
             }
+        }
+    }
+
+    /**
+     * 从Class中找到所有表中的字段
+     *
+     * @param entityType 表示entity的Class
+     * @return
+     */
+    static synchronized LinkedHashMap<String, ColumnEntity> findColumnMap(Class<?> entityType) {
+        LinkedHashMap<String, ColumnEntity> columnMap = new LinkedHashMap<String, ColumnEntity>();
+        addColumnsToMap(entityType, columnMap);
+        return columnMap;
+    }
+
+    private static void addColumnsToMap(Class<?> entityType, HashMap<String, ColumnEntity> columnMap) {
+        if (Object.class.equals(entityType)) {
+            return;
+        }
+        try {
+            Field[] fields = entityType.getDeclaredFields();
+            for (Field field : fields) {
+                int modify = field.getModifiers();
+                if (Modifier.isStatic(modify) || Modifier.isTransient(modify)) {
+                    continue;
+                }
+                Column columnAnn = field.getAnnotation(Column.class);
+                if (columnAnn != null) {
+                    if (ColumnConverterFactory.isSupportColumnConverter(field.getType())) {
+                        ColumnEntity column = new ColumnEntity(entityType, field, columnAnn);
+                        if (!columnMap.containsKey(column.getColumnName())) {
+                            columnMap.put(column.getColumnName(), column);
+                        }
+                    }
+                }
+            }
+            addColumnsToMap(entityType.getSuperclass(), columnMap);
+        } catch (Throwable e) {
+            Log.e(e.getMessage(), e);
         }
     }
 
@@ -140,6 +177,10 @@ public final class TableEntity<T> {
     }
 
     /**
+     * Build "insert", "replace",，"update", "delete" and "create" sql.
+     */
+
+    /**
      * 构建创建表的sql语句
      *
      * @return
@@ -166,13 +207,6 @@ public final class TableEntity<T> {
         }
         return keyValueList;
     }
-
-    public static final ConcurrentHashMap<TableEntity<?>, String> REPLACE_SQL_CACHE =
-            new ConcurrentHashMap<TableEntity<?>, String>();
-
-    /**
-     * Build "insert", "replace",，"update", "delete" and "create" sql.
-     */
 
     /**
      * replace sql
@@ -311,44 +345,5 @@ public final class TableEntity<T> {
         }
         result.setSql(builder.toString());
         return result;
-    }
-
-    /**
-     * 从Class中找到所有表中的字段
-     *
-     * @param entityType 表示entity的Class
-     * @return
-     */
-    static synchronized LinkedHashMap<String, ColumnEntity> findColumnMap(Class<?> entityType) {
-        LinkedHashMap<String, ColumnEntity> columnMap = new LinkedHashMap<String, ColumnEntity>();
-        addColumnsToMap(entityType, columnMap);
-        return columnMap;
-    }
-
-    private static void addColumnsToMap(Class<?> entityType, HashMap<String, ColumnEntity> columnMap) {
-        if (Object.class.equals(entityType)) {
-            return;
-        }
-        try {
-            Field[] fields = entityType.getDeclaredFields();
-            for (Field field : fields) {
-                int modify = field.getModifiers();
-                if (Modifier.isStatic(modify) || Modifier.isTransient(modify)) {
-                    continue;
-                }
-                Column columnAnn = field.getAnnotation(Column.class);
-                if (columnAnn != null) {
-                    if (ColumnConverterFactory.isSupportColumnConverter(field.getType())) {
-                        ColumnEntity column = new ColumnEntity(entityType, field, columnAnn);
-                        if (!columnMap.containsKey(column.getColumnName())) {
-                            columnMap.put(column.getColumnName(), column);
-                        }
-                    }
-                }
-            }
-            addColumnsToMap(entityType.getSuperclass(), columnMap);
-        } catch (Throwable e) {
-            Log.e(e.getMessage(), e);
-        }
     }
 }

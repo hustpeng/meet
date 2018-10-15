@@ -18,23 +18,19 @@ public class RosterPacketItem {
      * jid
      */
     private final String user;
-
+    private final Set<String> groupNames;
     /**
      * 昵称
      */
     private String name;
-
     /**
      * 好友关系
      */
     private RosterPacketItemType itemType;
-
     /**
      * 好友关系请求
      */
     private RosterPacketItemStatus itemStatus;
-
-    private final Set<String> groupNames;
     private String avatarId;
     private String personalMsg;
     private double latitude;

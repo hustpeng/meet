@@ -1,14 +1,14 @@
 package com.agmbat.android.media;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AudioPlayer implements OnCompletionListener, OnErrorListener {
 
@@ -41,7 +41,10 @@ public class AudioPlayer implements OnCompletionListener, OnErrorListener {
      * the path of the audio file
      */
     private String mPath;
-
+    /**
+     * the listener of the play state is changed
+     */
+    private OnPlayListener mOnPlayListener;
     /**
      * the handler to update playing state
      */
@@ -60,9 +63,10 @@ public class AudioPlayer implements OnCompletionListener, OnErrorListener {
     };
 
     /**
-     * the listener of the play state is changed
+     * Create an AudioPlayer
      */
-    private OnPlayListener mOnPlayListener;
+    public AudioPlayer() {
+    }
 
     /**
      * Get the default player
@@ -77,39 +81,12 @@ public class AudioPlayer implements OnCompletionListener, OnErrorListener {
     }
 
     /**
-     * Create an AudioPlayer
-     */
-    public AudioPlayer() {
-    }
-
-    /**
      * Register a callback to be invoked when this player state is changed
      *
      * @param l The callback that will run
      */
     public void setOnPlayListener(OnPlayListener l) {
         mOnPlayListener = l;
-    }
-
-    /**
-     * Sets the data source (file-path or http/rtsp URL) to use.
-     *
-     * @param path the path of the file, or the http/rtsp URL of the stream you want to play
-     */
-    public void setDataSource(String path) {
-        if (!TextUtils.equals(mPath, path)) {
-            stop();
-            mPath = path;
-            mPlayer = new MediaPlayer();
-            try {
-                mPlayer.setDataSource(path);
-                mPlayer.setOnCompletionListener(this);
-                mPlayer.setOnErrorListener(this);
-                mPlayer.prepare();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     /**
@@ -234,6 +211,27 @@ public class AudioPlayer implements OnCompletionListener, OnErrorListener {
     }
 
     /**
+     * Sets the data source (file-path or http/rtsp URL) to use.
+     *
+     * @param path the path of the file, or the http/rtsp URL of the stream you want to play
+     */
+    public void setDataSource(String path) {
+        if (!TextUtils.equals(mPath, path)) {
+            stop();
+            mPath = path;
+            mPlayer = new MediaPlayer();
+            try {
+                mPlayer.setDataSource(path);
+                mPlayer.setOnCompletionListener(this);
+                mPlayer.setOnErrorListener(this);
+                mPlayer.prepare();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * Gets the duration of the file.
      *
      * @return the duration in milliseconds, if no duration is available (for example, if streaming live content), -1 is
@@ -266,6 +264,29 @@ public class AudioPlayer implements OnCompletionListener, OnErrorListener {
             }
         }
         mHandler.removeMessages(MSG_UPDATE);
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when state of the player has changed.
+     */
+    public interface OnPlayListener extends OnCompletionListener, OnErrorListener {
+        /**
+         * Called when player start
+         */
+        public void onPlay();
+
+        /**
+         * Called when player pause
+         */
+        public void onPause();
+
+        /**
+         * Called to update status playing
+         *
+         * @param position the position
+         * @param duration the duration
+         */
+        public void onPlaying(int position, int duration);
     }
 
     /**
@@ -359,28 +380,5 @@ public class AudioPlayer implements OnCompletionListener, OnErrorListener {
                 }
             }
         }
-    }
-
-    /**
-     * Interface definition for a callback to be invoked when state of the player has changed.
-     */
-    public interface OnPlayListener extends OnCompletionListener, OnErrorListener {
-        /**
-         * Called when player start
-         */
-        public void onPlay();
-
-        /**
-         * Called when player pause
-         */
-        public void onPause();
-
-        /**
-         * Called to update status playing
-         *
-         * @param position the position
-         * @param duration the duration
-         */
-        public void onPlaying(int position, int duration);
     }
 }

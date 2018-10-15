@@ -2,7 +2,6 @@ package com.agmbat.picker.file;
 
 import android.graphics.drawable.Drawable;
 
-
 import com.agmbat.picker.util.ConvertUtils;
 
 import java.io.Serializable;
@@ -18,12 +17,12 @@ public class FileItem implements Serializable {
     private long size = 0;
     private boolean isDirectory = false;
 
-    public void setIcon(Drawable icon) {
-        this.icon = icon;
-    }
-
     public Drawable getIcon() {
         return icon;
+    }
+
+    public void setIcon(Drawable icon) {
+        this.icon = icon;
     }
 
     public String getName() {

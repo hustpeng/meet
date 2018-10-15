@@ -1,4 +1,3 @@
-
 package com.agmbat.android.db;
 
 import android.content.ContentResolver;
@@ -9,9 +8,8 @@ import android.net.Uri;
 
 public final class DBManager {
 
-    private Context mContext;
-
     private static DBManager sInstance;
+    private Context mContext;
 
     private DBManager(Context context) {
         mContext = context;
@@ -33,7 +31,7 @@ public final class DBManager {
 
     /**
      * 插入数据库操作
-     * 
+     *
      * @param resolver
      * @param uri
      * @param values

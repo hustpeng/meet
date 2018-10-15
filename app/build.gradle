@@ -23,7 +23,7 @@ android {
         versionName "${verName}"
         project.archivesBaseName = "${projectName}"
         resConfigs "zh-rCN", "zh-rHK", "zh-rTW", "en"
-            buildConfigField "String", "BUILD_NUMBER", "\"Build20180930\"" //Build${buildTime()}
+        buildConfigField "String", "BUILD_NUMBER", "\"Build20180930\"" //Build${buildTime()}
 
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
@@ -73,7 +73,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.greenrobot:eventbus:3.0.0'
 
-
     // butterknife库, 去掉其依赖库
     compile('com.jakewharton:butterknife:8.8.1') {
         exclude group: 'com.android.support', module: 'support-compat'
@@ -108,7 +107,6 @@ dependencies {
     compile project(':baidumap')
     compile project(':widget')
     compile project(':indicator')
-
 
     // 正式包不需要引用debugger工程
 //    compile project(':debugger')

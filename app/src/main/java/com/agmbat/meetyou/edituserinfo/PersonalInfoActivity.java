@@ -51,6 +51,7 @@ public class PersonalInfoActivity extends Activity {
 
     @BindView(R.id.personal_more_info)
     TextView mMoreUserInfo;
+    private boolean hasMoreUserInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -171,8 +172,6 @@ public class PersonalInfoActivity extends Activity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
-
-    private boolean hasMoreUserInfo;
 
     /**
      * 更新UI显示
