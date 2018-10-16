@@ -294,15 +294,21 @@ public class IdentityAuthenticationActivity extends Activity {
             mISLoadingDialog.setCancelable(false);
         }
         mISLoadingDialog.setMessage(msg);
-        mISLoadingDialog.show();
+        try {
+            mISLoadingDialog.show();
+        }catch (Exception e){
+        }
     }
 
     /**
      * 隐藏loading框
      */
     private void hideLoadingDialog() {
-        if (mISLoadingDialog != null) {
-            mISLoadingDialog.dismiss();
+        if (mISLoadingDialog != null && mISLoadingDialog.isShowing()) {
+            try {
+                mISLoadingDialog.dismiss();
+            }catch (Exception e){
+            }
         }
     }
 
